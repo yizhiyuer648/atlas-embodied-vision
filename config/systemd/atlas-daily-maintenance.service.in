@@ -1,10 +1,14 @@
 [Unit]
 Description=Atlas daily complete maintenance loop
-After=network-online.target
-Wants=network-online.target
+StartLimitIntervalSec=3h
+StartLimitBurst=3
 
 [Service]
-Type=oneshot
+Type=exec
 WorkingDirectory=@PROJECT_ROOT@
 ExecStart=@PROJECT_ROOT@/scripts/run_daily_maintenance.sh
-TimeoutStartSec=14h
+Restart=no
+RestartForceExitStatus=75
+RestartSec=20min
+RuntimeMaxSec=14h
+TimeoutStopSec=12min

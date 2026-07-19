@@ -24,7 +24,7 @@ from collections import Counter, defaultdict
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Callable, Iterable
-from urllib.parse import urljoin, urlparse
+from urllib.parse import quote, urljoin, urlparse
 
 import requests
 
@@ -133,12 +133,52 @@ def source_slug(value: Any) -> str:
     return re.sub(r"[^a-z0-9]+", "-", clean(value).casefold()).strip("-") or "unknown"
 
 
+OFFICIAL_PLATFORM_HOSTS = {
+    "openaccess.thecvf.com": "cvf-open-access",
+    "proceedings.mlr.press": "pmlr",
+    "www.roboticsproceedings.org": "robotics-proceedings",
+    "roboticsproceedings.org": "robotics-proceedings",
+}
+OFFICIAL_PLATFORM_SOURCES = frozenset(OFFICIAL_PLATFORM_HOSTS.values())
+URL_UNRESERVED = frozenset("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~")
+URL_PATH_SAFE = "/:@!$&'()*+,;=-._~%"
+PERCENT_ESCAPE = re.compile(r"%([0-9A-Fa-f]{2})")
+
+
+def canonical_url_path(value: Any) -> str:
+    """Canonicalize an official URL path without erasing meaningful separators.
+
+    RFC 3986 unreserved percent escapes are decoded, remaining escapes use
+    uppercase hex, raw non-ASCII is encoded as UTF-8, and trailing slashes are
+    removed. Reserved escapes such as ``%2F`` stay escaped so they cannot be
+    confused with path separators.
+    """
+    text = clean(value)
+    if not text:
+        return ""
+    parsed = urlparse(text if "://" in text else f"https://placeholder.invalid/{text.lstrip('/')}")
+    path = parsed.path or "/"
+    if re.search(r"%(?![0-9A-Fa-f]{2})", path):
+        return ""
+
+    def normalize_escape(match: re.Match[str]) -> str:
+        value = int(match.group(1), 16)
+        character = chr(value)
+        return character if character in URL_UNRESERVED else f"%{value:02X}"
+
+    path = PERCENT_ESCAPE.sub(normalize_escape, path)
+    path = quote(path, safe=URL_PATH_SAFE)
+    return path.rstrip("/") or "/"
+
+
 def canonical_platform_value(source: Any, value: Any) -> str:
     """统一平台 ID 的 URL/短 ID 两种写法，不跨平台猜测等价关系。"""
     source_key = source_slug(source)
     text = clean(value)
     if not text:
         return ""
+    if source_key in OFFICIAL_PLATFORM_SOURCES:
+        return canonical_url_path(text)
     parsed = urlparse(text if "://" in text else f"https://placeholder.invalid/{text.lstrip('/')}")
     if source_key == "openalex":
         match = re.search(r"\bW\d+\b", text, re.I)
@@ -157,18 +197,12 @@ def official_platform_references(*values: Any) -> set[str]:
     look-alike path on an unrelated site cannot be treated as authoritative.
     """
     references: set[str] = set()
-    official_hosts = {
-        "openaccess.thecvf.com": "cvf-open-access",
-        "proceedings.mlr.press": "pmlr",
-        "www.roboticsproceedings.org": "robotics-proceedings",
-        "roboticsproceedings.org": "robotics-proceedings",
-    }
     for value in values:
         text = clean(value)
         if not text or "://" not in text:
             continue
         parsed = urlparse(text)
-        source = official_hosts.get(parsed.hostname.casefold() if parsed.hostname else "")
+        source = OFFICIAL_PLATFORM_HOSTS.get(parsed.hostname.casefold() if parsed.hostname else "")
         if not source:
             continue
         stable_path = canonical_platform_value(source, parsed.path)
@@ -1149,8 +1183,8 @@ def build_paper_index(papers: list[dict[str, Any]]) -> dict[str, dict[str, list[
     return index
 
 
-def build_publication_event_index(tracker: dict[str, Any]) -> dict[str, dict[str, list[dict[str, str]]]]:
-    index: dict[str, dict[str, list[dict[str, str]]]] = {
+def build_publication_event_index(tracker: dict[str, Any]) -> dict[str, dict[str, list[dict[str, Any]]]]:
+    index: dict[str, dict[str, list[dict[str, Any]]]] = {
         "doi": defaultdict(list),
         "arxiv": defaultdict(list),
         "platform": defaultdict(list),
@@ -1158,14 +1192,6 @@ def build_publication_event_index(tracker: dict[str, Any]) -> dict[str, dict[str
     for event in tracker.get("publication_events", []):
         if not isinstance(event, dict):
             continue
-        summary = {
-            "event_id": clean(event.get("id")),
-            "paper_id": clean(event.get("paper_id")),
-            "title": clean(event.get("title")),
-            "status": clean(event.get("status")),
-            "evidence_level": clean(event.get("evidence_level")),
-            "source_url": clean(event.get("source_url")),
-        }
         values = [
             clean(event.get("work_id")),
             clean(event.get("paper_id")),
@@ -1174,11 +1200,21 @@ def build_publication_event_index(tracker: dict[str, Any]) -> dict[str, dict[str
         for version in event.get("versions") or []:
             if isinstance(version, dict):
                 values.extend([clean(version.get("identifier")), clean(version.get("url"))])
-        doi = extract_doi(*values)
-        arxiv = extract_arxiv(*values)
-        if doi:
+        dois = {doi for value in values if (doi := extract_doi(value))}
+        arxivs = {arxiv for value in values if (arxiv := extract_arxiv(value))}
+        summary = {
+            "event_id": clean(event.get("id")),
+            "paper_id": clean(event.get("paper_id")),
+            "title": clean(event.get("title")),
+            "status": clean(event.get("status")),
+            "evidence_level": clean(event.get("evidence_level")),
+            "source_url": clean(event.get("source_url")),
+            "dois": sorted(dois),
+            "arxivs": sorted(arxivs),
+        }
+        for doi in sorted(dois):
             index["doi"][f"doi:{doi}"].append(summary)
-        if arxiv:
+        for arxiv in sorted(arxivs):
             index["arxiv"][f"arxiv:{arxiv}"].append(summary)
         for key in official_platform_references(*values):
             index["platform"][key].append(summary)
@@ -1194,22 +1230,55 @@ def build_publication_event_index(tracker: dict[str, Any]) -> dict[str, dict[str
 
 def match_publication_events(
     records: list[dict[str, Any]],
-    event_index: dict[str, dict[str, list[dict[str, str]]]],
+    event_index: dict[str, dict[str, list[dict[str, Any]]]],
 ) -> dict[str, Any]:
     identifiers = group_identifier_sets(records)
+    candidate_dois = {value.removeprefix("doi:") for value in identifiers["doi"]}
+    candidate_arxivs = {value.removeprefix("arxiv:") for value in identifiers["arxiv"]}
+    conflicts: dict[str, dict[str, Any]] = {}
+
+    def conflicting_fields(event: dict[str, Any], level: str) -> list[str]:
+        fields: list[str] = []
+        event_dois = {clean(value) for value in event.get("dois") or [] if clean(value)}
+        event_arxivs = {clean(value) for value in event.get("arxivs") or [] if clean(value)}
+        if level != "doi" and candidate_dois and event_dois and candidate_dois.isdisjoint(event_dois):
+            fields.append("doi")
+        if level != "arxiv" and candidate_arxivs and event_arxivs and candidate_arxivs.isdisjoint(event_arxivs):
+            fields.append("arxiv")
+        return fields
+
     for level in ("doi", "arxiv", "platform"):
-        matches: dict[str, dict[str, str]] = {}
+        matches: dict[str, dict[str, Any]] = {}
         for key in identifiers[level]:
             for event in event_index[level].get(key, []):
+                fields = conflicting_fields(event, level)
+                if fields:
+                    conflicts[event["event_id"]] = {
+                        **event,
+                        "reason": "strong_identifier_conflict",
+                        "conflicting_fields": fields,
+                    }
+                    continue
                 matches[event["event_id"]] = event
         if matches:
             return {
                 "is_known": True,
                 "matched_by": level,
                 "events": list(matches.values()),
+                "possible_matches": list(conflicts.values()),
                 "note": "已存在于 academic_tracker.json.publication_events，未重复进入待审核候选。",
             }
-    return {"is_known": False, "matched_by": "none", "events": [], "note": "未命中已确认发表事件。"}
+    return {
+        "is_known": False,
+        "matched_by": "none",
+        "events": [],
+        "possible_matches": list(conflicts.values()),
+        "note": (
+            "平台 URL 命中已确认事件，但 DOI/arXiv 强标识冲突，禁止自动判定为已知。"
+            if conflicts
+            else "未命中已确认发表事件。"
+        ),
+    }
 
 
 def match_existing_papers(
@@ -1515,6 +1584,10 @@ def build_candidate_batch(
                 }
             )
             continue
+        if publication_match.get("possible_matches"):
+            candidate["manual_review_items"].append(
+                "官方平台 URL 与已确认事件相同，但 DOI/arXiv 强标识冲突；必须人工核对，不得自动跳过。"
+            )
         candidate["publication_event_match"] = publication_match
         candidates.append(candidate)
     return {

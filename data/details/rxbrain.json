@@ -43,5 +43,47 @@
       "title": "证据边界与谱系处理",
       "body": "论文也报告视觉目标正确性弱于语言规划、自由运行时随规划步数累积误差，并说明复杂长程任务和完全分布外环境仍需扩展与微调。官方仓库截至 2026-07-19 仍把 RxBrain-Bench 与部分微调代码列为 TODO，因此不能把开放权重等同于完整可复现。直接上游 HY-Embodied-0.5 尚未收录，lineage_parent 保留 unknown；不因腾讯品牌或编号把它自动接到 HunyuanVideo。"
     }
+  ],
+  "evidence_claims": [
+    {
+      "type": "paper_report",
+      "claim": "RxBrain 在统一的 modality-aware Mixture-of-Transformers 中处理语言、视觉理解与视觉生成 token；视觉理解和生成共享视觉 Transformer 的注意力投影，但路由到不同 FFN 专家。",
+      "scope": "这是 arXiv v1 报告的 6.2B 基础模型架构；统一 token 处理不等于所有模态共享全部参数，也不证明它已获得完整物理理解。",
+      "source_label": "RxBrain arXiv v1",
+      "source_url": "https://arxiv.org/abs/2607.14187",
+      "locator": "§2.1–§2.2、Figure 2",
+      "conditions": "基于 HY-Embodied-0.5 视觉编码设计；文本采用因果注意力，视觉理解/生成采用帧内双向注意力与 flow matching",
+      "checked_at": "2026-07-19"
+    },
+    {
+      "type": "paper_report",
+      "claim": "论文在 DOBOT X-Trainer 和 ARX 双臂平台的三个多阶段任务上，对每个策略、每个任务执行 100 次真机试验；作者报告 RxBrain 平均成功率 87%，π0 为 68%，π0.5 为 82%。",
+      "scope": "数字只适用于作者给定的三个家庭操作任务、两种本体、相同真机训练数据与成功率协议；尚不能外推到其他机器人或开放环境。",
+      "source_label": "RxBrain arXiv v1",
+      "source_url": "https://arxiv.org/abs/2607.14187",
+      "locator": "§7.2 Real-world Deployment、Figure 10",
+      "conditions": "Set the Table、Fold and Store Glasses、Pick Trash；基线与 RxBrain 均使用同一批真机数据训练",
+      "checked_at": "2026-07-19"
+    },
+    {
+      "type": "paper_report",
+      "claim": "在 RxBrain-Bench-JointPlan 的自回归自由运行评测中，论文报告观测理解 0.83、子任务规划 0.78，但目标图像正确性仅 0.52；随规划长度从 2 步增至 8 步，性能从 0.69 降至 0.55。",
+      "scope": "这是作者自建基准与加权 MLLM judge 下的内部评测，只支持“当前版本的视觉目标生成和长链稳定性较弱”，不构成独立复现。",
+      "source_label": "RxBrain arXiv v1",
+      "source_url": "https://arxiv.org/abs/2607.14187",
+      "locator": "§6.2、Table 4 及规划长度分析正文",
+      "conditions": "held-out balanced subset；全自回归闭环 rollout；Splan 包含观测、规划、目标图像、一致性、链完成与 DINO 项",
+      "checked_at": "2026-07-19"
+    },
+    {
+      "type": "pending",
+      "claim": "截至 2026-07-19，RxBrain 官方仓库已提供推理代码与约 6.2B 权重入口，但 README 的 TODO 仍将 RxBrain-Bench 与 VQA/多帧生成/交错生成微调代码列为待开源。",
+      "scope": "这是会随仓库更新而变化的时点事实；“开放权重”不等于基准、训练数据和全部训练代码已可完整复现。",
+      "source_label": "RxBrain 官方 GitHub 仓库",
+      "source_url": "https://github.com/Tencent-Hunyuan/Hy-Embodied-RxBrain-1.0",
+      "locator": "README.md > TODO、Quick Start（核验日期 2026-07-19）",
+      "conditions": "官方仓库 main 分支在核验日的公开状态；后续维护需重新检查 TODO",
+      "checked_at": "2026-07-19"
+    }
   ]
 }

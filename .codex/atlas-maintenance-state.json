@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "updated_at": "2026-07-19T22:59:11Z",
+  "updated_at": "2026-07-19T23:46:57Z",
   "status": "partial",
   "baseline": {
     "formal_pages": 11,
@@ -35,10 +35,10 @@
     ]
   },
   "model_evidence": {
-    "models_with_ledger": 25,
+    "models_with_ledger": 26,
     "a_tier_coverage": "24/24",
-    "claims": 76,
-    "claims_with_precise_locator": 61
+    "claims": 80,
+    "claims_with_precise_locator": 64
   },
   "fulltext_library": {
     "manifest_records": 470,
@@ -116,13 +116,16 @@
     "model": "gpt-5.6-sol",
     "reasoning_effort": "xhigh",
     "fail_closed": true,
+    "retry_policy": "only explicit pre-agent lock/network exit 75; all post-agent failures are non-retryable",
+    "protected_gates_and_runtime": true,
+    "cloudflare_receipt_contract": "new deployment ID plus exact Wrangler URL, Production/main and commit Source",
     "shared_fulltext_lock": true,
     "persistent": true,
     "linger": true
   },
   "acceptance": {
     "chromium_matrix": "42/42",
-    "verified_at": "2026-07-19T22:48:58.792Z",
+    "verified_at": "2026-07-19T23:30:28.628Z",
     "viewports": [
       "1280x900",
       "390x844",
@@ -165,11 +168,11 @@
     ],
     "gates": [
       "validate_data passed for 163 models, 462 papers, 187 terms, 13 publication events and 11 pages",
-      "Python compile, 1 model-candidate regression and 16 academic-candidate regressions passed",
+      "Python compile, 1 model-candidate regression and 18 academic-candidate regressions passed",
       "13 site JavaScript files plus browser/geometry/PDF Function scripts passed syntax and policy tests",
       "24/24 A-tier architecture diagrams passed geometry checks",
       "42 Chromium route/viewport renders passed with zero hard, console, overflow, broken-image or touch-target failures",
-      "Cloudflare Pages Function bundle compiled and Playwright imported successfully",
+      "Cloudflare Pages Function bundle compiled; 10 tracked formal PDFs passed strict source, bounded Range, Content-Range, stream-limit and redirect policy tests",
       "470 full-text records: 467 public PDFs/texts and 3 metadata-only paywalls"
     ]
   },

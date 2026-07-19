@@ -221,6 +221,74 @@ class AcademicCandidateTests(unittest.TestCase):
             "fixture-cvf-authoritative-event",
         )
 
+    def test_official_platform_path_canonicalization_preserves_structure(self) -> None:
+        canonical = update_academic.canonical_platform_value
+        self.assertNotEqual(
+            canonical("CVF Open Access", "/content/CVPR2026/html/A_B.html"),
+            canonical("CVF Open Access", "/content/CVPR2026/html/AB.html"),
+        )
+        self.assertNotEqual(
+            canonical("PMLR", "/v235/foo-bar.html"),
+            canonical("PMLR", "/v235/foobar.html"),
+        )
+        self.assertEqual(
+            canonical("PMLR", "/v235/paper%7Erevision.html/"),
+            canonical("PMLR", "/v235/paper~revision.html"),
+        )
+        self.assertEqual(
+            canonical("Robotics Proceedings", "/rss20/paper%2frevision.html"),
+            "/rss20/paper%2Frevision.html",
+        )
+        self.assertNotEqual(
+            canonical("Robotics Proceedings", "/rss20/paper%2Frevision.html"),
+            canonical("Robotics Proceedings", "/rss20/paper/revision.html"),
+        )
+
+    def test_platform_match_with_strong_identifier_conflict_stays_in_review_queue(self) -> None:
+        tracker = copy.deepcopy(self.tracker)
+        landing = (
+            "https://openaccess.thecvf.com/content/CVPR2026/html/"
+            "Example_Conflicting_Identity_CVPR_2026_paper.html"
+        )
+        tracker["publication_events"].append(
+            {
+                "id": "fixture-conflicting-authoritative-event",
+                "work_id": "doi:10.5555/known.version",
+                "paper_id": "fixture-conflicting-paper",
+                "title": "Conflicting Identity",
+                "status": "proceedings_published",
+                "evidence_level": "E1",
+                "source_url": landing,
+                "versions": [
+                    {"kind": "preprint", "identifier": "arxiv:2607.00001"}
+                ],
+            }
+        )
+        record = update_academic.canonical_record(
+            source="CVF Open Access",
+            source_id="/content/CVPR2026/html/Example_Conflicting_Identity_CVPR_2026_paper.html",
+            source_url=landing,
+            title="Conflicting Identity",
+            authors=["Ada Example"],
+            published="2026",
+            venue_hint="CVPR",
+            doi="10.5555/different.version",
+            arxiv="2607.99999",
+            landing_url=landing,
+            explicit_venue_id="cvpr",
+        )
+        batch = build_candidate_batch([record], [], tracker)
+        self.assertEqual(batch["skipped_authoritative_events"], [])
+        self.assertEqual(len(batch["candidates"]), 1)
+        publication_match = batch["candidates"][0]["publication_event_match"]
+        self.assertFalse(publication_match["is_known"])
+        self.assertEqual(publication_match["matched_by"], "none")
+        self.assertEqual(len(publication_match["possible_matches"]), 1)
+        conflict = publication_match["possible_matches"][0]
+        self.assertEqual(conflict["reason"], "strong_identifier_conflict")
+        self.assertEqual(conflict["conflicting_fields"], ["doi", "arxiv"])
+        self.assertIn("强标识冲突", batch["candidates"][0]["manual_review_items"][-1])
+
     def test_candidate_id_prefers_arxiv_over_provider_id(self) -> None:
         openalex = dict(self.records[1])
         openalex["title"] = "Stable arXiv Vision-Language Model"

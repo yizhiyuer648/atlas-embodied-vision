@@ -1,14 +1,18 @@
 [Unit]
 Description=Download and extract Atlas public paper full text
-After=network-online.target atlas-daily-maintenance.service
-Wants=network-online.target
+After=atlas-daily-maintenance.service
+StartLimitIntervalSec=12h
+StartLimitBurst=2
 
 [Service]
-Type=oneshot
+Type=exec
 WorkingDirectory=@PROJECT_ROOT@
-ExecStart=/usr/bin/flock -w 14400 @PROJECT_ROOT@/.codex/daily-maintenance.lock /usr/bin/python3 @PROJECT_ROOT@/scripts/fetch_fulltext.py --delay 0.8
+ExecStart=/usr/bin/flock -E 75 -w 14400 @PROJECT_ROOT@/.codex/daily-maintenance.lock /usr/bin/python3 @PROJECT_ROOT@/scripts/fetch_fulltext.py --delay 0.8
 StandardOutput=append:@PROJECT_ROOT@/library/fulltext-sync.log
 StandardError=append:@PROJECT_ROOT@/library/fulltext-sync.log
-TimeoutStartSec=8h
+Restart=no
+RestartForceExitStatus=75
+RestartSec=30min
+RuntimeMaxSec=8h
 Nice=10
 IOSchedulingClass=idle
