@@ -1,21 +1,23 @@
-在项目 {{PROJECT_ROOT}} 执行“Atlas 每日完整优化循环”。
+在项目 {{PROJECT_ROOT}} 执行“Atlas 每日完整优化循环”。这不是论文专项任务，也不是只运行抓取脚本；必须依照 README.md 的“每日完整优化契约”完成覆盖模型、论文、学术追踪、术语、谱系、页面体验、测试和部署的八阶段维护。开始前完整读取最新用户要求、README、迁移说明、git status 与 `.codex/atlas-maintenance-state.json` schema v2；先续做仍真实存在的 pending，保留用户改动，不做破坏性 Git 操作，不自动提交或推送。
 
-README.md 的“每日完整优化契约”是唯一可执行主契约。开始前完整读取 README、迁移说明、git status 与 `.codex/atlas-maintenance-state.json` schema v2；先续做仍真实存在的 `pending`，保留用户改动，不做破坏性 Git 操作，不自动提交或推送。
+产品边界固定：保持暖白杂志风、衬线标题与赤陶色点缀；纯静态、零 CDN、零框架。全站只有 index / explore / model / compare / radar / venues / lineage / timeline / trends / glossary 10 个正式页面，不得恢复 learn、Quiz、学习进度或答题功能。主导航、搜索、收藏空态、学术追踪 journals / conferences / compare 三个 URL 视图和趋势页中性指标边界必须保持。
 
-产品边界固定：全站只有 10 个正式页面（index / explore / model / compare / radar / venues / lineage / timeline / trends / glossary），不得恢复 learn、Quiz、学习进度或答题功能；学术追踪必须保持 `journals / conferences / compare` 三个可分享 URL 视图。保持暖白杂志风、纯静态、零 CDN、零框架。
+第一阶段·建立基线：记录开始时间和 `git status --short`，读取并续做 state 中真实 pending；运行 `python3 scripts/validate_data.py`、Python 编译、`test_update_merge.py` 与 `test_update_academic.py`。基线失败先修复，不在旧错误上继续堆数据。记录六类模型数、A 级数、论文/全文/解析数、术语数、期刊/会议/发表事件数及 10 页状态；数字以脚本实际输出为准，不把旧数量当目标。
 
-每天各运行一次 `python scripts/update.py --days 30 --min-stars 50` 与 `python scripts/update_academic.py --days 30`，并分别观察多来源论文、SCI 期刊、学术会议、六类常用研究手法和公开社区术语。平台数量本身只扩大**发现覆盖**，绝不自动提高证据等级；记录查询词、时间窗、原始结果数、去重数、失败、缓存与来源链接，没有结果也如实写明。
+第二阶段·多平台发现：每天各运行一次 `python3 scripts/update.py --days 30 --min-stars 50` 与 `python3 scripts/update_academic.py --days 30`。覆盖 arXiv、OpenAlex、Semantic Scholar、Hugging Face Papers、GitHub、Hugging Face Models、Crossref、DBLP、CVF Open Access、PMLR 与 Robotics Proceedings；再对论文、SCI 期刊、会议、六类常用手法和公开社区语境做人工作抽查。记录查询词、时间窗、原始数、去重数、冲突、失败、HTTP 状态、缓存与来源链接。单源 403/429/超时不等于“没有更新”，不得高频重试或假装覆盖全部互联网。
 
-学术证据固定使用 E1–E5：E1 正式出版；E2 官方决定；E3 双独立书目元数据一致；E4 聚合线索；E5 预印本/作者/社区自述。当前权威学术数据应保持 8 个期刊、10 个会议和 10 条已核验发表事件；数量变化只能来自人工打开正式出版页或官方论文集后的审核更新。
+第三阶段·模型与学术候选复核：候选文件只是线索。`update.py` 只能写 `data/candidates.json`，`update_academic.py` 只能写 `data/academic_candidates.json`；候选不得被前端读取或自动灌入权威库。逐条打开论文、官方项目页、官方仓库、出版方页面或官方论文集，核对名称、版本、年份、机构、国家地区、类别、开源状态、上游关系、DOI 与发表状态。证据充分才手动修改 `data/details/<id>.json` 或 `data/academic_tracker.json`；不充分则保留候选并说明缺口。重点检查最近 30 天模型、新版本、国产模型覆盖及 YOLO v1–v13/YOLO26、Qwen、GR00T、SAM、InternVL、Emu3.5、Xiaomi-Robotics-U0 等系列；编号相邻不能自动推导谱系。修改模型后重建 `data/index.json`。
 
-E1–E5 不是论文质量分。判断论文水平必须逐项核对主张与证据、验证广度、真实场景、可复现性、版本增量，只能写“证据充分 / 证据部分 / 暂不可判”；不得用 venue 名气、引用数、仓库 star 或宣传演示代替正文与实验核验，也不得汇总脱离任务条件的总分。
+第四阶段·论文全文与解析：检查 `data/papers.json` 的新增论文、规范身份、中文导读、正式发表版本和 `data/paper_analysis_index.json`。跨平台身份顺序固定为 DOI → 去版本号 arXiv ID → 官方 proceedings/PMLR/DBLP/OpenReview/Anthology 稳定 ID → 规范化标题+第一作者+首次年份；冲突不得自动合并。运行或检查本地全文同步，合法公开 PDF 保存到被 Git 排除的 `library/`，付费墙内容只保留元数据、公开摘要和正规入口，不绕过访问控制。对已取得全文且尚无解析的论文，按重要性和时效分批补充：一句话结论、问题背景、初学者直觉、方法步骤、训练/实验设置、关键结果、创新、局限、上下游关系、术语解释、五维证据判断和结构化动态流程图。流程图必须来自论文真实方法，不用通用框图代替。
 
-跨平台论文身份顺序固定为：规范化 DOI → 去版本号 arXiv ID → 官方 proceedings / PMLR / DBLP / OpenReview / Anthology 等同一来源稳定 ID → 规范化标题 + 第一作者 + 首次公开年份。版本或标识冲突时不得自动合并；论文雷达保存论文正文身份，学术追踪保存 venue、版本/发表事件、来源覆盖、方法信号与编辑总结，不复制第二份摘要或导读库。
+第五阶段·学术追踪与术语：E1–E5 只判断发表事实，不是论文质量分；论文水平按主张与证据、验证广度、真实场景、可复现性、版本增量分别写“证据充分 / 证据部分 / 暂不可判”，不得用 venue、引用数、star 或宣传演示代替正文。每天分别更新 `editorial_summaries.journals / conferences / compare`，三个视图的事实摘要、Atlas 理解和待核验不得复制同一模板，必须反映各自当轮新增、未发现、失败来源与样本边界。不得猜 JCR 分区、影响因子、录用率或当期 SCI/SCIE 状态。
 
-`scripts/update.py` 只能写 `data/candidates.json`；`scripts/update_academic.py` 只能写 `data/academic_candidates.json`。后者不被前端加载，所有候选始终必须是 `status: needs_review`、`manual_review_required: true`。候选脚本永不直接写入或合并 `data/details/`、旧 `data/models.json`、`data/index.json` 或 `data/academic_tracker.json`；只有维护者逐条打开原始来源核验后才能手动落库。
+同时维护术语真实社区语境：轮查公开 GitHub Issues/Discussions、Hugging Face Discussions/模型卡、官方论坛、公开技术帖子和评论，收集缩写、别名、报错说法和圈内黑话；不得抓私密群或无公开 URL 的二手转述。每条术语区分 formal/community/slang/ambiguous，写清中文释义、使用语境和来源；社区词优先两个独立公开证据。报告社区/歧义/黑话数量、真实讨论证据数和双来源数。候选逐条审核后才可合并。
 
-每天的学术输出固定为三段：`事实摘要` 附一手来源和日期；`Atlas 理解` 明确标成编辑判断；`待核验` 列证据缺口、失败来源和下一步位置。不得猜测 JCR 分区、影响因子、录用率或当期 SCI/SCIE 状态，无法确认就写 `unknown` 或“待核验”。
+第六阶段·谱系、架构与视觉内容：逐类检查 vla/world/detection/representation/segmentation/multimodal 六张谱系的数据与布局，包括悬空父节点、自环、环、年份倒置、跨类关系、孤立节点、越界、遮挡、连线穿节点、交叉、拖拽、缩放、分类切换和 focus URL。检查 24 个 A 级详情架构是否与公开架构相符，模块、端口、箭头、标签、循环流动点和 15–40 行带来源路径/逐行中文注释的代码均有效。核对时间线、unknown 区、趋势统计、Hero/卡片/谱系/架构动画与 `prefers-reduced-motion` 降级。只有可逆布局问题可直接修；谱系语义和架构语义必须先有来源。
 
-每天必须分别更新 `editorial_summaries.journals / conferences / compare`，三者的事实、判断和下一步不得复制同一模板；内容必须反映当轮各自实际新增、未发现、失败来源和样本边界。同步检查 `data/papers.json` 的新增论文、规范身份、全文下载状态、正式发表版本、中文导读与 `data/paper_analysis_index.json`；对已取得全文且尚无解析的论文，按优先级补充初学者解释、方法步骤、创新、限制、五维证据判断和结构化动态流程图。全文无法合法取得时保留元数据和正规入口，不绕过付费墙。
+第七阶段·网页与设备验收：启动最终静态站，在 1280、390、320 三档视口打开 10 个正式页面及学术三视图，验证面包屑、搜索、YOLO13 模糊匹配、手机菜单、筛选/排序、收藏、详情直达、2–3 模型对比、六类谱系交互、时间线、趋势、术语英文别名、论文雷达预置方向与自定义关键词、来源冲突、缓存/失败态、全文解析展开和动态流程图。要求主页面无意外横向溢出、触控目标至少 44px、JSON/ES Module 无 404、坏图和残留骨架为 0、控制台无未处理错误。真实手机只有实际同 Wi-Fi 打开并操作后才能写“已验证”；否则保留 pending。
 
-每轮运行 README 规定的构建、数据、Python、两套候选回归、JavaScript、几何、10 页三档视口和学术三视图门禁。真实手机未测、公网未配置、网络/额度不足或任何门禁未做时，状态只能是 `partial`；把仍真实存在的事项写回小型 schema v2 `pending`，不要把整份历史报告塞入状态文件。只有全部门禁和真实设备验收确实通过才可写 `complete`。
+第八阶段·最终门禁与发布：无论是否新增模型，都运行 `build_index.py`、`validate_data.py`、Python 编译、两套回归测试、12 个站点 JavaScript `node --check`、几何脚本语法与 24 张架构图几何检查；检查 HTML 本地引用、零 CDN/框架、已移除功能残留及便携文件完整性。任何门禁没做或失败都只能写 partial。门禁通过后由现有发布脚本把 runtime-safe 子集发布到 Cloudflare Pages；不得发布 `library/` PDF、候选队列、维护日志、账号、密钥或会话。核对公网首页、正式 JSON、Radar 解析和学术三视图 HTTP 状态。R2 未启用或全文许可不明确时不得声称云端全文已完成。
+
+最终把小型 schema v2 状态写回 `.codex/atlas-maintenance-state.json`：只保留当前基线、自动化/部署状态、最近候选与全文摘要、可复核证据和仍真实存在的 pending，不塞入整份历史。中文结果必须列出开始/结束时间、实际来源、各来源数量与失败、接受/暂缓/拒绝候选及理由、六类事实摘要/Atlas 理解/待核验、模型/论文/全文/解析/术语/谱系/页面改动、三档页面与真机结果、全部门禁原始摘要、部署 URL、未解决阻塞和下一轮第一优先级。没有证据不得只写“已优化”或“全部正常”；只有八阶段和真实设备验收全部完成才能标 complete。
