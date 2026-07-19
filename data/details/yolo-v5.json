@@ -187,9 +187,41 @@
    "title": "结果与影响",
    "body": "YOLOv5 各档模型在速度-精度曲线上与同期方法竞争,但真正的统治力在生态:GitHub 星标数万、被无数工业项目直接采用,成为「目标检测」在工程界的默认词。它证明了框架体验本身就是核心竞争力,也塑造了 Ultralytics 后续 YOLOv8/YOLO11 的产品化路线。"
   },
-  {
+ {
    "title": "局限与后续",
    "body": "发布初期因「未发论文却叫 v5」引发争议;anchor-based 设计与手工分配后来落后于 YOLOX 等新范式。YOLOv8 转向 anchor-free 解耦头并统一多任务接口,完成对 v5 的换代。"
+  }
+ ],
+ "evidence_claims": [
+  {
+   "type": "paper_report",
+   "claim": "YOLOv5 v7.0 官方模型定义的骨干包含 C3 与 SPPF，head 通过上采样、拼接和 C3 融合特征，并在 P3/8、P4/16、P5/32 三个尺度连接基于 anchors 的 Detect 头。",
+   "scope": "YOLOv5 没有对应首发同行评议论文；该条以官方 v7.0 固定版本代码为一手事实，不代表其他 tag 的模块名与配置完全相同。",
+   "source_label": "YOLOv5 v7.0 官方模型定义",
+   "source_url": "https://github.com/ultralytics/yolov5/blob/v7.0/models/yolov5s.yaml",
+   "locator": "§ backbone/head，models/yolov5s.yaml lines 4–48",
+   "conditions": "官方 v7.0 tag 的 yolov5s.yaml；80 类默认配置与三尺度 anchor head",
+   "checked_at": "2026-07-19"
+  },
+  {
+   "type": "paper_report",
+   "claim": "YOLOv5 v7.0 官方导出脚本把同一权重的导出目标显式列为 TorchScript、ONNX、OpenVINO、TensorRT、CoreML、TensorFlow 系列及 PaddlePaddle 等格式。",
+   "scope": "“列为支持目标”不等于每个模型、算子、平台组合都已获得同等精度与性能验证；依赖与参数限制以脚本为准。",
+   "source_label": "YOLOv5 v7.0 官方导出脚本",
+   "source_url": "https://github.com/ultralytics/yolov5/blob/v7.0/export.py",
+   "locator": "§ export_formats() 与 run()，export.py lines 80–95、490–520",
+   "conditions": "官方 v7.0 tag；按 export.py 声明的 include 目标和各导出函数执行",
+   "checked_at": "2026-07-19"
+  },
+  {
+   "type": "atlas_interpretation",
+   "claim": "Atlas 对 YOLOv5 采用“软件发布版本”证据边界：架构或部署能力必须绑定 tag/commit，不用一个无版本的 YOLOv5 名称代表整个持续演化仓库。",
+   "scope": "这是因缺少单一首发论文且仓库跨版本演进而采用的编辑规则，不评价其论文地位或工程影响大小。",
+   "source_label": "YOLOv5 官方 v7.0 发布页",
+   "source_url": "https://github.com/ultralytics/yolov5/releases/tag/v7.0",
+   "locator": "§ What's New、§ Documentation、§ Release Assets",
+   "conditions": "所有后续断言需记录具体 tag/commit、任务类型与运行协议",
+   "checked_at": "2026-07-19"
   }
  ]
 }

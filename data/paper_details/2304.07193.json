@@ -13,7 +13,7 @@
   "method": {
     "key_contributions": ["把数据整理、蒸馏式自监督和规模化训练组合成通用视觉骨干。", "同时提供不同尺寸的 ViT 模型。", "强调无需下游微调的冻结特征评测。"],
     "limitations": ["数据整理流程和大规模算力提高完整复现门槛。", "数据来源偏差仍会进入表征。", "冻结特征强并不保证在安全关键场景中稳健。"],
-    "evidence": [{"dimension":"验证广度","rating":"证据充分","note":"覆盖分类、分割、深度等多类任务。"},{"dimension":"可复现性","rating":"证据部分","note":"权重和代码公开，但完整训练成本很高。"}]
+    "evidence": [{"dimension":"主张与证据","rating":"证据充分","note":"论文以冻结特征的多任务对照与训练消融支持通用视觉表征主张；评级仅针对论文的评测协议。"},{"dimension":"验证广度","rating":"证据充分","note":"论文覆盖分类、检索、分割、深度等多类任务；这些基准不能穷尽开放世界分布偏移。"},{"dimension":"真实场景","rating":"证据部分","note":"多个评测集包含真实图像与下游任务，但证据主要来自离线基准，未直接验证长期在线或安全关键部署。"},{"dimension":"可复现性","rating":"证据部分","note":"权重、评测代码与主要实现公开，但数据整理全链路与大规模训练成本限制完整复现。"},{"dimension":"版本增量","rating":"证据充分","note":"相对 DINO 等先前自监督配方，论文明确增加数据整理、多目标训练和大模型蒸馏，并用消融支持其作用；不代表每个组件都是首创。"}]
   },
   "flow": {"title":"DINOv2 的教师—学生自监督","nodes":[{"id":"pool","label":"大规模图像池","x":30,"y":100},{"id":"curate","label":"检索与去重筛选","x":220,"y":100},{"id":"views","label":"多视图裁剪","x":410,"y":100},{"id":"student","label":"学生 ViT","x":600,"y":55,"accent":true},{"id":"teacher","label":"EMA 教师 ViT","x":600,"y":190},{"id":"feature","label":"通用视觉特征","x":820,"y":100}],"edges":[{"from":"pool","to":"curate","label":"原始数据"},{"from":"curate","to":"views","label":"整理数据"},{"from":"views","to":"student","label":"局部/全局视图"},{"from":"views","to":"teacher","label":"全局视图"},{"from":"student","to":"teacher","label":"EMA 更新"},{"from":"student","to":"feature","label":"冻结表征"}]}
 }

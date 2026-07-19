@@ -13,7 +13,7 @@
   "method": {
     "key_contributions": ["提出 promptable segmentation 任务与模型接口。", "构建 SA-1B 数据引擎和大规模掩码数据。", "图像嵌入可缓存，使交互式提示响应更高效。"],
     "limitations": ["细结构、低对比目标和语义歧义仍可能失败。", "大规模数据不能消除地区、对象和场景覆盖偏差。", "预测掩码不等于理解对象的功能或可操作性。"],
-    "evidence": [{"dimension":"验证广度","rating":"证据充分","note":"论文报告多数据集零样本迁移。"},{"dimension":"可复现性","rating":"证据充分","note":"模型、演示与代码公开。"}]
+    "evidence": [{"dimension":"主张与证据","rating":"证据充分","note":"论文以多数据集零样本分割、数据引擎与消融支持可提示分割主张；证据不保证任意对象和提示都能稳定分割。"},{"dimension":"验证广度","rating":"证据充分","note":"论文报告多种提示、分割任务与数据集的零样本迁移；对地理、细类别和专业场景的长尾覆盖仍有边界。"},{"dimension":"真实场景","rating":"证据部分","note":"SA-1B 与迁移基准包含大量真实图像，但评估主要是离线掩码质量，不能代表交互延迟、故障恢复或安全关键部署。"},{"dimension":"可复现性","rating":"证据充分","note":"官方预训练模型、代码、演示与 SA-1B 资源公开；完整预训练仍需大量算力，“可复现”不表示低成本。"},{"dimension":"版本增量","rating":"证据充分","note":"相对固定类别或单一任务分割器，论文明确增加可提示接口、歧义多掩码输出与 SA-1B 数据引擎；不涵盖后续 SAM 版本。"}]
   },
   "flow": {"title":"SAM 的可提示分割路径","nodes":[{"id":"image","label":"输入图像","x":30,"y":90},{"id":"embed","label":"图像编码器","x":220,"y":90},{"id":"prompt","label":"点 / 框 / 掩码","x":220,"y":220},{"id":"penc","label":"提示编码器","x":410,"y":220},{"id":"decoder","label":"掩码解码器","x":600,"y":110,"accent":true},{"id":"masks","label":"候选掩码 + 质量","x":810,"y":110}],"edges":[{"from":"image","to":"embed","label":"一次编码"},{"from":"prompt","to":"penc","label":"提示"},{"from":"embed","to":"decoder","label":"图像嵌入"},{"from":"penc","to":"decoder","label":"提示嵌入"},{"from":"decoder","to":"masks","label":"多候选"}]}
 }

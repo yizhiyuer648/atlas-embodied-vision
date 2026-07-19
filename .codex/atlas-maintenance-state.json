@@ -1,14 +1,19 @@
 {
   "schema_version": 2,
-  "updated_at": "2026-07-19T19:53:22Z",
+  "updated_at": "2026-07-19T22:01:39Z",
   "status": "partial",
   "baseline": {
-    "formal_pages": 10,
+    "formal_pages": 11,
     "academic_views": [
       "journals",
       "conferences",
       "compare"
     ],
+    "models": 162,
+    "a_tier_models": 24,
+    "papers": 462,
+    "structured_paper_analyses": 6,
+    "glossary_terms": 187,
     "journals": 8,
     "conferences": 10,
     "reviewed_publication_events": 10,
@@ -21,10 +26,25 @@
       "E5"
     ]
   },
+  "model_evidence": {
+    "models_with_ledger": 25,
+    "a_tier_coverage": "24/24",
+    "claims": 76,
+    "claims_with_precise_locator": 61
+  },
+  "fulltext_library": {
+    "manifest_records": 467,
+    "public_pdfs_local": 465,
+    "metadata_only_paywalled": 2,
+    "extracted_texts": 465,
+    "bytes": 4429384003,
+    "completed_at": "2026-07-19T21:59:29Z",
+    "git_ignored": true
+  },
   "academic_candidate_queue": {
     "path": "data/academic_candidates.json",
     "generated_at": "2026-07-19T19:53:21.838470+00:00",
-    "state": "partial",
+    "state": "needs_review",
     "raw_record_count": 172,
     "source_counts": {
       "Crossref": 14,
@@ -39,36 +59,51 @@
   "pending": [
     {
       "id": "real_phone",
-      "status": "pending",
-      "reason": "尚未用真实手机完成 11 页与学术追踪视图验收；模拟视口和本机请求不能替代真机。",
-      "next": "启动 0.0.0.0:8000，确认当次 IPv4；必要时只放行 LocalSubnet 到 TCP 8000，再用真机复测。"
+      "status": "pending_non_blocking",
+      "reason": "尚未用真实手机完成 11 页与学术追踪视图验收；三档 Chromium 与本机请求不能冒充真机。",
+      "next": "在同一 Wi-Fi 用实体手机打开生产站或 0.0.0.0:8000，并实际操作菜单、筛选、Reader 与谱系。"
     },
     {
-      "id": "lineage_physical_drag",
-      "status": "pending",
-      "reason": "当前周期尚未在可靠的真实指针环境重新采集谱系空白拖拽证据。",
-      "next": "在可确认浏览器状态的桌面环境完成拖拽、缩放和分类切换复测。"
-    },
-    {
-      "id": "r2_fulltext_storage",
-      "status": "pending",
-      "reason": "Cloudflare 账号尚未首次启用 R2，创建私有全文桶返回 API 10042。",
-      "next": "在 Cloudflare Dashboard 启用 R2 并确认存储条款后，创建私有桶并上传许可允许的全文。"
+      "id": "r2_optional_archive",
+      "status": "pending_non_blocking",
+      "reason": "Cloudflare R2 尚未启用；当前云端采用公开源白名单流式阅读，不把 4.4 GB 本地论文库上传或误称为云存储。",
+      "next": "只有确认许可、成本与账号条款后，才评估私有 R2 归档；这不阻塞当前 Pages Reader。"
     }
   ],
   "automation": {
     "scheduler": "systemd user timer",
     "unit": "atlas-daily-maintenance.timer",
     "schedule": "04:00 Asia/Shanghai daily",
-    "next_run_verified": "2026-07-19 13:00:00 PDT",
-    "persistent": true
+    "next_run_verified": "2026-07-20 13:00:00 PDT",
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "xhigh",
+    "fail_closed": true,
+    "shared_fulltext_lock": true,
+    "persistent": true,
+    "linger": true
+  },
+  "acceptance": {
+    "chromium_matrix": "42/42",
+    "viewports": [
+      "1280x900",
+      "390x844",
+      "320x720"
+    ],
+    "hard_failures": 0,
+    "mobile_touch_target_issue_pages": 0,
+    "a_tier_architecture_geometry": "24/24"
+  },
+  "release": {
+    "github_sync": "pending_final_commit",
+    "cloudflare_pages": "pending_final_deploy",
+    "public_pdf_proxy_probe": "pending_final_deploy",
+    "outlook_report": "pending_final_chain"
   },
   "evidence": {
     "scan_window": "2026-06-19 through 2026-07-19",
     "model_candidate_count": 420,
     "model_metadata_conflicts": 107,
     "academic_candidate_count": 53,
-    "skipped_authoritative_events": 1,
     "source_failures": [
       "Semantic Scholar 429 for vla/detection/multimodal/representation",
       "DBLP partial due to 429 and SSL failures",
@@ -76,16 +111,17 @@
       "PMLR CoRL volume not discovered in the requested window"
     ],
     "gates": [
-      "validate_data passed",
-      "Python compile and both regression suites passed",
-      "12 site JavaScript files and geometry script passed syntax checks",
+      "validate_data passed for 162 models, 462 papers and 11 pages",
+      "Python compile and both update regression suites passed",
+      "all site JavaScript and the hardened PDF Function passed syntax and policy tests",
       "24 A-tier architecture diagrams passed geometry checks",
-      "10 formal pages and all three academic views returned HTTP 200"
+      "42 Chromium route/viewport renders passed with zero hard or touch-target failures",
+      "467 full-text records completed: 465 public PDFs and 2 metadata-only paywalls"
     ]
   },
   "rules": [
     "只保留当前可执行 pending，不在本文件复制整份历史报告。",
-    "任何候选都必须人工审核；候选脚本不得直接合并 models/details/index/academic_tracker。",
-    "只要 pending 非空，status 就保持 partial。"
+    "任何候选都必须人工审核；候选脚本不得直接合并 details/index/academic_tracker。",
+    "pending_non_blocking 必须如实保留，但不单独阻止通过自动化门禁与发布。"
   ]
 }

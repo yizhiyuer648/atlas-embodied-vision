@@ -13,7 +13,7 @@
   "method": {
     "key_contributions": ["以自然语言监督训练可迁移视觉表征。", "把提示词构造与零样本视觉分类连接起来。", "系统比较多种 ResNet 与 ViT 规模。"],
     "limitations": ["训练数据来源带来偏见、噪声和治理问题。", "细粒度、计数、抽象任务和分布外场景并非都可靠。", "提示词选择会显著影响零样本结果。"],
-    "evidence": [{"dimension":"验证广度","rating":"证据充分","note":"论文覆盖多种下游数据集。"},{"dimension":"真实场景","rating":"证据部分","note":"广泛基准不等于开放世界安全验证。"}]
+    "evidence": [{"dimension":"主张与证据","rating":"证据充分","note":"论文通过零样本迁移、线性探测与系统对照支持自然语言监督的可迁移性；结论限于报告数据集和提示词设定。"},{"dimension":"验证广度","rating":"证据充分","note":"论文覆盖多种分类、OCR、动作与地理等下游数据集；广泛基准仍不等于所有领域和人群均被覆盖。"},{"dimension":"真实场景","rating":"证据部分","note":"数据来自真实世界图文与多类下游任务，但主要是离线基准，不等于开放世界或安全关键系统验证。"},{"dimension":"可复现性","rating":"证据部分","note":"官方代码与多个预训练模型公开，但原始大规模训练数据未公开，完整训练流程无法按同等条件独立复制。"},{"dimension":"版本增量","rating":"证据充分","note":"论文明确展示规模化图文对比预训练与提示式零样本分类相对固定类别监督的方法增量；评级不声称这些组件均为首创。"}]
   },
   "flow": {"title":"CLIP 的图文对齐与零样本分类","nodes":[{"id":"image","label":"图像批次","x":30,"y":70},{"id":"vision","label":"图像编码器","x":220,"y":70},{"id":"text","label":"文本批次","x":30,"y":210},{"id":"textenc","label":"文本编码器","x":220,"y":210},{"id":"matrix","label":"图文相似度矩阵","x":440,"y":135,"accent":true},{"id":"prompt","label":"类别提示词","x":660,"y":70},{"id":"zero","label":"零样本预测","x":850,"y":135}],"edges":[{"from":"image","to":"vision","label":"编码"},{"from":"text","to":"textenc","label":"编码"},{"from":"vision","to":"matrix","label":"图像向量"},{"from":"textenc","to":"matrix","label":"文本向量"},{"from":"matrix","to":"zero","label":"对齐空间"},{"from":"prompt","to":"zero","label":"类别文本"}]}
 }

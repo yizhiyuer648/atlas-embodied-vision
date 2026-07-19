@@ -1,4 +1,4 @@
-import { loadModels, loadJSON, escapeHTML } from '../core.js?v=20260719.11';
+import { loadModels, loadJSON, escapeHTML } from '../core.js?v=20260719.12';
 
 const ALL = 'ALL';
 const KIND_META = {

@@ -1,0 +1,11 @@
+[Unit]
+Description=Run Atlas maintenance daily at 04:00 Asia/Shanghai
+
+[Timer]
+OnCalendar=*-*-* 04:00:00 Asia/Shanghai
+Persistent=true
+AccuracySec=1min
+Unit=atlas-daily-maintenance.service
+
+[Install]
+WantedBy=timers.target

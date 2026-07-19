@@ -17,6 +17,38 @@
  ],
  "tier": "A",
  "lineage_parent": "unknown",
+ "evidence_claims": [
+  {
+   "type": "paper_report",
+   "claim": "Wan 2.1 使用因果 3D Wan-VAE 压缩视频，以视频 DiT 建模时空 token，通过 umT5 注入文本条件，并使用流匹配目标训练去噪过程。",
+   "scope": "仅描述 Wan 论文的核心生成架构；不由时空建模架构直接推导物理正确性。",
+   "source_label": "Wan 2.1 论文",
+   "source_url": "https://arxiv.org/abs/2503.20314",
+   "locator": "§4.1–§4.2、Figure 5、Figure 9 与 Figure 10",
+   "conditions": "Wan-VAE 对时空维度进行压缩；DiT 使用文本交叉注意力；流匹配在图像与视频潜变量上联合训练",
+   "checked_at": "2026-07-19"
+  },
+  {
+   "type": "paper_report",
+   "claim": "论文通过 Wan-Bench、人工评测与 VBench 比较 Wan 的 1.3B 和 14B 版本与多个开源及商业视频生成模型。",
+   "scope": "只说明论文使用的评测类型与对比范围；不将作者报告的排名当作独立、持久或全面的质量证明。",
+   "source_label": "Wan 2.1 论文",
+   "source_url": "https://arxiv.org/abs/2503.20314",
+   "locator": "§4.6–§4.7、Table 2–4 与 Figure 13–14",
+   "conditions": "Wan-Bench 使用作者定义提示集和自动指标；人工评测及 VBench 按论文协议执行",
+   "checked_at": "2026-07-19"
+  },
+  {
+   "type": "atlas_interpretation",
+   "claim": "Wan 2.1 公开代码和多个模型版本，适合作为可检查的视频生成基线；但视频生成基准不能单独证明物理推理、具身智能或部署安全。",
+   "scope": "这是 Atlas 对开放性与学术证据边界的编辑判断，不是新增性能实验。",
+   "source_label": "Wan 2.1 论文",
+   "source_url": "https://arxiv.org/abs/2503.20314",
+   "locator": "Abstract、§4.7 / Table 2–4 与 §4.7.2",
+   "conditions": "把源码与权重可获取性、生成品质和真实世界可靠性分开评价",
+   "checked_at": "2026-07-19"
+  }
+ ],
  "architecture": {
   "description_zh": "Wan 2.1 先以 3D 因果 VAE 将视频压缩到时空潜变量，T5 编码文本；Wan DiT 在扩散时间、文本交叉注意力和 3D RoPE 条件下预测 flow，最后由 VAE 解码成视频。",
   "modules": [

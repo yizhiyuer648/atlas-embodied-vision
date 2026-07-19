@@ -191,6 +191,38 @@
   {
    "title": "局限与后续",
    "body": "6B 视觉塔推理成本高,小型部署需蒸馏;初代对高分辨率文档的支持有限。后续版本以动态分辨率、更强语言底座和更精的对齐数据持续迭代,与 Qwen-VL 系列构成开源 MLLM 双强。"
+ }
+ ],
+ "evidence_claims": [
+  {
+   "type": "paper_report",
+   "claim": "初代 InternVL 由约 6B 参数的 InternViT-6B 视觉编码器和约 8B 参数的 QLLaMA 语言中间件组成；QLLaMA 既可用于图文对比，也可作为连接视觉编码器与现成 LLM 解码器的桥梁。",
+   "scope": "参数规模与组件关系对应 InternVL 1.0 论文，不应套用于后续 InternVL 1.5/2/2.5 的 ViT-MLP-LLM 架构。",
+   "source_label": "InternVL 论文",
+   "source_url": "https://arxiv.org/abs/2312.14238",
+   "locator": "§3.1 Overall Architecture、§3.2 Model Design、Table 1",
+   "conditions": "InternVL 1.0 的 InternViT-6B 与 QLLaMA 组合",
+   "checked_at": "2026-07-19"
+  },
+  {
+   "type": "paper_report",
+   "claim": "InternVL 的渐进对齐训练依次包含视觉语言对比预训练、视觉语言生成预训练和监督微调三个阶段。",
+   "scope": "陈述论文训练流程；各阶段支持的任务、冻结模块和数据来源以原文配置为边界。",
+   "source_label": "InternVL 论文",
+   "source_url": "https://arxiv.org/abs/2312.14238",
+   "locator": "§3.1、Figure 3",
+   "conditions": "按 Figure 3 的 stage 1、stage 2、stage 3 顺序及其冻结/可训练模块",
+   "checked_at": "2026-07-19"
+  },
+  {
+   "type": "atlas_interpretation",
+   "claim": "Atlas 将初代 InternVL 的核心增量概括为“放大视觉塔并渐进对齐”，而不是把后续 InternVL2 的动态切图、多图和视频能力追溯到这一版本。",
+   "scope": "版本边界判断依据初代论文的组件与任务定义；后续系列能力需分别取证。",
+   "source_label": "InternVL 论文",
+   "source_url": "https://arxiv.org/abs/2312.14238",
+   "locator": "Abstract、§3、Figure 3–4",
+   "conditions": "严格区分 InternVL 1.0 与后续版本，不跨版本合并能力声明",
+   "checked_at": "2026-07-19"
   }
  ],
  "citations": {

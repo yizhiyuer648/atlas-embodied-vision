@@ -17,6 +17,38 @@
  ],
  "tier": "A",
  "lineage_parent": "unknown",
+ "evidence_claims": [
+  {
+   "type": "paper_report",
+   "claim": "V-JEPA 只用特征预测目标训练：上下文编码器读取未遮挡视频 token，预测器根据掩码位置预测目标编码器的特征，不以像素重建为预训练目标。",
+   "scope": "仅描述 V-JEPA 论文的自监督表征学习机制；特征预测不等于可解析的视频生成或物理状态估计。",
+   "source_label": "V-JEPA 论文",
+   "source_url": "https://arxiv.org/abs/2404.08471",
+   "locator": "Abstract、§3.1–§3.3 与 Figure 3",
+   "conditions": "短程和长程多块掩码；目标编码器通过指数移动平均更新；预测目标为潜在表征",
+   "checked_at": "2026-07-19"
+  },
+  {
+   "type": "paper_report",
+   "claim": "论文在来自公开数据集的 200 万段视频上预训练 V-JEPA，并以冻结骨干的方式在多个视频和图像下游任务上评估运动与外观表征。",
+   "scope": "数据规模和下游结果均来自论文协议；冻结表征成绩不能直接代表在线视觉、机器人控制或安全关键场景表现。",
+   "source_label": "V-JEPA 论文",
+   "source_url": "https://arxiv.org/abs/2404.08471",
+   "locator": "Abstract、§3.4、§5.1–§5.3 与 Table 5–7",
+   "conditions": "下游分类与检测使用论文定义的 attentive probe 或微调协议",
+   "checked_at": "2026-07-19"
+  },
+  {
+   "type": "atlas_interpretation",
+   "claim": "V-JEPA 的论文证据支持将其定位为通用视频表征骨干，但不支持把它直接称为能规划、生成动作或驱动机器人的世界模型。",
+   "scope": "这是 Atlas 依据训练目标和下游评测类型作出的编辑边界，不排除后续系统将其作为视觉组件。",
+   "source_label": "V-JEPA 论文",
+   "source_url": "https://arxiv.org/abs/2404.08471",
+   "locator": "§3、§5.1–§5.3 与 Table 5–7",
+   "conditions": "论文评测对象是冻结或微调的视觉表征，未直接训练动作策略",
+   "checked_at": "2026-07-19"
+  }
+ ],
  "architecture": {
   "description_zh": "V-JEPA 对视频做多块时空遮挡；上下文编码器只看可见 tubelet，预测器在掩码位置生成特征，和 EMA 目标编码器在完整目标块上的表示对齐，全程不要求像素重建。",
   "modules": [

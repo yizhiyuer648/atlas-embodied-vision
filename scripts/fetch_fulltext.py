@@ -205,10 +205,14 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--limit", type=int, default=0, help="本轮最多处理多少篇；0 表示全部")
     parser.add_argument("--category", default="", help="只处理一个 Atlas 类别")
+    parser.add_argument("--paper-id", action="append", default=[], help="只处理指定 paper_id；可重复传入")
     parser.add_argument("--delay", type=float, default=1.0, help="论文之间的礼貌等待秒数")
     args = parser.parse_args()
 
     records = [record for record in iter_records() if not args.category or record["category"] == args.category]
+    if args.paper_id:
+        wanted = set(args.paper_id)
+        records = [record for record in records if record["paper_id"] in wanted]
     if args.limit > 0:
         records = records[: args.limit]
     manifest = load_manifest()

@@ -17,6 +17,38 @@
  ],
  "tier": "A",
  "lineage_parent": "dreamer-v2",
+ "evidence_claims": [
+  {
+   "type": "paper_report",
+   "claim": "DreamerV3 用 RSSM 世界模型预测潜在状态、奖励和继续信号，并让 actor 与 critic 从世界模型想象的轨迹中学习。",
+   "scope": "这是论文中的模型式强化学习管线；世界模型的预测目标不等于显式或完整的物理理解。",
+   "source_label": "DreamerV3 论文",
+   "source_url": "https://arxiv.org/abs/2301.04104",
+   "locator": "Abstract、Figure 3–4 与 Learning algorithm 的 World model learning / Critic learning / Actor learning 小节",
+   "conditions": "从 replayed experience 并行学习世界模型、critic 和 actor；在抽象表示中进行想象 rollout",
+   "checked_at": "2026-07-19"
+  },
+  {
+   "type": "paper_report",
+   "claim": "论文用一组固定超参数在 8 个领域、150 余个任务上评估 DreamerV3，并报告其从零开始、不使用人类数据或课程收集 Minecraft 钻石。",
+   "scope": "任务覆盖与 Minecraft 结果均来自作者实验；不能外推为对现实物理世界或任意新领域的同等表现。",
+   "source_label": "DreamerV3 论文",
+   "source_url": "https://arxiv.org/abs/2301.04104",
+   "locator": "Abstract、Figure 1–2、Results / Benchmarks 与 Results / Minecraft 小节",
+   "conditions": "论文指定的数据预算、基线与环境；Minecraft 使用 MineRL 设定和稀疏奖励",
+   "checked_at": "2026-07-19"
+  },
+  {
+   "type": "atlas_interpretation",
+   "claim": "DreamerV3 是跨多类仿真环境研究世界模型强化学习的重要基线，但其论文证据不是真实机器人长期部署验证。",
+   "scope": "这是 Atlas 根据评测领域与世界模型方法作出的编辑定位，不否定论文在其基准上的结果。",
+   "source_label": "DreamerV3 论文",
+   "source_url": "https://arxiv.org/abs/2301.04104",
+   "locator": "Figure 2、Results / Benchmarks 与 Figure 6",
+   "conditions": "评测主体为游戏、程序生成环境与仿真控制；不将仿真成绩替代现实部署证据",
+   "checked_at": "2026-07-19"
+  }
+ ],
  "architecture": {
   "description_zh": "DreamerV3 将真实观测编码进 RSSM，联合预测重建、奖励与继续概率；actor 和 critic 不在像素环境中试错，而是在 RSSM 展开的潜在想象轨迹上学习。",
   "modules": [

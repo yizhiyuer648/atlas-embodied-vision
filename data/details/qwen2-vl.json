@@ -199,6 +199,38 @@
   {
    "title": "局限与后续",
    "body": "长视频 token 量仍巨大,秒级事件定位有限;72B 部署门槛高。Qwen2.5-VL 引入窗口注意力与绝对时间编码,把视频理解推到小时级,并强化结构化输出与电脑操作能力。"
+ }
+ ],
+ "evidence_claims": [
+  {
+   "type": "paper_report",
+   "claim": "Qwen2-VL 的 Naive Dynamic Resolution 可把不同分辨率图像转换为可变数量的视觉 token；视觉 ViT 移除绝对位置嵌入并使用 2D-RoPE，随后以 MLP 合并相邻 2×2 token。",
+   "scope": "描述 Qwen2-VL 论文架构；实际 token 数还受输入分辨率、patch size 与推理时像素上下限约束。",
+   "source_label": "Qwen2-VL 论文",
+   "source_url": "https://arxiv.org/abs/2409.12191",
+   "locator": "§2.1 Model Architecture，Naive Dynamic Resolution、Figure 2",
+   "conditions": "Qwen2-VL 系列论文配置，ViT patch_size=14 并在进入 LLM 前做 2×2 token 压缩",
+   "checked_at": "2026-07-19"
+  },
+  {
+   "type": "paper_report",
+   "claim": "Qwen2-VL 的 M-RoPE 将旋转位置编码拆为时间、高度和宽度三个分量：图像使用高宽位置，视频还让时间位置随帧推进。",
+   "scope": "这是多模态位置编码机制，不等同于对任意长度视频具有无损时序理解能力。",
+   "source_label": "Qwen2-VL 论文",
+   "source_url": "https://arxiv.org/abs/2409.12191",
+   "locator": "§2.1 Multimodal Rotary Position Embedding、Figure 3",
+   "conditions": "文本、图像和视频按论文规定分配 temporal/height/width position IDs",
+   "checked_at": "2026-07-19"
+  },
+  {
+   "type": "atlas_interpretation",
+   "claim": "Atlas 将 Qwen2-VL 归为原生动态分辨率的图像—视频统一模型，但长视频能力必须连同采样率、每视频 token 上限和具体评测协议一起陈述。",
+   "scope": "编辑判断来自论文统一图像/视频训练设置；不从“支持长视频”推导逐帧细节均被保留。",
+   "source_label": "Qwen2-VL 论文",
+   "source_url": "https://arxiv.org/abs/2409.12191",
+   "locator": "§2.1 Unified Image and Video Understanding、§2.2 Training",
+   "conditions": "论文训练以每秒 2 帧采样，并限制单视频总视觉 token 数；具体部署可另设参数",
+   "checked_at": "2026-07-19"
   }
  ],
  "citations": {

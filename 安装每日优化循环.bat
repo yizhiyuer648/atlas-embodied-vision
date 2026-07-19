@@ -19,8 +19,8 @@ if not exist "%~dp0.codex\atlas-maintenance-state.json" (
   exit /b 2
 )
 
-echo 即将为当前解压目录安装 Atlas 每日 09:00 优化任务。
-echo 任务会维护 10 个正式页面、学术追踪三视图和待审核候选；不会自动把候选合并进权威数据。
+echo 即将为当前解压目录安装 Atlas 每日北京时间 04:00 完整优化任务。
+echo 任务会维护 11 个正式页面、站内公开全文阅读、学术追踪三视图和待审核候选；不会自动把候选合并进权威数据。
 echo.
 if defined CODEX_HOME (
   powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0scripts\install_daily_automation.ps1" -ProjectRoot "%~dp0." -CodexHome "%CODEX_HOME%"
@@ -35,6 +35,6 @@ if errorlevel 1 (
 )
 
 echo.
-echo 配置已写入。请完全退出并重启 Codex Desktop，再在“自动化”页面确认每天 09:00 的任务已启用。
+echo 配置已写入。请完全退出并重启 Codex Desktop，再在“自动化”页面核对安装器显示的本地时间确实对应北京时间 04:00。
 echo 未在目标电脑完成上述人工确认前，不得把自动化标为已验证。
 pause

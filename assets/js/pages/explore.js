@@ -1,4 +1,4 @@
-import { CATEGORIES, loadModels, modelCard, initCardInteractions, initReveals, getFavorites, setQuery, isOpenSource } from '../core.js?v=20260719.11';
+import { CATEGORIES, loadModels, modelCard, initCardInteractions, initReveals, getFavorites, setQuery, isOpenSource } from '../core.js?v=20260719.12';
 
 const COUNTRY_LABELS = { CN: '中国', US: '美国', EU: '欧洲', UK: '英国', KR: '韩国', JP: '日本', CA: '加拿大', AU: '澳大利亚', unknown: '未标注' };
 

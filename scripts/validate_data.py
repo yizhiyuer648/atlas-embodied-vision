@@ -15,6 +15,7 @@ from __future__ import annotations
 import ast
 import hashlib
 import json
+import math
 import re
 import sys
 from collections import Counter
@@ -90,6 +91,20 @@ ACADEMIC_CANONICAL_KEY_ORDER = [
 ACADEMIC_CANDIDATE_STATES = {
     "ready", "partial", "failed", "offline_fixture", "failed_preserved_previous",
 }
+EVIDENCE_CLAIM_TYPES = {
+    "paper_report", "atlas_interpretation", "independent_replication", "pending",
+}
+EVIDENCE_CLAIM_FIELDS = {
+    "type", "claim", "scope", "source_label", "source_url", "locator",
+    "conditions", "checked_at",
+}
+PAPER_EVIDENCE_DIMENSIONS = {
+    "主张与证据", "验证广度", "真实场景", "可复现性", "版本增量",
+}
+PAPER_EVIDENCE_RATINGS = {"证据充分", "证据部分", "暂不可判"}
+PAPER_PUBLICATION_STATUSES = ACADEMIC_PUBLICATION_STATUSES | {"formally_published", "withdrawn"}
+PAPER_RIGHTS_ACCESS = {"publicly_available", "restricted", "metadata_only", "unknown"}
+PAPER_READER_MODES = {"source_stream", "metadata_only", "local_private", "hosted_copy"}
 REQUIRED_MODEL_IDS = {
     "vla": {
         "rt-1", "rt-2", "rt-x", "openvla", "pi0", "pi0-5", "act",
@@ -170,6 +185,454 @@ def iter_json_items(value, path="$"):
     elif isinstance(value, list):
         for index, child in enumerate(value):
             yield from iter_json_items(child, f"{path}[{index}]")
+
+
+def parse_iso_day(value, label, errors):
+    """Return an ISO date, recording one compact validation error on failure."""
+    try:
+        if not isinstance(value, str):
+            raise ValueError
+        return date.fromisoformat(value)
+    except ValueError:
+        errors.append(f"{label}: 必须是有效 YYYY-MM-DD 日期")
+        return None
+
+
+def validate_model_evidence(models, errors, warnings):
+    """Validate claim-level evidence without pretending legacy coverage is complete."""
+    models_with_claims = 0
+    a_models_with_claims = 0
+    claim_count = 0
+    pinpoint_count = 0
+    type_counts = Counter()
+    missing_a_models = []
+
+    for model in models:
+        model_id = model.get("id", "?")
+        where = f"details/{model_id}.evidence_claims"
+        if "evidence_claims" not in model:
+            if model.get("tier") == "A":
+                missing_a_models.append(model_id)
+            continue
+        claims = model.get("evidence_claims")
+        if not isinstance(claims, list):
+            errors.append(f"{where}: 必须是数组")
+            if model.get("tier") == "A":
+                missing_a_models.append(model_id)
+            continue
+        if not claims:
+            errors.append(f"{where}: 已存在时不得为空数组；未完成应删除字段并显示 pending")
+            if model.get("tier") == "A":
+                missing_a_models.append(model_id)
+            continue
+
+        models_with_claims += 1
+        if model.get("tier") == "A":
+            a_models_with_claims += 1
+        seen_claims = set()
+        for index, claim in enumerate(claims):
+            claim_where = f"{where}[{index}]"
+            if not isinstance(claim, dict):
+                errors.append(f"{claim_where}: 必须是对象")
+                continue
+            missing = EVIDENCE_CLAIM_FIELDS - set(claim)
+            if missing:
+                errors.append(f"{claim_where}: 缺字段 {sorted(missing)}")
+            for field in EVIDENCE_CLAIM_FIELDS - {"type", "checked_at"}:
+                if not isinstance(claim.get(field), str) or not claim.get(field, "").strip():
+                    errors.append(f"{claim_where}.{field}: 必须是非空文本")
+            claim_type = claim.get("type")
+            if claim_type not in EVIDENCE_CLAIM_TYPES:
+                errors.append(f"{claim_where}.type: 必须是 {sorted(EVIDENCE_CLAIM_TYPES)}")
+            else:
+                type_counts[claim_type] += 1
+            claim_text = re.sub(r"\s+", " ", str(claim.get("claim", "")).strip()).casefold()
+            if claim_text in seen_claims:
+                errors.append(f"{claim_where}.claim: 同一模型不得复用相同断言")
+            seen_claims.add(claim_text)
+            source_url = claim.get("source_url")
+            validate_url(source_url, f"{claim_where}.source_url", errors)
+            if source_url == "unknown" and claim_type != "pending":
+                errors.append(f"{claim_where}.source_url: 非 pending 断言必须给出可打开的原始来源")
+            checked = parse_iso_day(claim.get("checked_at"), f"{claim_where}.checked_at", errors)
+            if checked and checked > date.today():
+                errors.append(f"{claim_where}.checked_at: 不得晚于当前日期")
+            locator = str(claim.get("locator", ""))
+            if re.search(r"(?:§\s*\d|(?:Table|Fig(?:ure)?|[pP](?:age)?\.?)\s*\d|表\s*\d|图\s*\d|第\s*\d+\s*页)", locator, re.I):
+                pinpoint_count += 1
+            claim_count += 1
+
+    if missing_a_models:
+        warnings.append(
+            f"A 级模型断言证据尚未全覆盖：{len(missing_a_models)}/"
+            f"{sum(model.get('tier') == 'A' for model in models)} 缺 evidence_claims（"
+            f"{', '.join(sorted(missing_a_models))}）"
+        )
+    return {
+        "models": models_with_claims,
+        "a_models": a_models_with_claims,
+        "claims": claim_count,
+        "pinpoint_claims": pinpoint_count,
+        "types": type_counts,
+    }
+
+
+def validate_paper_rights(rights, where, errors):
+    required = {
+        "source_access", "license_id", "license_url", "reader_mode",
+        "redistribution_assumed",
+    }
+    if not isinstance(rights, dict):
+        errors.append(f"{where}: 必须是对象")
+        return False
+    missing = required - set(rights)
+    if missing:
+        errors.append(f"{where}: 缺字段 {sorted(missing)}")
+    if rights.get("source_access") not in PAPER_RIGHTS_ACCESS:
+        errors.append(f"{where}.source_access: 必须是 {sorted(PAPER_RIGHTS_ACCESS)}")
+    if rights.get("reader_mode") not in PAPER_READER_MODES:
+        errors.append(f"{where}.reader_mode: 必须是 {sorted(PAPER_READER_MODES)}")
+    if not isinstance(rights.get("license_id"), str) or not rights.get("license_id", "").strip():
+        errors.append(f"{where}.license_id: 必须是非空文本，未确认时写 unknown")
+    validate_url(rights.get("license_url"), f"{where}.license_url", errors)
+    if not isinstance(rights.get("redistribution_assumed"), bool):
+        errors.append(f"{where}.redistribution_assumed: 必须是布尔值")
+    if rights.get("reader_mode") == "hosted_copy":
+        if rights.get("redistribution_assumed") is not True:
+            errors.append(f"{where}: hosted_copy 必须有明确可再分发决策")
+        if str(rights.get("license_id", "")).strip().casefold() == "unknown":
+            errors.append(f"{where}: 许可未确认时不得使用 hosted_copy")
+    if rights.get("reader_mode") == "source_stream" and rights.get("source_access") != "publicly_available":
+        errors.append(f"{where}: source_stream 只能用于 publicly_available 来源")
+    if "checked_at" in rights:
+        checked = parse_iso_day(rights.get("checked_at"), f"{where}.checked_at", errors)
+        if checked and checked > date.today():
+            errors.append(f"{where}.checked_at: 不得晚于当前日期")
+    return not bool(required - set(rights))
+
+
+def validate_paper_library(errors, warnings):
+    path = ROOT / "data" / "papers.json"
+    empty_stats = {
+        "count": 0, "with_intro": 0, "with_versions": 0,
+        "with_publication_status": 0, "with_rights": 0, "with_doi": 0, "with_venue": 0,
+    }
+    if not path.exists():
+        errors.append("缺少 data/papers.json")
+        return [], "论文库未生成", empty_stats
+    try:
+        library = read_json(path)
+    except (OSError, json.JSONDecodeError) as exc:
+        errors.append(f"data/papers.json: 无法解析：{exc}")
+        return [], "论文库无法解析", empty_stats
+    if not isinstance(library, dict) or not isinstance(library.get("papers"), list):
+        errors.append("data/papers.json: 顶层必须是带 papers 数组的对象")
+        return [], "论文库结构错误", empty_stats
+    papers = library["papers"]
+    if library.get("count") != len(papers):
+        errors.append(f"data/papers.json.count: {library.get('count')} 与实际 {len(papers)} 不一致")
+    if len(papers) < 100:
+        errors.append(f"论文库应至少 100 篇，当前 {len(papers)}")
+
+    ids = set()
+    stats = dict(empty_stats)
+    stats["count"] = len(papers)
+    for index, paper in enumerate(papers):
+        where = f"papers[{index}]"
+        if not isinstance(paper, dict):
+            errors.append(f"{where}: 必须是对象")
+            continue
+        paper_id = paper.get("id")
+        if not isinstance(paper_id, str) or not paper_id.strip():
+            errors.append(f"{where}.id: 必须是非空文本")
+        elif paper_id in ids:
+            errors.append(f"{where}.id: 重复 {paper_id}")
+        else:
+            ids.add(paper_id)
+        for field in ("title", "category"):
+            if not isinstance(paper.get(field), str) or not paper.get(field, "").strip():
+                errors.append(f"{where}.{field}: 必须是非空文本")
+        if paper.get("category") not in CATEGORIES:
+            errors.append(f"{where}.category: 未知类别 {paper.get('category')}")
+        if paper.get("url") is not None:
+            validate_url(paper.get("url"), f"{where}.url", errors)
+        if paper.get("intro_zh"):
+            stats["with_intro"] += 1
+        if "publication_status" in paper:
+            stats["with_publication_status"] += 1
+            if paper.get("publication_status") not in PAPER_PUBLICATION_STATUSES:
+                errors.append(
+                    f"{where}.publication_status: 必须是 "
+                    f"{sorted(PAPER_PUBLICATION_STATUSES)}"
+                )
+        if paper.get("doi"):
+            stats["with_doi"] += 1
+            if not isinstance(paper.get("doi"), str) or not re.fullmatch(r"10\.\d{4,9}/\S+", paper["doi"].strip(), re.I):
+                errors.append(f"{where}.doi: 必须是不带 https://doi.org/ 前缀的规范 DOI")
+        if paper.get("venue"):
+            stats["with_venue"] += 1
+            venue = paper.get("venue")
+            if not isinstance(venue, dict):
+                errors.append(f"{where}.venue: 必须是对象")
+            else:
+                for field in ("name", "type", "url"):
+                    if not isinstance(venue.get(field), str) or not venue.get(field, "").strip():
+                        errors.append(f"{where}.venue.{field}: 必须是非空文本")
+                if venue.get("type") not in {"journal", "conference"}:
+                    errors.append(f"{where}.venue.type: 必须是 journal/conference")
+                if not isinstance(venue.get("year"), int) or not 1900 <= venue.get("year", 0) <= date.today().year + 1:
+                    errors.append(f"{where}.venue.year: 必须是合理年份")
+                validate_url(venue.get("url"), f"{where}.venue.url", errors)
+
+        if "versions" in paper:
+            versions = paper.get("versions")
+            if not isinstance(versions, list) or not versions:
+                errors.append(f"{where}.versions: 已存在时必须是非空数组")
+            else:
+                stats["with_versions"] += 1
+                identifiers = set()
+                for version_index, version in enumerate(versions):
+                    version_where = f"{where}.versions[{version_index}]"
+                    if not isinstance(version, dict):
+                        errors.append(f"{version_where}: 必须是对象")
+                        continue
+                    for field in ("kind", "provider", "url"):
+                        if not isinstance(version.get(field), str) or not version.get(field, "").strip():
+                            errors.append(f"{version_where}.{field}: 必须是非空文本")
+                    identifier = str(version.get("doi") or version.get("url") or "").strip().casefold()
+                    if identifier in identifiers:
+                        errors.append(f"{version_where}: 同一论文不得复用相同版本 {identifier}")
+                    if identifier:
+                        identifiers.add(identifier)
+                    validate_url(version.get("url"), f"{version_where}.url", errors)
+                    if version.get("pdf_url") is not None:
+                        validate_url(version.get("pdf_url"), f"{version_where}.pdf_url", errors)
+                    if version.get("doi") is not None and (
+                        not isinstance(version.get("doi"), str)
+                        or not re.fullmatch(r"10\.\d{4,9}/\S+", version["doi"].strip(), re.I)
+                    ):
+                        errors.append(f"{version_where}.doi: 必须是规范 DOI")
+                    for day_field in ("published", "last_revised"):
+                        if version.get(day_field) is not None:
+                            parse_iso_day(version.get(day_field), f"{version_where}.{day_field}", errors)
+                    if version.get("status") is not None and version.get("status") not in PAPER_PUBLICATION_STATUSES:
+                        errors.append(f"{version_where}.status: 未知发表状态 {version.get('status')}")
+        if "rights" in paper:
+            stats["with_rights"] += 1
+            validate_paper_rights(paper.get("rights"), f"{where}.rights", errors)
+
+    if papers and stats["with_intro"] < len(papers) * 0.9:
+        errors.append(f"论文中文导读覆盖率过低：{stats['with_intro']}/{len(papers)}")
+    for field, label in (
+        ("with_versions", "versions 版本链"),
+        ("with_publication_status", "publication_status 发表状态"),
+        ("with_rights", "rights 许可/再分发决策"),
+    ):
+        if stats[field] < len(papers):
+            warnings.append(f"论文库 {label} 覆盖 {stats[field]}/{len(papers)}；缺失保持为未核验，不得默认开放或可再分发")
+    note = f"{len(papers)} 篇（{stats['with_intro']} 篇有中文导读）"
+    return papers, note, stats
+
+
+def validate_paper_analysis(errors, warnings, paper_ids):
+    index_path = ROOT / "data" / "paper_analysis_index.json"
+    stats = {"count": 0, "five_dimension": 0, "catalog_linked": 0, "flows": 0}
+    if not index_path.exists():
+        warnings.append("缺少 data/paper_analysis_index.json；结构化论文解析覆盖为 0")
+        return stats
+    try:
+        index_data = read_json(index_path)
+    except (OSError, json.JSONDecodeError) as exc:
+        errors.append(f"data/paper_analysis_index.json: 无法解析：{exc}")
+        return stats
+    entries = index_data.get("papers") if isinstance(index_data, dict) else None
+    if not isinstance(index_data, dict) or not isinstance(index_data.get("schema_version"), int) or index_data.get("schema_version", 0) < 1:
+        errors.append("data/paper_analysis_index.json.schema_version: 必须是正整数")
+    if isinstance(index_data, dict):
+        parse_iso_day(index_data.get("updated_at"), "data/paper_analysis_index.json.updated_at", errors)
+    if not isinstance(entries, dict):
+        errors.append("data/paper_analysis_index.json.papers: 必须是对象")
+        return stats
+    details_root = (ROOT / "data" / "paper_details").resolve()
+    used_paths = set()
+    analyzed_ids = set()
+    incomplete_dimensions = []
+    detached_from_catalog = []
+
+    for analysis_id, entry in entries.items():
+        stats["count"] += 1
+        where = f"paper_analysis_index.papers[{analysis_id!r}]"
+        if not isinstance(analysis_id, str) or not analysis_id.strip():
+            errors.append(f"{where}: key 必须是非空论文 ID")
+            continue
+        analyzed_ids.add(analysis_id)
+        if not isinstance(entry, dict):
+            errors.append(f"{where}: 必须是对象")
+            continue
+        for field in ("path", "status", "level"):
+            if not isinstance(entry.get(field), str) or not entry.get(field, "").strip():
+                errors.append(f"{where}.{field}: 必须是非空文本")
+        if entry.get("status") not in {"reviewed", "draft", "in_progress"}:
+            errors.append(f"{where}.status: 必须是 reviewed/draft/in_progress")
+        if entry.get("level") not in {"beginner", "intermediate", "advanced"}:
+            errors.append(f"{where}.level: 必须是 beginner/intermediate/advanced")
+        raw_path = entry.get("path", "")
+        detail_path = (ROOT / raw_path).resolve()
+        if not detail_path.is_relative_to(details_root):
+            errors.append(f"{where}.path: 必须位于 data/paper_details/ 内")
+            continue
+        if detail_path in used_paths:
+            errors.append(f"{where}.path: 路径被多个论文复用 {raw_path}")
+        used_paths.add(detail_path)
+        if not detail_path.exists():
+            errors.append(f"{where}.path: 文件不存在 {raw_path}")
+            continue
+        try:
+            detail = read_json(detail_path)
+        except (OSError, json.JSONDecodeError) as exc:
+            errors.append(f"{raw_path}: 无法解析：{exc}")
+            continue
+
+        expected_ids = {analysis_id, f"arxiv:{analysis_id}"}
+        if detail.get("paper_id") not in expected_ids:
+            errors.append(
+                f"{raw_path}.paper_id: {detail.get('paper_id')!r} 与索引 ID {analysis_id!r} 不一致"
+            )
+        if not isinstance(detail.get("title"), str) or not detail.get("title", "").strip():
+            errors.append(f"{raw_path}.title: 必须是非空文本")
+        parse_iso_day(detail.get("reviewed_at"), f"{raw_path}.reviewed_at", errors)
+        if not isinstance(detail.get("evidence_scope"), str) or not detail.get("evidence_scope", "").strip():
+            errors.append(f"{raw_path}.evidence_scope: 必须明确解析证据边界")
+
+        beginner = detail.get("beginner")
+        if not isinstance(beginner, dict):
+            errors.append(f"{raw_path}.beginner: 必须是对象")
+        else:
+            for field in ("one_sentence", "problem", "intuition"):
+                if not isinstance(beginner.get(field), str) or not beginner.get(field, "").strip():
+                    errors.append(f"{raw_path}.beginner.{field}: 必须是非空文本")
+            steps = beginner.get("steps")
+            if not isinstance(steps, list) or len(steps) < 3 or any(not isinstance(item, str) or not item.strip() for item in steps):
+                errors.append(f"{raw_path}.beginner.steps: 至少需要 3 个非空方法步骤")
+
+        method = detail.get("method")
+        dimensions = set()
+        if not isinstance(method, dict):
+            errors.append(f"{raw_path}.method: 必须是对象")
+        else:
+            for field in ("key_contributions", "limitations"):
+                values = method.get(field)
+                if not isinstance(values, list) or not values or any(not isinstance(item, str) or not item.strip() for item in values):
+                    errors.append(f"{raw_path}.method.{field}: 必须是非空文本数组")
+            evidence = method.get("evidence")
+            if not isinstance(evidence, list) or not evidence:
+                errors.append(f"{raw_path}.method.evidence: 必须是非空数组")
+            else:
+                for evidence_index, item in enumerate(evidence):
+                    evidence_where = f"{raw_path}.method.evidence[{evidence_index}]"
+                    if not isinstance(item, dict):
+                        errors.append(f"{evidence_where}: 必须是对象")
+                        continue
+                    dimension = item.get("dimension")
+                    if dimension not in PAPER_EVIDENCE_DIMENSIONS:
+                        errors.append(f"{evidence_where}.dimension: 未知维度 {dimension!r}")
+                    elif dimension in dimensions:
+                        errors.append(f"{evidence_where}.dimension: 重复维度 {dimension}")
+                    else:
+                        dimensions.add(dimension)
+                    if item.get("rating") not in PAPER_EVIDENCE_RATINGS:
+                        errors.append(f"{evidence_where}.rating: 必须是 {sorted(PAPER_EVIDENCE_RATINGS)}")
+                    if not isinstance(item.get("note"), str) or not item.get("note", "").strip():
+                        errors.append(f"{evidence_where}.note: 必须是非空文本")
+        schema_version = detail.get("schema_version", 1)
+        if not isinstance(schema_version, int) or schema_version < 1:
+            errors.append(f"{raw_path}.schema_version: 必须是正整数")
+            schema_version = 1
+        if dimensions == PAPER_EVIDENCE_DIMENSIONS:
+            stats["five_dimension"] += 1
+        else:
+            incomplete_dimensions.append(f"{analysis_id}({len(dimensions)}/5)")
+            if schema_version >= 2:
+                errors.append(
+                    f"{raw_path}.method.evidence: schema v2 必须完整覆盖 "
+                    f"{sorted(PAPER_EVIDENCE_DIMENSIONS)}"
+                )
+
+        flow = detail.get("flow")
+        if not isinstance(flow, dict):
+            errors.append(f"{raw_path}.flow: 必须是对象")
+        else:
+            if not isinstance(flow.get("title"), str) or not flow.get("title", "").strip():
+                errors.append(f"{raw_path}.flow.title: 必须是非空文本")
+            nodes = flow.get("nodes")
+            edges = flow.get("edges")
+            node_ids = set()
+            if not isinstance(nodes, list) or len(nodes) < 2:
+                errors.append(f"{raw_path}.flow.nodes: 至少需要 2 个节点")
+                nodes = []
+            for node_index, node in enumerate(nodes):
+                node_where = f"{raw_path}.flow.nodes[{node_index}]"
+                if not isinstance(node, dict):
+                    errors.append(f"{node_where}: 必须是对象")
+                    continue
+                node_id = node.get("id")
+                if not isinstance(node_id, str) or not node_id.strip():
+                    errors.append(f"{node_where}.id: 必须是非空文本")
+                elif node_id in node_ids:
+                    errors.append(f"{node_where}.id: 重复 {node_id}")
+                else:
+                    node_ids.add(node_id)
+                if not isinstance(node.get("label"), str) or not node.get("label", "").strip():
+                    errors.append(f"{node_where}.label: 必须是非空文本")
+                for coordinate in ("x", "y"):
+                    value = node.get(coordinate)
+                    if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value):
+                        errors.append(f"{node_where}.{coordinate}: 必须是有限数值")
+            if not isinstance(edges, list) or not edges:
+                errors.append(f"{raw_path}.flow.edges: 必须是非空数组")
+                edges = []
+            edge_keys = set()
+            for edge_index, edge in enumerate(edges):
+                edge_where = f"{raw_path}.flow.edges[{edge_index}]"
+                if not isinstance(edge, dict):
+                    errors.append(f"{edge_where}: 必须是对象")
+                    continue
+                source, target = edge.get("from"), edge.get("to")
+                if not isinstance(source, str) or not isinstance(target, str) or source not in node_ids or target not in node_ids:
+                    errors.append(f"{edge_where}: from/to 必须引用已存在节点")
+                if source == target:
+                    errors.append(f"{edge_where}: 不得使用无语义自环")
+                edge_key = (str(source), str(target), str(edge.get("label")))
+                if edge_key in edge_keys:
+                    errors.append(f"{edge_where}: 重复边 {source}->{target}")
+                edge_keys.add(edge_key)
+                if not isinstance(edge.get("label"), str) or not edge.get("label", "").strip():
+                    errors.append(f"{edge_where}.label: 必须是非空文本")
+            if nodes and edges:
+                stats["flows"] += 1
+
+        if analysis_id in paper_ids:
+            stats["catalog_linked"] += 1
+        else:
+            detached_from_catalog.append(analysis_id)
+
+    if incomplete_dimensions:
+        warnings.append(
+            "遗留结构化解析尚未补齐五维证据：" + ", ".join(incomplete_dimensions)
+        )
+    if detached_from_catalog:
+        warnings.append(
+            f"结构化解析与当前 papers.json 脱节 {len(detached_from_catalog)}/{len(entries)}："
+            + ", ".join(sorted(detached_from_catalog))
+        )
+    details_dir = ROOT / "data" / "paper_details"
+    if details_dir.exists():
+        unindexed = sorted(
+            path.name for path in details_dir.glob("*.json") if path.resolve() not in used_paths
+        )
+        if unindexed:
+            warnings.append("paper_details 存在未索引文件：" + ", ".join(unindexed))
+    return stats
 
 
 def validate_academic_tracker(errors):
@@ -387,6 +850,8 @@ def validate_academic_tracker(errors):
     publication_events = data.get("publication_events")
     event_ids: set[str] = set()
     publication_types: set[str] = set()
+    event_facts: set[str] = set()
+    event_observations: set[str] = set()
     if not isinstance(publication_events, list) or not publication_events:
         errors.append("academic_tracker.publication_events: 必须是非空数组")
     else:
@@ -444,8 +909,42 @@ def validate_academic_tracker(errors):
             except ValueError:
                 errors.append(f"{where}.last_verified: 必须是有效 YYYY-MM-DD 日期")
             validate_url(event.get("source_url"), f"{where}.source_url", errors)
+            fulltext = event.get("fulltext")
+            if not isinstance(fulltext, dict):
+                errors.append(f"{where}.fulltext: 必须记录 open 或 metadata_only 的全文边界")
+            else:
+                access = fulltext.get("access")
+                if access not in {"open", "metadata_only"}:
+                    errors.append(f"{where}.fulltext.access: 只能是 open/metadata_only")
+                if not isinstance(fulltext.get("provider"), str) or not fulltext.get("provider", "").strip():
+                    errors.append(f"{where}.fulltext.provider: 必须是非空文本")
+                try:
+                    date.fromisoformat(fulltext.get("verified_at", ""))
+                except (TypeError, ValueError):
+                    errors.append(f"{where}.fulltext.verified_at: 必须是有效 YYYY-MM-DD 日期")
+                if access == "open":
+                    validate_url(fulltext.get("pdf_url"), f"{where}.fulltext.pdf_url", errors)
+                    if fulltext.get("reader_mode") != "source_stream":
+                        errors.append(f"{where}.fulltext.reader_mode: 公开全文必须使用 source_stream")
+                    if not isinstance(fulltext.get("license_id"), str) or not fulltext.get("license_id", "").strip():
+                        errors.append(f"{where}.fulltext.license_id: 公开全文必须记录许可或官方开放条款")
+                elif access == "metadata_only":
+                    if fulltext.get("pdf_url"):
+                        errors.append(f"{where}.fulltext: metadata_only 不得伪造 PDF 地址")
+                    if not isinstance(fulltext.get("reason_zh"), str) or not fulltext.get("reason_zh", "").strip():
+                        errors.append(f"{where}.fulltext.reason_zh: 必须说明无法站内阅读全文的原因")
             if event.get("fact_zh", "").strip() == event.get("atlas_observation_zh", "").strip():
                 errors.append(f"{where}: fact_zh 与 atlas_observation_zh 必须分离")
+            fact_key = re.sub(r"\s+", " ", event.get("fact_zh", "")).strip()
+            observation_key = re.sub(r"\s+", " ", event.get("atlas_observation_zh", "")).strip()
+            if fact_key in event_facts:
+                errors.append(f"{where}.fact_zh: 与另一条发表事件重复，必须写成该论文可核验的独立事实")
+            elif fact_key:
+                event_facts.add(fact_key)
+            if observation_key in event_observations:
+                errors.append(f"{where}.atlas_observation_zh: 与另一条发表事件重复，必须给出独立编辑判断")
+            elif observation_key:
+                event_observations.add(observation_key)
             methods = event.get("methods")
             if not isinstance(methods, list) or not methods or any(not isinstance(method, str) or not method.strip() for method in methods):
                 errors.append(f"{where}.methods: 必须是非空文本数组")
@@ -947,6 +1446,7 @@ def validate_academic_updater_write_boundary(errors):
 
 def main() -> int:
     errors: list[str] = []
+    warnings: list[str] = []
     details_dir = ROOT / "data" / "details"
     if not details_dir.exists():
         print("缺少 data/details/ 目录", file=sys.stderr)
@@ -1015,6 +1515,8 @@ def main() -> int:
                 for line_index, line in enumerate(lines):
                     if not isinstance(line, dict) or not line.get("code") or not line.get("comment_zh"):
                         errors.append(f"{where}: code.lines[{line_index}] 缺代码或逐行中文注释")
+
+    evidence_stats = validate_model_evidence(models, errors, warnings)
 
     for scope, required_ids in REQUIRED_MODEL_IDS.items():
         category_ids = {model["id"] for model in models if model.get("category") == scope}
@@ -1101,24 +1603,10 @@ def main() -> int:
             if model_id not in ids:
                 errors.append(f"{where}: related_model_id {model_id} 不存在")
 
-    papers_path = ROOT / "data" / "papers.json"
-    papers_note = "论文库未生成"
-    if papers_path.exists():
-        library = read_json(papers_path)
-        papers = library.get("papers", [])
-        if len(papers) < 100:
-            errors.append(f"论文库应至少 100 篇，当前 {len(papers)}")
-        with_intro = 0
-        for paper in papers:
-            if not paper.get("id") or not paper.get("title") or not paper.get("category"):
-                errors.append(f"papers/{paper.get('id', '?')}: 缺 id/title/category")
-            if paper.get("category") not in CATEGORIES:
-                errors.append(f"papers/{paper.get('id')}: 未知 category {paper.get('category')}")
-            if paper.get("intro_zh"):
-                with_intro += 1
-        papers_note = f"{len(papers)} 篇（{with_intro} 篇有中文导读）"
-        if papers and with_intro < len(papers) * 0.9:
-            errors.append(f"论文中文导读覆盖率过低：{with_intro}/{len(papers)}")
+    papers, papers_note, paper_stats = validate_paper_library(errors, warnings)
+    analysis_stats = validate_paper_analysis(
+        errors, warnings, {paper.get("id") for paper in papers if isinstance(paper, dict)}
+    )
 
     academic_data = validate_academic_tracker(errors)
     candidate_count = validate_candidate_boundary(errors)
@@ -1278,11 +1766,32 @@ def main() -> int:
         print(f"校验失败，共 {len(errors)} 项：", file=sys.stderr)
         for error in errors:
             print(f"- {error}", file=sys.stderr)
+        if warnings:
+            print(f"非阻断覆盖警告，共 {len(warnings)} 项：", file=sys.stderr)
+            for warning in warnings:
+                print(f"- {warning}", file=sys.stderr)
         return 1
     print("Atlas 数据校验通过")
     print(f"- 模型：{len(models)} 条 / " + " / ".join(f"{key} {counts[key]}" for key in CATEGORIES))
     print(f"- A 级：{sum(a_counts.values())} 条（每类 4）；分节详解共约 {section_chars} 字")
     print(f"- 论文库：{papers_note}；术语：{len(glossary)} 条；页面：{len(PAGES)} 个")
+    print(
+        f"- 模型证据账本：{evidence_stats['models']}/{len(models)} 模型 / "
+        f"{evidence_stats['a_models']}/{sum(a_counts.values())} A 级 / "
+        f"{evidence_stats['claims']} 条断言 / {evidence_stats['pinpoint_claims']} 条带章节或页表定位"
+    )
+    print(
+        f"- 结构化论文解析：{analysis_stats['count']} 篇 / "
+        f"五维证据 {analysis_stats['five_dimension']} / "
+        f"动态流程图 {analysis_stats['flows']} / "
+        f"当前论文库可达 {analysis_stats['catalog_linked']}"
+    )
+    print(
+        f"- 论文学术边界覆盖：versions {paper_stats['with_versions']}/{paper_stats['count']} / "
+        f"publication_status {paper_stats['with_publication_status']}/{paper_stats['count']} / "
+        f"rights {paper_stats['with_rights']}/{paper_stats['count']} / "
+        f"DOI {paper_stats['with_doi']}/{paper_stats['count']} / venue {paper_stats['with_venue']}/{paper_stats['count']}"
+    )
     if academic_data:
         print(
             f"- 学术追踪：{len(academic_data.get('journals', []))} 期刊 / "
@@ -1294,6 +1803,10 @@ def main() -> int:
         print(f"- 待审候选：{candidate_count} 条（全部保持 manual_review_required）")
     if academic_candidate_count is not None:
         print(f"- 学术发表待审候选：{academic_candidate_count} 条（全部为 needs_review）")
+    if warnings:
+        print(f"- 非阻断覆盖警告：{len(warnings)} 项")
+        for warning in warnings:
+            print(f"  · {warning}")
     return 0
 
 

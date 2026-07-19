@@ -4,6 +4,9 @@
 .codex/reporting.local.json
 .wrangler/
 library/
+node_modules/
+playwright-report/
+test-results/
 
 # Python caches
 __pycache__/

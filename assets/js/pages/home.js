@@ -10,7 +10,7 @@ import {
   loadModels,
   observeNumber,
   setupSearch
-} from '../core.js?v=20260719.11';
+} from '../core.js?v=20260719.12';
 
 const categoryDescriptions = {
   vla: '把视觉与语言指令，直接变成机器人动作。',

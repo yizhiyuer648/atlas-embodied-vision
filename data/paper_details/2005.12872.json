@@ -13,7 +13,7 @@
   "method": {
     "key_contributions": ["把检测统一为端到端集合预测。", "以二分匹配损失取代锚框分配和 NMS。", "展示全局注意力对大物体和关系建模的价值。"],
     "limitations": ["原始 DETR 收敛慢，需要较长训练。", "小目标性能弱于当时成熟检测器。", "固定 query 数量形成输出上限，后续工作大量改进注意力与训练效率。"],
-    "evidence": [{"dimension":"主张与证据","rating":"证据充分","note":"论文提供 COCO 对照和消融。"},{"dimension":"可复现性","rating":"证据充分","note":"官方代码和训练配置公开。"}]
+    "evidence": [{"dimension":"主张与证据","rating":"证据充分","note":"论文以 COCO 对照、消融和定性分析支持端到端集合预测主张；证据仅支持论文的模型与训练设定。"},{"dimension":"验证广度","rating":"证据部分","note":"检测与全景分割结果主要集中于 COCO，尚不足以覆盖长尾、强分布偏移和专业场景。"},{"dimension":"真实场景","rating":"证据部分","note":"COCO 包含真实图像，但评测是静态离线基准，不能代表实时、视频或安全关键部署表现。"},{"dimension":"可复现性","rating":"证据充分","note":"官方代码、模型与训练配置公开；评级不等于任意硬件和随机种子都能完全复制指标。"},{"dimension":"版本增量","rating":"证据充分","note":"相对依赖锚框、候选匹配和 NMS 的检测管线，论文明确引入二分匹配与 Transformer 集合预测；不涵盖后续 DETR 变体的改进。"}]
   },
   "flow": {"title":"DETR 的集合预测路径","nodes":[{"id":"image","label":"输入图像","x":30,"y":90},{"id":"cnn","label":"CNN 特征","x":220,"y":90},{"id":"enc","label":"Transformer 编码","x":410,"y":90},{"id":"query","label":"Object Queries","x":410,"y":220},{"id":"dec","label":"Transformer 解码","x":600,"y":90,"accent":true},{"id":"set","label":"类别 + 边界框集合","x":790,"y":90}],"edges":[{"from":"image","to":"cnn","label":"像素"},{"from":"cnn","to":"enc","label":"特征+位置"},{"from":"enc","to":"dec","label":"全局记忆"},{"from":"query","to":"dec","label":"查询槽位"},{"from":"dec","to":"set","label":"一对一输出"}]}
 }

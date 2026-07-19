@@ -45,6 +45,17 @@ if (Test-Path $automationFile) {
 }
 
 $now = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()
+$chinaZone = [TimeZoneInfo]::FindSystemTimeZoneById('China Standard Time')
+$localZone = [TimeZoneInfo]::Local
+$beijingNow = [TimeZoneInfo]::ConvertTime([DateTimeOffset]::UtcNow, $chinaZone)
+$beijingTarget = [DateTime]::SpecifyKind($beijingNow.Date.AddHours(4), [DateTimeKind]::Unspecified)
+if ($beijingNow.DateTime -ge $beijingTarget) {
+    $beijingTarget = $beijingTarget.AddDays(1)
+}
+$targetUtc = [TimeZoneInfo]::ConvertTimeToUtc($beijingTarget, $chinaZone)
+$localTarget = [TimeZoneInfo]::ConvertTimeFromUtc($targetUtc, $localZone)
+$localHour = $localTarget.Hour
+$localMinute = $localTarget.Minute
 $toml = @(
     'version = 1'
     "id = $(Convert-ToTomlString $AutomationId)"
@@ -52,9 +63,9 @@ $toml = @(
     "name = $(Convert-ToTomlString $automationName)"
     "prompt = $(Convert-ToTomlString $prompt)"
     'status = "ACTIVE"'
-    'rrule = "FREQ=DAILY;BYHOUR=9;BYMINUTE=0"'
+    "rrule = `"FREQ=DAILY;BYHOUR=$localHour;BYMINUTE=$localMinute`""
     "model = $(Convert-ToTomlString $Model)"
-    'reasoning_effort = "ultra"'
+    'reasoning_effort = "xhigh"'
     'execution_environment = "local"'
     ('target = { type = "project", project_id = ' + (Convert-ToTomlString $ProjectRoot) + ' }')
     ('cwds = [' + (Convert-ToTomlString $ProjectRoot) + ']')
@@ -67,6 +78,7 @@ $toml = @(
 Write-Host ''
 Write-Host 'The Atlas daily optimization automation is installed.'
 Write-Host "Automation file: $automationFile"
-Write-Host 'Schedule: 09:00 local time every day; the computer and Codex must be available.'
+Write-Host "Schedule contract: 04:00 Asia/Shanghai; converted at install time to $($localTarget.ToString('HH:mm')) in local zone $($localZone.Id)."
+Write-Host 'If the receiving computer changes time zone or daylight-saving rules, rerun this installer and confirm the displayed conversion.'
 Write-Host 'Fully quit and reopen Codex Desktop, then confirm that the automation is enabled.'
-Write-Host 'If this account cannot use the requested model, select an available model in Codex.'
+Write-Host 'If this account cannot use gpt-5.6-sol with xhigh, leave the task stopped and resolve access; do not select a lower model.'

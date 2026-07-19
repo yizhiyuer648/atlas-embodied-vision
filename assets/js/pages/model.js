@@ -2,7 +2,7 @@ import {
   loadModels, loadModelDetail, categoryMeta, displayValue, isKnown, isOpenSource, escapeHTML, setupBreadcrumbs,
   isFavorite, toggleFavorite, initCardInteractions, initReveals, modelCard, cachedFetchJSON,
   repoFromURL, formatCompact, formatDate, toast
-} from '../core.js?v=20260719.11';
+} from '../core.js?v=20260719.12';
 
 export async function init() {
   const models = await loadModels();

@@ -227,6 +227,38 @@
   {
    "title": "局限与后续",
    "body": "长视频中记忆漂移仍会累积,拥挤同类目标易串号;实时性在高分辨率下依然吃紧。后续 SAM 2.1 与社区变体(高质量版、轻量版)持续修补,与检测/文本模型的组合(Grounded-SAM-2)扩展了语义能力。"
+ }
+ ],
+ "evidence_claims": [
+  {
+   "type": "paper_report",
+   "claim": "SAM 2 的提示式视频分割任务允许在任意视频帧输入正负点击、框或掩码，并把目标掩码传播为跨帧 masklet；后续帧提示可继续修正结果。",
+   "scope": "这是论文定义的 PVS 交互任务；传播质量取决于视频内容、提示序列和评测协议。",
+   "source_label": "SAM 2 论文",
+   "source_url": "https://arxiv.org/abs/2408.00714",
+   "locator": "§3 Task: promptable visual segmentation、Figure 2",
+   "conditions": "单目标提示与迭代修正场景；提示可以来自同一帧或不同帧",
+   "checked_at": "2026-07-19"
+  },
+  {
+   "type": "paper_report",
+   "claim": "SAM 2 用 memory encoder 把预测写入 memory bank，再由 memory attention 让当前帧特征交叉注意历史帧、提示帧和对象指针，最后由轻量 mask decoder 预测当前帧掩码。",
+   "scope": "陈述论文流式模型的数据流；memory bank 是有限队列，不应解释为保留任意长视频的全部历史。",
+   "source_label": "SAM 2 论文",
+   "source_url": "https://arxiv.org/abs/2408.00714",
+   "locator": "§4 Model、Figure 3",
+   "conditions": "按帧流式处理；当前预测经 memory encoder 写回供后续帧使用",
+   "checked_at": "2026-07-19"
+  },
+  {
+   "type": "atlas_interpretation",
+   "claim": "Atlas 将 SAM 2 的核心增量概括为“带对象记忆的提示式时空分割”，并把图像模式视为该统一模型的单帧特例，而非另一个独立分割器。",
+   "scope": "这是依据论文任务和模型接口作出的谱系判断，不据此宣称视频中遮挡、重现或同类目标切换都能稳定处理。",
+   "source_label": "SAM 2 论文",
+   "source_url": "https://arxiv.org/abs/2408.00714",
+   "locator": "§3–§4、Figure 2–3",
+   "conditions": "区分统一接口定义与具体场景成功率；失败模式需单独评测",
+   "checked_at": "2026-07-19"
   }
  ],
  "citations": {

@@ -1,0 +1,10 @@
+[Unit]
+Description=Atlas daily complete maintenance loop
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=@PROJECT_ROOT@
+ExecStart=@PROJECT_ROOT@/scripts/run_daily_maintenance.sh
+TimeoutStartSec=14h

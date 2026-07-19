@@ -17,6 +17,38 @@
  ],
  "tier": "A",
  "lineage_parent": "unknown",
+ "evidence_claims": [
+  {
+   "type": "paper_report",
+   "claim": "HunyuanVideo 在因果 3D VAE 压缩的潜空间中使用双流到单流的视频 DiT，并以 MLLM 和 CLIP 特征提供文本条件。",
+   "scope": "仅描述论文公开的生成架构；不由此推断模型具有可验证的物理因果理解。",
+   "source_label": "HunyuanVideo 论文",
+   "source_url": "https://arxiv.org/abs/2412.03603",
+   "locator": "§4.1–§4.3、Figure 5、Figure 8 与 Table 2",
+   "conditions": "论文所述 13B 文生视频基础模型；图像按单帧视频处理；文本条件设置按论文版本",
+   "checked_at": "2026-07-19"
+  },
+  {
+   "type": "paper_report",
+   "claim": "论文的主要对比评测使用 1,533 条文本提示和 60 名专业评估者，按文本对齐、运动质量和视觉质量比较 HunyuanVideo 与 5 个闭源基线。",
+   "scope": "这是作者组织的主观评测设置；不代表独立复现，也不覆盖版权、安全或真实物理一致性的全面审计。",
+   "source_label": "HunyuanVideo 论文",
+   "source_url": "https://arxiv.org/abs/2412.03603",
+   "locator": "§6.1 与 Table 3",
+   "conditions": "每个模型按默认设置单次推理；分辨率对齐；指标与总排名按论文定义",
+   "checked_at": "2026-07-19"
+  },
+  {
+   "type": "atlas_interpretation",
+   "claim": "HunyuanVideo 的公开代码和模型使其适合作为大规模视频生成的工程基线，但作者人工偏好评测不能单独证明开放世界物理或安全可靠性。",
+   "scope": "这是 Atlas 对可获取性与证据类型的编辑判断，不是对主观视频质量的新实验。",
+   "source_label": "HunyuanVideo 论文",
+   "source_url": "https://arxiv.org/abs/2412.03603",
+   "locator": "Abstract、§5.3 与 §6.1 / Table 3",
+   "conditions": "把开源可获取性、生成质量与现实世界可靠性分开评价",
+   "checked_at": "2026-07-19"
+  }
+ ],
  "architecture": {
   "description_zh": "HunyuanVideo 使用 3D VAE 表示视频潜变量，LLM 与 CLIP 提供文本条件；双流块先分别调制文本和视频并做联合注意力，单流块继续融合，flow-matching 调度器迭代后由 VAE 解码。",
   "modules": [

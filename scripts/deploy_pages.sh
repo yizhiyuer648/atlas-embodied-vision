@@ -18,10 +18,11 @@ cp data/index.json data/papers.json data/glossary.json \
   data/academic_tracker.json data/paper_analysis_index.json "$DEPLOY_DIR/data/"
 cp index.html explore.html model.html compare.html radar.html venues.html \
   lineage.html timeline.html trends.html glossary.html reader.html favicon.svg "$DEPLOY_DIR/"
+cp _routes.json "$DEPLOY_DIR/"
 
 commit_hash="$(git rev-parse HEAD 2>/dev/null || printf unknown)"
-npx -y wrangler@latest pages deploy "$DEPLOY_DIR" \
+npx --no-install wrangler pages deploy "$DEPLOY_DIR" \
   --project-name "$PROJECT_NAME" \
   --branch main \
   --commit-hash "$commit_hash" \
-  --commit-dirty=true
+  --commit-dirty=false

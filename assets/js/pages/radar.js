@@ -1,4 +1,4 @@
-import { CATEGORIES, loadJSON, escapeHTML, formatDate, formatCompact, initReveals, setQuery, categoryMeta } from '../core.js?v=20260719.11';
+import { CATEGORIES, loadJSON, escapeHTML, formatDate, formatCompact, initReveals, setQuery, categoryMeta } from '../core.js?v=20260719.12';
 
 const PAGE_SIZE = 30;
 const CACHE_TTL = 60 * 60 * 1000;
@@ -6,9 +6,9 @@ const STALE_CACHE_TTL = 24 * 60 * 60 * 1000;
 const REQUEST_TIMEOUT = 15_000;
 
 const SOURCES = {
+  'formal-tracker': { label: '正式期刊 / 会议', short: '正式发表', live: false },
   'arxiv-local': { label: 'arXiv 本地库', short: 'arXiv', live: false },
   openalex: { label: 'OpenAlex', short: 'OpenAlex', live: true },
-  'semantic-scholar': { label: 'Semantic Scholar', short: 'S2', live: true },
   'hf-papers': { label: 'Hugging Face Papers', short: 'HF Papers', live: true }
 };
 
@@ -33,7 +33,6 @@ const TOPIC_PATTERNS = {
 
 const LIVE_SOURCE_LOADERS = {
   openalex: fetchOpenAlex,
-  'semantic-scholar': fetchSemanticScholar,
   'hf-papers': fetchHuggingFacePapers
 };
 
@@ -53,20 +52,25 @@ export async function init() {
 
   let library = { generated_at: '', papers: [] };
   let analysisIndex = { papers: {} };
+  let academicTracker = { publication_events: [] };
   let localLoadError = '';
   try {
-    [library, analysisIndex] = await Promise.all([
+    [library, analysisIndex, academicTracker] = await Promise.all([
       loadJSON('data/papers.json'),
-      loadJSON('data/paper_analysis_index.json').catch(() => ({ papers: {} }))
+      loadJSON('data/paper_analysis_index.json').catch(() => ({ papers: {} })),
+      loadJSON('data/academic_tracker.json').catch(() => ({ publication_events: [] }))
     ]);
   } catch (error) {
     localLoadError = error instanceof Error ? error.message : '无法读取本地论文库';
   }
 
-  const localRecords = (library.papers || []).map(normalizeLocalPaper);
+  const arxivRecords = (library.papers || []).map(normalizeLocalPaper);
+  const formalRecords = (academicTracker.publication_events || []).map(normalizeTrackedPublication).filter(Boolean);
+  const localRecords = [...arxivRecords, ...formalRecords];
   const liveRecords = new Map(Object.keys(LIVE_SOURCE_LOADERS).map(source => [source, []]));
   const sourceState = new Map([
-    ['arxiv-local', { state: localLoadError ? 'error' : 'ready', count: localRecords.length, message: localLoadError }],
+    ['formal-tracker', { state: 'ready', count: formalRecords.length, message: '' }],
+    ['arxiv-local', { state: localLoadError ? 'error' : 'ready', count: arxivRecords.length, message: localLoadError }],
     ...Object.keys(LIVE_SOURCE_LOADERS).map(source => [source, { state: 'idle', count: 0, message: '' }])
   ]);
 
@@ -152,8 +156,12 @@ export async function init() {
       : '';
     const paperUrl = safeExternalURL(paper.url);
     const analysisId = paper.externalIds?.arxiv || '';
-    const readAction = analysisId
-      ? `<a class="button button-primary" href="reader.html?id=${encodeURIComponent(analysisId)}">站内阅读全文</a>`
+    const openFormalRecord = paper.sourceRecords.find(record => record.source === 'formal-tracker' && record.fulltext?.access === 'open' && record.fulltext?.pdf_url);
+    const readerHref = analysisId
+      ? `reader.html?id=${encodeURIComponent(analysisId)}`
+      : openFormalRecord ? `reader.html?paper=${encodeURIComponent(openFormalRecord.sourceId)}` : '';
+    const readAction = readerHref
+      ? `<a class="button button-primary" href="${escapeHTML(readerHref)}">站内阅读全文</a>`
       : paperUrl ? `<a class="button button-primary" href="${escapeHTML(paperUrl)}" target="_blank" rel="noopener noreferrer">打开来源 ↗</a>` : '';
     const analysisEntry = analysisIndex.papers?.[analysisId];
     const analysis = analysisEntry
@@ -418,6 +426,34 @@ function normalizeLocalPaper(paper) {
   };
 }
 
+function normalizeTrackedPublication(event) {
+  const sourceId = String(event.paper_id || event.work_id || event.id || '').trim();
+  const title = String(event.title || '').trim();
+  if (!sourceId || !title) return null;
+  const versions = Array.isArray(event.versions) ? event.versions : [];
+  const arxiv = versions.flatMap(version => [version.identifier, version.url]).map(extractArxivId).find(Boolean) || '';
+  const doi = canonicalDoi(sourceId) || canonicalDoi(event.source_url);
+  const rawDate = String(event.event_date || '').trim();
+  const published = normalizeDate(rawDate) || (/^\d{4}$/.test(rawDate) ? `${rawDate}-01-01` : '');
+  return {
+    source: 'formal-tracker',
+    sourceId,
+    sourceUrl: event.source_url,
+    category: event.category,
+    title,
+    abstract: '',
+    published,
+    authors: [],
+    url: event.source_url,
+    citations: null,
+    intro_zh: [event.fact_zh, event.atlas_observation_zh].filter(Boolean).join(' '),
+    externalIds: { arxiv, doi },
+    fulltext: event.fulltext || null,
+    venueId: event.venue_id || '',
+    publicationStatus: event.status || ''
+  };
+}
+
 async function fetchOpenAlex(context) {
   const params = new URLSearchParams({
     search: context.query,
@@ -449,39 +485,6 @@ async function fetchOpenAlex(context) {
       citations: Number.isFinite(item.cited_by_count) ? item.cited_by_count : null,
       intro_zh: '',
       externalIds: { arxiv, doi, openalex: String(item.id || '').split('/').pop() || '' }
-    };
-  }).filter(Boolean).sort((a, b) => String(b.published).localeCompare(String(a.published)));
-}
-
-async function fetchSemanticScholar(context) {
-  const params = new URLSearchParams({
-    query: context.query,
-    limit: '30',
-    fields: 'title,abstract,authors,publicationDate,url,externalIds,citationCount,openAccessPdf'
-  });
-  const payload = await fetchJSON(`https://api.semanticscholar.org/graph/v1/paper/search?${params}`);
-  return (payload.data || []).map(item => {
-    const title = String(item.title || '').trim();
-    const abstract = String(item.abstract || '').trim();
-    const category = resolveLiveCategory(`${title} ${abstract}`, context);
-    const published = normalizeDate(item.publicationDate);
-    if (!title || !category || !published || published < context.fromDate || published > context.toDate) return null;
-    const arxiv = extractArxivId(item.externalIds?.ArXiv);
-    const doi = canonicalDoi(item.externalIds?.DOI);
-    const sourceUrl = safeExternalURL(item.url);
-    return {
-      source: 'semantic-scholar',
-      sourceId: String(item.paperId || ''),
-      sourceUrl,
-      category,
-      title,
-      abstract,
-      published,
-      authors: cleanAuthors((item.authors || []).map(author => author.name)),
-      url: arxiv ? `https://arxiv.org/abs/${arxiv}` : doi ? `https://doi.org/${doi}` : item.openAccessPdf?.url || sourceUrl,
-      citations: Number.isFinite(item.citationCount) ? item.citationCount : null,
-      intro_zh: '',
-      externalIds: { arxiv, doi, s2: String(item.paperId || '') }
     };
   }).filter(Boolean).sort((a, b) => String(b.published).localeCompare(String(a.published)));
 }
@@ -597,7 +600,7 @@ function mergePapers(records) {
 }
 
 function finalizeGroup(group) {
-  const priority = ['arxiv-local', 'hf-papers', 'semantic-scholar', 'openalex'];
+  const priority = ['formal-tracker', 'arxiv-local', 'hf-papers', 'openalex'];
   const records = [...group.records].sort((a, b) => priority.indexOf(a.source) - priority.indexOf(b.source));
   const primary = records[0];
   const introRecord = records.find(record => record.intro_zh);
@@ -634,6 +637,7 @@ function finalizeGroup(group) {
     citations: citationRecord?.citations ?? null,
     citationSource: citationRecord?.source || '',
     intro_zh: introRecord?.intro_zh || '',
+    externalIds: { arxiv: arxivIds[0] || '', doi: dois[0] || '' },
     sources,
     sourceRecords: records,
     conflicts

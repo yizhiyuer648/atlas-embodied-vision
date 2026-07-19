@@ -213,6 +213,38 @@
   {
    "title": "局限与后续",
    "body": "小模型档位(对标 YOLO-n/s)的极限轻量化仍是短板;Transformer 结构在低端边缘设备上的部署生态不如纯卷积成熟。社区正通过蒸馏、稀疏化与专用算子逐步补齐。"
+ }
+ ],
+ "evidence_claims": [
+  {
+   "type": "paper_report",
+   "claim": "RT-DETR 由骨干、效率混合编码器和带辅助预测头的 Transformer 解码器组成；混合编码器把尺度内交互与跨尺度融合解耦。",
+   "scope": "描述论文 RT-DETR 架构，不包含 RT-DETRv2/v3 或第三方实现的改动。",
+   "source_label": "RT-DETR 论文",
+   "source_url": "https://arxiv.org/abs/2304.08069",
+   "locator": "§4.1 Model Overview、§4.2 Efficient Hybrid Encoder、Figure 3–4",
+   "conditions": "论文的 AIFI + CCFF 混合编码器和 DETR 解码流程",
+   "checked_at": "2026-07-19"
+  },
+  {
+   "type": "paper_report",
+   "claim": "RT-DETR 使用 uncertainty-minimal query selection 选择固定数量的编码器特征初始化对象查询，并可在不重新训练的情况下通过减少解码层数调节速度。",
+   "scope": "查询选择与速度调节是论文机制；具体精度—延迟变化只适用于论文相应模型和硬件协议。",
+   "source_label": "RT-DETR 论文",
+   "source_url": "https://arxiv.org/abs/2304.08069",
+   "locator": "Abstract、§4.3、§5.3–§5.4、Table 4–5",
+   "conditions": "固定已训练权重，通过选用不同 decoder layer 输出进行推理；不是任意剪层后重新部署的保证",
+   "checked_at": "2026-07-19"
+  },
+  {
+   "type": "atlas_interpretation",
+   "claim": "Atlas 将 RT-DETR 标为端到端实时检测路线，并把“无需 NMS”限定为论文的一对一集合预测管线，不把第三方部署中的额外过滤步骤自动算入该声明。",
+   "scope": "这是对算法边界与部署边界的区分；真实性能比较仍需包含输入尺寸、TensorRT/精度模式和是否计入后处理。",
+   "source_label": "RT-DETR 论文",
+   "source_url": "https://arxiv.org/abs/2304.08069",
+   "locator": "Abstract、§3.2 End-to-end Speed Benchmark、§7 Conclusion",
+   "conditions": "按论文端到端速度定义与 NMS-free 检测头；跨框架比较需统一计时协议",
+   "checked_at": "2026-07-19"
   }
  ],
  "citations": {

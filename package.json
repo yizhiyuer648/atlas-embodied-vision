@@ -1,0 +1,16 @@
+{
+  "name": "atlas-embodied-vision",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test:browser": "node scripts/check_site_browser.mjs",
+    "test:function": "node scripts/test_pdf_function.mjs"
+  },
+  "devDependencies": {
+    "playwright": "1.61.1",
+    "wrangler": "4.112.0"
+  },
+  "dependencies": {
+    "pdfjs-dist": "5.4.149"
+  }
+}

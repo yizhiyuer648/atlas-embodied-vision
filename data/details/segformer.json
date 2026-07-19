@@ -256,6 +256,38 @@
   {
    "title": "局限与后续",
    "body": "纯语义分割框架,不做实例区分;全 MLP 解码器在超高分辨率下略显粗糙。Mask2Former 用查询式统一三种分割任务,接管了精度上限;SegFormer 则以效率优势长期占据实用市场。"
+ }
+ ],
+ "evidence_claims": [
+  {
+   "type": "paper_report",
+   "claim": "SegFormer 由分层 Transformer 编码器和轻量 All-MLP 解码器组成；编码器输出原图 1/4、1/8、1/16、1/32 尺度的多级特征，解码器统一通道、上采样并融合后预测语义掩码。",
+   "scope": "描述论文语义分割架构；输出是类别级语义掩码，不区分同类对象实例。",
+   "source_label": "SegFormer 论文",
+   "source_url": "https://arxiv.org/abs/2105.15203",
+   "locator": "§3 Method、§3.2 Lightweight All-MLP Decoder、Figure 2、Equation 4",
+   "conditions": "MiT 分层编码器与论文 All-MLP decoder 的标准组合",
+   "checked_at": "2026-07-19"
+  },
+  {
+   "type": "paper_report",
+   "claim": "SegFormer 不使用固定位置嵌入，而在 Mix-FFN 中加入 3×3 深度卷积，并利用零填充引入位置信息，以避免测试分辨率变化时插值位置编码。",
+   "scope": "这是论文的编码器设计动机与实现；不能据此推断模型对任意尺度或分布变化都保持精度。",
+   "source_label": "SegFormer 论文",
+   "source_url": "https://arxiv.org/abs/2105.15203",
+   "locator": "Abstract、§3.1 Mix-FFN、Equation 3",
+   "conditions": "论文 MiT 编码器，以 3×3 depth-wise convolution 混入 FFN",
+   "checked_at": "2026-07-19"
+  },
+  {
+   "type": "atlas_interpretation",
+   "claim": "Atlas 将 SegFormer 定位为高效语义分割基线，核心取舍是把多尺度表征主要交给编码器，从而保持解码头简单；不把它归入实例分割或提示式分割。",
+   "scope": "编辑判断依据论文任务定义和 encoder/decoder 分工，仅用于模型谱系分类。",
+   "source_label": "SegFormer 论文",
+   "source_url": "https://arxiv.org/abs/2105.15203",
+   "locator": "Abstract、§1、§3、Figure 2–3",
+   "conditions": "语义分割任务边界；与 Mask R-CNN、SAM 等任务协议分开比较",
+   "checked_at": "2026-07-19"
   }
  ],
  "citations": {

@@ -17,6 +17,38 @@
  ],
  "tier": "A",
  "lineage_parent": "unknown",
+ "evidence_claims": [
+  {
+   "type": "paper_report",
+   "claim": "π0 在预训练 VLM 上增加独立动作专家，通过条件流匹配生成连续动作块，而不是把动作完全离散化为文本 token。",
+   "scope": "仅描述π0 论文的架构与动作生成方式；不表示该表示对所有控制频率或本体都最优。",
+   "source_label": "π0 论文",
+   "source_url": "https://arxiv.org/abs/2410.24164",
+   "locator": "Abstract、§IV The π0 Model 与 Figure 3",
+   "conditions": "PaliGemma 视觉语言骨干；动作专家学习条件速度场；连续动作块通过数值积分得到",
+   "checked_at": "2026-07-19"
+  },
+  {
+   "type": "paper_report",
+   "claim": "π0 的预训练混合数据包含 7 种机器人配置和 68 个任务，论文还在真实机器人上分别评估直接提示、语言指令、新技能微调和复杂多阶段任务。",
+   "scope": "数据与评测范围来自作者机器人系统；不能外推到未测本体、工业环境或长期无人监管运行。",
+   "source_label": "π0 论文",
+   "source_url": "https://arxiv.org/abs/2410.24164",
+   "locator": "Figure 2、§III、§VI-A–§VI-D 与 Figure 7–13",
+   "conditions": "跨本体预训练后按论文协议直接使用或后训练；各实验使用作者定义评分",
+   "checked_at": "2026-07-19"
+  },
+  {
+   "type": "atlas_interpretation",
+   "claim": "π0 是流匹配 VLA 与跨本体预训练的重要公开基线，但其广度证据仍受作者数据混合、机器人配置和评测任务限制。",
+   "scope": "这是 Atlas 对方法位置和证据范围的编辑判断，不宣称π0 已成为通用物理智能。",
+   "source_label": "π0 论文",
+   "source_url": "https://arxiv.org/abs/2410.24164",
+   "locator": "§V-C、§VI-A–§VI-D 与 Figure 7–13",
+   "conditions": "把方法影响、可获取实现与跨本体普适性分开判断",
+   "checked_at": "2026-07-19"
+  }
+ ],
  "architecture": {
   "description_zh": "π0 将图像与语言交给 PaliGemma 前缀模型，把机器人状态、带噪动作和时间步交给动作专家；动作专家预测速度场，经多步积分得到动作块。",
   "modules": [

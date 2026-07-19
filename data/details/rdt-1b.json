@@ -17,6 +17,38 @@
  ],
  "tier": "A",
  "lineage_parent": "diffusion-policy",
+ "evidence_claims": [
+  {
+   "type": "paper_report",
+   "claim": "RDT-1B 使用 1.2B 参数的扩散 Transformer 建模双臂动作，并通过可物理解释的统一动作空间对齐不同机器人的本体感觉和动作表示。",
+   "scope": "仅描述论文中的 RDT 架构和跨机器人表示；统一动作空间不保证消除所有本体差异。",
+   "source_label": "RDT-1B 论文",
+   "source_url": "https://arxiv.org/abs/2410.07864",
+   "locator": "Abstract、§3、§4.1 与 Figure 3–4",
+   "conditions": "语言、图像、本体感觉与控制频率经异构编码；条件在 RDT blocks 中交替注入",
+   "checked_at": "2026-07-19"
+  },
+  {
+   "type": "paper_report",
+   "claim": "论文报告 RDT 预训练数据来自 46 个多机器人数据集、合计超过 100 万条轨迹，随后在作者收集的双臂数据上微调，并在 ALOHA 上评估 7 个真机任务。",
+   "scope": "数据规模和任务数来自论文报告；真机证据集中于 ALOHA 双臂平台，不能直接外推至其他本体。",
+   "source_label": "RDT-1B 论文",
+   "source_url": "https://arxiv.org/abs/2410.07864",
+   "locator": "§4.2、§5.1、Figure 5 与 Table 1",
+   "conditions": "预训练后使用作者的多任务双臂数据微调；成功率与任务子项按论文定义",
+   "checked_at": "2026-07-19"
+  },
+  {
+   "type": "atlas_interpretation",
+   "claim": "RDT-1B 更适合被定位为双臂操作的扩散基础模型基线，而不是已在多类机器人上验证的通用操作策略。",
+   "scope": "这是 Atlas 根据训练目标与真机评测范围作出的编辑定位，不是对方法价值的否定。",
+   "source_label": "RDT-1B 论文",
+   "source_url": "https://arxiv.org/abs/2410.07864",
+   "locator": "§3、§5.1 / Table 3 与 Ethics Statement",
+   "conditions": "方法是跨机器人预训练，但论文的主要真机评测使用 ALOHA 双臂平台",
+   "checked_at": "2026-07-19"
+  }
+ ],
  "architecture": {
   "description_zh": "RDT-1B 分别用 T5 与 SigLIP 编码语言和多视角图像，把机器人状态、带噪动作及时间步组成动作 token；RDT Block 交替跨注意语言与图像条件，输出动作去噪结果。",
   "modules": [

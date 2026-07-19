@@ -1,0 +1,11 @@
+[Unit]
+Description=Resume Atlas full-text sync daily at 05:30 Asia/Shanghai
+
+[Timer]
+OnCalendar=*-*-* 05:30:00 Asia/Shanghai
+Persistent=true
+AccuracySec=5min
+Unit=atlas-fulltext-sync.service
+
+[Install]
+WantedBy=timers.target

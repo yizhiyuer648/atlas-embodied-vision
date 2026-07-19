@@ -190,6 +190,38 @@
   {
    "title": "局限与后续",
    "body": "锚框的尺度、比例是手工超参数,对不同数据分布需要调优;两阶段结构在移动端仍显笨重;NMS 后处理也阻碍完全端到端。这些遗留问题分别催生了 anchor-free 路线(FCOS、CenterNet)、单阶段高效路线(YOLO、SSD)与集合预测路线(DETR)。"
+ }
+ ],
+ "evidence_claims": [
+  {
+   "type": "paper_report",
+   "claim": "Faster R-CNN 由区域建议网络（RPN）和 Fast R-CNN 检测器组成，两者共享整图卷积特征；RPN 在共享特征上生成候选区域。",
+   "scope": "描述论文中的两阶段检测系统与特征共享方式，不包含后续 FPN 等扩展。",
+   "source_label": "Faster R-CNN 论文",
+   "source_url": "https://arxiv.org/abs/1506.01497",
+   "locator": "§3 Faster R-CNN、Figure 2",
+   "conditions": "论文的 RPN + Fast R-CNN 框架，使用共享卷积骨干",
+   "checked_at": "2026-07-19"
+  },
+  {
+   "type": "paper_report",
+   "claim": "论文默认在每个滑窗位置设置 3 种尺度和 3 种宽高比，共 9 个锚框，并用目标性分类与边界框回归的多任务损失训练 RPN。",
+   "scope": "9 锚框是论文默认实现配置，不是 Faster R-CNN 对所有数据集的强制超参数。",
+   "source_label": "Faster R-CNN 论文",
+   "source_url": "https://arxiv.org/abs/1506.01497",
+   "locator": "§3.1.1 Anchors、§3.1.2 Loss Function、Figure 3、Equation 1",
+   "conditions": "论文默认 3 scales × 3 aspect ratios 的 RPN 配置",
+   "checked_at": "2026-07-19"
+  },
+  {
+   "type": "atlas_interpretation",
+   "claim": "Atlas 将 Faster R-CNN 作为典型两阶段检测基线：候选区域生成与逐区域分类回归是两个可区分模块，但通过共享特征联合构成完整检测器。",
+   "scope": "这是对论文系统边界的谱系归纳，不把 RPN 单独的召回率等同于完整检测精度。",
+   "source_label": "Faster R-CNN 论文",
+   "source_url": "https://arxiv.org/abs/1506.01497",
+   "locator": "§3、§3.2 Sharing Features for RPN and Fast R-CNN",
+   "conditions": "评价完整系统时同时考虑 proposal、分类回归和论文指定推理流程",
+   "checked_at": "2026-07-19"
   }
  ],
  "citations": {

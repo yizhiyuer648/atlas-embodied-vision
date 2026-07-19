@@ -228,6 +228,38 @@
   {
    "title": "局限与后续",
    "body": "两阶段流程限制实时性;掩码分辨率(28×28)对大物体边界偏粗。后续 SOLO、CondInst 探索单阶段实例分割,Mask2Former 用查询式统一架构接管精度上限,SAM 则把分割带入提示式基础模型时代。"
+ }
+ ],
+ "evidence_claims": [
+  {
+   "type": "paper_report",
+   "claim": "Mask R-CNN 在 Faster R-CNN 的分类与边界框回归分支旁并行增加逐 RoI 的掩码预测分支，用于实例分割。",
+   "scope": "这是论文定义的基础框架；骨干、FPN 和关键点等具体实例化可变，不等同于单一固定网络。",
+   "source_label": "Mask R-CNN 论文",
+   "source_url": "https://arxiv.org/abs/1703.06870",
+   "locator": "Abstract、§1、§3、Figure 1",
+   "conditions": "以 Faster R-CNN 为检测框架，mask branch 与 class/box 分支并行",
+   "checked_at": "2026-07-19"
+  },
+  {
+   "type": "paper_report",
+   "claim": "RoIAlign 去除 RoIPool 对 RoI 边界和分箱的量化，并用双线性插值计算采样位置的特征，以保留像素级空间对齐。",
+   "scope": "陈述 RoIAlign 的算子机制；精度收益取决于论文所述骨干、任务和训练设置。",
+   "source_label": "Mask R-CNN 论文",
+   "source_url": "https://arxiv.org/abs/1703.06870",
+   "locator": "§3 RoIAlign、Figure 3、Table 2c",
+   "conditions": "与论文中的 RoIPool/RoIWarp 对照，边界与 bins 均不取整",
+   "checked_at": "2026-07-19"
+  },
+  {
+   "type": "atlas_interpretation",
+   "claim": "Atlas 将 Mask R-CNN 的关键方法增量拆成“并行实例掩码头”和“无量化 RoI 对齐”两项，避免把后续 Detectron2/FPN 工程能力全部归于原论文。",
+   "scope": "这是版本与贡献边界的编辑判断，只覆盖原论文直接定义和实验验证的组件。",
+   "source_label": "Mask R-CNN 论文",
+   "source_url": "https://arxiv.org/abs/1703.06870",
+   "locator": "§1、§3、Figure 1–4",
+   "conditions": "原始 Mask R-CNN 论文边界；后续框架功能需另行取证",
+   "checked_at": "2026-07-19"
   }
  ],
  "citations": {

@@ -17,6 +17,38 @@
  ],
  "tier": "A",
  "lineage_parent": "unknown",
+ "evidence_claims": [
+  {
+   "type": "paper_report",
+   "claim": "Diffusion Policy 将视觉运动策略表示为条件去噪扩散过程，预测动作序列并以滚动时域方式闭环执行。",
+   "scope": "仅描述论文中的模仿学习架构；不表示模型具有通用规划或任务级推理能力。",
+   "source_label": "Diffusion Policy 论文",
+   "source_url": "https://arxiv.org/abs/2303.04137",
+   "locator": "Abstract、§2.3、Figure 2 与 §4.3",
+   "conditions": "视觉或状态观测作为条件；动作块经迭代去噪后在 receding-horizon control 中执行",
+   "checked_at": "2026-07-19"
+  },
+  {
+   "type": "paper_report",
+   "claim": "论文在 4 个机器人操作基准的 15 个任务上评估 Diffusion Policy，覆盖仿真与真实机器人环境。",
+   "scope": "任务数与覆盖范围来自论文评测设置；不能外推为对任意机器人、任务或开放世界分布的验证。",
+   "source_label": "Diffusion Policy 论文",
+   "source_url": "https://arxiv.org/abs/2303.04137",
+   "locator": "Abstract、§5.1–§5.3、§6.1–§6.2 与 §7.3–§7.5",
+   "conditions": "行为克隆设定；含单臂和双臂任务；基线、演示数据和指标均按论文定义",
+   "checked_at": "2026-07-19"
+  },
+  {
+   "type": "atlas_interpretation",
+   "claim": "Diffusion Policy 适合被视为生成式动作序列策略的代表性基线，而不是已证实的通用机器人基础模型。",
+   "scope": "这是 Atlas 根据方法形式与评测边界作出的编辑定位，不是论文自身的通用性结论。",
+   "source_label": "Diffusion Policy 论文",
+   "source_url": "https://arxiv.org/abs/2303.04137",
+   "locator": "§2.3、§4.1–§4.4 与 §5.2–§5.4",
+   "conditions": "按生成式动作建模与滚动执行的方法影响定位；不以单篇作者报告结果代替跨平台复现",
+   "checked_at": "2026-07-19"
+  }
+ ],
  "architecture": {
   "description_zh": "Diffusion Policy 先编码当前观测，再把观测条件、扩散时间步和带噪动作序列送入 Conditional U-Net 1D；调度器反复去噪，最后执行动作块前部。",
   "modules": [

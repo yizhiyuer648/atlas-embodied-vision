@@ -13,7 +13,7 @@
   "method": {
     "key_contributions": ["提出把动作表示统一进视觉语言 token 空间的 VLA 路线。", "展示网络语义知识向机器人控制任务迁移。", "测试若干训练中未直接出现的对象与指令组合。"],
     "limitations": ["模型、完整训练数据与训练代码未全部开放。", "自回归 token 输出带来延迟与控制频率限制。", "实验机器人和任务范围有限，不能外推为通用具身智能。"],
-    "evidence": [{"dimension":"真实场景","rating":"证据充分","note":"包含真实机器人闭环实验。"},{"dimension":"可复现性","rating":"证据部分","note":"论文与演示公开，完整系统不可独立复现。"}]
+    "evidence": [{"dimension":"主张与证据","rating":"证据部分","note":"论文以真实机器人对照支持网络知识迁移与行为泛化，但结果来自作者平台，尚不能视为独立复现或通用机器人能力证明。"},{"dimension":"验证广度","rating":"证据部分","note":"评测包含已见任务、未见组合与语义推理类挑战，但本体、环境和操作分布仍集中于作者设定。"},{"dimension":"真实场景","rating":"证据充分","note":"论文包含真实机器人闭环实验；充分仅指“存在真机闭环证据”，不意味已验证长期、无人监管部署。"},{"dimension":"可复现性","rating":"证据部分","note":"论文与演示公开，但完整模型、机器人训练数据和训练配方未全部开放，因而不能独立复制整个系统。"},{"dimension":"版本增量","rating":"证据充分","note":"相对 RT-1 式机器人策略与通用 VLM，论文明确将动作表示并入语言 token 空间并联合微调；增量证据仅支持文中模型与对照。"}]
   },
   "flow": {"title":"RT-2 的网络知识到动作 token","nodes":[{"id":"web","label":"互联网图文数据","x":30,"y":55},{"id":"robot","label":"机器人轨迹数据","x":30,"y":200},{"id":"format","label":"统一序列格式","x":245,"y":125},{"id":"vla","label":"VLA 主干","x":455,"y":125,"accent":true},{"id":"tokens","label":"动作 Tokens","x":665,"y":125},{"id":"control","label":"连续控制命令","x":855,"y":125}],"edges":[{"from":"web","to":"format","label":"语义监督"},{"from":"robot","to":"format","label":"观测+动作"},{"from":"format","to":"vla","label":"共同训练"},{"from":"vla","to":"tokens","label":"自回归生成"},{"from":"tokens","to":"control","label":"反离散化"}]}
 }

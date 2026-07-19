@@ -229,6 +229,38 @@
   {
    "title": "局限与后续",
    "body": "视觉专家几乎让参数翻倍,训练与显存成本高;高分辨率支持有限。后续 CogVLM2 与 GLM-4V 引入更高分辨率与视频能力,而社区主流在数据充足时仍偏向更简单的浅对齐 + 大规模指令微调。"
+ }
+ ],
+ "evidence_claims": [
+  {
+   "type": "paper_report",
+   "claim": "CogVLM 由 ViT 编码器、MLP 适配器、预训练 GPT 风格语言模型和视觉专家模块组成；视觉专家在各层注意力与 FFN 中为视觉 token 提供独立参数路径。",
+   "scope": "该结构描述 CogVLM-17B 的论文实现；视觉专家与文本路径的参数分工不等于完全独立的两套模型。",
+   "source_label": "CogVLM 论文",
+   "source_url": "https://arxiv.org/abs/2311.03079",
+   "locator": "§2.1 Architecture、Figure 4、Equation 1–5",
+   "conditions": "CogVLM-17B，EVA2-CLIP-E 视觉编码器与 Vicuna 1.5-7B 语言底座",
+   "checked_at": "2026-07-19"
+  },
+  {
+   "type": "paper_report",
+   "claim": "CogVLM 的预训练先进行图像描述式下一 token 预测，再混合图像描述与指代表达理解；随后分别对 CogVLM-Chat 和 CogVLM-Grounding 做指令对齐。",
+   "scope": "陈述论文 §2.2–§2.3 的训练任务顺序，不对未公开数据清洗质量或其他复现配方作推断。",
+   "source_label": "CogVLM 论文",
+   "source_url": "https://arxiv.org/abs/2311.03079",
+   "locator": "§2.2 Pretraining、§2.3 Alignment",
+   "conditions": "论文给出的两阶段预训练及后续 SFT 设置；Chat 与 Grounding 版本使用不同任务数据",
+   "checked_at": "2026-07-19"
+  },
+  {
+   "type": "atlas_interpretation",
+   "claim": "Atlas 将 CogVLM 标为“层内视觉专家深融合”路线，以区别只在语言模型输入端使用单个投影器的浅连接方案。",
+   "scope": "这是依据参数插入位置作出的架构分类；不据此断言深融合在所有数据规模、语言任务或部署预算下都更优。",
+   "source_label": "CogVLM 论文",
+   "source_url": "https://arxiv.org/abs/2311.03079",
+   "locator": "Abstract、§1、§2.1",
+   "conditions": "仅比较论文定义的连接机制，不跨协议比较模型总分",
+   "checked_at": "2026-07-19"
   }
  ],
  "citations": {

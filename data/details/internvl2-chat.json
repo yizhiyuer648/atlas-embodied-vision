@@ -209,9 +209,41 @@
    "title": "结果与影响",
    "body": "InternVL2-76B/108B 在 MMMU、DocVQA、MathVista 等基准上进入全球第一梯队,部分项目首次让开源模型逼平 GPT-4o 级商用模型;全尺寸开源使其成为学术研究与产业私有化部署的高频选择,也是国产开源多模态的旗帜性成果。"
   },
-  {
+ {
    "title": "局限与后续",
    "body": "多 tile 高分辨率输入推理成本高;长视频理解仍靠稀疏采样。后续 InternVL2.5/3 继续强化推理(混合偏好优化)与原生多模态预训练,与 Qwen-VL 系的竞争持续拉高开源水位。"
+  }
+ ],
+ "evidence_claims": [
+  {
+   "type": "paper_report",
+   "claim": "InternVL2 官方模型卡规定动态分辨率训练最多使用 12 个 448×448 图块、测试最多 40 个图块；第一阶段只训练 MLP，第二阶段训练 ViT、MLP 与 LLM。",
+   "scope": "这是 2024 年 InternVL2 官方发布页的模型卡配置；不同尺寸检查点与后续 2.5/3.x 版本可能采用不同上限或配方。",
+   "source_label": "InternVL2 官方技术页",
+   "source_url": "https://internvl.github.io/blog/2024-07-02-InternVL-2.0/",
+   "locator": "§ Model Card，Resolution 与 Trainable Module 行",
+   "conditions": "InternVL2 2024-07 发布快照；区分 stage 1 与 stage 2",
+   "checked_at": "2026-07-19"
+  },
+  {
+   "type": "paper_report",
+   "claim": "InternVL2 官方说明采用从小到大模型、从粗到精数据的渐进对齐策略，并以同一组参数支持文本、图像和视频等多模态输入。",
+   "scope": "该声明来自项目团队的首发技术说明；“支持”表示官方模型接口与训练范围，不等于所有模态上具有相同精度。",
+   "source_label": "InternVL2 官方技术页",
+   "source_url": "https://internvl.github.io/blog/2024-07-02-InternVL-2.0/",
+   "locator": "§ InternVL2 family is built upon the following designs，第 1–2 项",
+   "conditions": "InternVL2 系列首发模型；性能需按具体检查点和评测协议分别核对",
+   "checked_at": "2026-07-19"
+  },
+  {
+   "type": "atlas_interpretation",
+   "claim": "Atlas 把 InternVL2 视为独立发布快照而非单一固定模型；比较结果时必须同时记录具体参数档、评测工具和代码版本。",
+   "scope": "编辑判断基于官方页面同时列出多个尺寸，并明确不同评测工具、代码版本和环境会产生差异。",
+   "source_label": "InternVL2 官方技术页",
+   "source_url": "https://internvl.github.io/blog/2024-07-02-InternVL-2.0/",
+   "locator": "§ Model Card、§ Performance 脚注",
+   "conditions": "不把 InternVL2-Pro 或某一尺寸的成绩归因给整个系列；不跨工具直接比较",
+   "checked_at": "2026-07-19"
   }
  ]
 }

@@ -191,6 +191,38 @@
   {
    "title": "局限与后续",
    "body": "336px 固定低分辨率看不清小字,OCR 与文档场景吃力;单图输入限制应用面。LLaVA-NeXT 用 AnyRes 切图补高分辨率,LLaVA-OneVision 扩展到多图与视频;整个开源 MLLM 生态基本沿 LLaVA 范式演化。"
+ }
+ ],
+ "evidence_claims": [
+  {
+   "type": "paper_report",
+   "claim": "LLaVA 使用文本版 GPT-4/ChatGPT，把图像的 captions 与目标框编码为文本符号上下文，生成对话、详细描述和复杂推理三类视觉指令数据。",
+   "scope": "教师模型在该数据生成流程中没有直接接收图像；图像内容由 captions 与 boxes 代理，因此合成数据受这些标注覆盖度限制。",
+   "source_label": "LLaVA 论文",
+   "source_url": "https://arxiv.org/abs/2304.08485",
+   "locator": "§3 GPT-assisted Visual Instruction Data Generation、Table 1",
+   "conditions": "论文首版 COCO 视觉指令数据构造流程，使用人工示例作 in-context seeds",
+   "checked_at": "2026-07-19"
+  },
+  {
+   "type": "paper_report",
+   "claim": "LLaVA 的首版架构用线性投影把 CLIP ViT-L/14 的视觉特征映射到 Vicuna 词嵌入空间，并采用特征对齐预训练与端到端视觉指令微调两个阶段。",
+   "scope": "描述论文首版 LLaVA；不包括 LLaVA-1.5、LLaVA-NeXT 或 OneVision 的投影器、分辨率和数据更新。",
+   "source_label": "LLaVA 论文",
+   "source_url": "https://arxiv.org/abs/2304.08485",
+   "locator": "§4.1 Architecture、§4.2 Training、Figure 1",
+   "conditions": "CLIP ViT-L/14 + Vicuna 的论文配置；按两阶段训练策略",
+   "checked_at": "2026-07-19"
+  },
+  {
+   "type": "atlas_interpretation",
+   "claim": "Atlas 将首版 LLaVA 归为“简单视觉投影器 + 视觉指令微调”范式；这一标签描述接口与训练方法，不代表其合成指令回答已经由图像逐条人工核验。",
+   "scope": "谱系判断结合 §3 的数据生成边界与 §4 的架构；不把教师生成文本当作独立视觉事实证据。",
+   "source_label": "LLaVA 论文",
+   "source_url": "https://arxiv.org/abs/2304.08485",
+   "locator": "§3–§4、Figure 1",
+   "conditions": "区分模型方法证据、合成数据来源与人工验证状态",
+   "checked_at": "2026-07-19"
   }
  ],
  "citations": {
