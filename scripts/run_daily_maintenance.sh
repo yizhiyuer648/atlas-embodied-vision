@@ -19,7 +19,7 @@ result_file="$LOG_DIR/$timestamp-result.md"
 sed "s|{{PROJECT_ROOT}}|$PROJECT_ROOT|g" "$PROMPT_FILE" |
   "$CODEX_BIN" -a never --search exec \
     --skip-git-repo-check \
-    --sandbox workspace-write \
+    --sandbox danger-full-access \
     --cd "$PROJECT_ROOT" \
     --output-last-message "$result_file" \
     - >"$log_file" 2>&1
