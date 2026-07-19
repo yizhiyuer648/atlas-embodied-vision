@@ -56,7 +56,7 @@ ACADEMIC_TOP_LEVEL_FIELDS = {
     "paper_quality_framework",
     "publication_statuses", "evidence_levels", "platforms", "deduplication",
     "journals", "conferences", "publication_events", "comparison_dimensions",
-    "direction_comparisons", "editorial_summary",
+    "direction_comparisons", "editorial_summaries", "editorial_summary",
 }
 ACADEMIC_COMMON_VENUE_FIELDS = {
     "id", "name", "acronym", "official_url", "library_url", "tracking_priority",
@@ -535,6 +535,33 @@ def validate_academic_tracker(errors):
             errors.append("academic_tracker.editorial_summary: fact 与 interpretation 必须分离")
         if not isinstance(summary.get("next_watch"), list) or not summary.get("next_watch"):
             errors.append("academic_tracker.editorial_summary.next_watch: 必须是非空数组")
+
+    view_summaries = data.get("editorial_summaries")
+    if not isinstance(view_summaries, dict):
+        errors.append("academic_tracker.editorial_summaries: 必须是对象")
+    else:
+        missing_views = ACADEMIC_VIEWS - set(view_summaries)
+        if missing_views:
+            errors.append(f"academic_tracker.editorial_summaries: 缺视图 {sorted(missing_views)}")
+        fact_texts = []
+        interpretation_texts = []
+        for view in sorted(ACADEMIC_VIEWS):
+            view_summary = view_summaries.get(view)
+            where = f"academic_tracker.editorial_summaries.{view}"
+            if not isinstance(view_summary, dict):
+                errors.append(f"{where}: 必须是对象")
+                continue
+            for field in ("title", "fact", "interpretation"):
+                if not isinstance(view_summary.get(field), str) or not view_summary.get(field, "").strip():
+                    errors.append(f"{where}.{field}: 必须是非空文本")
+            if not isinstance(view_summary.get("next_watch"), list) or not view_summary.get("next_watch"):
+                errors.append(f"{where}.next_watch: 必须是非空数组")
+            fact_texts.append(view_summary.get("fact", "").strip())
+            interpretation_texts.append(view_summary.get("interpretation", "").strip())
+        if len(fact_texts) == len(ACADEMIC_VIEWS) and len(set(fact_texts)) != len(fact_texts):
+            errors.append("academic_tracker.editorial_summaries: 三视图 fact 不得复制同一模板")
+        if len(interpretation_texts) == len(ACADEMIC_VIEWS) and len(set(interpretation_texts)) != len(interpretation_texts):
+            errors.append("academic_tracker.editorial_summaries: 三视图 interpretation 不得复制同一模板")
 
     metric_claim_patterns = (
         r"\bJCR\s*(?:Q\s*)?[1-4]\b",

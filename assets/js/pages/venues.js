@@ -1,4 +1,4 @@
-import { CATEGORIES, escapeHTML, initReveals, loadJSON } from '../core.js?v=20260719.8';
+import { CATEGORIES, escapeHTML, initReveals, loadJSON } from '../core.js?v=20260719.9';
 
 const DATA_URL = 'data/academic_tracker.json';
 const VIEWS = {
@@ -42,7 +42,7 @@ function renderTabs(active) {
 
 function renderOverview(data, view) {
   const root = document.getElementById('academic-overview');
-  const summary = data.editorial_summary;
+  const summary = data.editorial_summaries?.[view] || data.editorial_summary;
   const publicationType = view === 'journals' ? 'journal' : view === 'conferences' ? 'conference' : '';
   const count = publicationType
     ? data.publication_events.filter(event => event.publication_type === publicationType).length
@@ -198,7 +198,7 @@ function renderMethod(data) {
     </div>`;
 }
 
-function renderSources(data) {
+function renderSources(data, view) {
   const root = document.getElementById('academic-sources');
   const quality = data.paper_quality_framework;
   root.innerHTML = `
@@ -239,7 +239,7 @@ function renderSources(data) {
     </details>
     <article class="academic-watchlist">
       <div><p class="eyebrow">NEXT WATCH</p><h2>下一轮观察问题</h2></div>
-      <ol>${data.editorial_summary.next_watch.map(item => `<li>${escapeHTML(item)}</li>`).join('')}</ol>
+      <ol>${(data.editorial_summaries?.[view] || data.editorial_summary).next_watch.map(item => `<li>${escapeHTML(item)}</li>`).join('')}</ol>
     </article>
     <p class="academic-policy-note">${escapeHTML(data.editorial_policy.priority_note)} ${escapeHTML(data.editorial_policy.metric_policy)}</p>`;
 }
@@ -257,6 +257,6 @@ export async function init() {
   const content = document.getElementById('academic-content');
   content.innerHTML = view === 'compare' ? renderCompare(data) : renderVenueCards(data[view], view, data);
   renderMethod(data);
-  renderSources(data);
+  renderSources(data, view);
   initReveals();
 }
