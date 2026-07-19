@@ -23,3 +23,8 @@ sed "s|{{PROJECT_ROOT}}|$PROJECT_ROOT|g" "$PROMPT_FILE" |
     --cd "$PROJECT_ROOT" \
     --output-last-message "$result_file" \
     - >"$log_file" 2>&1
+
+# Only publish the runtime-safe subset after the maintenance agent and the
+# project's data gate both succeed. Git commits remain a reviewed manual step.
+python3 "$PROJECT_ROOT/scripts/validate_data.py" >>"$log_file" 2>&1
+"$PROJECT_ROOT/scripts/deploy_pages.sh" >>"$log_file" 2>&1
