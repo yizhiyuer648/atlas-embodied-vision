@@ -13,8 +13,9 @@ python3 scripts/validate_data.py
 cp -a assets "$DEPLOY_DIR/assets"
 mkdir -p "$DEPLOY_DIR/data"
 cp -a data/details "$DEPLOY_DIR/data/details"
+cp -a data/paper_details "$DEPLOY_DIR/data/paper_details"
 cp data/index.json data/papers.json data/glossary.json \
-  data/academic_tracker.json "$DEPLOY_DIR/data/"
+  data/academic_tracker.json data/paper_analysis_index.json "$DEPLOY_DIR/data/"
 cp index.html explore.html model.html compare.html radar.html venues.html \
   lineage.html timeline.html trends.html glossary.html favicon.svg "$DEPLOY_DIR/"
 
@@ -24,4 +25,3 @@ npx -y wrangler@latest pages deploy "$DEPLOY_DIR" \
   --branch main \
   --commit-hash "$commit_hash" \
   --commit-dirty=true
-

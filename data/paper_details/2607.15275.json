@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "paper_id": "arxiv:2607.15275",
+  "title": "RoboTTT: Context Scaling for Robot Policies",
+  "reviewed_at": "2026-07-19",
+  "evidence_scope": "基于论文全文、NVIDIA GEAR 项目页与 Atlas 已核验模型条目；结果数字只适用于论文实验条件。",
+  "beginner": {
+    "one_sentence": "RoboTTT 把机器人的长时间经历压进一组会在推理时更新的参数，让策略不用反复读取全部历史，也能利用长达 8K 时间步的上下文。",
+    "problem": "普通机器人策略通常只看当前帧或很短的历史。装配、整理和受干扰恢复却可能持续数分钟：模型既要记住此前做过什么，又不能让注意力计算随着历史无限增长。",
+    "intuition": "可以把普通上下文窗口想成桌面上摊开的所有笔记，越积越多；fast weights 更像边工作边整理的内部备忘录，把历史信息写进可更新参数，需要时再从参数中读出来。",
+    "steps": [
+      "视觉、语言和机器人状态进入 GR00T N1.7 的原有策略骨干。",
+      "当前片段经过自注意力与交叉注意力，形成与动作相关的上下文。",
+      "测试时训练层用当前上下文产生梯度，在线更新 fast weights。",
+      "更新后的 fast weights 作为循环记忆，为动作 Diffusion Transformer 提供长期条件。",
+      "策略生成动作块并执行；下一时间段继续写入和读取这组记忆。"
+    ]
+  },
+  "method": {
+    "key_contributions": [
+      "把 Test-Time Training 嵌入 VLA/机器人策略，使推理期间的梯度更新成为记忆机制。",
+      "用 sequence action forcing 与截断反向传播训练超长视觉动作序列。",
+      "把上下文长度作为机器人基础模型的一条可测量扩展轴。"
+    ],
+    "limitations": [
+      "在线梯度更新会引入新的稳定性、硬件和故障恢复问题。",
+      "87% 等结果来自指定机器人、任务与基线，不能外推为通用收益。",
+      "截至核验日未找到官方 RoboTTT 代码与权重，复现性仍需等待。"
+    ],
+    "evidence": [
+      {"dimension": "主张与证据", "rating": "证据部分", "note": "论文给出闭环真实机器人实验，但尚需独立复现。"},
+      {"dimension": "验证广度", "rating": "证据部分", "note": "覆盖多阶段长时任务，机器人与任务分布仍有限。"},
+      {"dimension": "真实场景", "rating": "证据充分", "note": "包含真实机器人操作和五分钟十阶段装配。"},
+      {"dimension": "可复现性", "rating": "暂不可判", "note": "论文与视频公开，官方实现和权重未确认。"},
+      {"dimension": "版本增量", "rating": "证据充分", "note": "相对 GR00T N1.7 明确增加 TTT 层和长上下文训练配方。"}
+    ]
+  },
+  "flow": {
+    "title": "RoboTTT 的长上下文记忆回路",
+    "nodes": [
+      {"id": "input", "label": "视觉・语言・状态", "note": "当前时刻的多模态观测与任务指令", "x": 40, "y": 76},
+      {"id": "backbone", "label": "GR00T N1.7 骨干", "note": "自注意力与交叉注意力提取动作上下文", "x": 245, "y": 76},
+      {"id": "ttt", "label": "TTT 层", "note": "用当前上下文计算梯度并更新 fast weights", "x": 450, "y": 76, "accent": true},
+      {"id": "memory", "label": "Fast Weights", "note": "把长历史压进参数空间的循环记忆", "x": 450, "y": 220, "accent": true},
+      {"id": "action", "label": "动作 DiT", "note": "读取当前特征与长期记忆，生成动作块", "x": 655, "y": 76},
+      {"id": "robot", "label": "机器人执行", "note": "执行动作后产生下一段观测", "x": 860, "y": 76}
+    ],
+    "edges": [
+      {"from": "input", "to": "backbone", "label": "编码"},
+      {"from": "backbone", "to": "ttt", "label": "上下文"},
+      {"from": "ttt", "to": "memory", "label": "梯度写入"},
+      {"from": "memory", "to": "action", "label": "长期条件"},
+      {"from": "ttt", "to": "action", "label": "当前特征"},
+      {"from": "action", "to": "robot", "label": "动作块"},
+      {"from": "robot", "to": "input", "label": "下一时刻", "curve": true}
+    ]
+  }
+}

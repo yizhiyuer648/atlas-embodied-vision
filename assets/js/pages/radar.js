@@ -1,4 +1,4 @@
-import { CATEGORIES, loadJSON, escapeHTML, formatDate, formatCompact, initReveals, setQuery, categoryMeta } from '../core.js?v=20260719.7';
+import { CATEGORIES, loadJSON, escapeHTML, formatDate, formatCompact, initReveals, setQuery, categoryMeta } from '../core.js?v=20260719.8';
 
 const PAGE_SIZE = 30;
 const CACHE_TTL = 60 * 60 * 1000;
@@ -52,9 +52,13 @@ export async function init() {
   pruneSourceCaches();
 
   let library = { generated_at: '', papers: [] };
+  let analysisIndex = { papers: {} };
   let localLoadError = '';
   try {
-    library = await loadJSON('data/papers.json');
+    [library, analysisIndex] = await Promise.all([
+      loadJSON('data/papers.json'),
+      loadJSON('data/paper_analysis_index.json').catch(() => ({ papers: {} }))
+    ]);
   } catch (error) {
     localLoadError = error instanceof Error ? error.message : '无法读取本地论文库';
   }
@@ -84,6 +88,7 @@ export async function init() {
   let activeContextKey = '';
   let lastLiveLabel = '尚未请求实时来源';
   let inputTimer = null;
+  const analysisCache = new Map();
 
   function currentPapers() {
     return mergePapers([...localRecords, ...[...liveRecords.values()].flat()]);
@@ -147,6 +152,14 @@ export async function init() {
       : '';
     const paperUrl = safeExternalURL(paper.url);
     const readAction = paperUrl ? `<a class="button button-primary" href="${escapeHTML(paperUrl)}" target="_blank" rel="noopener noreferrer">打开论文 ↗</a>` : '';
+    const analysisId = paper.externalIds?.arxiv || '';
+    const analysisEntry = analysisIndex.papers?.[analysisId];
+    const analysis = analysisEntry
+      ? `<details class="paper-analysis" data-analysis-id="${escapeHTML(analysisId)}" data-analysis-path="${escapeHTML(analysisEntry.path)}">
+          <summary>初学者解析与动态方法图 <span>${escapeHTML(analysisEntry.status === 'reviewed' ? '已核验' : '整理中')}</span></summary>
+          <div class="paper-analysis-body" data-analysis-body><p class="paper-analysis-loading">展开后加载结构化解析…</p></div>
+        </details>`
+      : '';
     return `<article class="paper-card reveal-item" style="--delay:${(index % 6) * 70}ms">
       <div class="paper-meta">
         <span class="category-badge" style="--badge-color:${meta.color}">${escapeHTML(meta.short)}</span>
@@ -158,6 +171,7 @@ export async function init() {
       <p class="paper-authors" title="${escapeHTML((paper.authors || []).join(', '))}">${escapeHTML(authors || '作者元数据待确认')}</p>
       <details class="paper-abstract"><summary>英文摘要</summary><p>${escapeHTML(paper.abstract || '来源未提供摘要')}</p></details>
       <details class="paper-provenance"><summary>来源记录 ${paper.sourceRecords.length}${paper.conflicts.length ? ' · 有差异' : ''}</summary>${conflicts}<ul>${sourceRows}</ul></details>
+      ${analysis}
       <div class="paper-actions">
         ${readAction}
         <a class="button button-ghost" href="https://github.com/search?q=${encodeURIComponent(paper.title)}&type=repositories" target="_blank" rel="noopener noreferrer">搜索实现</a>
@@ -306,9 +320,82 @@ export async function init() {
     sync();
     refreshLive({ force: true });
   });
+  results.addEventListener('click', event => {
+    const summary = event.target.closest('.paper-analysis > summary');
+    if (!summary) return;
+    const details = summary.parentElement;
+    if (details.open || details.dataset.loaded === 'true') return;
+    window.setTimeout(() => loadPaperAnalysis(details, analysisCache), 0);
+  });
 
   render();
   refreshLive();
+}
+
+async function loadPaperAnalysis(details, cache) {
+  const body = details.querySelector('[data-analysis-body]');
+  const path = details.dataset.analysisPath;
+  if (!body || !path) return;
+  try {
+    let payload = cache.get(path);
+    if (!payload) {
+      payload = await loadJSON(path);
+      cache.set(path, payload);
+    }
+    body.innerHTML = renderPaperAnalysis(payload);
+    details.dataset.loaded = 'true';
+  } catch (error) {
+    body.innerHTML = `<p class="paper-analysis-error">解析暂时无法加载：${escapeHTML(error instanceof Error ? error.message : 'unknown')}</p>`;
+  }
+}
+
+function renderPaperAnalysis(payload) {
+  const beginner = payload.beginner || {};
+  const method = payload.method || {};
+  const steps = (beginner.steps || []).map((step, index) => `<li><b>${String(index + 1).padStart(2, '0')}</b><span>${escapeHTML(step)}</span></li>`).join('');
+  const contributions = (method.key_contributions || []).map(item => `<li>${escapeHTML(item)}</li>`).join('');
+  const limitations = (method.limitations || []).map(item => `<li>${escapeHTML(item)}</li>`).join('');
+  const evidence = (method.evidence || []).map(item => `<article><span>${escapeHTML(item.dimension)}</span><b>${escapeHTML(item.rating)}</b><p>${escapeHTML(item.note)}</p></article>`).join('');
+  return `<div class="paper-analysis-lead">
+      <span>BEGINNER'S MAP</span>
+      <h3>${escapeHTML(beginner.one_sentence || payload.title || '')}</h3>
+      <p>${escapeHTML(payload.evidence_scope || '')}</p>
+    </div>
+    <div class="paper-analysis-columns">
+      <section><h4>它解决什么问题</h4><p>${escapeHTML(beginner.problem || '')}</p></section>
+      <section><h4>直觉类比</h4><p>${escapeHTML(beginner.intuition || '')}</p></section>
+    </div>
+    <ol class="paper-method-steps">${steps}</ol>
+    ${renderPaperFlow(payload.flow || {})}
+    <div class="paper-analysis-columns paper-analysis-lists">
+      <section><h4>真正的增量</h4><ul>${contributions}</ul></section>
+      <section><h4>阅读时别忽略</h4><ul>${limitations}</ul></section>
+    </div>
+    <div class="paper-evidence-grid">${evidence}</div>`;
+}
+
+function renderPaperFlow(flow) {
+  const nodes = flow.nodes || [];
+  const nodeMap = new Map(nodes.map(node => [node.id, node]));
+  const edges = (flow.edges || []).map(edge => {
+    const from = nodeMap.get(edge.from);
+    const to = nodeMap.get(edge.to);
+    if (!from || !to) return '';
+    const x1 = Number(from.x) + 150;
+    const y1 = Number(from.y) + 32;
+    const x2 = Number(to.x);
+    const y2 = Number(to.y) + 32;
+    const path = edge.curve
+      ? `M ${x1} ${y1} C ${x1 + 80} 330, ${x2 - 80} 330, ${x2} ${y2}`
+      : `M ${x1} ${y1} C ${x1 + 45} ${y1}, ${x2 - 45} ${y2}, ${x2} ${y2}`;
+    const labelX = (x1 + x2) / 2;
+    const labelY = edge.curve ? 310 : (y1 + y2) / 2 - 8;
+    return `<path class="paper-flow-edge" d="${path}" marker-end="url(#paper-flow-arrow)"/><text class="paper-flow-label" x="${labelX}" y="${labelY}">${escapeHTML(edge.label || '')}</text>`;
+  }).join('');
+  const nodeMarkup = nodes.map(node => `<g class="paper-flow-node${node.accent ? ' is-accent' : ''}" transform="translate(${Number(node.x)},${Number(node.y)})">
+      <title>${escapeHTML(node.note || node.label || '')}</title><rect width="150" height="64" rx="12"/><text x="75" y="29" text-anchor="middle">${escapeHTML(node.label || '')}</text><text class="paper-flow-hint" x="75" y="47" text-anchor="middle">悬停查看</text>
+    </g>`).join('');
+  return `<figure class="paper-flow"><figcaption>${escapeHTML(flow.title || '方法流程')}</figcaption><div><svg viewBox="0 0 1050 350" role="img" aria-label="${escapeHTML(flow.title || '论文方法流程图')}"><defs><marker id="paper-flow-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z"/></marker></defs>${edges}${nodeMarkup}</svg></div></figure>`;
 }
 
 function normalizeLocalPaper(paper) {

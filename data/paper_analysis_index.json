@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "updated_at": "2026-07-19",
+  "papers": {
+    "2607.15275": {
+      "path": "data/paper_details/2607.15275.json",
+      "status": "reviewed",
+      "level": "beginner"
+    }
+  }
+}
