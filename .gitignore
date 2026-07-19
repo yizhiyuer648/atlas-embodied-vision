@@ -1,6 +1,7 @@
 # Local maintenance runtime artifacts
 .codex/daily-maintenance.lock
 .codex/maintenance-logs/
+.codex/reporting.local.json
 .wrangler/
 library/
 

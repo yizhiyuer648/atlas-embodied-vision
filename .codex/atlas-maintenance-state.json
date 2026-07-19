@@ -44,16 +44,22 @@
       "next": "启动 0.0.0.0:8000，确认当次 IPv4；必要时只放行 LocalSubnet 到 TCP 8000，再用真机复测。"
     },
     {
-      "id": "public_hosting",
-      "status": "pending",
-      "reason": "长期公网托管尚未配置；当前只能称本地或局域网站点。",
-      "next": "取得明确发布授权并完成真实公网部署、URL 与静态资源回归后再关闭。"
-    },
-    {
       "id": "lineage_physical_drag",
       "status": "pending",
       "reason": "当前周期尚未在可靠的真实指针环境重新采集谱系空白拖拽证据。",
       "next": "在可确认浏览器状态的桌面环境完成拖拽、缩放和分类切换复测。"
+    },
+    {
+      "id": "email_reporting_auth",
+      "status": "pending",
+      "reason": "Outlook 的 Microsoft Graph OAuth 发送通道尚未完成授权；收发地址仅保存在 Git 忽略的本地配置中。",
+      "next": "配置支持个人微软账号且具有 Mail.Send 委托权限的应用客户端 ID，再完成一次设备登录授权。"
+    },
+    {
+      "id": "r2_fulltext_storage",
+      "status": "pending",
+      "reason": "Cloudflare 账号尚未首次启用 R2，创建私有全文桶返回 API 10042。",
+      "next": "在 Cloudflare Dashboard 启用 R2 并确认存储条款后，创建私有桶并上传许可允许的全文。"
     }
   ],
   "automation": {
