@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "paper_id": "arxiv:2005.12872",
+  "title": "End-to-End Object Detection with Transformers",
+  "reviewed_at": "2026-07-19",
+  "evidence_scope": "依据 DETR 论文与官方代码整理；速度和精度只适用于论文报告的模型、训练配方与硬件条件。",
+  "beginner": {
+    "one_sentence": "DETR 把目标检测改写为集合预测，让 Transformer 一次输出一组不重复的物体，而不再依赖手工设计的锚框和 NMS。",
+    "problem": "传统检测器需要锚框、候选框匹配和非极大值抑制等多段规则，训练目标与最终输出之间存在人工管线。",
+    "intuition": "像给每个预测槽位分配一张唯一座位票：匈牙利匹配先决定哪个槽位负责哪个真实物体，再让每个槽位只交付一个答案。",
+    "steps": ["CNN 提取二维图像特征。", "位置编码和特征进入 Transformer 编码器。", "固定数量的 object queries 进入解码器并读取全局特征。", "每个 query 输出类别和边界框。", "匈牙利匹配建立一对一监督，未匹配槽位学习 no-object。"]
+  },
+  "method": {
+    "key_contributions": ["把检测统一为端到端集合预测。", "以二分匹配损失取代锚框分配和 NMS。", "展示全局注意力对大物体和关系建模的价值。"],
+    "limitations": ["原始 DETR 收敛慢，需要较长训练。", "小目标性能弱于当时成熟检测器。", "固定 query 数量形成输出上限，后续工作大量改进注意力与训练效率。"],
+    "evidence": [{"dimension":"主张与证据","rating":"证据充分","note":"论文提供 COCO 对照和消融。"},{"dimension":"可复现性","rating":"证据充分","note":"官方代码和训练配置公开。"}]
+  },
+  "flow": {"title":"DETR 的集合预测路径","nodes":[{"id":"image","label":"输入图像","x":30,"y":90},{"id":"cnn","label":"CNN 特征","x":220,"y":90},{"id":"enc","label":"Transformer 编码","x":410,"y":90},{"id":"query","label":"Object Queries","x":410,"y":220},{"id":"dec","label":"Transformer 解码","x":600,"y":90,"accent":true},{"id":"set","label":"类别 + 边界框集合","x":790,"y":90}],"edges":[{"from":"image","to":"cnn","label":"像素"},{"from":"cnn","to":"enc","label":"特征+位置"},{"from":"enc","to":"dec","label":"全局记忆"},{"from":"query","to":"dec","label":"查询槽位"},{"from":"dec","to":"set","label":"一对一输出"}]}
+}

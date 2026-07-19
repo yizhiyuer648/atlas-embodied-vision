@@ -9,7 +9,7 @@ export const CATEGORIES = {
 
 export const PAGE_LABELS = {
   home: '首页', explore: '图鉴', model: '模型详情', compare: '对比', lineage: '谱系',
-  timeline: '时间线', trends: '趋势', glossary: '术语表', radar: '论文雷达', venues: '学术追踪'
+  timeline: '时间线', trends: '趋势', glossary: '术语表', radar: '论文雷达', venues: '学术追踪', reader: '论文阅读器'
 };
 
 const MODEL_URL = 'data/index.json';

@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "paper_id": "arxiv:2307.15818",
+  "title": "RT-2: Vision-Language-Action Models Transfer Web Knowledge to Robotic Control",
+  "reviewed_at": "2026-07-19",
+  "evidence_scope": "依据 RT-2 论文与 Google DeepMind 官方介绍整理；机器人结果来自作者平台与任务，不代表任意本体或开放世界部署。",
+  "beginner": {
+    "one_sentence": "RT-2 把机器人动作写成文本 token，让视觉语言模型在保留网络知识的同时学习输出控制指令。",
+    "problem": "机器人数据远少于互联网图文数据，单独训练策略难以获得丰富语义和对新物体、新指令的泛化。",
+    "intuition": "它把‘看懂网页图片’和‘控制机械臂’放进同一种序列语言里，让模型把已有语义知识迁移到动作选择。",
+    "steps": ["视觉语言模型先从大规模图文任务获得语义能力。", "机器人观测、指令和动作轨迹被整理为序列任务。", "连续动作离散化并编码为可生成 token。", "网络数据与机器人数据共同训练。", "推理时模型读取图像和指令，自回归生成机器人动作。"]
+  },
+  "method": {
+    "key_contributions": ["提出把动作表示统一进视觉语言 token 空间的 VLA 路线。", "展示网络语义知识向机器人控制任务迁移。", "测试若干训练中未直接出现的对象与指令组合。"],
+    "limitations": ["模型、完整训练数据与训练代码未全部开放。", "自回归 token 输出带来延迟与控制频率限制。", "实验机器人和任务范围有限，不能外推为通用具身智能。"],
+    "evidence": [{"dimension":"真实场景","rating":"证据充分","note":"包含真实机器人闭环实验。"},{"dimension":"可复现性","rating":"证据部分","note":"论文与演示公开，完整系统不可独立复现。"}]
+  },
+  "flow": {"title":"RT-2 的网络知识到动作 token","nodes":[{"id":"web","label":"互联网图文数据","x":30,"y":55},{"id":"robot","label":"机器人轨迹数据","x":30,"y":200},{"id":"format","label":"统一序列格式","x":245,"y":125},{"id":"vla","label":"VLA 主干","x":455,"y":125,"accent":true},{"id":"tokens","label":"动作 Tokens","x":665,"y":125},{"id":"control","label":"连续控制命令","x":855,"y":125}],"edges":[{"from":"web","to":"format","label":"语义监督"},{"from":"robot","to":"format","label":"观测+动作"},{"from":"format","to":"vla","label":"共同训练"},{"from":"vla","to":"tokens","label":"自回归生成"},{"from":"tokens","to":"control","label":"反离散化"}]}
+}

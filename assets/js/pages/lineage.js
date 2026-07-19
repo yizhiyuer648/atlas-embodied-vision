@@ -1,4 +1,4 @@
-import { CATEGORIES, loadModels, categoryMeta, displayValue, escapeHTML, setQuery } from '../core.js?v=20260719.10';
+import { CATEGORIES, loadModels, categoryMeta, displayValue, escapeHTML, setQuery } from '../core.js?v=20260719.11';
 
 const NODE = Object.freeze({ width: 158, height: 60, column: 236, row: 82, rootGap: 42 });
 const MAIN_TOP = 92;

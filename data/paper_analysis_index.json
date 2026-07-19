@@ -2,6 +2,11 @@
   "schema_version": 1,
   "updated_at": "2026-07-19",
   "papers": {
+    "2005.12872": {"path": "data/paper_details/2005.12872.json", "status": "reviewed", "level": "beginner"},
+    "2103.00020": {"path": "data/paper_details/2103.00020.json", "status": "reviewed", "level": "beginner"},
+    "2304.02643": {"path": "data/paper_details/2304.02643.json", "status": "reviewed", "level": "beginner"},
+    "2304.07193": {"path": "data/paper_details/2304.07193.json", "status": "reviewed", "level": "beginner"},
+    "2307.15818": {"path": "data/paper_details/2307.15818.json", "status": "reviewed", "level": "beginner"},
     "2607.15275": {
       "path": "data/paper_details/2607.15275.json",
       "status": "reviewed",

@@ -1,11 +1,11 @@
-import { setupShell, initReveals } from './core.js?v=20260719.10';
+import { setupShell, initReveals } from './core.js?v=20260719.11';
 
 const page = document.body.dataset.page || 'home';
 
 async function boot() {
   await setupShell(page);
   try {
-    const module = await import(`./pages/${page}.js?v=20260719.10`);
+    const module = await import(`./pages/${page}.js?v=20260719.11`);
     if (typeof module.init === 'function') await module.init();
   } catch (error) {
     console.error(`Atlas 页面“${page}”初始化失败：`, error);

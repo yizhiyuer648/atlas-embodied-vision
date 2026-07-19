@@ -17,7 +17,8 @@ log_file="$LOG_DIR/$timestamp.log"
 result_file="$LOG_DIR/$timestamp-result.md"
 
 sed "s|{{PROJECT_ROOT}}|$PROJECT_ROOT|g" "$PROMPT_FILE" |
-  "$CODEX_BIN" -a never --search exec \
+  "$CODEX_BIN" -a never --search -m gpt-5.6-sol \
+    -c 'model_reasoning_effort="xhigh"' exec \
     --skip-git-repo-check \
     --sandbox danger-full-access \
     --cd "$PROJECT_ROOT" \

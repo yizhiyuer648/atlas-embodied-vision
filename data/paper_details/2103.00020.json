@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "paper_id": "arxiv:2103.00020",
+  "title": "Learning Transferable Visual Models From Natural Language Supervision",
+  "reviewed_at": "2026-07-19",
+  "evidence_scope": "依据 CLIP 论文和 OpenAI 官方实现整理；互联网图文数据的规模不能自动等价为高质量或无偏数据。",
+  "beginner": {
+    "one_sentence": "CLIP 通过判断一批图片和文本中哪些互相匹配，学到一个可用自然语言直接查询的视觉语义空间。",
+    "problem": "传统图像分类依赖固定类别和昂贵人工标注，换数据集时通常要重新训练分类头。",
+    "intuition": "它不是背一张固定答案表，而是学习把图片和句子放进同一张语义地图；分类时只需比较图片更靠近哪个类别描述。",
+    "steps": ["图像编码器生成图像向量。", "文本 Transformer 生成文本向量。", "两侧向量归一化并形成批内相似度矩阵。", "对称对比损失拉近真实图文对并推远错配。", "推理时把类别写成提示词，文本向量直接充当零样本分类器。"]
+  },
+  "method": {
+    "key_contributions": ["以自然语言监督训练可迁移视觉表征。", "把提示词构造与零样本视觉分类连接起来。", "系统比较多种 ResNet 与 ViT 规模。"],
+    "limitations": ["训练数据来源带来偏见、噪声和治理问题。", "细粒度、计数、抽象任务和分布外场景并非都可靠。", "提示词选择会显著影响零样本结果。"],
+    "evidence": [{"dimension":"验证广度","rating":"证据充分","note":"论文覆盖多种下游数据集。"},{"dimension":"真实场景","rating":"证据部分","note":"广泛基准不等于开放世界安全验证。"}]
+  },
+  "flow": {"title":"CLIP 的图文对齐与零样本分类","nodes":[{"id":"image","label":"图像批次","x":30,"y":70},{"id":"vision","label":"图像编码器","x":220,"y":70},{"id":"text","label":"文本批次","x":30,"y":210},{"id":"textenc","label":"文本编码器","x":220,"y":210},{"id":"matrix","label":"图文相似度矩阵","x":440,"y":135,"accent":true},{"id":"prompt","label":"类别提示词","x":660,"y":70},{"id":"zero","label":"零样本预测","x":850,"y":135}],"edges":[{"from":"image","to":"vision","label":"编码"},{"from":"text","to":"textenc","label":"编码"},{"from":"vision","to":"matrix","label":"图像向量"},{"from":"textenc","to":"matrix","label":"文本向量"},{"from":"matrix","to":"zero","label":"对齐空间"},{"from":"prompt","to":"zero","label":"类别文本"}]}
+}

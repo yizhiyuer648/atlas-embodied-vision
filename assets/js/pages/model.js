@@ -2,7 +2,7 @@ import {
   loadModels, loadModelDetail, categoryMeta, displayValue, isKnown, isOpenSource, escapeHTML, setupBreadcrumbs,
   isFavorite, toggleFavorite, initCardInteractions, initReveals, modelCard, cachedFetchJSON,
   repoFromURL, formatCompact, formatDate, toast
-} from '../core.js?v=20260719.10';
+} from '../core.js?v=20260719.11';
 
 export async function init() {
   const models = await loadModels();
@@ -47,6 +47,7 @@ export async function init() {
       <div class="idea-grid">
         <article class="idea-card"><h3>KEY IDEA</h3><p>${escapeHTML(model.key_idea_zh || '公开资料仍在整理中。')}</p><div class="tag-list">${(model.tags || []).map(tag => `<span class="tag">${escapeHTML(tag)}</span>`).join('')}</div></article>
         <div class="source-links">
+          ${arxivReaderLink(model.paper_url)}
           ${sourceLink('论文 / 项目页', model.paper_url, '↗')}
           ${sourceLink('代码仓库', model.github_url, '↗')}
         </div>
@@ -86,6 +87,11 @@ function metaPair(label, value) { return `<div class="meta-pair"><dt>${escapeHTM
 function sourceLink(label, url, icon) {
   const known = isKnown(url);
   return `<a class="source-link ${known ? '' : 'disabled'}" ${known ? `href="${escapeHTML(url)}" target="_blank" rel="noopener noreferrer"` : 'aria-disabled="true"'}><span>${escapeHTML(label)}${known ? '' : ' · unknown'}</span><span>${known ? icon : '—'}</span></a>`;
+}
+
+function arxivReaderLink(url) {
+  const id = String(url || '').match(/arxiv\.org\/(?:abs|pdf)\/(\d{4}\.\d{4,5})/i)?.[1];
+  return id ? `<a class="source-link source-link-reader" href="reader.html?id=${encodeURIComponent(id)}"><span>站内阅读全文</span><span>◫</span></a>` : '';
 }
 
 function sectionsArticle(model) {

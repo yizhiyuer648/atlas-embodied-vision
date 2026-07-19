@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "paper_id": "arxiv:2304.07193",
+  "title": "DINOv2: Learning Robust Visual Features without Supervision",
+  "reviewed_at": "2026-07-19",
+  "evidence_scope": "依据 DINOv2 论文和 Meta 官方代码整理；冻结特征的迁移结果不能自动代表端到端任务中的最佳系统性能。",
+  "beginner": {
+    "one_sentence": "DINOv2 用经过筛选的大规模无标注图像训练通用视觉特征，让许多任务只接一个轻量头就能使用。",
+    "problem": "监督预训练受标签体系限制，而纯互联网自监督训练又容易被重复、低质和分布偏斜数据拖累。",
+    "intuition": "与其逐张告诉模型‘这是什么’，不如让教师和学生在不同裁剪下保持一致；数据筛选则像先整理教材再上课。",
+    "steps": ["从大规模图像池检索并整理训练数据。", "学生网络观察不同视图并预测教师输出。", "教师参数由学生的指数滑动平均更新。", "图像级与 patch 级目标共同塑造语义和局部特征。", "下游任务冻结骨干或加轻量适配头。"]
+  },
+  "method": {
+    "key_contributions": ["把数据整理、蒸馏式自监督和规模化训练组合成通用视觉骨干。", "同时提供不同尺寸的 ViT 模型。", "强调无需下游微调的冻结特征评测。"],
+    "limitations": ["数据整理流程和大规模算力提高完整复现门槛。", "数据来源偏差仍会进入表征。", "冻结特征强并不保证在安全关键场景中稳健。"],
+    "evidence": [{"dimension":"验证广度","rating":"证据充分","note":"覆盖分类、分割、深度等多类任务。"},{"dimension":"可复现性","rating":"证据部分","note":"权重和代码公开，但完整训练成本很高。"}]
+  },
+  "flow": {"title":"DINOv2 的教师—学生自监督","nodes":[{"id":"pool","label":"大规模图像池","x":30,"y":100},{"id":"curate","label":"检索与去重筛选","x":220,"y":100},{"id":"views","label":"多视图裁剪","x":410,"y":100},{"id":"student","label":"学生 ViT","x":600,"y":55,"accent":true},{"id":"teacher","label":"EMA 教师 ViT","x":600,"y":190},{"id":"feature","label":"通用视觉特征","x":820,"y":100}],"edges":[{"from":"pool","to":"curate","label":"原始数据"},{"from":"curate","to":"views","label":"整理数据"},{"from":"views","to":"student","label":"局部/全局视图"},{"from":"views","to":"teacher","label":"全局视图"},{"from":"student","to":"teacher","label":"EMA 更新"},{"from":"student","to":"feature","label":"冻结表征"}]}
+}

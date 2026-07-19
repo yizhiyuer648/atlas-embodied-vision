@@ -1,4 +1,4 @@
-import { CATEGORIES, loadJSON, escapeHTML, formatDate, formatCompact, initReveals, setQuery, categoryMeta } from '../core.js?v=20260719.10';
+import { CATEGORIES, loadJSON, escapeHTML, formatDate, formatCompact, initReveals, setQuery, categoryMeta } from '../core.js?v=20260719.11';
 
 const PAGE_SIZE = 30;
 const CACHE_TTL = 60 * 60 * 1000;
@@ -151,8 +151,10 @@ export async function init() {
       ? `<p class="paper-conflict">⚠ ${escapeHTML(paper.conflicts.join('；'))}。各来源原始记录已保留，页面没有强行覆盖。</p>`
       : '';
     const paperUrl = safeExternalURL(paper.url);
-    const readAction = paperUrl ? `<a class="button button-primary" href="${escapeHTML(paperUrl)}" target="_blank" rel="noopener noreferrer">打开论文 ↗</a>` : '';
     const analysisId = paper.externalIds?.arxiv || '';
+    const readAction = analysisId
+      ? `<a class="button button-primary" href="reader.html?id=${encodeURIComponent(analysisId)}">站内阅读全文</a>`
+      : paperUrl ? `<a class="button button-primary" href="${escapeHTML(paperUrl)}" target="_blank" rel="noopener noreferrer">打开来源 ↗</a>` : '';
     const analysisEntry = analysisIndex.papers?.[analysisId];
     const analysis = analysisEntry
       ? `<details class="paper-analysis" data-analysis-id="${escapeHTML(analysisId)}" data-analysis-path="${escapeHTML(analysisEntry.path)}">

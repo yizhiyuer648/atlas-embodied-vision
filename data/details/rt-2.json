@@ -43,5 +43,10 @@
   "count": 3628,
   "as_of": "2026-07",
   "source": "Semantic Scholar"
- }
+ },
+ "evidence_claims": [
+  {"type":"paper_report","claim":"RT-2 把机器人动作表示为可由视觉语言模型生成的 token，并联合训练网络与机器人数据。","scope":"描述 RT-2 的 VLA 配方；动作离散化方式和模型闭源状态限制了独立复现。","source_label":"RT-2 论文","source_url":"https://arxiv.org/abs/2307.15818","locator":"Abstract、§2–§3","conditions":"PaLI-X / PaLM-E 系骨干与作者机器人数据","checked_at":"2026-07-19"},
+  {"type":"paper_report","claim":"论文通过真实机器人实验评估新物体、新指令和语义推理类任务。","scope":"结果仅覆盖作者报告的机器人平台、任务集合和基线，不能外推到任意本体。","source_label":"RT-2 论文","source_url":"https://arxiv.org/abs/2307.15818","locator":"§4 Experiments","conditions":"真实机器人闭环；作者定义的 seen 与 unseen 任务协议","checked_at":"2026-07-19"},
+  {"type":"atlas_interpretation","claim":"RT-2 是把网络视觉语言知识迁移到动作生成的代表性 VLA 工作。","scope":"Atlas 对方法位置的编辑判断，不代表其在所有机器人基准上优于后续方法。","source_label":"Google DeepMind RT-2 项目介绍","source_url":"https://deepmind.google/discover/blog/rt-2-new-model-translates-vision-and-language-into-action/","locator":"官方项目说明与 Atlas 谱系","conditions":"与 OpenVLA、π0 等后续公开方法分开评价","checked_at":"2026-07-19"}
+ ]
 }

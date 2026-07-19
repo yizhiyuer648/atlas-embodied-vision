@@ -205,5 +205,10 @@
   "count": 52153,
   "as_of": "2026-07",
   "source": "Semantic Scholar"
- }
+ },
+ "evidence_claims": [
+  {"type":"paper_report","claim":"CLIP 使用约 4 亿图文对进行对比式预训练，并在 30 余个视觉数据集上评估迁移。","scope":"数据规模和评测集合来自论文报告；训练数据并非公开可完整审计的数据集。","source_label":"CLIP 论文","source_url":"https://arxiv.org/abs/2103.00020","locator":"Abstract、§2–§3 与实验章节","conditions":"作者构建的互联网图文数据；零样本与线性探针等多种协议","checked_at":"2026-07-19"},
+  {"type":"paper_report","claim":"论文报告零样本 CLIP 在 ImageNet 上达到与监督 ResNet-50 相当的准确率。","scope":"只适用于论文提示模板、模型规模和 ImageNet 协议，不代表所有分类任务。","source_label":"CLIP 论文","source_url":"https://arxiv.org/abs/2103.00020","locator":"Abstract 与 §3.1 Zero-shot transfer","conditions":"零样本提示集成；与论文指定监督基线比较","checked_at":"2026-07-19"},
+  {"type":"atlas_interpretation","claim":"CLIP 是开放词汇视觉和多模态系统的重要表征上游之一。","scope":"Atlas 根据后续公开模型的组件依赖与谱系关系作出的编辑判断。","source_label":"OpenAI CLIP 官方仓库","source_url":"https://github.com/openai/CLIP","locator":"官方实现与 Atlas 下游谱系","conditions":"不以引用数单独代替技术影响判断","checked_at":"2026-07-19"}
+ ]
 }

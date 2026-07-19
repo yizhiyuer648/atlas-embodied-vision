@@ -1,4 +1,4 @@
-import { CATEGORIES, loadModels, categoryMeta, displayValue, escapeHTML, initReveals, setQuery } from '../core.js?v=20260719.10';
+import { CATEGORIES, loadModels, categoryMeta, displayValue, escapeHTML, initReveals, setQuery } from '../core.js?v=20260719.11';
 
 const START_YEAR = 2012;
 const END_YEAR = 2026;

@@ -1,8 +1,8 @@
-在项目 {{PROJECT_ROOT}} 执行“Atlas 每日完整优化循环”。这不是论文专项任务，也不是只运行抓取脚本；必须依照 README.md 的“每日完整优化契约”完成覆盖模型、论文、学术追踪、术语、谱系、页面体验、测试和部署的八阶段维护。开始前完整读取最新用户要求、README、迁移说明、git status 与 `.codex/atlas-maintenance-state.json` schema v2；先续做仍真实存在的 pending，保留用户改动，不做破坏性 Git 操作，不自动提交或推送。
+在项目 {{PROJECT_ROOT}} 执行“Atlas 每日完整优化循环”。本轮必须使用当前 ChatGPT 账户已实际验证可调用的最高能力模型 `gpt-5.6-sol` 与最高推理档位 `xhigh`；不得为了速度、成本或扫描规模主动降级。`gpt-5.6` 在当前 ChatGPT 登录下会返回不支持错误，因此不得把“名称看起来更高”误当成可用模型。若 `gpt-5.6-sol` 或 `xhigh` 不可用，立即停止自动合并与部署，在本地报告中记录阻塞，不得静默回退。这个任务不是论文专项任务，也不是只运行抓取脚本；必须依照 README.md 的“每日完整优化契约”完成覆盖模型、论文、学术追踪、术语、谱系、页面体验、测试和部署的八阶段维护。开始前完整读取最新用户要求、README、迁移说明、git status 与 `.codex/atlas-maintenance-state.json` schema v2；先续做仍真实存在的 pending，保留用户改动，不做破坏性 Git 操作，不自动提交或推送。
 
-产品边界固定：保持暖白杂志风、衬线标题与赤陶色点缀；纯静态、零 CDN、零框架。全站只有 index / explore / model / compare / radar / venues / lineage / timeline / trends / glossary 10 个正式页面，不得恢复 learn、Quiz、学习进度或答题功能。主导航、搜索、收藏空态、学术追踪 journals / conferences / compare 三个 URL 视图和趋势页中性指标边界必须保持。
+产品边界固定：保持空间玻璃与暖白学术正文并存、衬线标题与赤陶色点缀；纯静态、零 CDN、零框架。全站只有 index / explore / model / compare / radar / reader / venues / lineage / timeline / trends / glossary 11 个正式页面，不得恢复 learn、Quiz、学习进度或答题功能。主导航、搜索、收藏空态、学术追踪 journals / conferences / compare 三个 URL 视图、站内公开全文阅读器和趋势页中性指标边界必须保持。
 
-第一阶段·建立基线：记录开始时间和 `git status --short`，读取并续做 state 中真实 pending；运行 `python3 scripts/validate_data.py`、Python 编译、`test_update_merge.py` 与 `test_update_academic.py`。基线失败先修复，不在旧错误上继续堆数据。记录六类模型数、A 级数、论文/全文/解析数、术语数、期刊/会议/发表事件数及 10 页状态；数字以脚本实际输出为准，不把旧数量当目标。
+第一阶段·建立基线：记录开始时间和 `git status --short`，读取并续做 state 中真实 pending；运行 `python3 scripts/validate_data.py`、Python 编译、`test_update_merge.py` 与 `test_update_academic.py`。基线失败先修复，不在旧错误上继续堆数据。记录六类模型数、A 级数、论文/全文/解析数、术语数、期刊/会议/发表事件数及 11 页状态；数字以脚本实际输出为准，不把旧数量当目标。
 
 第二阶段·多平台发现：每天各运行一次 `python3 scripts/update.py --days 30 --min-stars 50` 与 `python3 scripts/update_academic.py --days 30`。覆盖 arXiv、OpenAlex、Semantic Scholar、Hugging Face Papers、GitHub、Hugging Face Models、Crossref、DBLP、CVF Open Access、PMLR 与 Robotics Proceedings；再对论文、SCI 期刊、会议、六类常用手法和公开社区语境做人工作抽查。记录查询词、时间窗、原始数、去重数、冲突、失败、HTTP 状态、缓存与来源链接。单源 403/429/超时不等于“没有更新”，不得高频重试或假装覆盖全部互联网。
 
@@ -16,7 +16,7 @@
 
 第六阶段·谱系、架构与视觉内容：逐类检查 vla/world/detection/representation/segmentation/multimodal 六张谱系的数据与布局，包括悬空父节点、自环、环、年份倒置、跨类关系、孤立节点、越界、遮挡、连线穿节点、交叉、拖拽、缩放、分类切换和 focus URL。检查 24 个 A 级详情架构是否与公开架构相符，模块、端口、箭头、标签、循环流动点和 15–40 行带来源路径/逐行中文注释的代码均有效。核对时间线、unknown 区、趋势统计、Hero/卡片/谱系/架构动画与 `prefers-reduced-motion` 降级。只有可逆布局问题可直接修；谱系语义和架构语义必须先有来源。
 
-第七阶段·网页与设备验收：启动最终静态站，在 1280、390、320 三档视口打开 10 个正式页面及学术三视图，验证面包屑、搜索、YOLO13 模糊匹配、手机菜单、筛选/排序、收藏、详情直达、2–3 模型对比、六类谱系交互、时间线、趋势、术语英文别名、论文雷达预置方向与自定义关键词、来源冲突、缓存/失败态、全文解析展开和动态流程图。要求主页面无意外横向溢出、触控目标至少 44px、JSON/ES Module 无 404、坏图和残留骨架为 0、控制台无未处理错误。真实手机只有实际同 Wi-Fi 打开并操作后才能写“已验证”；否则保留 pending。
+第七阶段·网页与设备验收：启动最终静态站，在 1280、390、320 三档视口打开 11 个正式页面及学术三视图，验证面包屑、搜索、YOLO13 模糊匹配、手机菜单、筛选/排序、收藏、详情直达、2–3 模型对比、六类谱系交互、时间线、趋势、术语英文别名、论文雷达预置方向与自定义关键词、站内 PDF 阅读与来源页降级、来源冲突、缓存/失败态、全文解析展开和动态流程图。要求主页面无意外横向溢出、触控目标至少 44px、JSON/ES Module 无 404、坏图和残留骨架为 0、控制台无未处理错误。真实手机只有实际同 Wi-Fi 打开并操作后才能写“已验证”；否则保留 pending。
 
 第八阶段·最终门禁、机会审查与发布：无论是否新增模型，都运行 `build_index.py`、`validate_data.py`、Python 编译、两套回归测试、12 个站点 JavaScript `node --check`、几何脚本语法与 24 张架构图几何检查；检查 HTML 本地引用、零 CDN/框架、已移除功能残留及便携文件完整性。任何门禁没做或失败都只能写 partial。
 

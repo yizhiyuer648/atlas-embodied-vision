@@ -209,5 +209,10 @@
   "count": 14488,
   "as_of": "2026-07",
   "source": "Semantic Scholar"
- }
+ },
+ "evidence_claims": [
+  {"type":"paper_report","claim":"SAM 提出可提示分割接口，并以点、框和掩码等提示产生候选分割结果。","scope":"接口支持多种提示，但输出掩码不等于语义识别或任务级理解。","source_label":"SAM 论文","source_url":"https://arxiv.org/abs/2304.02643","locator":"Abstract、§3 Segment Anything Model","conditions":"提示编码器、图像编码器与轻量掩码解码器","checked_at":"2026-07-19"},
+  {"type":"paper_report","claim":"论文介绍的 SA-1B 数据集包含约 1100 万张图像和超过 10 亿个掩码。","scope":"规模来自论文数据引擎；数量本身不保证所有地区、对象或行业场景均衡。","source_label":"SAM 论文","source_url":"https://arxiv.org/abs/2304.02643","locator":"Abstract 与 §4 Segment Anything Data Engine","conditions":"数据引擎分阶段人工辅助、半自动和自动生成","checked_at":"2026-07-19"},
+  {"type":"atlas_interpretation","claim":"SAM 的主要价值是形成通用分割接口和可组合工具生态。","scope":"Atlas 根据官方实现及后续公开组合系统作出的编辑判断。","source_label":"SAM 官方仓库","source_url":"https://github.com/facebookresearch/segment-anything","locator":"官方代码、模型与 Atlas 下游谱系","conditions":"不以引用量作为质量证明","checked_at":"2026-07-19"}
+ ]
 }

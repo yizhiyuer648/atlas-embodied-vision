@@ -230,5 +230,10 @@
   "count": 9260,
   "as_of": "2026-07",
   "source": "Semantic Scholar"
- }
+ },
+ "evidence_claims": [
+  {"type":"paper_report","claim":"DINOv2 在约 1.42 亿张经整理图像上进行无监督预训练。","scope":"数字描述论文训练集合 LVD-142M；不意味着数据来源偏差已经消除。","source_label":"DINOv2 论文","source_url":"https://arxiv.org/abs/2304.07193","locator":"Abstract、§3 Data processing","conditions":"作者的数据检索、去重和筛选流程","checked_at":"2026-07-19"},
+  {"type":"paper_report","claim":"论文以冻结特征在分类、深度、分割和检索等任务上评估通用性。","scope":"冻结表征评测不等同于所有端到端下游系统的最佳性能。","source_label":"DINOv2 论文","source_url":"https://arxiv.org/abs/2304.07193","locator":"§4 Experiments","conditions":"冻结骨干配合任务特定探针或头部","checked_at":"2026-07-19"},
+  {"type":"atlas_interpretation","claim":"DINOv2 的密集视觉特征已成为多种 VLA 视觉骨干的常见选择。","scope":"基于 OpenVLA 等公开架构的组件关系，不代表所有 VLA 都采用该路线。","source_label":"DINOv2 官方仓库","source_url":"https://github.com/facebookresearch/dinov2","locator":"官方模型与 Atlas 下游谱系","conditions":"按公开架构逐项核对","checked_at":"2026-07-19"}
+ ]
 }

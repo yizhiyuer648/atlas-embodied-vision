@@ -1,4 +1,4 @@
-import { CATEGORIES, loadModels, loadModelDetail, categoryMeta, displayValue, isKnown, isOpenSource, escapeHTML, setQuery } from '../core.js?v=20260719.10';
+import { CATEGORIES, loadModels, loadModelDetail, categoryMeta, displayValue, isKnown, isOpenSource, escapeHTML, setQuery } from '../core.js?v=20260719.11';
 
 export async function init() {
   const models = await loadModels();

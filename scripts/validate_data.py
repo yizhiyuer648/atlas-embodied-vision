@@ -43,7 +43,7 @@ INDEX_FIELDS = [
 ]
 PAGES = [
     "index.html", "explore.html", "model.html", "compare.html", "lineage.html",
-    "timeline.html", "trends.html", "glossary.html", "radar.html", "venues.html",
+    "timeline.html", "trends.html", "glossary.html", "radar.html", "reader.html", "venues.html",
 ]
 GLOSSARY_KINDS = {"formal", "community", "slang", "ambiguous"}
 ACADEMIC_VIEWS = {"journals", "conferences", "compare"}
