@@ -149,6 +149,34 @@ def canonical_platform_value(source: Any, value: Any) -> str:
     return normalize(text)
 
 
+def official_platform_references(*values: Any) -> set[str]:
+    """Extract same-provider stable IDs from reviewed official publication URLs.
+
+    These references are only used to prevent an already reviewed publication
+    event from re-entering the candidate queue.  Host checks stay explicit so a
+    look-alike path on an unrelated site cannot be treated as authoritative.
+    """
+    references: set[str] = set()
+    official_hosts = {
+        "openaccess.thecvf.com": "cvf-open-access",
+        "proceedings.mlr.press": "pmlr",
+        "www.roboticsproceedings.org": "robotics-proceedings",
+        "roboticsproceedings.org": "robotics-proceedings",
+    }
+    for value in values:
+        text = clean(value)
+        if not text or "://" not in text:
+            continue
+        parsed = urlparse(text)
+        source = official_hosts.get(parsed.hostname.casefold() if parsed.hostname else "")
+        if not source:
+            continue
+        stable_path = canonical_platform_value(source, parsed.path)
+        if stable_path:
+            references.add(f"platform:{source}:{stable_path}")
+    return references
+
+
 def extract_doi(*values: Any) -> str:
     for value in values:
         match = re.search(r"(?:doi\.org/|doi:\s*)?(10\.\d{4,9}/[^\s\"<>]+)", clean(value), re.I)
@@ -1152,6 +1180,8 @@ def build_publication_event_index(tracker: dict[str, Any]) -> dict[str, dict[str
             index["doi"][f"doi:{doi}"].append(summary)
         if arxiv:
             index["arxiv"][f"arxiv:{arxiv}"].append(summary)
+        for key in official_platform_references(*values):
+            index["platform"][key].append(summary)
         for value in values:
             match = re.match(r"^(openalex|dblp|crossref):(.+)$", value, flags=re.I)
             if not match:

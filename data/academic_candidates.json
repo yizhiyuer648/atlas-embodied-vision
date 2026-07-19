@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-19T19:53:21.838470+00:00",
+  "generated_at": "2026-07-19T22:16:48.203237+00:00",
   "state": "partial",
   "window": {
     "days": 30,
@@ -120,9 +120,272 @@
     "OpenAlex": 115
   },
   "raw_record_count": 172,
-  "candidate_count": 53,
-  "skipped_authoritative_event_count": 1,
+  "candidate_count": 46,
+  "skipped_authoritative_event_count": 8,
   "skipped_authoritative_events": [
+    {
+      "title": "Cognition-inspired Robot Learning and Manipulation for Assembly in Semi-structured Environments",
+      "venue": {
+        "id": "autonomous-robots",
+        "name": "Autonomous Robots",
+        "acronym": "AURO",
+        "type": "journal",
+        "tracking_priority": "扩展追踪",
+        "match_mode": "official-explicit",
+        "conflicting_matches": []
+      },
+      "sources": [
+        "Crossref"
+      ],
+      "external_ids": {
+        "doi": [
+          "10.1007/s10514-026-10259-2"
+        ],
+        "platform": [
+          "crossref:101007s10514026102592"
+        ],
+        "arxiv": []
+      },
+      "publication_event_match": {
+        "is_known": true,
+        "matched_by": "doi",
+        "events": [
+          {
+            "event_id": "crlm-auro-2026",
+            "paper_id": "doi:10.1007/s10514-026-10259-2",
+            "title": "Cognition-inspired Robot Learning and Manipulation for Assembly in Semi-structured Environments",
+            "status": "issue_assigned",
+            "evidence_level": "E1",
+            "source_url": "https://link.springer.com/article/10.1007/s10514-026-10259-2"
+          }
+        ],
+        "note": "已存在于 academic_tracker.json.publication_events，未重复进入待审核候选。"
+      }
+    },
+    {
+      "title": "EMO-LLaMA: Enhancing Facial Emotion Understanding with Instruction Tuning",
+      "venue": {
+        "id": "ijcv",
+        "name": "International Journal of Computer Vision",
+        "acronym": "IJCV",
+        "type": "journal",
+        "tracking_priority": "核心追踪",
+        "match_mode": "official-explicit",
+        "conflicting_matches": []
+      },
+      "sources": [
+        "Crossref"
+      ],
+      "external_ids": {
+        "doi": [
+          "10.1007/s11263-026-02918-9"
+        ],
+        "platform": [
+          "crossref:101007s11263026029189"
+        ],
+        "arxiv": []
+      },
+      "publication_event_match": {
+        "is_known": true,
+        "matched_by": "doi",
+        "events": [
+          {
+            "event_id": "emo-llama-ijcv-2026",
+            "paper_id": "doi:10.1007/s11263-026-02918-9",
+            "title": "EMO-LLaMA: Enhancing Facial Emotion Understanding with Instruction Tuning",
+            "status": "issue_assigned",
+            "evidence_level": "E1",
+            "source_url": "https://link.springer.com/article/10.1007/s11263-026-02918-9"
+          }
+        ],
+        "note": "已存在于 academic_tracker.json.publication_events，未重复进入待审核候选。"
+      }
+    },
+    {
+      "title": "HybridDriveVLA: Vision-Language-Action Model with Visual CoT reasoning and ToT Evaluation for Autonomous Driving",
+      "venue": {
+        "id": "cvpr",
+        "name": "IEEE/CVF Conference on Computer Vision and Pattern Recognition",
+        "acronym": "CVPR",
+        "type": "conference",
+        "tracking_priority": "核心追踪",
+        "match_mode": "official-explicit",
+        "conflicting_matches": []
+      },
+      "sources": [
+        "CVF Open Access"
+      ],
+      "external_ids": {
+        "doi": [],
+        "platform": [
+          "cvf-open-access:contentcvpr2026htmlbassolehybriddrivevlavisionlanguageactionmodelwithvisualcotreasoningandtotevaluationcvpr2026paperhtml"
+        ],
+        "arxiv": []
+      },
+      "publication_event_match": {
+        "is_known": true,
+        "matched_by": "platform",
+        "events": [
+          {
+            "event_id": "hybriddrivevla-cvpr-2026",
+            "paper_id": "cvf:cvpr2026:hybriddrivevla",
+            "title": "HybridDriveVLA: Vision-Language-Action Model with Visual CoT reasoning and ToT Evaluation for Autonomous Driving",
+            "status": "proceedings_published",
+            "evidence_level": "E1",
+            "source_url": "https://openaccess.thecvf.com/content/CVPR2026/html/Bassole_HybridDriveVLA_Vision-Language-Action_Model_with_Visual_CoT_reasoning_and_ToT_Evaluation_CVPR_2026_paper.html"
+          }
+        ],
+        "note": "已存在于 academic_tracker.json.publication_events，未重复进入待审核候选。"
+      }
+    },
+    {
+      "title": "OW-Rep: Open World Object Detection with Instance Representation Learning",
+      "venue": {
+        "id": "wacv",
+        "name": "IEEE/CVF Winter Conference on Applications of Computer Vision",
+        "acronym": "WACV",
+        "type": "conference",
+        "tracking_priority": "扩展追踪",
+        "match_mode": "official-explicit",
+        "conflicting_matches": []
+      },
+      "sources": [
+        "CVF Open Access"
+      ],
+      "external_ids": {
+        "doi": [],
+        "platform": [
+          "cvf-open-access:contentwacv2026htmlleeowrepopenworldobjectdetectionwithinstancerepresentationlearningwacv2026paperhtml"
+        ],
+        "arxiv": []
+      },
+      "publication_event_match": {
+        "is_known": true,
+        "matched_by": "platform",
+        "events": [
+          {
+            "event_id": "ow-rep-wacv-2026",
+            "paper_id": "cvf:wacv2026:ow-rep",
+            "title": "OW-Rep: Open World Object Detection with Instance Representation Learning",
+            "status": "proceedings_published",
+            "evidence_level": "E1",
+            "source_url": "https://openaccess.thecvf.com/content/WACV2026/html/Lee_OW-Rep_Open_World_Object_Detection_with_Instance_Representation_Learning_WACV_2026_paper.html"
+          }
+        ],
+        "note": "已存在于 academic_tracker.json.publication_events，未重复进入待审核候选。"
+      }
+    },
+    {
+      "title": "RAYNOVA: Scale-Temporal Autoregressive World Modeling in Ray Space",
+      "venue": {
+        "id": "cvpr",
+        "name": "IEEE/CVF Conference on Computer Vision and Pattern Recognition",
+        "acronym": "CVPR",
+        "type": "conference",
+        "tracking_priority": "核心追踪",
+        "match_mode": "official-explicit",
+        "conflicting_matches": []
+      },
+      "sources": [
+        "CVF Open Access"
+      ],
+      "external_ids": {
+        "doi": [],
+        "platform": [
+          "cvf-open-access:contentcvpr2026htmlxieraynovascaletemporalautoregressiveworldmodelinginrayspacecvpr2026paperhtml"
+        ],
+        "arxiv": []
+      },
+      "publication_event_match": {
+        "is_known": true,
+        "matched_by": "platform",
+        "events": [
+          {
+            "event_id": "raynova-cvpr-2026",
+            "paper_id": "cvf:cvpr2026:raynova",
+            "title": "RAYNOVA: Scale-Temporal Autoregressive World Modeling in Ray Space",
+            "status": "proceedings_published",
+            "evidence_level": "E1",
+            "source_url": "https://openaccess.thecvf.com/content/CVPR2026/html/Xie_RAYNOVA_Scale-Temporal_Autoregressive_World_Modeling_in_Ray_Space_CVPR_2026_paper.html"
+          }
+        ],
+        "note": "已存在于 academic_tracker.json.publication_events，未重复进入待审核候选。"
+      }
+    },
+    {
+      "title": "SenseSearch: Empowering Vision-Language Models with High-Resolution Agentic Search-Reasoning via Reinforcement Learning",
+      "venue": {
+        "id": "cvpr",
+        "name": "IEEE/CVF Conference on Computer Vision and Pattern Recognition",
+        "acronym": "CVPR",
+        "type": "conference",
+        "tracking_priority": "核心追踪",
+        "match_mode": "official-explicit",
+        "conflicting_matches": []
+      },
+      "sources": [
+        "CVF Open Access"
+      ],
+      "external_ids": {
+        "doi": [],
+        "platform": [
+          "cvf-open-access:contentcvpr2026htmlchngsensesearchempoweringvisionlanguagemodelswithhighresolutionagenticsearchreasoningviareinforcementcvpr2026paperhtml"
+        ],
+        "arxiv": []
+      },
+      "publication_event_match": {
+        "is_known": true,
+        "matched_by": "platform",
+        "events": [
+          {
+            "event_id": "sensesearch-cvpr-2026",
+            "paper_id": "cvf:cvpr2026:sensesearch",
+            "title": "SenseSearch: Empowering Vision-Language Models with High-Resolution Agentic Search-Reasoning via Reinforcement Learning",
+            "status": "proceedings_published",
+            "evidence_level": "E1",
+            "source_url": "https://openaccess.thecvf.com/content/CVPR2026/html/Chng_SenseSearch_Empowering_Vision-Language_Models_with_High-Resolution_Agentic_Search-Reasoning_via_Reinforcement_CVPR_2026_paper.html"
+          }
+        ],
+        "note": "已存在于 academic_tracker.json.publication_events，未重复进入待审核候选。"
+      }
+    },
+    {
+      "title": "Towards Robust Multi-Modal Semantic Segmentation with Teacher-Student Framework and Hybrid Prototype Distillation",
+      "venue": {
+        "id": "cvpr",
+        "name": "IEEE/CVF Conference on Computer Vision and Pattern Recognition",
+        "acronym": "CVPR",
+        "type": "conference",
+        "tracking_priority": "核心追踪",
+        "match_mode": "official-explicit",
+        "conflicting_matches": []
+      },
+      "sources": [
+        "CVF Open Access"
+      ],
+      "external_ids": {
+        "doi": [],
+        "platform": [
+          "cvf-open-access:contentcvpr2026htmltantowardsrobustmultimodalsemanticsegmentationwithteacherstudentframeworkandhybridcvpr2026paperhtml"
+        ],
+        "arxiv": []
+      },
+      "publication_event_match": {
+        "is_known": true,
+        "matched_by": "platform",
+        "events": [
+          {
+            "event_id": "robust-mm-seg-cvpr-2026",
+            "paper_id": "cvf:cvpr2026:robust-multimodal-segmentation",
+            "title": "Towards Robust Multi-Modal Semantic Segmentation with Teacher-Student Framework and Hybrid Prototype Distillation",
+            "status": "proceedings_published",
+            "evidence_level": "E1",
+            "source_url": "https://openaccess.thecvf.com/content/CVPR2026/html/Tan_Towards_Robust_Multi-Modal_Semantic_Segmentation_with_Teacher-Student_Framework_and_Hybrid_CVPR_2026_paper.html"
+          }
+        ],
+        "note": "已存在于 academic_tracker.json.publication_events，未重复进入待审核候选。"
+      }
+    },
     {
       "title": "Towards Stable Source-Free Domain Adaptive Semantic Segmentation",
       "venue": {
@@ -165,101 +428,6 @@
   ],
   "existing_paper_event_count": 1,
   "candidates": [
-    {
-      "id": "academic-4135968cd0ae6f",
-      "title": "EMO-LLaMA: Enhancing Facial Emotion Understanding with Instruction Tuning",
-      "authors": [
-        "Bohao Xing",
-        "Zitong Yu",
-        "Xin Liu",
-        "Kaishen Yuan",
-        "Qilang Ye",
-        "Weicheng Xie",
-        "Huanjing Yue",
-        "Jingyu Yang",
-        "Heikki Kälviäinen"
-      ],
-      "first_author": "Bohao Xing",
-      "published": "2026-07-15",
-      "date_precision": "day",
-      "venue": {
-        "id": "ijcv",
-        "name": "International Journal of Computer Vision",
-        "acronym": "IJCV",
-        "type": "journal",
-        "tracking_priority": "核心追踪",
-        "match_mode": "official-explicit",
-        "conflicting_matches": []
-      },
-      "directions": [
-        "multimodal",
-        "representation"
-      ],
-      "status": "needs_review",
-      "status_label": "待人工核验",
-      "candidate_kind": "聚合元数据发表事件候选",
-      "evidence_level": "E4",
-      "sources": [
-        "Crossref"
-      ],
-      "fact_sources": [
-        {
-          "source": "Crossref",
-          "evidence_level": "E4",
-          "source_id": "10.1007/s11263-026-02918-9",
-          "url": "https://doi.org/10.1007/s11263-026-02918-9",
-          "observed_fields": [
-            "title",
-            "authors",
-            "published",
-            "venue_hint",
-            "doi"
-          ]
-        }
-      ],
-      "external_ids": {
-        "doi": [
-          "10.1007/s11263-026-02918-9"
-        ],
-        "platform": [
-          "crossref:101007s11263026029189"
-        ],
-        "arxiv": []
-      },
-      "links": {
-        "landing": "https://doi.org/10.1007/s11263-026-02918-9",
-        "doi": "https://doi.org/10.1007/s11263-026-02918-9",
-        "arxiv": ""
-      },
-      "confidence": {
-        "level": "medium",
-        "score": 0.64,
-        "reason": "目前只有 E4 聚合元数据线索；含 DOI；命中跟踪 venue 的完整名称或官方入口；标题或摘要命中 Atlas 技术方向"
-      },
-      "duplicate_match": {
-        "is_duplicate": false,
-        "matched_by": "none",
-        "matches": [],
-        "possible_matches": [],
-        "note": "未按稳定标识或严格标题键命中已有论文。"
-      },
-      "deduplication_notes": [],
-      "manual_review_required": true,
-      "manual_review_items": [
-        "确认论文确已收入该 venue，而非预印本、workshop、海报页面、勘误或元数据误配。",
-        "核对标题、作者、DOI/arXiv 与正式出版页是否一致。",
-        "确认方向标签与 Atlas 六类定义相符。",
-        "当前尚无 E1 正式出版证据；需回到出版方或官方 proceedings 核验。",
-        "如需标注 SCI/SCIE，必须在 Clarivate Master Journal List 按当期结果人工核验。"
-      ],
-      "source_record_count": 1,
-      "publication_event_match": {
-        "is_known": false,
-        "matched_by": "none",
-        "events": [],
-        "note": "未命中已确认发表事件。"
-      }
-    },
     {
       "id": "academic-87f623cc3966fa",
       "title": "Rethinking Neuromorphic Object Detection with Hybrid Dynamic Interaction Transformers",
@@ -1277,97 +1445,6 @@
       }
     },
     {
-      "id": "academic-61c918c96ff40a",
-      "title": "Cognition-inspired Robot Learning and Manipulation for Assembly in Semi-structured Environments",
-      "authors": [
-        "Chuang Wang",
-        "Lie Yang",
-        "Ze Lin",
-        "Gang Chen",
-        "Jun Cheng",
-        "Jianxin Pang"
-      ],
-      "first_author": "Chuang Wang",
-      "published": "2026-06-26",
-      "date_precision": "day",
-      "venue": {
-        "id": "autonomous-robots",
-        "name": "Autonomous Robots",
-        "acronym": "AURO",
-        "type": "journal",
-        "tracking_priority": "扩展追踪",
-        "match_mode": "official-explicit",
-        "conflicting_matches": []
-      },
-      "directions": [
-        "vla"
-      ],
-      "status": "needs_review",
-      "status_label": "待人工核验",
-      "candidate_kind": "聚合元数据发表事件候选",
-      "evidence_level": "E4",
-      "sources": [
-        "Crossref"
-      ],
-      "fact_sources": [
-        {
-          "source": "Crossref",
-          "evidence_level": "E4",
-          "source_id": "10.1007/s10514-026-10259-2",
-          "url": "https://doi.org/10.1007/s10514-026-10259-2",
-          "observed_fields": [
-            "title",
-            "authors",
-            "published",
-            "venue_hint",
-            "doi"
-          ]
-        }
-      ],
-      "external_ids": {
-        "doi": [
-          "10.1007/s10514-026-10259-2"
-        ],
-        "platform": [
-          "crossref:101007s10514026102592"
-        ],
-        "arxiv": []
-      },
-      "links": {
-        "landing": "https://doi.org/10.1007/s10514-026-10259-2",
-        "doi": "https://doi.org/10.1007/s10514-026-10259-2",
-        "arxiv": ""
-      },
-      "confidence": {
-        "level": "medium",
-        "score": 0.64,
-        "reason": "目前只有 E4 聚合元数据线索；含 DOI；命中跟踪 venue 的完整名称或官方入口；标题或摘要命中 Atlas 技术方向"
-      },
-      "duplicate_match": {
-        "is_duplicate": false,
-        "matched_by": "none",
-        "matches": [],
-        "possible_matches": [],
-        "note": "未按稳定标识或严格标题键命中已有论文。"
-      },
-      "deduplication_notes": [],
-      "manual_review_required": true,
-      "manual_review_items": [
-        "确认论文确已收入该 venue，而非预印本、workshop、海报页面、勘误或元数据误配。",
-        "核对标题、作者、DOI/arXiv 与正式出版页是否一致。",
-        "确认方向标签与 Atlas 六类定义相符。",
-        "当前尚无 E1 正式出版证据；需回到出版方或官方 proceedings 核验。",
-        "如需标注 SCI/SCIE，必须在 Clarivate Master Journal List 按当期结果人工核验。"
-      ],
-      "source_record_count": 1,
-      "publication_event_match": {
-        "is_known": false,
-        "matched_by": "none",
-        "events": [],
-        "note": "未命中已确认发表事件。"
-      }
-    },
-    {
       "id": "academic-de79e468f326b0",
       "title": "White-Balance First, Adjust Later: Cross-Camera Color Constancy via Vision-Language Evaluation",
       "authors": [
@@ -1506,90 +1583,6 @@
       },
       "links": {
         "landing": "https://openaccess.thecvf.com/content/WACV2026/html/Das_Uncertainty-Aware_Vision-Language_Segmentation_for_Medical_Imaging_WACV_2026_paper.html",
-        "doi": "",
-        "arxiv": ""
-      },
-      "confidence": {
-        "level": "medium",
-        "score": 0.62,
-        "reason": "含官方论文库 E1 正式出版记录；命中跟踪 venue 的完整名称或官方入口；标题或摘要命中 Atlas 技术方向；日期只有年份精度"
-      },
-      "duplicate_match": {
-        "is_duplicate": false,
-        "matched_by": "none",
-        "matches": [],
-        "possible_matches": [],
-        "note": "未按稳定标识或严格标题键命中已有论文。"
-      },
-      "deduplication_notes": [],
-      "manual_review_required": true,
-      "manual_review_items": [
-        "确认论文确已收入该 venue，而非预印本、workshop、海报页面、勘误或元数据误配。",
-        "核对标题、作者、DOI/arXiv 与正式出版页是否一致。",
-        "确认方向标签与 Atlas 六类定义相符。",
-        "日期精度不足；核对实际在线发表/会议日期是否落在本次回溯窗口。"
-      ],
-      "source_record_count": 1,
-      "publication_event_match": {
-        "is_known": false,
-        "matched_by": "none",
-        "events": [],
-        "note": "未命中已确认发表事件。"
-      }
-    },
-    {
-      "id": "academic-6987566508dc4d",
-      "title": "Towards Robust Multi-Modal Semantic Segmentation with Teacher-Student Framework and Hybrid Prototype Distillation",
-      "authors": [
-        "Jiaqi Tan",
-        "Xu Zheng",
-        "Yang Liu"
-      ],
-      "first_author": "Jiaqi Tan",
-      "published": "2026",
-      "date_precision": "year",
-      "venue": {
-        "id": "cvpr",
-        "name": "IEEE/CVF Conference on Computer Vision and Pattern Recognition",
-        "acronym": "CVPR",
-        "type": "conference",
-        "tracking_priority": "核心追踪",
-        "match_mode": "official-explicit",
-        "conflicting_matches": []
-      },
-      "directions": [
-        "segmentation"
-      ],
-      "status": "needs_review",
-      "status_label": "待人工核验",
-      "candidate_kind": "官方论文集新条目候选",
-      "evidence_level": "E1",
-      "sources": [
-        "CVF Open Access"
-      ],
-      "fact_sources": [
-        {
-          "source": "CVF Open Access",
-          "evidence_level": "E1",
-          "source_id": "/content/CVPR2026/html/Tan_Towards_Robust_Multi-Modal_Semantic_Segmentation_with_Teacher-Student_Framework_and_Hybrid_CVPR_2026_paper.html",
-          "url": "https://openaccess.thecvf.com/content/CVPR2026/html/Tan_Towards_Robust_Multi-Modal_Semantic_Segmentation_with_Teacher-Student_Framework_and_Hybrid_CVPR_2026_paper.html",
-          "observed_fields": [
-            "title",
-            "authors",
-            "published",
-            "venue_hint"
-          ]
-        }
-      ],
-      "external_ids": {
-        "doi": [],
-        "platform": [
-          "cvf-open-access:contentcvpr2026htmltantowardsrobustmultimodalsemanticsegmentationwithteacherstudentframeworkandhybridcvpr2026paperhtml"
-        ],
-        "arxiv": []
-      },
-      "links": {
-        "landing": "https://openaccess.thecvf.com/content/CVPR2026/html/Tan_Towards_Robust_Multi-Modal_Semantic_Segmentation_with_Teacher-Student_Framework_and_Hybrid_CVPR_2026_paper.html",
         "doi": "",
         "arxiv": ""
       },
@@ -1763,99 +1756,6 @@
       },
       "links": {
         "landing": "https://openaccess.thecvf.com/content/WACV2026/html/Qi_SmokeBench_Evaluating_Multimodal_Large_Language_Models_for_Wildfire_Smoke_Detection_WACV_2026_paper.html",
-        "doi": "",
-        "arxiv": ""
-      },
-      "confidence": {
-        "level": "medium",
-        "score": 0.62,
-        "reason": "含官方论文库 E1 正式出版记录；命中跟踪 venue 的完整名称或官方入口；标题或摘要命中 Atlas 技术方向；日期只有年份精度"
-      },
-      "duplicate_match": {
-        "is_duplicate": false,
-        "matched_by": "none",
-        "matches": [],
-        "possible_matches": [],
-        "note": "未按稳定标识或严格标题键命中已有论文。"
-      },
-      "deduplication_notes": [],
-      "manual_review_required": true,
-      "manual_review_items": [
-        "确认论文确已收入该 venue，而非预印本、workshop、海报页面、勘误或元数据误配。",
-        "核对标题、作者、DOI/arXiv 与正式出版页是否一致。",
-        "确认方向标签与 Atlas 六类定义相符。",
-        "日期精度不足；核对实际在线发表/会议日期是否落在本次回溯窗口。"
-      ],
-      "source_record_count": 1,
-      "publication_event_match": {
-        "is_known": false,
-        "matched_by": "none",
-        "events": [],
-        "note": "未命中已确认发表事件。"
-      }
-    },
-    {
-      "id": "academic-ecca96f14fcbca",
-      "title": "SenseSearch: Empowering Vision-Language Models with High-Resolution Agentic Search-Reasoning via Reinforcement Learning",
-      "authors": [
-        "Yong Xien Chng",
-        "Tao Hu",
-        "Wenwen Tong",
-        "Xueheng Li",
-        "Jiandong Chen",
-        "Haojia Yu",
-        "Jiefan Lu",
-        "Hewei Guo",
-        "Hanming Deng",
-        "Chengjun Xie",
-        "Gao Huang",
-        "Lewei Lu"
-      ],
-      "first_author": "Yong Xien Chng",
-      "published": "2026",
-      "date_precision": "year",
-      "venue": {
-        "id": "cvpr",
-        "name": "IEEE/CVF Conference on Computer Vision and Pattern Recognition",
-        "acronym": "CVPR",
-        "type": "conference",
-        "tracking_priority": "核心追踪",
-        "match_mode": "official-explicit",
-        "conflicting_matches": []
-      },
-      "directions": [
-        "multimodal"
-      ],
-      "status": "needs_review",
-      "status_label": "待人工核验",
-      "candidate_kind": "官方论文集新条目候选",
-      "evidence_level": "E1",
-      "sources": [
-        "CVF Open Access"
-      ],
-      "fact_sources": [
-        {
-          "source": "CVF Open Access",
-          "evidence_level": "E1",
-          "source_id": "/content/CVPR2026/html/Chng_SenseSearch_Empowering_Vision-Language_Models_with_High-Resolution_Agentic_Search-Reasoning_via_Reinforcement_CVPR_2026_paper.html",
-          "url": "https://openaccess.thecvf.com/content/CVPR2026/html/Chng_SenseSearch_Empowering_Vision-Language_Models_with_High-Resolution_Agentic_Search-Reasoning_via_Reinforcement_CVPR_2026_paper.html",
-          "observed_fields": [
-            "title",
-            "authors",
-            "published",
-            "venue_hint"
-          ]
-        }
-      ],
-      "external_ids": {
-        "doi": [],
-        "platform": [
-          "cvf-open-access:contentcvpr2026htmlchngsensesearchempoweringvisionlanguagemodelswithhighresolutionagenticsearchreasoningviareinforcementcvpr2026paperhtml"
-        ],
-        "arxiv": []
-      },
-      "links": {
-        "landing": "https://openaccess.thecvf.com/content/CVPR2026/html/Chng_SenseSearch_Empowering_Vision-Language_Models_with_High-Resolution_Agentic_Search-Reasoning_via_Reinforcement_CVPR_2026_paper.html",
         "doi": "",
         "arxiv": ""
       },
@@ -2324,96 +2224,6 @@
       }
     },
     {
-      "id": "academic-963953478577e9",
-      "title": "RAYNOVA: Scale-Temporal Autoregressive World Modeling in Ray Space",
-      "authors": [
-        "Yichen Xie",
-        "Chensheng Peng",
-        "Mazen Abdelfattah",
-        "Yihan Hu",
-        "Jiezhi Yang",
-        "Eric Higgins",
-        "Ryan Brigden",
-        "Masayoshi Tomizuka",
-        "Wei Zhan"
-      ],
-      "first_author": "Yichen Xie",
-      "published": "2026",
-      "date_precision": "year",
-      "venue": {
-        "id": "cvpr",
-        "name": "IEEE/CVF Conference on Computer Vision and Pattern Recognition",
-        "acronym": "CVPR",
-        "type": "conference",
-        "tracking_priority": "核心追踪",
-        "match_mode": "official-explicit",
-        "conflicting_matches": []
-      },
-      "directions": [
-        "world"
-      ],
-      "status": "needs_review",
-      "status_label": "待人工核验",
-      "candidate_kind": "官方论文集新条目候选",
-      "evidence_level": "E1",
-      "sources": [
-        "CVF Open Access"
-      ],
-      "fact_sources": [
-        {
-          "source": "CVF Open Access",
-          "evidence_level": "E1",
-          "source_id": "/content/CVPR2026/html/Xie_RAYNOVA_Scale-Temporal_Autoregressive_World_Modeling_in_Ray_Space_CVPR_2026_paper.html",
-          "url": "https://openaccess.thecvf.com/content/CVPR2026/html/Xie_RAYNOVA_Scale-Temporal_Autoregressive_World_Modeling_in_Ray_Space_CVPR_2026_paper.html",
-          "observed_fields": [
-            "title",
-            "authors",
-            "published",
-            "venue_hint"
-          ]
-        }
-      ],
-      "external_ids": {
-        "doi": [],
-        "platform": [
-          "cvf-open-access:contentcvpr2026htmlxieraynovascaletemporalautoregressiveworldmodelinginrayspacecvpr2026paperhtml"
-        ],
-        "arxiv": []
-      },
-      "links": {
-        "landing": "https://openaccess.thecvf.com/content/CVPR2026/html/Xie_RAYNOVA_Scale-Temporal_Autoregressive_World_Modeling_in_Ray_Space_CVPR_2026_paper.html",
-        "doi": "",
-        "arxiv": ""
-      },
-      "confidence": {
-        "level": "medium",
-        "score": 0.62,
-        "reason": "含官方论文库 E1 正式出版记录；命中跟踪 venue 的完整名称或官方入口；标题或摘要命中 Atlas 技术方向；日期只有年份精度"
-      },
-      "duplicate_match": {
-        "is_duplicate": false,
-        "matched_by": "none",
-        "matches": [],
-        "possible_matches": [],
-        "note": "未按稳定标识或严格标题键命中已有论文。"
-      },
-      "deduplication_notes": [],
-      "manual_review_required": true,
-      "manual_review_items": [
-        "确认论文确已收入该 venue，而非预印本、workshop、海报页面、勘误或元数据误配。",
-        "核对标题、作者、DOI/arXiv 与正式出版页是否一致。",
-        "确认方向标签与 Atlas 六类定义相符。",
-        "日期精度不足；核对实际在线发表/会议日期是否落在本次回溯窗口。"
-      ],
-      "source_record_count": 1,
-      "publication_event_match": {
-        "is_known": false,
-        "matched_by": "none",
-        "events": [],
-        "note": "未命中已确认发表事件。"
-      }
-    },
-    {
       "id": "academic-b37f6b2c62af57",
       "title": "Quantized Residuals to Continuous Prompts for Few-Shot Class Incremental Learning in Vision-Language Models",
       "authors": [
@@ -2726,92 +2536,6 @@
       },
       "links": {
         "landing": "https://openaccess.thecvf.com/content/CVPR2026/html/Nie_PersonaVLM_Long-Term_Personalized_Multimodal_LLMs_CVPR_2026_paper.html",
-        "doi": "",
-        "arxiv": ""
-      },
-      "confidence": {
-        "level": "medium",
-        "score": 0.62,
-        "reason": "含官方论文库 E1 正式出版记录；命中跟踪 venue 的完整名称或官方入口；标题或摘要命中 Atlas 技术方向；日期只有年份精度"
-      },
-      "duplicate_match": {
-        "is_duplicate": false,
-        "matched_by": "none",
-        "matches": [],
-        "possible_matches": [],
-        "note": "未按稳定标识或严格标题键命中已有论文。"
-      },
-      "deduplication_notes": [],
-      "manual_review_required": true,
-      "manual_review_items": [
-        "确认论文确已收入该 venue，而非预印本、workshop、海报页面、勘误或元数据误配。",
-        "核对标题、作者、DOI/arXiv 与正式出版页是否一致。",
-        "确认方向标签与 Atlas 六类定义相符。",
-        "日期精度不足；核对实际在线发表/会议日期是否落在本次回溯窗口。"
-      ],
-      "source_record_count": 1,
-      "publication_event_match": {
-        "is_known": false,
-        "matched_by": "none",
-        "events": [],
-        "note": "未命中已确认发表事件。"
-      }
-    },
-    {
-      "id": "academic-0ac1c58a0db7fd",
-      "title": "OW-Rep: Open World Object Detection with Instance Representation Learning",
-      "authors": [
-        "Sunoh Lee",
-        "Minsik Jeon",
-        "Jihong Min",
-        "Junwon Seo"
-      ],
-      "first_author": "Sunoh Lee",
-      "published": "2026",
-      "date_precision": "year",
-      "venue": {
-        "id": "wacv",
-        "name": "IEEE/CVF Winter Conference on Applications of Computer Vision",
-        "acronym": "WACV",
-        "type": "conference",
-        "tracking_priority": "扩展追踪",
-        "match_mode": "official-explicit",
-        "conflicting_matches": []
-      },
-      "directions": [
-        "detection",
-        "representation"
-      ],
-      "status": "needs_review",
-      "status_label": "待人工核验",
-      "candidate_kind": "官方论文集新条目候选",
-      "evidence_level": "E1",
-      "sources": [
-        "CVF Open Access"
-      ],
-      "fact_sources": [
-        {
-          "source": "CVF Open Access",
-          "evidence_level": "E1",
-          "source_id": "/content/WACV2026/html/Lee_OW-Rep_Open_World_Object_Detection_with_Instance_Representation_Learning_WACV_2026_paper.html",
-          "url": "https://openaccess.thecvf.com/content/WACV2026/html/Lee_OW-Rep_Open_World_Object_Detection_with_Instance_Representation_Learning_WACV_2026_paper.html",
-          "observed_fields": [
-            "title",
-            "authors",
-            "published",
-            "venue_hint"
-          ]
-        }
-      ],
-      "external_ids": {
-        "doi": [],
-        "platform": [
-          "cvf-open-access:contentwacv2026htmlleeowrepopenworldobjectdetectionwithinstancerepresentationlearningwacv2026paperhtml"
-        ],
-        "arxiv": []
-      },
-      "links": {
-        "landing": "https://openaccess.thecvf.com/content/WACV2026/html/Lee_OW-Rep_Open_World_Object_Detection_with_Instance_Representation_Learning_WACV_2026_paper.html",
         "doi": "",
         "arxiv": ""
       },
@@ -3494,92 +3218,6 @@
       },
       "links": {
         "landing": "https://openaccess.thecvf.com/content/WACV2026/html/Raji_MDUNet_Multimodal_Decoding_UNet_for_Passive_Occluder-Aided_Non-line-of-sight_3D_Imaging_WACV_2026_paper.html",
-        "doi": "",
-        "arxiv": ""
-      },
-      "confidence": {
-        "level": "medium",
-        "score": 0.62,
-        "reason": "含官方论文库 E1 正式出版记录；命中跟踪 venue 的完整名称或官方入口；标题或摘要命中 Atlas 技术方向；日期只有年份精度"
-      },
-      "duplicate_match": {
-        "is_duplicate": false,
-        "matched_by": "none",
-        "matches": [],
-        "possible_matches": [],
-        "note": "未按稳定标识或严格标题键命中已有论文。"
-      },
-      "deduplication_notes": [],
-      "manual_review_required": true,
-      "manual_review_items": [
-        "确认论文确已收入该 venue，而非预印本、workshop、海报页面、勘误或元数据误配。",
-        "核对标题、作者、DOI/arXiv 与正式出版页是否一致。",
-        "确认方向标签与 Atlas 六类定义相符。",
-        "日期精度不足；核对实际在线发表/会议日期是否落在本次回溯窗口。"
-      ],
-      "source_record_count": 1,
-      "publication_event_match": {
-        "is_known": false,
-        "matched_by": "none",
-        "events": [],
-        "note": "未命中已确认发表事件。"
-      }
-    },
-    {
-      "id": "academic-4a8004efb5a076",
-      "title": "HybridDriveVLA: Vision-Language-Action Model with Visual CoT reasoning and ToT Evaluation for Autonomous Driving",
-      "authors": [
-        "Yipene Cedric Francois Bassole",
-        "Sungwoo Kim",
-        "Jiwoo Jung",
-        "Yunsick Sung"
-      ],
-      "first_author": "Yipene Cedric Francois Bassole",
-      "published": "2026",
-      "date_precision": "year",
-      "venue": {
-        "id": "cvpr",
-        "name": "IEEE/CVF Conference on Computer Vision and Pattern Recognition",
-        "acronym": "CVPR",
-        "type": "conference",
-        "tracking_priority": "核心追踪",
-        "match_mode": "official-explicit",
-        "conflicting_matches": []
-      },
-      "directions": [
-        "multimodal",
-        "vla"
-      ],
-      "status": "needs_review",
-      "status_label": "待人工核验",
-      "candidate_kind": "官方论文集新条目候选",
-      "evidence_level": "E1",
-      "sources": [
-        "CVF Open Access"
-      ],
-      "fact_sources": [
-        {
-          "source": "CVF Open Access",
-          "evidence_level": "E1",
-          "source_id": "/content/CVPR2026/html/Bassole_HybridDriveVLA_Vision-Language-Action_Model_with_Visual_CoT_reasoning_and_ToT_Evaluation_CVPR_2026_paper.html",
-          "url": "https://openaccess.thecvf.com/content/CVPR2026/html/Bassole_HybridDriveVLA_Vision-Language-Action_Model_with_Visual_CoT_reasoning_and_ToT_Evaluation_CVPR_2026_paper.html",
-          "observed_fields": [
-            "title",
-            "authors",
-            "published",
-            "venue_hint"
-          ]
-        }
-      ],
-      "external_ids": {
-        "doi": [],
-        "platform": [
-          "cvf-open-access:contentcvpr2026htmlbassolehybriddrivevlavisionlanguageactionmodelwithvisualcotreasoningandtotevaluationcvpr2026paperhtml"
-        ],
-        "arxiv": []
-      },
-      "links": {
-        "landing": "https://openaccess.thecvf.com/content/CVPR2026/html/Bassole_HybridDriveVLA_Vision-Language-Action_Model_with_Visual_CoT_reasoning_and_ToT_Evaluation_CVPR_2026_paper.html",
         "doi": "",
         "arxiv": ""
       },

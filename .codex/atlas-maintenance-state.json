@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "updated_at": "2026-07-19T22:01:39Z",
+  "updated_at": "2026-07-19T22:59:11Z",
   "status": "partial",
   "baseline": {
     "formal_pages": 11,
@@ -9,14 +9,22 @@
       "conferences",
       "compare"
     ],
-    "models": 162,
+    "models": 163,
+    "model_categories": {
+      "vla": 39,
+      "world": 30,
+      "detection": 38,
+      "representation": 19,
+      "segmentation": 18,
+      "multimodal": 19
+    },
     "a_tier_models": 24,
     "papers": 462,
-    "structured_paper_analyses": 6,
+    "structured_paper_analyses": 7,
     "glossary_terms": 187,
     "journals": 8,
     "conferences": 10,
-    "reviewed_publication_events": 10,
+    "reviewed_publication_events": 13,
     "paper_quality_dimensions": 5,
     "evidence_levels": [
       "E1",
@@ -33,41 +41,71 @@
     "claims_with_precise_locator": 61
   },
   "fulltext_library": {
-    "manifest_records": 467,
-    "public_pdfs_local": 465,
-    "metadata_only_paywalled": 2,
-    "extracted_texts": 465,
-    "bytes": 4429384003,
-    "completed_at": "2026-07-19T21:59:29Z",
-    "git_ignored": true
+    "manifest_records": 470,
+    "public_pdfs_local": 467,
+    "metadata_only_paywalled": 3,
+    "extracted_texts": 467,
+    "bytes": 4435554312,
+    "completed_at": "2026-07-19T22:31:10Z",
+    "git_ignored": true,
+    "cloud_archive_claimed": false
   },
-  "academic_candidate_queue": {
-    "path": "data/academic_candidates.json",
-    "generated_at": "2026-07-19T19:53:21.838470+00:00",
-    "state": "needs_review",
-    "raw_record_count": 172,
-    "source_counts": {
-      "Crossref": 14,
-      "OpenAlex": 115,
-      "DBLP": 3,
-      "CVF Open Access": 40
+  "candidate_queues": {
+    "models": {
+      "path": "data/candidates.json",
+      "generated_at": "2026-07-19T22:15:26.316916+00:00",
+      "raw_record_count": 617,
+      "candidate_count": 416,
+      "metadata_conflicts": 107,
+      "all_candidates_need_review": true,
+      "frontend_reads_queue": false
     },
-    "candidate_count": 53,
-    "all_candidates_need_review": true,
-    "frontend_reads_queue": false
+    "academic": {
+      "path": "data/academic_candidates.json",
+      "generated_at": "2026-07-19T22:16:48.203237+00:00",
+      "state": "needs_review",
+      "raw_record_count": 172,
+      "candidate_count": 46,
+      "skipped_authoritative_events": 8,
+      "all_candidates_need_review": true,
+      "frontend_reads_queue": false
+    }
+  },
+  "recent_review": {
+    "accepted": [
+      "RxBrain model detail",
+      "MonkeyOCRv2 structured paper analysis",
+      "EMO-LLaMA IJCV publication event",
+      "CRLM Autonomous Robots publication event",
+      "OW-Rep WACV publication event"
+    ],
+    "deferred": [
+      "GigaWorld-Policy-0.5 and ABot-AgentOS: primary repository/version evidence incomplete",
+      "MonkeyOCRv2 model entry: category and upstream lineage still need deliberate review",
+      "RxBrain direct HY-Embodied-0.5 parent: upstream model is not yet an Atlas node"
+    ],
+    "rejected_for_model_authority": [
+      "SPEAR is a simulator/platform rather than a model entry"
+    ]
   },
   "pending": [
     {
       "id": "real_phone",
       "status": "pending_non_blocking",
-      "reason": "尚未用真实手机完成 11 页与学术追踪视图验收；三档 Chromium 与本机请求不能冒充真机。",
-      "next": "在同一 Wi-Fi 用实体手机打开生产站或 0.0.0.0:8000，并实际操作菜单、筛选、Reader 与谱系。"
+      "reason": "2026-07-19 未在同一 Wi-Fi 上用真实手机操作 11 页与学术追踪视图；三档 Chromium 不能冒充真机。",
+      "next": "用实体手机打开生产站或同 Wi-Fi 本地站，实际操作菜单、筛选、Reader 与谱系。"
     },
     {
       "id": "r2_optional_archive",
       "status": "pending_non_blocking",
-      "reason": "Cloudflare R2 尚未启用；当前云端采用公开源白名单流式阅读，不把 4.4 GB 本地论文库上传或误称为云存储。",
-      "next": "只有确认许可、成本与账号条款后，才评估私有 R2 归档；这不阻塞当前 Pages Reader。"
+      "reason": "Cloudflare R2 尚未启用；当前云端只能声称白名单公开源流式阅读，不能把 4.4 GB 本地库误称为云归档。",
+      "next": "只有在确认许可、成本与账号条款后才评估私有 R2 归档。"
+    },
+    {
+      "id": "paper_identity_coverage",
+      "status": "pending_non_blocking",
+      "reason": "papers.json 的 versions / publication_status / rights 仍只覆盖 5/462，未覆盖条目不得默认已发表或可再分发。",
+      "next": "下轮优先从新增正式事件和已解析论文向外分批建立 DOI、版本链与许可证据。"
     }
   ],
   "automation": {
@@ -84,44 +122,60 @@
   },
   "acceptance": {
     "chromium_matrix": "42/42",
+    "verified_at": "2026-07-19T22:48:58.792Z",
     "viewports": [
       "1280x900",
       "390x844",
       "320x720"
     ],
     "hard_failures": 0,
+    "console_errors": 0,
+    "broken_images": 0,
+    "unexpected_overflow_pages": 0,
     "mobile_touch_target_issue_pages": 0,
     "a_tier_architecture_geometry": "24/24"
   },
   "release": {
-    "github_sync": "pending_final_commit",
-    "cloudflare_pages": "pending_final_deploy",
-    "public_pdf_proxy_probe": "pending_final_deploy",
-    "outlook_report": "pending_final_chain"
+    "publication_readiness": "ready_for_wrapper_independent_validation",
+    "github_sync": "pending_wrapper",
+    "cloudflare_pages": "pending_wrapper",
+    "public_pdf_proxy_probe": "pending_wrapper",
+    "outlook_report": "pending_wrapper"
   },
   "evidence": {
     "scan_window": "2026-06-19 through 2026-07-19",
-    "model_candidate_count": 420,
-    "model_metadata_conflicts": 107,
-    "academic_candidate_count": 53,
+    "sources_attempted": [
+      "arXiv",
+      "OpenAlex",
+      "Semantic Scholar",
+      "Hugging Face Papers",
+      "GitHub",
+      "Hugging Face Models",
+      "Crossref",
+      "DBLP",
+      "CVF Open Access",
+      "PMLR",
+      "Robotics Proceedings"
+    ],
     "source_failures": [
-      "Semantic Scholar 429 for vla/detection/multimodal/representation",
-      "DBLP partial due to 429 and SSL failures",
-      "Robotics Proceedings RSS 403",
-      "PMLR CoRL volume not discovered in the requested window"
+      "Semantic Scholar returned HTTP 429 for all six model categories",
+      "DBLP was partial: representation HTTP 429; segmentation and multimodal TLS failures",
+      "Robotics Proceedings rss22 returned HTTP 403",
+      "PMLR directory was reachable but no in-window CoRL volume was discovered"
     ],
     "gates": [
-      "validate_data passed for 162 models, 462 papers and 11 pages",
-      "Python compile and both update regression suites passed",
-      "all site JavaScript and the hardened PDF Function passed syntax and policy tests",
-      "24 A-tier architecture diagrams passed geometry checks",
-      "42 Chromium route/viewport renders passed with zero hard or touch-target failures",
-      "467 full-text records completed: 465 public PDFs and 2 metadata-only paywalls"
+      "validate_data passed for 163 models, 462 papers, 187 terms, 13 publication events and 11 pages",
+      "Python compile, 1 model-candidate regression and 16 academic-candidate regressions passed",
+      "13 site JavaScript files plus browser/geometry/PDF Function scripts passed syntax and policy tests",
+      "24/24 A-tier architecture diagrams passed geometry checks",
+      "42 Chromium route/viewport renders passed with zero hard, console, overflow, broken-image or touch-target failures",
+      "Cloudflare Pages Function bundle compiled and Playwright imported successfully",
+      "470 full-text records: 467 public PDFs/texts and 3 metadata-only paywalls"
     ]
   },
   "rules": [
-    "只保留当前可执行 pending，不在本文件复制整份历史报告。",
-    "任何候选都必须人工审核；候选脚本不得直接合并 details/index/academic_tracker。",
-    "pending_non_blocking 必须如实保留，但不单独阻止通过自动化门禁与发布。"
+    "只保留当前基线、最近队列摘要和仍真实存在的 pending，不复制整份历史报告。",
+    "候选都必须人工审核；候选脚本不得直接合并权威库。",
+    "pending_non_blocking 必须如实保留，但不单独阻止当日发布门禁 PASS。"
   ]
 }

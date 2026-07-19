@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-19T19:53:21.833144+00:00",
+  "generated_at": "2026-07-19T22:15:26.316916+00:00",
   "window_days": 30,
   "categories": [
     "vla",
@@ -24,17 +24,18 @@
     "Hugging Face Models": 11,
     "Hugging Face Papers": 32,
     "OpenAlex": 272,
-    "Semantic Scholar": 10,
     "arXiv": 300
   },
   "failures": [
     "Semantic Scholar/vla: 429 Client Error:  for url: https://api.semanticscholar.org/graph/v1/paper/search?query=%22vision+language+action%22+robotics&limit=50&year=2026-2026&fields=title%2Cabstract%2Cauthors%2CpublicationDate%2Curl%2CexternalIds%2CcitationCount%2CopenAccessPdf",
+    "Semantic Scholar/world: 429 Client Error:  for url: https://api.semanticscholar.org/graph/v1/paper/search?query=%22world+model%22+video+generation&limit=50&year=2026-2026&fields=title%2Cabstract%2Cauthors%2CpublicationDate%2Curl%2CexternalIds%2CcitationCount%2CopenAccessPdf",
     "Semantic Scholar/detection: 429 Client Error:  for url: https://api.semanticscholar.org/graph/v1/paper/search?query=%22object+detection%22+computer+vision&limit=50&year=2026-2026&fields=title%2Cabstract%2Cauthors%2CpublicationDate%2Curl%2CexternalIds%2CcitationCount%2CopenAccessPdf",
     "Semantic Scholar/multimodal: 429 Client Error:  for url: https://api.semanticscholar.org/graph/v1/paper/search?query=%22vision+language+model%22+multimodal&limit=50&year=2026-2026&fields=title%2Cabstract%2Cauthors%2CpublicationDate%2Curl%2CexternalIds%2CcitationCount%2CopenAccessPdf",
-    "Semantic Scholar/representation: 429 Client Error:  for url: https://api.semanticscholar.org/graph/v1/paper/search?query=%22visual+representation%22+self+supervised+vision&limit=50&year=2026-2026&fields=title%2Cabstract%2Cauthors%2CpublicationDate%2Curl%2CexternalIds%2CcitationCount%2CopenAccessPdf"
+    "Semantic Scholar/representation: 429 Client Error:  for url: https://api.semanticscholar.org/graph/v1/paper/search?query=%22visual+representation%22+self+supervised+vision&limit=50&year=2026-2026&fields=title%2Cabstract%2Cauthors%2CpublicationDate%2Curl%2CexternalIds%2CcitationCount%2CopenAccessPdf",
+    "Semantic Scholar/segmentation: 429 Client Error:  for url: https://api.semanticscholar.org/graph/v1/paper/search?query=%22image+segmentation%22+computer+vision&limit=50&year=2026-2026&fields=title%2Cabstract%2Cauthors%2CpublicationDate%2Curl%2CexternalIds%2CcitationCount%2CopenAccessPdf"
   ],
   "metadata_conflict_count": 107,
-  "count": 420,
+  "count": 416,
   "candidates": [
     {
       "title": "ALBFNet: An Adaptive Layer-Bridged Fourier Network for Camouflaged Object Detection",
@@ -2893,7 +2894,7 @@
       "abstract": "MeanFlow generators achieve fast few-step sampling by predicting average velocities over time intervals, making them attractive for efficient generation. Reinforcement learning (RL) has become a powerful way to align diffusion and flow models with human preferences and task-specific objectives. In particular, DiffusionNFT offers an efficient forward-process RL framework that does not require reverse-process trajectories or likelihood estimation. However, applying such RL methods to MeanFlow remains underexplored. DiffusionNFT optimizes instantaneous velocities, whereas MeanFlow samples with average velocities. To bridge this gap, we introduce MeanFlowNFT. Inspired by the MeanFlow identity, which bridges average and instantaneous velocities, we construct an induced instantaneous-velocity predictor. We apply the DiffusionNFT objective to this predictor, making reward optimization well-defined for MeanFlow. Sampling remains based on the average velocity, preserving MeanFlow's fast few-step generation. We further prove that MeanFlowNFT inherits DiffusionNFT's strict policy-improvement guarantee. Experiments on image and video generation show that MeanFlowNFT consistently improves baselines. Moreover, it outperforms prior state-of-the-art RL-tuned few-step generators on most metrics (6 of 8 on SD3.5-M), and can even surpass multi-step RL-tuned diffusion while using only a few sampling steps. For instance, on Wan 2.1, 4-step MeanFlowNFT reaches a VBench score of 84.33, surpassing 50-step LongCat-Video RL (82.57).",
       "reported_organization": "Tencent Hunyuan",
       "upvotes": 12,
-      "github_stars": 35,
+      "github_stars": 39,
       "confidence": "medium",
       "confidence_reason": "Hugging Face Papers 近期公开条目命中领域关键词；收录、票数和组织标签不代表论文质量或官方归属",
       "manual_review_required": true,
@@ -2925,7 +2926,7 @@
             "arxiv": "2607.15273"
           },
           "upvotes": 12,
-          "github_stars": 35
+          "github_stars": 39
         }
       ],
       "metadata_conflicts": [],
@@ -5864,67 +5865,6 @@
           "external_ids": {
             "arxiv": "2607.13386"
           }
-        }
-      ],
-      "metadata_conflicts": [],
-      "dedupe_note": "未命中已有模型名"
-    },
-    {
-      "title": "Bidirectional Mamba and routing-attention synergistic network for efficient medical image segmentation",
-      "org_guess": "unknown",
-      "links": {
-        "paper": "https://doi.org/10.7717/peerj-cs.3941",
-        "github": "unknown",
-        "semantic_scholar": "https://www.semanticscholar.org/paper/6c3d0519e82b2d4686392785ed15aa1ae1e3f32a"
-      },
-      "external_ids": {
-        "arxiv": "",
-        "doi": "10.7717/peerj-cs.3941",
-        "semantic_scholar": "6c3d0519e82b2d4686392785ed15aa1ae1e3f32a"
-      },
-      "matched_category": "segmentation",
-      "published_at": "2026-07-15T00:00:00+00:00",
-      "source": "Semantic Scholar",
-      "source_id": "6c3d0519e82b2d4686392785ed15aa1ae1e3f32a",
-      "authors": [
-        "Bo Li",
-        "YU Bin",
-        "Haijun Li",
-        "Wei Zhou"
-      ],
-      "abstract": "Based on U-shaped architecture for medical image segmentation faces three fundamental challenges limiting clinical deployment: (1) architectural homogeneity problems where uniform mechanism deployment overlooks distinct encoder-decoder requirements, (2) skip connection feature fusion limitations with insufficient spatial-channel attention integration, and (3) computational efficiency vs . performance trade-offs. We propose a heterogeneous U-shaped architecture that strategically deploys specialized mechanisms based on component-specific functional requirements. Our approach utilizes Vision Mamba with Non-causal State Space Duality (VSSD) in encoder/bottleneck for efficient global context extraction, Bi-Level Routing Attention (BRA) in decoder for adaptive detail recovery, and introduces Spatial-Channel Synergistic Attention (SCSA) in skip connections to optimize multi-scale feature integration with only 0.01M additional parameters. Extensive experiments across four diverse datasets demonstrate exceptional performance: for example on Synapse dataset, our model achieves 84% Dice Similarity Coefficient and 13.76 mm Hausdorff Distance with only 23.43M parameters. Details are available on https://github.com/Yuyan-Bin/Synergistic-Network .",
-      "citations": 0,
-      "confidence": "medium",
-      "confidence_reason": "Semantic Scholar 搜索命中 segmentation 且发布日期落在扫描窗口；接口不提供机构，需人工核验",
-      "manual_review_required": true,
-      "sources": [
-        "Semantic Scholar"
-      ],
-      "source_records": [
-        {
-          "source": "Semantic Scholar",
-          "source_id": "6c3d0519e82b2d4686392785ed15aa1ae1e3f32a",
-          "title": "Bidirectional Mamba and routing-attention synergistic network for efficient medical image segmentation",
-          "published_at": "2026-07-15T00:00:00+00:00",
-          "authors": [
-            "Bo Li",
-            "YU Bin",
-            "Haijun Li",
-            "Wei Zhou"
-          ],
-          "org_guess": "unknown",
-          "matched_category": "segmentation",
-          "links": {
-            "paper": "https://doi.org/10.7717/peerj-cs.3941",
-            "github": "unknown",
-            "semantic_scholar": "https://www.semanticscholar.org/paper/6c3d0519e82b2d4686392785ed15aa1ae1e3f32a"
-          },
-          "external_ids": {
-            "arxiv": "",
-            "doi": "10.7717/peerj-cs.3941",
-            "semantic_scholar": "6c3d0519e82b2d4686392785ed15aa1ae1e3f32a"
-          },
-          "citations": 0
         }
       ],
       "metadata_conflicts": [],
@@ -11833,18 +11773,16 @@
       "links": {
         "paper": "https://doi.org/10.5281/zenodo.21305790",
         "github": "unknown",
-        "openalex": "https://openalex.org/W7168026215",
-        "semantic_scholar": "https://www.semanticscholar.org/paper/0921e74190db79eb470a5a0059f224611ab9fd25"
+        "openalex": "https://openalex.org/W7168026215"
       },
       "external_ids": {
         "arxiv": "",
         "doi": "10.5281/zenodo.21305790",
-        "openalex": "W7168026215",
-        "semantic_scholar": "0921e74190db79eb470a5a0059f224611ab9fd25"
+        "openalex": "W7168026215"
       },
       "matched_category": "segmentation",
       "published_at": "2026-07-10",
-      "source": "OpenAlex + Semantic Scholar",
+      "source": "OpenAlex",
       "source_id": "https://openalex.org/W7168026215",
       "authors": [
         "Stephen Oluwaseun Okunlola",
@@ -11860,8 +11798,7 @@
       "confidence_reason": "OpenAlex 近期作品检索命中 segmentation 关键词；机构与日期按来源原样保留，需人工核验",
       "manual_review_required": true,
       "sources": [
-        "OpenAlex",
-        "Semantic Scholar"
+        "OpenAlex"
       ],
       "source_records": [
         {
@@ -11879,14 +11816,12 @@
           "links": {
             "paper": "https://doi.org/10.5281/zenodo.21305790",
             "github": "unknown",
-            "openalex": "https://openalex.org/W7168026215",
-            "semantic_scholar": "https://www.semanticscholar.org/paper/0921e74190db79eb470a5a0059f224611ab9fd25"
+            "openalex": "https://openalex.org/W7168026215"
           },
           "external_ids": {
             "arxiv": "",
             "doi": "10.5281/zenodo.21305790",
-            "openalex": "W7168026215",
-            "semantic_scholar": "0921e74190db79eb470a5a0059f224611ab9fd25"
+            "openalex": "W7168026215"
           },
           "citations": 0
         },
@@ -11935,30 +11870,6 @@
             "arxiv": "",
             "doi": "10.47191/etj/v11i07.13",
             "openalex": "W7168173323"
-          },
-          "citations": 0
-        },
-        {
-          "source": "Semantic Scholar",
-          "source_id": "0921e74190db79eb470a5a0059f224611ab9fd25",
-          "title": "Performance Evaluation of Selected Chaos-Enhanced Particle Swarm Optimisation for Image Segmentation",
-          "published_at": "2026-07-13T00:00:00+00:00",
-          "authors": [
-            "Stephen Oluwaseun Okunlola",
-            "A. Baale",
-            "Stephen Olatunde Olabiyisi"
-          ],
-          "org_guess": "unknown",
-          "matched_category": "segmentation",
-          "links": {
-            "paper": "https://doi.org/10.47191/etj/v11i07.13",
-            "github": "unknown",
-            "semantic_scholar": "https://www.semanticscholar.org/paper/0921e74190db79eb470a5a0059f224611ab9fd25"
-          },
-          "external_ids": {
-            "arxiv": "",
-            "doi": "10.47191/etj/v11i07.13",
-            "semantic_scholar": "0921e74190db79eb470a5a0059f224611ab9fd25"
           },
           "citations": 0
         }
@@ -12040,9 +11951,6 @@
         "OpenAlex": {
           "paper": "https://doi.org/10.47191/etj/v11i07.13",
           "openalex": "https://openalex.org/W7168173323"
-        },
-        "Semantic Scholar": {
-          "paper": "https://doi.org/10.47191/etj/v11i07.13"
         }
       }
     },
@@ -22310,75 +22218,6 @@
       "dedupe_note": "未命中已有模型名"
     },
     {
-      "title": "Track the Noise, Move the World:3D-Grounded Motion-Consistent Noise for Controllable Video Generation",
-      "org_guess": "unknown",
-      "links": {
-        "paper": "https://arxiv.org/abs/2607.02798",
-        "github": "unknown",
-        "semantic_scholar": "https://www.semanticscholar.org/paper/03e6eff0768f00a7edf3a5b1de66e10d34fa47e0"
-      },
-      "external_ids": {
-        "arxiv": "2607.02798",
-        "doi": "",
-        "semantic_scholar": "03e6eff0768f00a7edf3a5b1de66e10d34fa47e0"
-      },
-      "matched_category": "world",
-      "published_at": "2026-07-02T00:00:00+00:00",
-      "source": "Semantic Scholar",
-      "source_id": "03e6eff0768f00a7edf3a5b1de66e10d34fa47e0",
-      "authors": [
-        "Long Vu",
-        "T. Ngô",
-        "Animesh Karnewar",
-        "A. Habibian",
-        "Binh-Son Hua",
-        "Hung Bui",
-        "Minh Hoai Nguyen",
-        "Phong Nguyen-Ha"
-      ],
-      "abstract": "Modern image-and-text-to-video diffusion models can synthesize highly realistic videos by iteratively denoising an initial Gaussian noise tensor conditioned on reference image and text inputs. However, existing approaches still lack precise and unified controllability over both object motion and camera motion within a single generation process. We present UniCaMo, a unified framework that enables simultaneous control of object trajectories and camera viewpoints by directly constructing the input noise of the diffusion model. Specifically, UniCaMo builds a shared 3D-grounded motion-consistent noise space across latent video frames. Sparse 3D point tracks are used to warp the Gaussian noise of the reference frame along desired object trajectories, while a virtual spherical noise representation provides globally consistent noise values for newly revealed scene regions under camera motion. By combining local track-guided noise warping with global sphere-based noise sampling, UniCaMo maintains geometric and temporal consistency under both object movement and viewpoint changes. Because UniCaMo modifies only the input noise, it requires no auxiliary adapters, control branches, or architectural changes to the underlying video diffusion model. With lightweight LoRA fine-tuning on large pretrained video diffusion models, including Wan 2.1 (14B), UniCaMo achieves state-of-the-art results in both video quality and motion controllability on standard controllable video generation benchmarks.",
-      "citations": 0,
-      "confidence": "medium",
-      "confidence_reason": "Semantic Scholar 搜索命中 world 且发布日期落在扫描窗口；接口不提供机构，需人工核验",
-      "manual_review_required": true,
-      "sources": [
-        "Semantic Scholar"
-      ],
-      "source_records": [
-        {
-          "source": "Semantic Scholar",
-          "source_id": "03e6eff0768f00a7edf3a5b1de66e10d34fa47e0",
-          "title": "Track the Noise, Move the World:3D-Grounded Motion-Consistent Noise for Controllable Video Generation",
-          "published_at": "2026-07-02T00:00:00+00:00",
-          "authors": [
-            "Long Vu",
-            "T. Ngô",
-            "Animesh Karnewar",
-            "A. Habibian",
-            "Binh-Son Hua",
-            "Hung Bui",
-            "Minh Hoai Nguyen",
-            "Phong Nguyen-Ha"
-          ],
-          "org_guess": "unknown",
-          "matched_category": "world",
-          "links": {
-            "paper": "https://arxiv.org/abs/2607.02798",
-            "github": "unknown",
-            "semantic_scholar": "https://www.semanticscholar.org/paper/03e6eff0768f00a7edf3a5b1de66e10d34fa47e0"
-          },
-          "external_ids": {
-            "arxiv": "2607.02798",
-            "doi": "",
-            "semantic_scholar": "03e6eff0768f00a7edf3a5b1de66e10d34fa47e0"
-          },
-          "citations": 0
-        }
-      ],
-      "metadata_conflicts": [],
-      "dedupe_note": "未命中已有模型名"
-    },
-    {
       "title": "Multimodal large language and vision–language models for the interpretation of dental imaging in dental education: a scoping review.",
       "org_guess": "KU Leuven（OpenAlex 元数据，需核验）",
       "links": {
@@ -23844,111 +23683,6 @@
       "dedupe_note": "未命中已有模型名"
     },
     {
-      "title": "World Narrative Model for Highly Controllable Video Generation: A Paradigm Shift from Pixel Sampling to Physical World Orchestration",
-      "org_guess": "unknown",
-      "links": {
-        "paper": "https://arxiv.org/abs/2606.31946",
-        "github": "unknown",
-        "semantic_scholar": "https://www.semanticscholar.org/paper/18896b4d4c80b19f0535571853721c06a9666202"
-      },
-      "external_ids": {
-        "arxiv": "2606.31946",
-        "doi": "",
-        "semantic_scholar": "18896b4d4c80b19f0535571853721c06a9666202"
-      },
-      "matched_category": "world",
-      "published_at": "2026-06-30T00:00:00+00:00",
-      "source": "Semantic Scholar",
-      "source_id": "18896b4d4c80b19f0535571853721c06a9666202",
-      "authors": [
-        "Ye Chen",
-        "Xuanhong Chen",
-        "Yupeng Zhu",
-        "Liming Tan",
-        "Zhewen Wan",
-        "Yuxuan Xiong",
-        "Tielong Wang",
-        "Jinfan Liu",
-        "Wu Zhang",
-        "Xiongzhen Zhang",
-        "Feifei Li",
-        "Xiang Luo",
-        "Zhehan Zhao",
-        "Zhifan Zhang",
-        "Laisheng Kou",
-        "Zhujin Liang",
-        "Yugang Chen",
-        "Muchun Chen",
-        "Xunuo Miao",
-        "Yijing Zhang",
-        "X. Sheng",
-        "Qiang Hu",
-        "Jialiang Chen",
-        "Weimin Zhang",
-        "Wenjun Zhang",
-        "Bingbing Ni"
-      ],
-      "abstract": "The fundamental obstacle to industrial grade video generation is the lack of controllability: existing models treat video as a pixel distribution sampling problem, bypassing the explicit, instance level $4D$ $(3D + T)$ physical world. Consequently, content creators cannot specify geometry, motion, camera parameters, or lighting in a deterministic, quantitative way, leading to the infamous''gacha''loop that makes professional content creation prohibitively inefficient and expensive. To address this, we introduce the World Narrative Model (WNM), a paradigm that decouples what to render -- the structured physical narrative -- from how to render -- the pixel generation process. WNM replaces end-to-end black-box sampling with orchestrated $4D$ pre-visualization for media generation. Collaborative agents translate sparse multimodal inputs, including text, reference videos, and sketches, into a fully editable world representation with scene geometry, object layouts, character/animal skeleton motion, trajectories, camera motion, and lighting at quantitative, physically meaningful granularity. This representation acts as a deterministic structural blueprint that drives existing video foundation models, either frozen or lightly adapted, to render final footage, turning the base model into a faithful neural shader. Built on this engine, our human-AI platform supports automatic world generation and pre-visualization aligned with professional filmmaking pipelines, while director consoles enable seamless human refinement. Experiments show that WNM greatly reduces probabilistic ``gacha''calls and produces videos whose layout, motion, and cinematography closely follow creator intent. The framework is open and modular, allowing each component, such as world representation, control agents, and adapters, to be independently improved. Project website: https://glassroom.sjtu.edu.cn/WNM/.",
-      "citations": 0,
-      "confidence": "medium",
-      "confidence_reason": "Semantic Scholar 搜索命中 world 且发布日期落在扫描窗口；接口不提供机构，需人工核验",
-      "manual_review_required": true,
-      "sources": [
-        "Semantic Scholar"
-      ],
-      "source_records": [
-        {
-          "source": "Semantic Scholar",
-          "source_id": "18896b4d4c80b19f0535571853721c06a9666202",
-          "title": "World Narrative Model for Highly Controllable Video Generation: A Paradigm Shift from Pixel Sampling to Physical World Orchestration",
-          "published_at": "2026-06-30T00:00:00+00:00",
-          "authors": [
-            "Ye Chen",
-            "Xuanhong Chen",
-            "Yupeng Zhu",
-            "Liming Tan",
-            "Zhewen Wan",
-            "Yuxuan Xiong",
-            "Tielong Wang",
-            "Jinfan Liu",
-            "Wu Zhang",
-            "Xiongzhen Zhang",
-            "Feifei Li",
-            "Xiang Luo",
-            "Zhehan Zhao",
-            "Zhifan Zhang",
-            "Laisheng Kou",
-            "Zhujin Liang",
-            "Yugang Chen",
-            "Muchun Chen",
-            "Xunuo Miao",
-            "Yijing Zhang",
-            "X. Sheng",
-            "Qiang Hu",
-            "Jialiang Chen",
-            "Weimin Zhang",
-            "Wenjun Zhang",
-            "Bingbing Ni"
-          ],
-          "org_guess": "unknown",
-          "matched_category": "world",
-          "links": {
-            "paper": "https://arxiv.org/abs/2606.31946",
-            "github": "unknown",
-            "semantic_scholar": "https://www.semanticscholar.org/paper/18896b4d4c80b19f0535571853721c06a9666202"
-          },
-          "external_ids": {
-            "arxiv": "2606.31946",
-            "doi": "",
-            "semantic_scholar": "18896b4d4c80b19f0535571853721c06a9666202"
-          },
-          "citations": 0
-        }
-      ],
-      "metadata_conflicts": [],
-      "dedupe_note": "未命中已有模型名"
-    },
-    {
       "title": "A Modular Vision-Language-Action Robotics Framework for Indoor Environments",
       "org_guess": "Tata Consultancy Services (India)（OpenAlex 元数据，需核验）",
       "links": {
@@ -24178,18 +23912,16 @@
       "links": {
         "paper": "https://arxiv.org/abs/2606.32028",
         "github": "unknown",
-        "openalex": "https://openalex.org/W7167154394",
-        "semantic_scholar": "https://www.semanticscholar.org/paper/2078a6cee641bdfcfd96714814fab707780585fe"
+        "openalex": "https://openalex.org/W7167154394"
       },
       "external_ids": {
-        "arxiv": "2606.32028",
+        "arxiv": "",
         "doi": "10.48550/arxiv.2606.32028",
-        "openalex": "W7167154394",
-        "semantic_scholar": "2078a6cee641bdfcfd96714814fab707780585fe"
+        "openalex": "W7167154394"
       },
       "matched_category": "world",
       "published_at": "2026-06-30",
-      "source": "OpenAlex + Semantic Scholar",
+      "source": "OpenAlex",
       "source_id": "https://openalex.org/W7167154394",
       "authors": [
         "Ziyu Shan",
@@ -24205,8 +23937,7 @@
       "confidence_reason": "OpenAlex 近期作品检索命中 world 关键词；机构与日期按来源原样保留，需人工核验",
       "manual_review_required": true,
       "sources": [
-        "OpenAlex",
-        "Semantic Scholar"
+        "OpenAlex"
       ],
       "source_records": [
         {
@@ -24226,14 +23957,12 @@
           "links": {
             "paper": "https://arxiv.org/abs/2606.32028",
             "github": "unknown",
-            "openalex": "https://openalex.org/W7167154394",
-            "semantic_scholar": "https://www.semanticscholar.org/paper/2078a6cee641bdfcfd96714814fab707780585fe"
+            "openalex": "https://openalex.org/W7167154394"
           },
           "external_ids": {
-            "arxiv": "2606.32028",
+            "arxiv": "",
             "doi": "10.48550/arxiv.2606.32028",
-            "openalex": "W7167154394",
-            "semantic_scholar": "2078a6cee641bdfcfd96714814fab707780585fe"
+            "openalex": "W7167154394"
           },
           "citations": 0
         },
@@ -24260,32 +23989,6 @@
             "arxiv": "",
             "doi": "10.48550/arxiv.2606.32028",
             "openalex": "W7166809311"
-          },
-          "citations": 0
-        },
-        {
-          "source": "Semantic Scholar",
-          "source_id": "2078a6cee641bdfcfd96714814fab707780585fe",
-          "title": "DVG-WM: Disentangled Video Generation Enables Efficient Embodied World Model for Robotic Manipulation",
-          "published_at": "2026-06-30T00:00:00+00:00",
-          "authors": [
-            "Ziyu Shan",
-            "Zhenyu Wu",
-            "Xiaofeng Wang",
-            "Zheng Zhu",
-            "Ziwei Wang"
-          ],
-          "org_guess": "unknown",
-          "matched_category": "world",
-          "links": {
-            "paper": "https://arxiv.org/abs/2606.32028",
-            "github": "unknown",
-            "semantic_scholar": "https://www.semanticscholar.org/paper/2078a6cee641bdfcfd96714814fab707780585fe"
-          },
-          "external_ids": {
-            "arxiv": "2606.32028",
-            "doi": "",
-            "semantic_scholar": "2078a6cee641bdfcfd96714814fab707780585fe"
           },
           "citations": 0
         }
@@ -26443,18 +26146,16 @@
       "links": {
         "paper": "https://arxiv.org/abs/2606.27964",
         "github": "unknown",
-        "openalex": "https://openalex.org/W7166902378",
-        "semantic_scholar": "https://www.semanticscholar.org/paper/958c0c884f5028c89eebb2b36352f7ad7a0e0604"
+        "openalex": "https://openalex.org/W7166902378"
       },
       "external_ids": {
-        "arxiv": "2606.27964",
+        "arxiv": "",
         "doi": "10.48550/arxiv.2606.27964",
-        "openalex": "W7166902378",
-        "semantic_scholar": "958c0c884f5028c89eebb2b36352f7ad7a0e0604"
+        "openalex": "W7166902378"
       },
       "matched_category": "world",
       "published_at": "2026-06-26",
-      "source": "OpenAlex + Semantic Scholar",
+      "source": "OpenAlex",
       "source_id": "https://openalex.org/W7166902378",
       "authors": [
         "Hao Wang",
@@ -26470,8 +26171,7 @@
       "confidence_reason": "OpenAlex 近期作品检索命中 world 关键词；机构与日期按来源原样保留，需人工核验",
       "manual_review_required": true,
       "sources": [
-        "OpenAlex",
-        "Semantic Scholar"
+        "OpenAlex"
       ],
       "source_records": [
         {
@@ -26491,14 +26191,12 @@
           "links": {
             "paper": "https://arxiv.org/abs/2606.27964",
             "github": "unknown",
-            "openalex": "https://openalex.org/W7166902378",
-            "semantic_scholar": "https://www.semanticscholar.org/paper/958c0c884f5028c89eebb2b36352f7ad7a0e0604"
+            "openalex": "https://openalex.org/W7166902378"
           },
           "external_ids": {
-            "arxiv": "2606.27964",
+            "arxiv": "",
             "doi": "10.48550/arxiv.2606.27964",
-            "openalex": "W7166902378",
-            "semantic_scholar": "958c0c884f5028c89eebb2b36352f7ad7a0e0604"
+            "openalex": "W7166902378"
           },
           "citations": 0
         },
@@ -26525,32 +26223,6 @@
             "arxiv": "",
             "doi": "10.48550/arxiv.2606.27964",
             "openalex": "W7166558390"
-          },
-          "citations": 0
-        },
-        {
-          "source": "Semantic Scholar",
-          "source_id": "958c0c884f5028c89eebb2b36352f7ad7a0e0604",
-          "title": "Directing the World: Fast Autoregressive Video Generation with Compositional Human-Camera Control",
-          "published_at": "2026-06-26T00:00:00+00:00",
-          "authors": [
-            "Haoyuan Wang",
-            "Yabo Chen",
-            "Haibin Huang",
-            "Chi Zhang",
-            "Xuelong Li"
-          ],
-          "org_guess": "unknown",
-          "matched_category": "world",
-          "links": {
-            "paper": "https://arxiv.org/abs/2606.27964",
-            "github": "unknown",
-            "semantic_scholar": "https://www.semanticscholar.org/paper/958c0c884f5028c89eebb2b36352f7ad7a0e0604"
-          },
-          "external_ids": {
-            "arxiv": "2606.27964",
-            "doi": "",
-            "semantic_scholar": "958c0c884f5028c89eebb2b36352f7ad7a0e0604"
           },
           "citations": 0
         }
@@ -29825,18 +29497,16 @@
       "links": {
         "paper": "https://doi.org/10.48550/arxiv.2606.22363",
         "github": "unknown",
-        "openalex": "https://openalex.org/W7165690259",
-        "semantic_scholar": "https://www.semanticscholar.org/paper/7f253308a0fa3741cf54a61db3ac34dd0246df2c"
+        "openalex": "https://openalex.org/W7165690259"
       },
       "external_ids": {
-        "arxiv": "2606.22363",
+        "arxiv": "",
         "doi": "10.48550/arxiv.2606.22363",
-        "openalex": "W7165690259",
-        "semantic_scholar": "7f253308a0fa3741cf54a61db3ac34dd0246df2c"
+        "openalex": "W7165690259"
       },
       "matched_category": "world",
       "published_at": "2026-06-21",
-      "source": "OpenAlex + Semantic Scholar",
+      "source": "OpenAlex",
       "source_id": "https://openalex.org/W7165690259",
       "authors": [
         "오윤",
@@ -29849,8 +29519,7 @@
       "confidence_reason": "OpenAlex 近期作品检索命中 world 关键词；机构与日期按来源原样保留，需人工核验",
       "manual_review_required": true,
       "sources": [
-        "OpenAlex",
-        "Semantic Scholar"
+        "OpenAlex"
       ],
       "source_records": [
         {
@@ -29867,14 +29536,12 @@
           "links": {
             "paper": "https://doi.org/10.48550/arxiv.2606.22363",
             "github": "unknown",
-            "openalex": "https://openalex.org/W7165690259",
-            "semantic_scholar": "https://www.semanticscholar.org/paper/7f253308a0fa3741cf54a61db3ac34dd0246df2c"
+            "openalex": "https://openalex.org/W7165690259"
           },
           "external_ids": {
-            "arxiv": "2606.22363",
+            "arxiv": "",
             "doi": "10.48550/arxiv.2606.22363",
-            "openalex": "W7165690259",
-            "semantic_scholar": "7f253308a0fa3741cf54a61db3ac34dd0246df2c"
+            "openalex": "W7165690259"
           },
           "citations": 0
         },
@@ -29900,29 +29567,6 @@
             "openalex": "W7165817594"
           },
           "citations": 0
-        },
-        {
-          "source": "Semantic Scholar",
-          "source_id": "7f253308a0fa3741cf54a61db3ac34dd0246df2c",
-          "title": "Reference-Free Assessment of Physical Consistency in World Model-based Video Generation",
-          "published_at": "2026-06-21T00:00:00+00:00",
-          "authors": [
-            "Y. Oh",
-            "Sukmin Yun"
-          ],
-          "org_guess": "unknown",
-          "matched_category": "world",
-          "links": {
-            "paper": "https://arxiv.org/abs/2606.22363",
-            "github": "unknown",
-            "semantic_scholar": "https://www.semanticscholar.org/paper/7f253308a0fa3741cf54a61db3ac34dd0246df2c"
-          },
-          "external_ids": {
-            "arxiv": "2606.22363",
-            "doi": "",
-            "semantic_scholar": "7f253308a0fa3741cf54a61db3ac34dd0246df2c"
-          },
-          "citations": 0
         }
       ],
       "metadata_conflicts": [
@@ -29946,9 +29590,6 @@
         "OpenAlex": {
           "paper": "https://arxiv.org/abs/2606.22363",
           "openalex": "https://openalex.org/W7165817594"
-        },
-        "Semantic Scholar": {
-          "paper": "https://arxiv.org/abs/2606.22363"
         }
       }
     },
@@ -30253,65 +29894,6 @@
             "arxiv": "",
             "doi": "",
             "openalex": "W7165816617"
-          },
-          "citations": 0
-        }
-      ],
-      "metadata_conflicts": [],
-      "dedupe_note": "未命中已有模型名"
-    },
-    {
-      "title": "IMU2Video: World Model-Enabled Video Generation from IMU sensors",
-      "org_guess": "unknown",
-      "links": {
-        "paper": "https://doi.org/10.1145/3812836.3814749",
-        "github": "unknown",
-        "semantic_scholar": "https://www.semanticscholar.org/paper/453f5f629dcbc778070e6a142d0863f55724afa0"
-      },
-      "external_ids": {
-        "arxiv": "",
-        "doi": "10.1145/3812836.3814749",
-        "semantic_scholar": "453f5f629dcbc778070e6a142d0863f55724afa0"
-      },
-      "matched_category": "world",
-      "published_at": "2026-06-20T00:00:00+00:00",
-      "source": "Semantic Scholar",
-      "source_id": "453f5f629dcbc778070e6a142d0863f55724afa0",
-      "authors": [
-        "Qianren Li",
-        "Rucheng Wu",
-        "Weitao Xu"
-      ],
-      "abstract": "World models, trained on large-scale video datasets, have shown remarkable capabilities in understanding and reconstructing complex physical dynamics. Despite the remarkable success of foundation world models in vision tasks, their application to Inertial Measurement Unit (IMU) tasks remains unexplored due to the significant modality gap between visual and inertial data. This paper proposes IMU2Video, a novel framework that bridges this gap by leveraging foundation world models for IMU signal understanding. IMU2Video introduces a semantic encoder that converts raw IMU signals into semantic motion sequences, enabling pre-trained world models to understand and reconstruct human movements. The semantic encoder employs a two-level architecture: local semantic encoders that identify individual body part movements, and a global semantic encoder that infers the overall activity label. IMU2Video is evaluated on the WEAR dataset and a downstream Human Activity Recognition (HAR) task, demonstrating the ability to utilize pre-trained world models for IMU-based HAR. To the best of the authors' knowledge, this is the first work that investigates the application of world models in IMU-to-Video generation.",
-      "citations": 0,
-      "confidence": "medium",
-      "confidence_reason": "Semantic Scholar 搜索命中 world 且发布日期落在扫描窗口；接口不提供机构，需人工核验",
-      "manual_review_required": true,
-      "sources": [
-        "Semantic Scholar"
-      ],
-      "source_records": [
-        {
-          "source": "Semantic Scholar",
-          "source_id": "453f5f629dcbc778070e6a142d0863f55724afa0",
-          "title": "IMU2Video: World Model-Enabled Video Generation from IMU sensors",
-          "published_at": "2026-06-20T00:00:00+00:00",
-          "authors": [
-            "Qianren Li",
-            "Rucheng Wu",
-            "Weitao Xu"
-          ],
-          "org_guess": "unknown",
-          "matched_category": "world",
-          "links": {
-            "paper": "https://doi.org/10.1145/3812836.3814749",
-            "github": "unknown",
-            "semantic_scholar": "https://www.semanticscholar.org/paper/453f5f629dcbc778070e6a142d0863f55724afa0"
-          },
-          "external_ids": {
-            "arxiv": "",
-            "doi": "10.1145/3812836.3814749",
-            "semantic_scholar": "453f5f629dcbc778070e6a142d0863f55724afa0"
           },
           "citations": 0
         }

@@ -4,11 +4,11 @@
 
 - 无 UI 框架、无 CDN、无浏览器端运行时构建；仅在 Cloudflare Pages 使用一个严格白名单的 PDF 流式函数，不存储或绕过受限全文
 - 原生 HTML / CSS / JavaScript ES Module；首页采用深色空间玻璃视觉，研究内页采用暖色学术玻璃视觉，并为 `prefers-reduced-motion` 保留低动效路径
-- **162 个模型条目**（VLA 39 / 世界模型 29 / 目标检测 38 / 表征 19 / 分割 18 / 多模态 19），每个都有中文分节详解，全站详解约 10.2 万字（102493 字符）
-- **462 篇本地论文导读 + 10 条正式发表事件**：历史主线、近期 arXiv、CVF / Springer 等正式记录与 OpenAlex、Hugging Face Papers 发现结果统一筛选；Semantic Scholar 仅作服务端引用快照
+- **163 个模型条目**（VLA 39 / 世界模型 30 / 目标检测 38 / 表征 19 / 分割 18 / 多模态 19），每个都有中文分节详解；字数以 `validate_data.py` 当轮输出为准
+- **462 篇本地论文导读 + 13 条正式发表事件**：历史主线、近期 arXiv、CVF / Springer 等正式记录与 OpenAlex、Hugging Face Papers 发现结果统一筛选；Semantic Scholar 仅作服务端引用快照
 - **187 条可检索术语**，其中社区/黑话/歧义词 52 条、35 条带真实 Issue/Discussion/评论证据、36 条带至少两个来源
 - **11 个正式页面**：模型、论文、站内全文阅读器、谱系、时间线、趋势、术语与学术发表脉络分工呈现；不包含学习页或答题页
-- **学术追踪三视图**：8 个期刊入口、10 个会议入口、10 条已由正式出版页或官方论文集核验的发表事件，并使用 E1–E5 证据等级
+- **学术追踪三视图**：8 个期刊入口、10 个会议入口、13 条已由正式出版页或官方论文集核验的发表事件，并使用 E1–E5 证据等级
 - 收藏仅保存在浏览器 `localStorage`
 - 不确定的年份、机构或链接统一写为字符串 `"unknown"`
 
@@ -184,7 +184,7 @@ python scripts/build_index.py
 
 ## 论文库
 
-`radar.html` 先读取本地 `data/papers.json` 与 `data/academic_tracker.json`，因此断网或公开 API 限流时仍能正常搜索 462 篇带人工中文导读的论文和 10 条正式发表记录；页面随后独立并行查询：
+`radar.html` 先读取本地 `data/papers.json` 与 `data/academic_tracker.json`，因此断网或公开 API 限流时仍能正常搜索 462 篇带人工中文导读的论文和 13 条正式发表记录；页面随后独立并行查询：
 
 - **OpenAlex**：近期作品、作者、开放链接、引用快照与来源机构元数据。
 - **Hugging Face Papers**：每日公开论文条目、arXiv 标识、摘要及公开项目/仓库线索。
@@ -213,7 +213,7 @@ python scripts/build_index.py
 
 `journals / conferences / compare` 三个视图必须各自维护独立的 `editorial_summaries`：期刊视图只总结期刊事实与缺口，会议视图只总结会议事实与缺口，对比视图只总结可比样本和版本增量；不得把同一段模板复制到三个视图。每轮还要检查论文全文清单、正式版本关系、中文导读与 `paper_analysis_index.json`，优先为已取得全文但尚未解析的论文补充初学者说明、方法步骤、局限、五维证据判断和结构化动态流程图。合法公开全文可保存到本机研究库；付费墙内容不得绕过访问控制。
 
-`data/academic_tracker.json` 只接受人工核验后的更新。当前其中有 10 条已核验发表事件：4 条来自 Springer 正式期刊页，6 条来自 CVPR 2026 官方论文集。不得猜测或从旧榜单抄写 JCR 分区、影响因子、录用率和当期 SCI/SCIE 索引状态；无法从当期可靠来源确认时保留“待核验”或 `unknown`。平台数量本身只扩大**发现覆盖**，绝不自动提高证据等级；期刊/会议官网、出版方或官方论文集优先于聚合页和社区讨论。
+`data/academic_tracker.json` 只接受人工核验后的更新。当前其中有 13 条已核验发表事件：6 条来自 Springer 正式期刊页，6 条来自 CVPR 2026 官方论文集，1 条来自 WACV 2026 官方论文集；10 条已核验为公开全文，3 条只保留订阅墙元数据。不得猜测或从旧榜单抄写 JCR 分区、影响因子、录用率和当期 SCI/SCIE 索引状态；无法从当期可靠来源确认时保留“待核验”或 `unknown`。平台数量本身只扩大**发现覆盖**，绝不自动提高证据等级；期刊/会议官网、出版方或官方论文集优先于聚合页和社区讨论。
 
 论文“水平”与来源证据分开判断：E1–E5 只回答“发表事实有多确定”，不回答“论文有多好”。Atlas 不拿 venue 名称、引用数或仓库 star 直接打分，而是逐项检查 **主张与证据、验证广度、真实场景、可复现性、版本增量**，每项只写“证据充分 / 证据部分 / 暂不可判”。未读到正文、补充材料或真实评测时不得汇总总分，也不得用宣传演示补齐证据。
 
@@ -242,7 +242,7 @@ python scripts/test_update_academic.py
 python scripts/validate_data.py
 ```
 
-`scripts/update_academic.py` 只读 `data/papers.json` 与 `data/academic_tracker.json`，唯一业务写入是 `data/academic_candidates.json`。该文件不是页面运行时数据源，所有条目始终保持 `status: "needs_review"` 与 `manual_review_required: true`；脚本不会直接合并 `data/details/`、旧 `data/models.json`、`data/index.json` 或 `data/academic_tracker.json`。人工核验时应先排除已经存在的 10 条正式事件，再决定是否手动补入版本关系或发表事件。
+`scripts/update_academic.py` 只读 `data/papers.json` 与 `data/academic_tracker.json`，唯一业务写入是 `data/academic_candidates.json`。该文件不是页面运行时数据源，所有条目始终保持 `status: "needs_review"` 与 `manual_review_required: true`；脚本不会直接合并 `data/details/`、旧 `data/models.json`、`data/index.json` 或 `data/academic_tracker.json`。人工核验时应先排除已经存在的 13 条正式事件，再决定是否手动补入版本关系或发表事件。
 
 更新带中文导读的本地 arXiv 稳定库：
 
@@ -300,7 +300,7 @@ HF 模型候选默认需带 arXiv 标签，或至少达到 10 likes / 1000 downl
 python scripts/validate_data.py
 ```
 
-它会检查：details 字段与类别、每类 A 级数量、谱系引用、A 级架构与代码、分节详解完整性、index 与 details 的一致性、术语表引用、论文库结构与导读覆盖率、11 个页面（含站内公开全文阅读器）、学术追踪三个视图、E1–E5、10 条已核验发表事件，以及 `academic_candidates.json` 的计数、来源统计、`needs_review`/人工审核边界和唯一业务写入路径。
+它会检查：details 字段与类别、每类 A 级数量、谱系引用、A 级架构与代码、分节详解完整性、index 与 details 的一致性、术语表引用、论文库结构与导读覆盖率、11 个页面（含站内公开全文阅读器）、学术追踪三个视图、E1–E5、13 条已核验发表事件，以及 `academic_candidates.json` 的计数、来源统计、`needs_review`/人工审核边界和唯一业务写入路径。
 
 ## 浏览器建议
 
@@ -338,7 +338,7 @@ python scripts/test_update_merge.py
 python scripts/test_update_academic.py
 ```
 
-基线失败时先定位原因；不能在旧错误上继续堆数据。当前正常基线应报告 162 个模型（VLA 39 / 世界模型 29 / 目标检测 38 / 表征 19 / 分割 18 / 多模态 19）、24 个 A 级、约 10.2 万字（102493 字符）分节详解、462 篇有中文导读的论文、10 条已核验正式发表事件、187 条术语、11 个正式页面。数字随正式审核后的数据增长时，以脚本实际输出为准，并同步更新 README，不把旧数字当硬编码目标。
+基线失败时先定位原因；不能在旧错误上继续堆数据。当前正常基线应报告 163 个模型（VLA 39 / 世界模型 30 / 目标检测 38 / 表征 19 / 分割 18 / 多模态 19）、24 个 A 级、462 篇有中文导读的论文、13 条已核验正式发表事件、187 条术语、11 个正式页面；分节详解字数以 `validate_data.py` 当轮输出为准。数字随正式审核后的数据增长时，以脚本实际输出为准，并同步更新 README，不把旧数字当硬编码目标。
 
 #### 2. 多平台发现新论文和新模型
 
@@ -353,7 +353,7 @@ python scripts/update_academic.py --days 30
 
 每天都要检查六类方向近期反复出现的研究手法，例如数据配方、预训练/后训练、动作表示、长时序建模、仿真到真实、开放词汇、提示机制、蒸馏/量化和评测设计；具体手法以当天来源为准，不能为了填满列表而套用。每一组观察都以“事实摘要 / Atlas 理解 / 待核验”三段输出；没有可核验变化时写清检索范围和“本轮未发现”，不得编造趋势。
 
-每次都检查 `data/candidates.json` 的 `sources_attempted`、`raw_source_counts`、`failures`、`metadata_conflict_count` 与 `count`；同时检查 `data/academic_candidates.json` 的 `source_status`、`raw_source_counts`、`raw_record_count`、`candidate_count` 和 `skipped_authoritative_event_count` 是否与实际数组一致。学术候选必须全部是 `needs_review` 且 `manual_review_required: true`，已存在于 10 条正式事件中的记录只能进入跳过清单，不能重新入队。两类候选都要保留来源和冲突；预印本、会议版和期刊版遵守“论文雷达与学术追踪的分工”中的版本规则，不重复生成论文正文。限流接口本轮不高频重试；有 API key 时只发送给对应服务。
+每次都检查 `data/candidates.json` 的 `sources_attempted`、`raw_source_counts`、`failures`、`metadata_conflict_count` 与 `count`；同时检查 `data/academic_candidates.json` 的 `source_status`、`raw_source_counts`、`raw_record_count`、`candidate_count` 和 `skipped_authoritative_event_count` 是否与实际数组一致。学术候选必须全部是 `needs_review` 且 `manual_review_required: true`，已存在于 13 条正式事件中的记录只能进入跳过清单，不能重新入队。两类候选都要保留来源和冲突；预印本、会议版和期刊版遵守“论文雷达与学术追踪的分工”中的版本规则，不重复生成论文正文。限流接口本轮不高频重试；有 API key 时只发送给对应服务。
 
 #### 3. 逐条复核后再落库
 

@@ -1,0 +1,47 @@
+{
+  "id": "rxbrain",
+  "name": "RxBrain",
+  "org": "Tencent Robotics X / Futian Laboratory / Tencent HY Team",
+  "country": "CN",
+  "year": 2026,
+  "paper_url": "https://arxiv.org/abs/2607.14187",
+  "github_url": "https://github.com/Tencent-Hunyuan/Hy-Embodied-RxBrain-1.0",
+  "category": "world",
+  "sub_category": "joint-language-visual-embodied-planning",
+  "one_liner_zh": "把语言推理与视觉世界状态想象交错成同一条具身计划，并扩展到连续机器人动作生成。",
+  "key_idea_zh": "在统一 Mixture-of-Transformers 中让语言描述步骤、约束和决策，让生成视觉分支预测每一步应达到的物理状态，再用共享注意力与专用 Action MoT 输出动作块。",
+  "tags": [
+    "国产",
+    "具身世界模型",
+    "Mixture-of-Transformers",
+    "语言-视觉联合规划",
+    "世界状态预测",
+    "flow matching",
+    "真实机器人",
+    "开放权重"
+  ],
+  "tier": "B",
+  "lineage_parent": "unknown",
+  "sections": [
+    {
+      "title": "发布、机构与版本",
+      "body": "RxBrain（官方仓库名 Hy-Embodied-RxBrain-1.0）由 Tencent Robotics X、Futian Laboratory 与 Tencent HY Team 于 2026 年 7 月公开。arXiv 全文、官方 GitHub 仓库和 Hugging Face 权重页在名称、约 6.2B 参数版本与机构信息上相互一致；仓库采用 Apache-2.0 许可证并提供理解、图像/多帧生成和交错规划的推理脚本。"
+    },
+    {
+      "title": "语言与视觉为何要联合规划",
+      "body": "单纯语言计划擅长写步骤、约束和因果关系，却可能漏掉物体最终应处于什么空间状态；单纯视频或世界模型能想象未来画面，却不一定显式表达为何这样做。RxBrain 把动作文本与对应的中间/最终目标图像放进同一条规划序列，让每个步骤同时回答“做什么”和“世界应变成什么样”。"
+    },
+    {
+      "title": "统一 MoT 与训练数据",
+      "body": "论文明确模型建立在 HY-Embodied-0.5 上，使用 Mixture-of-Transformers 统一语言、图像和视频的理解与生成。视觉理解 token 与生成 token 共享 QKV 投影、使用不同 FFN；图像生成仍在 VAE 潜空间以 flow matching 训练。自动数据管线把具身视频切成动作段、核验状态变化，再组织为单步子目标和长任务联合规划监督。"
+    },
+    {
+      "title": "动作分支与真实机器人结果",
+      "body": "连续动作扩展增加专用 Action MoT：动作 token 通过全局注意力读取指令、观测与本体状态，再用零初始化门控复用视觉生成专家中的预测特征，最后以 flow matching 生成动作块。论文在两个真实机器人平台、三个多阶段任务上各执行 100 次试验，报告平均成功率 87%，对比同数据训练的 π0 为 68%、π0.5 为 82%；这些数字只适用于论文给定任务、硬件与训练条件。"
+    },
+    {
+      "title": "证据边界与谱系处理",
+      "body": "论文也报告视觉目标正确性弱于语言规划、自由运行时随规划步数累积误差，并说明复杂长程任务和完全分布外环境仍需扩展与微调。官方仓库截至 2026-07-19 仍把 RxBrain-Bench 与部分微调代码列为 TODO，因此不能把开放权重等同于完整可复现。直接上游 HY-Embodied-0.5 尚未收录，lineage_parent 保留 unknown；不因腾讯品牌或编号把它自动接到 HunyuanVideo。"
+    }
+  ]
+}

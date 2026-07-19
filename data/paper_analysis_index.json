@@ -7,6 +7,11 @@
     "2304.02643": {"path": "data/paper_details/2304.02643.json", "status": "reviewed", "level": "beginner"},
     "2304.07193": {"path": "data/paper_details/2304.07193.json", "status": "reviewed", "level": "beginner"},
     "2307.15818": {"path": "data/paper_details/2307.15818.json", "status": "reviewed", "level": "beginner"},
+    "2607.11562": {
+      "path": "data/paper_details/2607.11562.json",
+      "status": "reviewed",
+      "level": "beginner"
+    },
     "2607.15275": {
       "path": "data/paper_details/2607.15275.json",
       "status": "reviewed",

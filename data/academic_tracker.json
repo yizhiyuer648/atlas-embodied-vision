@@ -656,6 +656,69 @@
       "model_ids": [],
       "versions": [{ "kind": "proceedings", "identifier": "cvf:cvpr2026:sensesearch", "url": "https://openaccess.thecvf.com/content/CVPR2026/html/Chng_SenseSearch_Empowering_Vision-Language_Models_with_High-Resolution_Agentic_Search-Reasoning_via_Reinforcement_CVPR_2026_paper.html" }],
       "last_verified": "2026-07-19"
+    },
+    {
+      "id": "emo-llama-ijcv-2026",
+      "work_id": "doi:10.1007/s11263-026-02918-9",
+      "paper_id": "doi:10.1007/s11263-026-02918-9",
+      "title": "EMO-LLaMA: Enhancing Facial Emotion Understanding with Instruction Tuning",
+      "category": "multimodal",
+      "publication_type": "journal",
+      "venue_id": "ijcv",
+      "status": "issue_assigned",
+      "event_date": "2026-07-15",
+      "evidence_level": "E1",
+      "source_label": "Springer Nature Link 正式文章页",
+      "source_url": "https://link.springer.com/article/10.1007/s11263-026-02918-9",
+      "fulltext": {"access": "open", "provider": "Springer Open Access", "pdf_url": "https://link.springer.com/content/pdf/10.1007/s11263-026-02918-9.pdf", "license_id": "CC-BY-4.0", "license_url": "https://creativecommons.org/licenses/by/4.0/", "reader_mode": "source_stream", "verified_at": "2026-07-19"},
+      "fact_zh": "Springer 正式页面记录 EMO-LLaMA 发表于 International Journal of Computer Vision，在线日期为 2026-07-15，并已分配 Volume 134、Issue 7。",
+      "atlas_observation_zh": "这项工作把面部先验与指令微调结合到情绪理解中；后续阅读必须把细粒度表情建模收益、群体属性提示的偏差风险和跨数据泛化分开核对。",
+      "methods": ["指令微调", "面部先验", "图像视频统一理解"],
+      "model_ids": [],
+      "versions": [{ "kind": "journal", "identifier": "doi:10.1007/s11263-026-02918-9", "url": "https://link.springer.com/article/10.1007/s11263-026-02918-9" }],
+      "last_verified": "2026-07-19"
+    },
+    {
+      "id": "crlm-auro-2026",
+      "work_id": "doi:10.1007/s10514-026-10259-2",
+      "paper_id": "doi:10.1007/s10514-026-10259-2",
+      "title": "Cognition-inspired Robot Learning and Manipulation for Assembly in Semi-structured Environments",
+      "category": "vla",
+      "publication_type": "journal",
+      "venue_id": "autonomous-robots",
+      "status": "issue_assigned",
+      "event_date": "2026-06-26",
+      "evidence_level": "E1",
+      "source_label": "Springer Nature Link 正式文章页",
+      "source_url": "https://link.springer.com/article/10.1007/s10514-026-10259-2",
+      "fulltext": {"access": "metadata_only", "provider": "Springer", "reason_zh": "正式 PDF 请求返回订阅访问页面；Atlas 只保留元数据与摘要，不绕过机构登录或付费访问。", "verified_at": "2026-07-19"},
+      "fact_zh": "Springer 正式页面记录该文发表于 Autonomous Robots，在线日期为 2026-06-26，并已分配 Volume 50、Issue 3。",
+      "atlas_observation_zh": "神经符号阶段图、半监督视觉与残差强化学习被放进同一装配流程，适合观察小样本真机装配；摘要中的真机结果仍不能代替阅读全文与独立复现。",
+      "methods": ["神经符号阶段图", "半监督感知", "残差强化学习", "视觉力觉反馈"],
+      "model_ids": [],
+      "versions": [{ "kind": "journal", "identifier": "doi:10.1007/s10514-026-10259-2", "url": "https://link.springer.com/article/10.1007/s10514-026-10259-2" }],
+      "last_verified": "2026-07-19"
+    },
+    {
+      "id": "ow-rep-wacv-2026",
+      "work_id": "cvf:wacv2026:ow-rep",
+      "paper_id": "cvf:wacv2026:ow-rep",
+      "title": "OW-Rep: Open World Object Detection with Instance Representation Learning",
+      "category": "detection",
+      "publication_type": "conference",
+      "venue_id": "wacv",
+      "status": "proceedings_published",
+      "event_date": "2026",
+      "evidence_level": "E1",
+      "source_label": "WACV 2026 Open Access Repository",
+      "source_url": "https://openaccess.thecvf.com/content/WACV2026/html/Lee_OW-Rep_Open_World_Object_Detection_with_Instance_Representation_Learning_WACV_2026_paper.html",
+      "fulltext": {"access": "open", "provider": "CVF Open Access", "pdf_url": "https://openaccess.thecvf.com/content/WACV2026/papers/Lee_OW-Rep_Open_World_Object_Detection_with_Instance_Representation_Learning_WACV_2026_paper.pdf", "license_id": "CVF-open-access-terms", "reader_mode": "source_stream", "verified_at": "2026-07-19"},
+      "fact_zh": "CVF 官方 WACV 2026 Open Access 论文集已收录 OW-Rep，页码 339–349；正式摘要将方法界定为同时检测未知对象并学习实例语义表征。",
+      "atlas_observation_zh": "开放世界检测开始把“发现未知物体”与“让未知实例仍有可用表征”放在同一目标中；后续应核对未知类协议、增量学习代价和开放世界跟踪收益。",
+      "methods": ["开放世界检测", "实例表征学习", "SAM 掩码先验", "对比蒸馏"],
+      "model_ids": [],
+      "versions": [{ "kind": "proceedings", "identifier": "cvf:wacv2026:ow-rep", "url": "https://openaccess.thecvf.com/content/WACV2026/html/Lee_OW-Rep_Open_World_Object_Detection_with_Instance_Representation_Learning_WACV_2026_paper.html" }],
+      "last_verified": "2026-07-19"
     }
   ],
   "comparison_dimensions": [
@@ -743,41 +806,41 @@
   "editorial_summaries": {
     "journals": {
       "title": "本期期刊观察",
-      "fact": "截至 2026-07-19，8 个期刊入口中已有 4 条 E1 正式文章页证据：IJCV 2 条、Autonomous Robots 2 条。它们覆盖轻量 3D 占据预测、源自由域适应、多机器人系统综述和单视频开放世界操作；其余期刊本轮没有经第一方页面落库的新事件。SCI/SCIE 当期索引、JCR 分区和影响因子仍未核验。",
-      "interpretation": "这组期刊样本的共同点不是模型规模，而是把方法放回较完整的任务约束：部署成本、拿不到源数据时的迁移、多机器人协作结构和开放世界示范。样本只有 4 条，不足以宣称长期期刊趋势。",
+      "fact": "截至 2026-07-19，8 个期刊入口中有 6 条经 Springer 正式文章页确认的 E1 事件：IJCV 3 条、Autonomous Robots 3 条。本轮新增 EMO-LLaMA 与 CRLM；前者是 CC BY 4.0 公开全文，后者 PDF 探测返回订阅访问页而仅保留元数据。Crossref 的其余 11 条 E4 线索尚未晋升，DBLP 另有 429/SSL 部分失败；SCI/SCIE、JCR 与影响因子均未猜测。",
+      "interpretation": "新增样本把期刊观察从表征与综述扩到细粒度多模态理解和半结构化真机装配。Atlas 的判断是，期刊价值应落在任务约束、系统耦合和证据边界上；6 条同样不足以概括整体期刊趋势。",
       "next_watch": [
-        "为 4 条正式期刊事件补齐公开全文、DOI 与预印本版本关系",
-        "逐本核对 T-RO、RA-L、IJRR、Science Robotics、TPAMI 和 CVIU 的当期正式文章页",
+        "为 EMO-LLaMA 核对预印本与正式版增量，并检查公开训练数据与群体属性提示的偏差评测",
+        "在不绕过订阅墙的前提下为 CRLM 寻找作者公开稿或机构仓储入口",
         "只在 Clarivate 当期结果可访问时记录 SCI/SCIE 状态，不猜分区和影响因子",
-        "检查期刊扩展版相对会议版是否有新实验、方法变化或结论修正"
+        "逐本核对 TPAMI、RA-L、CVIU 等 11 条 E4 候选的出版方页和版本关系"
       ]
     },
     "conferences": {
       "title": "本期会议观察",
-      "fact": "截至 2026-07-19，会议侧有 6 条由 CVPR 2026 官方 Open Access 论文集确认的 E1 事件，分别涉及自动驾驶 VLA、射线空间世界模型、动态查询检测、同义词一致视觉语言预训练、多模态分割蒸馏和高分辨率代理式视觉搜索。ICCV、ECCV、WACV、ICRA、IROS、RSS、CoRL、NeurIPS 与 ICLR 本轮没有新增已核验事件。",
-      "interpretation": "这 6 条记录横跨六个方向，较明显的共通信号是把推理过程、结构先验或鲁棒性机制显式写进模型，而不是只扩大参数量。它们来自同一届 CVPR，不能代表全部会议生态。",
+      "fact": "截至 2026-07-19，会议侧有 7 条 E1 事件：CVPR 2026 六条、WACV 2026 一条。本轮从 CVF 官方论文集新增 OW-Rep；CVF 扫描得到 40 条原始记录，4 条既有 CVPR 事件被稳定 URL 去重，另 35 条仍待逐篇核验。RSS 官方论文集返回 403，PMLR 在窗口内未发现 CoRL volume，不能解释成没有新论文。",
+      "interpretation": "OW-Rep 把未知对象定位与实例语义表征合在一起，使当前会议样本不再只来自 CVPR。Atlas 仍把它视为有限样本信号：开放世界协议、表征质量和下游跟踪应分开读，不能因 WACV/CVPR 名称直接判断水平。",
       "next_watch": [
-        "把 6 条 CVPR 正式版本与 arXiv、本地全文和代码仓库建立无冲突身份",
-        "继续核对机器人会议官方论文集，避免 CVPR 样本独占会议观察",
-        "区分 main conference、workshop、投稿页和最终 proceedings",
-        "记录公开代码、训练数据、评估脚本和失败案例，而不是只记录会议名称"
+        "为 OW-Rep 建立 arXiv、代码与正式 WACV 页的无冲突身份链",
+        "低频复核 RSS 目录 403 与 PMLR CoRL volume，而不是立即重试",
+        "从剩余 35 条 CVF E1 线索按六类与版本冲突分批抽样",
+        "继续区分 main conference、workshop、accepted list 与最终 proceedings"
       ]
     },
     "compare": {
       "title": "本期会议与期刊对照",
-      "fact": "当前人工核验样本为 4 条期刊正式文章和 6 条 CVPR 正式论文集事件。两组数量、方向和发表窗口都不对称，因此页面只比较版本关系、实验完整度、公开资源和证据边界，不做 venue 排名。",
-      "interpretation": "会议样本更集中展示新模块和新任务接口，期刊样本更容易看到系统约束与扩展讨论；这是当前 10 条样本呈现出的阅读差异，不是“会议新、期刊稳”的普遍定律。真正有意义的比较应落到同一研究的版本增量。",
+      "fact": "当前人工核验样本为 6 条期刊事件与 7 条会议论文集事件，公开全文 10 条、订阅墙元数据 3 条；方向、年份精度和来源可访问性仍不对称。页面因此只比较版本关系、实验条件、公开资源与证据缺口，不做 venue 排名。",
+      "interpretation": "当前样本里，会议条目更常把新模块写进标题，期刊条目更常呈现系统约束；CRLM 和 OW-Rep 同时说明这种差异并不绝对。真正有价值的对照仍是同一研究在预印本、会议和期刊间增加了什么。",
       "next_watch": [
-        "优先寻找同一研究的预印本、会议版与期刊扩展版配对",
-        "逐项比较主张与证据、验证广度、真实场景、可复现性和版本增量",
-        "六个方向分别记录会议与期刊近期反复出现的方法，不用单一总榜",
-        "来源冲突时保留版本记录并进入人工核验，不自动覆盖"
+        "优先为新增三条事件寻找同题预印本与正式版配对",
+        "在五维证据表中明确区分正式发表证据与论文质量证据",
+        "把公开全文、元数据-only 与代码/数据可得性作为三个独立字段比较",
+        "标题、作者、DOI 或稳定 ID 冲突时保留版本记录并人工核验"
       ]
     }
   },
   "editorial_summary": {
     "title": "本期 Atlas 总结（兼容字段）",
-    "fact": "截至 2026-07-19，学术追踪保留 4 条期刊与 6 条会议 E1 发表事件。",
+    "fact": "截至 2026-07-19，学术追踪保留 6 条期刊与 7 条会议 E1 发表事件。",
     "interpretation": "请按 journals、conferences 和 compare 三个视图读取各自独立的事实摘要与 Atlas 判断。",
     "next_watch": ["分别更新三视图总结，禁止用同一段文字覆盖不同视图。"]
   }

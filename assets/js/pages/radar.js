@@ -294,7 +294,6 @@ export async function init() {
     state.category = button.dataset.tab;
     state.limit = PAGE_SIZE;
     sync();
-    refreshLive();
   });
 
   input.addEventListener('input', () => {
@@ -318,7 +317,6 @@ export async function init() {
     state.range = rangeSelect.value;
     state.limit = PAGE_SIZE;
     sync();
-    refreshLive();
   });
   sortSelect.addEventListener('change', () => { state.sort = sortSelect.value; state.limit = PAGE_SIZE; sync(); });
   sourceSelect.addEventListener('change', () => { state.source = sourceSelect.value; state.limit = PAGE_SIZE; sync(); });
@@ -339,7 +337,6 @@ export async function init() {
   });
 
   render();
-  refreshLive();
 }
 
 async function loadPaperAnalysis(details, cache) {

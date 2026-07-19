@@ -3225,6 +3225,31 @@
   "citations": null
  },
  {
+  "id": "rxbrain",
+  "name": "RxBrain",
+  "org": "Tencent Robotics X / Futian Laboratory / Tencent HY Team",
+  "country": "CN",
+  "year": 2026,
+  "paper_url": "https://arxiv.org/abs/2607.14187",
+  "github_url": "https://github.com/Tencent-Hunyuan/Hy-Embodied-RxBrain-1.0",
+  "category": "world",
+  "sub_category": "joint-language-visual-embodied-planning",
+  "one_liner_zh": "把语言推理与视觉世界状态想象交错成同一条具身计划，并扩展到连续机器人动作生成。",
+  "tags": [
+   "国产",
+   "具身世界模型",
+   "Mixture-of-Transformers",
+   "语言-视觉联合规划",
+   "世界状态预测",
+   "flow matching",
+   "真实机器人",
+   "开放权重"
+  ],
+  "tier": "B",
+  "lineage_parent": "unknown",
+  "citations": null
+ },
+ {
   "id": "sora",
   "name": "Sora",
   "org": "OpenAI",

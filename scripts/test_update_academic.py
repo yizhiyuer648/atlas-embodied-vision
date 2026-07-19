@@ -183,6 +183,44 @@ class AcademicCandidateTests(unittest.TestCase):
         self.assertTrue(publication_match["is_known"])
         self.assertEqual(publication_match["events"][0]["event_id"], "fixture-authoritative-event")
 
+    def test_known_cvf_publication_url_is_skipped_from_candidate_queue(self) -> None:
+        tracker = copy.deepcopy(self.tracker)
+        landing = (
+            "https://openaccess.thecvf.com/content/CVPR2026/html/"
+            "Example_Stable_Vision-Language_Model_CVPR_2026_paper.html"
+        )
+        tracker["publication_events"].append(
+            {
+                "id": "fixture-cvf-authoritative-event",
+                "paper_id": "cvf:cvpr2026:stable-vlm",
+                "title": "Stable Vision-Language Model",
+                "status": "proceedings_published",
+                "evidence_level": "E1",
+                "source_url": landing,
+                "versions": [],
+            }
+        )
+        record = update_academic.canonical_record(
+            source="CVF Open Access",
+            source_id="/content/CVPR2026/html/Example_Stable_Vision-Language_Model_CVPR_2026_paper.html",
+            source_url=landing,
+            title="Stable Vision-Language Model",
+            authors=["Ada Example"],
+            published="2026",
+            venue_hint="CVPR",
+            landing_url=landing,
+            explicit_venue_id="cvpr",
+        )
+        batch = build_candidate_batch([record], [], tracker)
+        self.assertEqual(batch["candidates"], [])
+        self.assertEqual(len(batch["skipped_authoritative_events"]), 1)
+        publication_match = batch["skipped_authoritative_events"][0]["publication_event_match"]
+        self.assertEqual(publication_match["matched_by"], "platform")
+        self.assertEqual(
+            publication_match["events"][0]["event_id"],
+            "fixture-cvf-authoritative-event",
+        )
+
     def test_candidate_id_prefers_arxiv_over_provider_id(self) -> None:
         openalex = dict(self.records[1])
         openalex["title"] = "Stable arXiv Vision-Language Model"

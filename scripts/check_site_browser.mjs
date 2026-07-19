@@ -53,6 +53,45 @@ try {
     const context = await browser.newContext({ viewport, reducedMotion: 'no-preference' });
     for (const [name, relativeURL] of [...pages, ...extraViews]) {
       const page = await context.newPage();
+      if (name === 'radar') {
+        await page.addInitScript(() => {
+          const nativeFetch = window.fetch.bind(window);
+          window.__atlasRadarMockMode = 'success';
+          window.fetch = (input, init) => {
+            const url = String(typeof input === 'string' ? input : input?.url || '');
+            const isOpenAlex = url.startsWith('https://api.openalex.org/');
+            const isHuggingFace = url.startsWith('https://huggingface.co/api/daily_papers');
+            if (!isOpenAlex && !isHuggingFace) return nativeFetch(input, init);
+            if (window.__atlasRadarMockMode === 'failure') {
+              return Promise.resolve(new Response('{"error":"rate limited by browser audit"}', {
+                status: 429,
+                headers: { 'Content-Type': 'application/json' }
+              }));
+            }
+            const payload = isOpenAlex ? {
+              results: [{
+                id: 'https://openalex.org/W-ATLAS-BROWSER-AUDIT',
+                doi: null,
+                title: 'RoboTTT: Conflicting Metadata Snapshot',
+                display_name: 'RoboTTT: Conflicting Metadata Snapshot',
+                publication_date: '2026-07-18',
+                ids: { arxiv: 'https://arxiv.org/abs/2607.15275' },
+                primary_location: { landing_page_url: 'https://openalex.org/W-ATLAS-BROWSER-AUDIT' },
+                best_oa_location: null,
+                authorships: [{ author: { display_name: 'Audit Author' } }],
+                abstract_inverted_index: { robot: [0], policy: [1], audit: [2] },
+                cited_by_count: 0,
+                is_retracted: false,
+                relevance_score: 1
+              }]
+            } : [];
+            return Promise.resolve(new Response(JSON.stringify(payload), {
+              status: 200,
+              headers: { 'Content-Type': 'application/json' }
+            }));
+          };
+        });
+      }
       const consoleErrors = [];
       const pageErrors = [];
       const failedRequests = [];
@@ -79,6 +118,8 @@ try {
         };
         const selectors = ['.detail-skeleton', '.paper-skeleton', '.reader-loading', '.page-error'];
         const leftovers = selectors.flatMap(selector => [...document.querySelectorAll(selector)].filter(visible).map(() => selector));
+        const brokenImages = [...document.images].filter(element => visible(element) && element.complete && element.naturalWidth === 0)
+          .map(element => element.currentSrc || element.src || element.alt || 'unknown image');
         const criticalTargets = [...document.querySelectorAll('button, select, input, .button, .icon-button, summary')]
           .filter(visible).filter(element => {
             if (!element.matches('input[type="checkbox"], input[type="radio"]')) return true;
@@ -95,10 +136,19 @@ try {
           bodyWidth: body.scrollWidth,
           overflowX: Math.max(doc.scrollWidth, body.scrollWidth) - doc.clientWidth,
           leftovers,
+          brokenImages,
           criticalTargets
         };
       });
       const functionalChecks = [];
+      if (!['home', 'reader'].includes(name)) {
+        const count = await page.locator('#breadcrumbs').count();
+        functionalChecks.push({ selector: '#breadcrumbs', count, passed: count > 0 });
+      }
+      if (name !== 'reader') {
+        const count = await page.locator('#site-header nav').count();
+        functionalChecks.push({ selector: '#site-header nav', count, passed: count > 0 });
+      }
       for (const selector of requiredSelectors[name] || []) {
         const count = await page.locator(selector).count();
         functionalChecks.push({ selector, count, passed: count > 0 });
@@ -115,12 +165,12 @@ try {
   await browser.close();
 }
 
-const failures = results.filter(item => item.status >= 400 || item.status === 0 || item.overflowX > 2 || item.leftovers.length || item.functionalChecks.some(check => !check.passed) || item.interactionChecks.some(check => !check.passed) || item.consoleErrors.length || item.pageErrors.length || item.badResponses.length);
+const failures = results.filter(item => item.status >= 400 || item.status === 0 || item.overflowX > 2 || item.leftovers.length || item.brokenImages.length || item.functionalChecks.some(check => !check.passed) || item.interactionChecks.some(check => !check.passed) || item.consoleErrors.length || item.pageErrors.length || item.badResponses.length);
 const mobileTargetIssues = results.filter(item => item.viewport.width <= 390 && item.criticalTargets.length);
 const report = { generatedAt: new Date().toISOString(), baseURL, viewports, pages: results, failures: failures.length, mobileTargetIssuePages: mobileTargetIssues.length };
 await writeFile(path.join(outputDir, 'report.json'), `${JSON.stringify(report, null, 2)}\n`);
 for (const item of results) {
-  const flags = [item.overflowX > 2 ? `overflow=${item.overflowX}` : '', item.leftovers.length ? `leftovers=${item.leftovers.join(',')}` : '', item.functionalChecks.some(check => !check.passed) ? `function=${item.functionalChecks.filter(check => !check.passed).map(check => check.selector).join(',')}` : '', item.interactionChecks.some(check => !check.passed) ? `interaction=${item.interactionChecks.filter(check => !check.passed).map(check => check.label).join(',')}` : '', item.consoleErrors.length ? `console=${item.consoleErrors.length}` : '', item.pageErrors.length ? `pageerror=${item.pageErrors.length}` : '', item.badResponses.length ? `http=${item.badResponses.length}` : '', item.viewport.width <= 390 && item.criticalTargets.length ? `touch=${item.criticalTargets.length}` : ''].filter(Boolean).join(' ');
+  const flags = [item.overflowX > 2 ? `overflow=${item.overflowX}` : '', item.leftovers.length ? `leftovers=${item.leftovers.join(',')}` : '', item.brokenImages.length ? `broken-images=${item.brokenImages.length}` : '', item.functionalChecks.some(check => !check.passed) ? `function=${item.functionalChecks.filter(check => !check.passed).map(check => check.selector).join(',')}` : '', item.interactionChecks.some(check => !check.passed) ? `interaction=${item.interactionChecks.filter(check => !check.passed).map(check => check.label).join(',')}` : '', item.consoleErrors.length ? `console=${item.consoleErrors.length}` : '', item.pageErrors.length ? `pageerror=${item.pageErrors.length}` : '', item.badResponses.length ? `http=${item.badResponses.length}` : '', item.viewport.width <= 390 && item.criticalTargets.length ? `touch=${item.criticalTargets.length}` : ''].filter(Boolean).join(' ');
   console.log(`${flags && 'WARN'} ${item.viewport.name.padEnd(9)} ${item.name.padEnd(19)} status=${item.status} ${flags}`.trim());
 }
 console.log(`\nBrowser audit: ${results.length} renders, ${failures.length} hard failures, ${mobileTargetIssues.length} mobile pages with undersized critical controls.`);
@@ -150,23 +200,29 @@ async function runInteractionChecks(page, name, viewport) {
   }
 
   if (name === 'home') {
-    await check('hero-search-suggestion', async () => {
-      await page.locator('#hero-search').fill('OpenVLA');
+    await check('hero-search-yolo13-fuzzy', async () => {
+      await page.locator('#hero-search').fill('YOLO13');
       const result = page.locator('#hero-search-results .search-result-item').first();
       await result.waitFor({ state: 'visible', timeout: 3_000 });
-      const matched = /openvla/i.test(await result.textContent() || '');
+      const matched = /yolov?13/i.test(await result.textContent() || '');
       await page.locator('#hero-search').fill('');
       return matched;
     });
   } else if (name === 'explore') {
     await check('explore-filter-reset', async () => {
       if (viewport.width <= 900) await page.locator('#filter-toggle').click();
+      await page.locator('[data-filter="favorites"]').click();
+      await page.locator('#empty-state').waitFor({ state: 'visible', timeout: 3_000 });
+      const emptyFavoriteState = /收藏/.test(await page.locator('#result-summary').textContent() || '');
+      await page.locator('#reset-filters').click();
       await page.locator('[data-filter="category"][data-value="vla"]').click();
       await page.waitForFunction(() => new URLSearchParams(location.search).get('category') === 'vla');
       const hasResults = await page.locator('#model-grid .model-card').count() > 0;
+      await page.locator('#sort-select').selectOption('year-desc');
+      await page.waitForFunction(() => new URLSearchParams(location.search).get('sort') === 'year-desc');
       await page.locator('#reset-filters').click();
       await page.waitForFunction(() => !new URLSearchParams(location.search).has('category'));
-      return hasResults;
+      return emptyFavoriteState && hasResults;
     });
   } else if (name === 'model') {
     await check('favorite-toggle-roundtrip', async () => {
@@ -185,11 +241,32 @@ async function runInteractionChecks(page, name, viewport) {
       return true;
     });
   } else if (name === 'radar') {
-    await check('radar-local-search', async () => {
+    await check('radar-presets-cache-failure-conflict', async () => {
+      await page.locator('[data-tab="vla"]').click();
+      await page.waitForFunction(() => new URLSearchParams(location.search).get('category') === 'vla');
+      if (await page.locator('#lib-results .paper-card').count() === 0) return false;
+      await page.locator('[data-tab="all"]').click();
+      await page.locator('#live-refresh').click();
+      await page.waitForFunction(() => document.querySelectorAll('#source-statuses .state-ready').length === 4);
+      if (await page.locator('#lib-results .paper-conflict').count() === 0) return false;
+      await page.evaluate(() => { window.__atlasRadarMockMode = 'failure'; });
+      await page.locator('#live-refresh').click();
+      await page.waitForFunction(() => document.querySelectorAll('#source-statuses .state-stale').length === 2, null, { timeout: 5_000 });
       await page.locator('#lib-search').fill('RoboTTT');
       await page.waitForTimeout(350);
       const card = page.locator('#lib-results .paper-card', { hasText: 'RoboTTT' }).first();
       await card.waitFor({ state: 'visible', timeout: 3_000 });
+      await page.locator('#lib-search').press('Enter');
+      await page.waitForFunction(() => document.querySelectorAll('#source-statuses .state-error').length === 2, null, { timeout: 5_000 });
+      return await card.isVisible();
+    });
+  } else if (name === 'radar-formal' && viewport.name === 'desktop') {
+    await check('formal-reader-and-source-fallback', async () => {
+      const internal = page.locator('#lib-results a[href^="reader.html?paper="]');
+      const fallback = page.locator('#lib-results a.button-primary[target="_blank"]');
+      if (await internal.count() === 0 || await fallback.count() === 0) return false;
+      await internal.first().click();
+      await page.locator('.reader-page-sheet.is-rendered canvas').first().waitFor({ state: 'visible', timeout: 20_000 });
       return true;
     });
   } else if (name === 'reader' && viewport.name === 'desktop') {
@@ -220,9 +297,13 @@ async function runInteractionChecks(page, name, viewport) {
       await page.mouse.up();
       const dragged = await viewportRoot.getAttribute('transform');
       if (dragged === zoomed) return false;
-      await page.locator('#lineage-category').selectOption('world');
-      await page.waitForFunction(() => new URLSearchParams(location.search).get('category') === 'world');
-      return await page.locator('#lineage-nodes [data-id]').count() > 0;
+      for (const category of ['vla', 'world', 'detection', 'representation', 'segmentation', 'multimodal']) {
+        await page.locator('#lineage-category').selectOption(category);
+        await page.waitForFunction(value => new URLSearchParams(location.search).get('category') === value, category);
+        if (await page.locator('#lineage-nodes [data-id]').count() === 0) return false;
+      }
+      await page.goto(`${baseURL}/lineage.html?category=vla&focus=openvla`, { waitUntil: 'networkidle' });
+      return await page.locator('#lineage-nodes [data-id="openvla"]').count() === 1;
     });
   } else if (name === 'timeline') {
     await check('timeline-category-filter', async () => {
@@ -235,6 +316,11 @@ async function runInteractionChecks(page, name, viewport) {
       await page.locator('#glossary-search').fill('YOLO');
       await page.waitForFunction(() => new URLSearchParams(location.search).get('q') === 'YOLO');
       return await page.locator('#glossary-list .glossary-item').count() > 0;
+    });
+  } else if (name === 'trends') {
+    await check('trends-neutral-sample-boundary', async () => {
+      const note = await page.locator('.data-note').textContent() || '';
+      return note.includes('只统计当前图鉴样本') && note.includes('不代表行业全量论文');
     });
   }
 
