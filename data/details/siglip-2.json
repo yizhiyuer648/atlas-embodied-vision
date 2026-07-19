@@ -1,0 +1,48 @@
+{
+ "id": "siglip-2",
+ "name": "SigLIP 2",
+ "org": "Google DeepMind",
+ "country": "US",
+ "year": 2025,
+ "paper_url": "https://arxiv.org/abs/2502.14786",
+ "github_url": "https://github.com/google-research/big_vision",
+ "category": "representation",
+ "sub_category": "vision-language",
+ "one_liner_zh": "在 SigLIP 上加入自蒸馏、描述生成式目标和定位目标，增强语义与密集能力。",
+ "key_idea_zh": "同时优化图文对齐、局部到全局自监督与文本解码，并支持原生多分辨率输入。",
+ "tags": [
+  "图文对比学习",
+  "多语言",
+  "定位",
+  "自蒸馏"
+ ],
+ "tier": "B",
+ "lineage_parent": "siglip",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "SigLIP 解决了对比学习的扩展性,但图文对比这个单一目标的天花板也很明显:模型分不清「左边的红杯子」这类空间语义,密集特征也弱。Google DeepMind 的 SigLIP 2 把此前各自独立验证过的技巧统一进一个配方,造「全能型」图文编码器。"
+  },
+  {
+   "title": "方法详解",
+   "body": "在 sigmoid 对比目标之上,SigLIP 2 叠加三类目标:基于描述生成的预训练(接一个文本解码器,让视觉特征学会支撑生成,提升语义细度与定位)、自监督损失(DINO 式自蒸馏 + 掩码预测,强化局部到全局的密集特征)、在线数据治理(动态筛选训练样本)。另发布 NaFlex 变体,原生支持多分辨率与任意宽高比输入;数据混入多语言语料并做去偏处理。四个尺寸(86M–1B)全部开源。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "多语言 WebLI 混合语料;评测覆盖零样本分类、检索、作为 VLM 视觉塔的迁移表现,以及定位与密集预测任务。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "SigLIP 2 在所有规模上全面超过初代,定位与密集任务提升尤其显著,多语言理解与公平性也更好。发布后迅速被新一代 VLM(Gemma 3 等)与机器人模型采用为视觉编码器,一年内引用破千,是当前开源图文编码器的事实标杆。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "多目标训练配方复杂,复现门槛高;1B 上限的规模相对保守。它与 DINOv3 分别代表「语义系」与「几何系」的最新答案,下游模型如何融合两者仍是开放问题。"
+  }
+ ],
+ "citations": {
+  "count": 1044,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

@@ -1,0 +1,34 @@
+{
+ "id": "genie-2",
+ "name": "Genie 2",
+ "org": "Google DeepMind",
+ "country": "UK",
+ "year": 2024,
+ "paper_url": "unknown",
+ "github_url": "unknown",
+ "category": "world",
+ "sub_category": "foundation-world-model",
+ "one_liner_zh": "根据单张提示图生成可由键鼠控制的三维交互世界。",
+ "key_idea_zh": "公开演示覆盖动作响应、物理、视角与长时一致性，但未发布完整论文或代码。",
+ "tags": [
+  "3D 世界",
+  "交互生成",
+  "闭源"
+ ],
+ "tier": "B",
+ "lineage_parent": "genie-1",
+ "sections": [
+  {
+   "title": "背景与定位",
+   "body": "Genie 2 是 Google DeepMind 于 2024 年 12 月公布的基础世界模型(foundation world model):给一张提示图片(可由 Imagen 3 生成),它能生成一个可用键盘鼠标实时操控的 3D 交互世界,单次可玩时长达一分钟量级。相比只能玩 2D 平台风格的 Genie 1,这是维度上的跃迁。"
+  },
+  {
+   "title": "已公开的技术信息",
+   "body": "官方博客展示的能力包括:对键鼠输入的动作响应(移动、跳跃、开门)、物理效果(重力、水、烟)、角色动画、NPC 行为、长程一致性(离开再返回的场景保持不变)与新视角合成。DeepMind 称其为自回归潜扩散模型,通过大规模游戏视频训练,主要用途之一是为 SIMA 等具身智能体提供无限多样的训练与评测环境。"
+  },
+  {
+   "title": "资料状态与提醒",
+   "body": "Genie 2 未发布论文、模型或 API,能力展示均来自官方精选片段,交互帧率与稳定性无第三方验证。图鉴按 B 级收录;后续 Genie 3(2025)宣称实现 720p 实时交互,同样以官方材料为准。"
+  }
+ ]
+}

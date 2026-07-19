@@ -1,0 +1,215 @@
+{
+ "id": "diffusion-policy",
+ "name": "Diffusion Policy",
+ "org": "Columbia University / Toyota Research Institute",
+ "country": "US",
+ "year": 2023,
+ "paper_url": "https://arxiv.org/abs/2303.04137",
+ "github_url": "https://github.com/real-stanford/diffusion_policy",
+ "category": "vla",
+ "sub_category": "diffusion-policy",
+ "one_liner_zh": "把机器人动作策略建模为条件扩散去噪过程。",
+ "key_idea_zh": "以视觉或状态观测为条件，用一维条件 U-Net 迭代去噪整段动作轨迹，再以滚动时域方式执行。",
+ "tags": [
+  "扩散",
+  "动作序列",
+  "滚动时域"
+ ],
+ "tier": "A",
+ "lineage_parent": "unknown",
+ "architecture": {
+  "description_zh": "Diffusion Policy 先编码当前观测，再把观测条件、扩散时间步和带噪动作序列送入 Conditional U-Net 1D；调度器反复去噪，最后执行动作块前部。",
+  "modules": [
+   {
+    "id": "dp-obs",
+    "label": "图像 / 状态历史",
+    "type": "input"
+   },
+   {
+    "id": "dp-encoder",
+    "label": "观测编码器",
+    "type": "encoder"
+   },
+   {
+    "id": "dp-noise",
+    "label": "带噪动作轨迹",
+    "type": "latent"
+   },
+   {
+    "id": "dp-time",
+    "label": "扩散时间嵌入",
+    "type": "condition"
+   },
+   {
+    "id": "dp-unet",
+    "label": "Conditional U-Net 1D",
+    "type": "denoiser"
+   },
+   {
+    "id": "dp-scheduler",
+    "label": "迭代去噪调度器",
+    "type": "sampler"
+   },
+   {
+    "id": "dp-chunk",
+    "label": "动作块",
+    "type": "output"
+   },
+   {
+    "id": "dp-robot",
+    "label": "滚动时域执行",
+    "type": "controller"
+   }
+  ],
+  "edges": [
+   {
+    "from": "dp-obs",
+    "to": "dp-encoder",
+    "label": "观测"
+   },
+   {
+    "from": "dp-encoder",
+    "to": "dp-unet",
+    "label": "全局条件"
+   },
+   {
+    "from": "dp-noise",
+    "to": "dp-unet",
+    "label": "动作样本"
+   },
+   {
+    "from": "dp-time",
+    "to": "dp-unet",
+    "label": "时间步"
+   },
+   {
+    "from": "dp-unet",
+    "to": "dp-scheduler",
+    "label": "噪声预测"
+   },
+   {
+    "from": "dp-scheduler",
+    "to": "dp-unet",
+    "label": "下一步样本"
+   },
+   {
+    "from": "dp-scheduler",
+    "to": "dp-chunk",
+    "label": "最终轨迹"
+   },
+   {
+    "from": "dp-chunk",
+    "to": "dp-robot",
+    "label": "前若干动作"
+   }
+  ],
+  "flow_ms": 4100
+ },
+ "code": {
+  "language": "python",
+  "source_repo": "https://github.com/real-stanford/diffusion_policy",
+  "source_path": "diffusion_policy/model/diffusion/conditional_unet1d.py",
+  "simplified": true,
+  "lines": [
+   {
+    "code": "def forward(self, sample, timestep, global_cond=None):",
+    "comment_zh": "输入带噪动作序列、扩散时间和观测条件。"
+   },
+   {
+    "code": "    sample = einops.rearrange(sample, 'b h c -> b c h')",
+    "comment_zh": "把动作序列改成一维卷积需要的通道优先格式。"
+   },
+   {
+    "code": "    timesteps = timestep.expand(sample.shape[0])",
+    "comment_zh": "为批次中的每条轨迹广播同一时间步。"
+   },
+   {
+    "code": "    time_feature = self.diffusion_step_encoder(timesteps)",
+    "comment_zh": "将扩散时间编码成条件向量。"
+   },
+   {
+    "code": "    cond = torch.cat([time_feature, global_cond], dim=-1)",
+    "comment_zh": "拼接时间条件与观测条件。"
+   },
+   {
+    "code": "    skips = []",
+    "comment_zh": "保存下采样阶段的跳连特征。"
+   },
+   {
+    "code": "    x = sample",
+    "comment_zh": "从当前带噪动作开始 U-Net 前向传播。"
+   },
+   {
+    "code": "    for block1, block2, downsample in self.down_modules:",
+    "comment_zh": "逐层提取更大时间感受野的特征。"
+   },
+   {
+    "code": "        x = block1(x, cond)",
+    "comment_zh": "用 FiLM 将条件注入第一个残差块。"
+   },
+   {
+    "code": "        x = block2(x, cond)",
+    "comment_zh": "进一步融合条件并细化动作特征。"
+   },
+   {
+    "code": "        skips.append(x)",
+    "comment_zh": "保存当前分辨率供上采样阶段使用。"
+   },
+   {
+    "code": "        x = downsample(x)",
+    "comment_zh": "压缩时间分辨率。"
+   },
+   {
+    "code": "    for mid in self.mid_modules: x = mid(x, cond)",
+    "comment_zh": "在瓶颈层处理整段动作的全局关系。"
+   },
+   {
+    "code": "    for block1, block2, upsample in self.up_modules:",
+    "comment_zh": "逐层恢复动作时间分辨率。"
+   },
+   {
+    "code": "        x = torch.cat((x, skips.pop()), dim=1)",
+    "comment_zh": "通过跳连补回局部细节。"
+   },
+   {
+    "code": "        x = upsample(block2(block1(x, cond), cond))",
+    "comment_zh": "条件残差块处理后执行上采样。"
+   },
+   {
+    "code": "    x = self.final_conv(x)",
+    "comment_zh": "投影成与动作维度相同的去噪预测。"
+   },
+   {
+    "code": "    return einops.rearrange(x, 'b c h -> b h c')",
+    "comment_zh": "恢复批次、时间、动作维度的输出格式。"
+   }
+  ]
+ },
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "行为克隆把策略学习当回归问题，但人类示范天然是多峰的：同一个状态下，示范者有时从左绕、有时从右绕。均方误差回归会把两个峰平均成一条撞向中间的轨迹。图像生成领域的扩散模型恰好擅长表达复杂多峰分布，Diffusion Policy 的出发点就是：把「生成一张图」换成「生成一段动作」，用条件去噪过程直接建模视觉运动策略。"
+  },
+  {
+   "title": "方法详解",
+   "body": "模型学习的是动作分布的得分函数（score function）。训练时对示范动作序列加噪，网络以观测特征为条件预测噪声；推理时从纯高斯噪声出发，沿学到的梯度场做一系列朗之万式去噪迭代，还原出一整段未来动作。网络主干可以是一维条件 U-Net，也可以是时序扩散 Transformer；视觉观测经编码后作为条件注入每一步去噪。执行采用滚动时域（receding horizon）：预测一段、执行一小段、再重新预测，兼顾平滑与闭环反馈。这套组合优雅地解决了多峰分布、高维动作空间和训练稳定性三大痛点。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "论文在 4 个基准共 12 个操作任务上系统评测，涵盖仿真与真机、单臂推块到双手协作。训练只需常规的示范数据集，不需要奖励函数；由于扩散目标本质是加噪-去噪的监督回归，训练比对抗式或能量式方法稳定得多。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "Diffusion Policy 在 12 个任务上对当时最强方法平均提升 46.9%，此后两年内成为机器人操作的事实标准动作头：RDT-1B、DexVLA、GR00T N1 等基础模型的动作模块都直接源自这一范式。论文引用已超过 3600 次，是具身智能近年被复用最多的单点技术之一。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "多步迭代去噪带来推理延迟，高频控制场景需要蒸馏或减步数技巧；策略本身不含语言理解，需要外接指令编码器。后续 π0 用流匹配（flow matching）把迭代次数压到个位数，各类「VLM + 扩散动作专家」架构则把它与语义理解拼接成完整 VLA。"
+  }
+ ],
+ "citations": {
+  "count": 3697,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

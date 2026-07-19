@@ -1,0 +1,48 @@
+{
+ "id": "deeplab-v3",
+ "name": "DeepLabv3",
+ "org": "Google Research",
+ "country": "US",
+ "year": 2017,
+ "paper_url": "https://arxiv.org/abs/1706.05587",
+ "github_url": "https://github.com/tensorflow/models/tree/master/research/deeplab",
+ "category": "segmentation",
+ "sub_category": "semantic-segmentation",
+ "one_liner_zh": "用多尺度空洞卷积与改进 ASPP 捕获不同尺度上下文。",
+ "key_idea_zh": "并行不同 dilation rate 的空洞卷积和图像级池化，在不继续降采样时扩大感受野。",
+ "tags": [
+  "语义分割",
+  "空洞卷积",
+  "ASPP",
+  "多尺度"
+ ],
+ "tier": "B",
+ "lineage_parent": "fcn",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "分割网络的根本矛盾:分类骨干靠不断下采样获得大感受野与强语义,但分割需要高分辨率输出——下采样 32 倍后细节荡然无存。Google 的 DeepLab 系列给出的武器是空洞卷积(atrous/dilated convolution),v3 是这条路线的成熟形态。"
+  },
+  {
+   "title": "方法详解",
+   "body": "空洞卷积在卷积核采样点之间插入空洞:不增加参数、不降低分辨率,就能任意扩大感受野——网络后段不再下采样,输出步幅从 32 保持在 16 或 8。多尺度问题交给改进的 ASPP(空洞空间金字塔池化):并联多个不同扩张率的空洞卷积分支,同时捕获小、中、大尺度上下文;v3 进一步加入图像级全局池化分支补上「整图语境」,并用 BatchNorm 精细调训。相比 v2,v3 丢掉了 DenseCRF 后处理,端到端即达最优。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "在 PASCAL VOC 2012 与 Cityscapes 上训练评测,骨干为 ResNet;论文详细分享了输出步幅、多尺度推理等训练细节。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "DeepLabv3 无需任何后处理即达到当时最优水平;「空洞卷积 + ASPP」成为语义分割的标准组件,后续 v3+(加解码器)长期是工业分割的默认选择,引用超过 1 万次。空洞卷积的思想也扩散到检测、语音等需要「大感受野不降采样」的领域。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "高分辨率下空洞卷积计算量大;全局上下文仍靠池化近似。v3+ 补上轻量解码器精修边界;Transformer 时代,自注意力天然的全局感受野让 SegFormer、Mask2Former 逐步接棒。"
+  }
+ ],
+ "citations": {
+  "count": 10034,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

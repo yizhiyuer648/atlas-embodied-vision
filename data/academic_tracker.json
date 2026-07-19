@@ -1,0 +1,747 @@
+{
+  "schema_version": 2,
+  "snapshot_date": "2026-07-19",
+  "status_note": "这是学术追踪结构的人工审核种子。期刊索引状态、会议日期、截稿时间与当届政策都可能变化，必须在每日维护时回到官方页面复核。",
+  "editorial_policy": {
+    "purpose": "追踪论文出现在哪里、不同出版形态适合回答什么问题，以及六条技术主线正在使用哪些研究手法。这里不复刻论文雷达的论文卡片。",
+    "priority_note": "“核心追踪 / 扩展追踪”只是 Atlas 的编辑采样优先级，不是期刊或会议排名，也不代表论文质量。",
+    "metric_policy": "不展示或推断 JCR 分区、影响因子、录用率。当前 SCI/SCIE 索引状态统一标为待核验，需以 Clarivate Master Journal List 当期结果为准。",
+    "fact_label": "可核验事实",
+    "observation_label": "Atlas 观察"
+  },
+  "paper_quality_framework": {
+    "title": "论文水平怎么判断",
+    "boundary": "E1–E5 只表示发表事实的证据强度，不等于论文质量。Atlas 不用会议或期刊名称替论文打分，也不从摘要、引用数或仓库星标直接推断水平。",
+    "result_labels": ["证据充分", "证据部分", "暂不可判"],
+    "scoring_policy": "逐项记录证据，不汇总成脱离任务与实验条件的总分；没有读到正文、补充材料或真实评测时必须写“暂不可判”。",
+    "dimensions": [
+      {
+        "id": "claim_evidence_fit",
+        "label": "主张与证据",
+        "question": "核心实验是否直接验证论文最重要的主张？",
+        "signals": ["强基线与公平设置", "针对核心模块的消融", "失败案例与结论边界"],
+        "caution": "只看摘要、演示视频或作者自述无法判断。"
+      },
+      {
+        "id": "validation_breadth",
+        "label": "验证广度",
+        "question": "结果是否覆盖足够任务、数据、指标与对照条件？",
+        "signals": ["跨数据集或跨任务", "多随机种子与方差", "速度、资源与精度同口径"],
+        "caution": "更多表格不等于更强证据，先检查指标与设置是否可比。"
+      },
+      {
+        "id": "real_world_relevance",
+        "label": "真实场景",
+        "question": "面向机器人或世界模型的结论是否经闭环、真机或可控环境验证？",
+        "signals": ["闭环成功率", "真机或真实数据", "分布外与失败恢复"],
+        "caution": "仿真、离线指标与挑选后的演示不能自动代表真实部署能力。"
+      },
+      {
+        "id": "reproducibility",
+        "label": "可复现性",
+        "question": "别人是否能定位代码、权重、数据口径和评测脚本？",
+        "signals": ["来源仓库与许可证", "训练和评测配置", "版本、commit 与已知限制"],
+        "caution": "有仓库或高 star 只说明入口存在，不证明结果已经复现。"
+      },
+      {
+        "id": "version_increment",
+        "label": "版本增量",
+        "question": "期刊扩展版或新版相对预印本、会议版究竟新增了什么？",
+        "signals": ["新实验或新数据", "方法变化", "修正后的结论与限制"],
+        "caution": "标题相似或作者重合不能替代 DOI、版本说明和正文差异核对。"
+      }
+    ]
+  },
+  "publication_statuses": [
+    { "id": "preprint", "label": "预印本", "definition": "只有预印本记录，尚无正式发表证据。" },
+    { "id": "submitted", "label": "已投稿", "definition": "只有可核验投稿记录，不能当作已接收。" },
+    { "id": "accepted", "label": "已接收", "definition": "官方决定、accepted list 或 program 已确认。" },
+    { "id": "published_online", "label": "在线发表", "definition": "出版方正式页面已上线，但卷期信息可能尚未分配。" },
+    { "id": "proceedings_published", "label": "论文集已发布", "definition": "官方 proceedings 或正式会议论文页已经公开。" },
+    { "id": "issue_assigned", "label": "卷期已分配", "definition": "期刊卷、期或文章号已由出版方确认。" },
+    { "id": "needs_review", "label": "待人工核验", "definition": "聚合元数据或版本关系尚未获得足够第一方证据。" },
+    { "id": "unknown", "label": "状态未知", "definition": "没有足够公开资料确认当前发表状态。" }
+  ],
+  "evidence_levels": [
+    {
+      "id": "E1",
+      "label": "E1 · 正式出版",
+      "definition": "出版社正式目录、官方论文集或论文正式页；可确认已出版或已进入 proceedings。"
+    },
+    {
+      "id": "E2",
+      "label": "E2 · 官方决定",
+      "definition": "会议官方 decision、accepted list 或 program；可确认接收，但不等同于论文集已经出版。"
+    },
+    {
+      "id": "E3",
+      "label": "E3 · 双元数据一致",
+      "definition": "Crossref 与 DBLP 等独立书目源一致；用于补版本关系，仍应继续回到出版方页面。"
+    },
+    {
+      "id": "E4",
+      "label": "E4 · 聚合线索",
+      "definition": "OpenAlex、Semantic Scholar 等聚合数据；适合发现与交叉检查，不能单独证明录用。"
+    },
+    {
+      "id": "E5",
+      "label": "E5 · 预印本 / 自述",
+      "definition": "arXiv、仓库、实验室、作者或社区页面；只作为候选线索，不能单独证明正式发表。"
+    }
+  ],
+  "platforms": [
+    {
+      "name": "期刊 / 会议官方网站",
+      "url": "https://www.ieee-ras.org/conferences-workshops",
+      "evidence_level": "E1",
+      "role": "核对官方名称、主办组织、当届入口与政策",
+      "caveat": "跨届页面结构会变化，需逐条复核"
+    },
+    {
+      "name": "Clarivate Master Journal List",
+      "url": "https://mjl.clarivate.com/home",
+      "evidence_level": "E1",
+      "role": "人工核对期刊当期索引状态",
+      "caveat": "本静态站不缓存查询结果，页面上保持待核验"
+    },
+    {
+      "name": "IEEE Xplore",
+      "url": "https://ieeexplore.ieee.org/",
+      "evidence_level": "E1",
+      "role": "IEEE 期刊与会议正式出版记录",
+      "caveat": "部分全文可能需要机构权限"
+    },
+    {
+      "name": "CVF Open Access",
+      "url": "https://openaccess.thecvf.com/",
+      "evidence_level": "E1",
+      "role": "CVPR、ICCV、WACV 等公开论文入口",
+      "caveat": "按会议与年份分目录"
+    },
+    {
+      "name": "OpenReview",
+      "url": "https://openreview.net/",
+      "evidence_level": "E2",
+      "role": "核对采用 OpenReview 的会议投稿版本、评审与最终状态",
+      "caveat": "必须区分投稿、撤稿、拒稿与接收状态"
+    },
+    {
+      "name": "PMLR",
+      "url": "https://proceedings.mlr.press/",
+      "evidence_level": "E1",
+      "role": "机器学习与机器人会议正式 proceedings 入口",
+      "caveat": "覆盖会议集合有限"
+    },
+    {
+      "name": "Robotics Proceedings",
+      "url": "https://www.roboticsproceedings.org/",
+      "evidence_level": "E1",
+      "role": "RSS 正式论文集入口",
+      "caveat": "按届检索"
+    },
+    {
+      "name": "Crossref",
+      "url": "https://search.crossref.org/",
+      "evidence_level": "E3",
+      "role": "补 DOI、出版方与版本元数据",
+      "caveat": "元数据完整度由注册方决定"
+    },
+    {
+      "name": "OpenAlex",
+      "url": "https://openalex.org/",
+      "evidence_level": "E4",
+      "role": "跨出版平台发现、作者与引用关系线索",
+      "caveat": "聚合字段可能延迟或合并错误"
+    },
+    {
+      "name": "DBLP",
+      "url": "https://dblp.org/",
+      "evidence_level": "E3",
+      "role": "计算机学科作者、会议与期刊书目核对",
+      "caveat": "不是录用状态或质量证明"
+    },
+    {
+      "name": "Semantic Scholar",
+      "url": "https://www.semanticscholar.org/",
+      "evidence_level": "E4",
+      "role": "引用关系、相关工作与版本线索",
+      "caveat": "引用数会变化且不同平台口径不一"
+    },
+    {
+      "name": "arXiv",
+      "url": "https://arxiv.org/",
+      "evidence_level": "E5",
+      "role": "尽早发现预印本并获得稳定 arXiv ID",
+      "caveat": "出现于 arXiv 不等于被期刊或会议接收"
+    },
+    {
+      "name": "Hugging Face Papers",
+      "url": "https://huggingface.co/papers",
+      "evidence_level": "E5",
+      "role": "发现近期社区关注论文及关联模型、数据集和 Space",
+      "caveat": "热度不代表研究质量"
+    },
+    {
+      "name": "Papers with Code",
+      "url": "https://paperswithcode.com/",
+      "evidence_level": "E5",
+      "role": "发现任务、代码与基准关联线索",
+      "caveat": "条目和榜单需回到论文与仓库复核"
+    }
+  ],
+  "deduplication": {
+    "canonical_key_order": [
+      "DOI（去除 https://doi.org/ 前缀并转小写）",
+      "arXiv ID（去除版本号 v1/v2）",
+      "Anthology / PMLR / DBLP / PII / OpenReview / 官方 proceedings ID",
+      "规范化标题 + 第一作者 + 首次公开年份"
+    ],
+    "version_rule": "预印本、会议版、期刊扩展版属于同一研究时，共享一个 paper_id，并在 versions 中记录各自 DOI、arXiv ID 与 venue；不复制标题、摘要或导读正文。",
+    "conflict_rule": "DOI、作者或标题冲突时不自动合并，进入人工审核候选；社区帖子只能挂到已有 paper_id 的 discussion_refs。",
+    "radar_boundary": "论文雷达呈现具体论文和摘要；学术追踪只呈现 venue、来源覆盖、研究手法和每日编辑总结。"
+  },
+  "journals": [
+    {
+      "id": "tro",
+      "name": "IEEE Transactions on Robotics",
+      "acronym": "T-RO",
+      "publisher": "IEEE Robotics and Automation Society",
+      "official_url": "https://www.ieee-ras.org/publications/t-ro",
+      "library_url": "https://ieeexplore.ieee.org/xpl/RecentIssue.jsp?punumber=8860",
+      "tracking_priority": "核心追踪",
+      "index_status": "待核验",
+      "areas": ["vla", "world", "multimodal"],
+      "fact": "官方入口由 IEEE Robotics and Automation Society 提供，正式论文记录可在 IEEE Xplore 查询。",
+      "atlas_observation": "适合追踪完整机器人系统、控制方法与更充分的真实机器人验证；先看实验协议，再看模型规模。",
+      "evidence_level": "E1"
+    },
+    {
+      "id": "ral",
+      "name": "IEEE Robotics and Automation Letters",
+      "acronym": "RA-L",
+      "publisher": "IEEE Robotics and Automation Society",
+      "official_url": "https://www.ieee-ras.org/publications/ra-l",
+      "library_url": "https://ieeexplore.ieee.org/xpl/RecentIssue.jsp?punumber=7083369",
+      "tracking_priority": "核心追踪",
+      "index_status": "待核验",
+      "areas": ["vla", "segmentation", "multimodal"],
+      "fact": "官方入口由 IEEE Robotics and Automation Society 提供，正式记录可在 IEEE Xplore 查询。",
+      "atlas_observation": "机器人感知、操作与系统集成更新密集；阅读时应单独记录本体、数据量和真机回合数。",
+      "evidence_level": "E1"
+    },
+    {
+      "id": "ijrr",
+      "name": "The International Journal of Robotics Research",
+      "acronym": "IJRR",
+      "publisher": "SAGE Publications",
+      "official_url": "https://journals.sagepub.com/home/ijr",
+      "library_url": "https://journals.sagepub.com/home/ijr",
+      "tracking_priority": "核心追踪",
+      "index_status": "待核验",
+      "areas": ["vla", "world", "multimodal"],
+      "fact": "期刊主页与在线论文库由 SAGE 提供。",
+      "atlas_observation": "适合补齐会议论文之后的长期实验、系统细节与更完整讨论，但是否为扩展版必须用 DOI 和作者声明核对。",
+      "evidence_level": "E1"
+    },
+    {
+      "id": "science-robotics",
+      "name": "Science Robotics",
+      "acronym": "Sci. Robotics",
+      "publisher": "American Association for the Advancement of Science",
+      "official_url": "https://www.science.org/journal/scirobotics",
+      "library_url": "https://www.science.org/journal/scirobotics",
+      "tracking_priority": "扩展追踪",
+      "index_status": "待核验",
+      "areas": ["vla", "world", "multimodal"],
+      "fact": "期刊主页和文章入口位于 Science 网站。",
+      "atlas_observation": "适合观察跨学科机器人结果与完整系统能力；不能仅凭传播度判断方法是否可复现。",
+      "evidence_level": "E1"
+    },
+    {
+      "id": "tpami",
+      "name": "IEEE Transactions on Pattern Analysis and Machine Intelligence",
+      "acronym": "TPAMI",
+      "publisher": "IEEE Computer Society",
+      "official_url": "https://www.computer.org/csdl/journal/tp",
+      "library_url": "https://ieeexplore.ieee.org/xpl/RecentIssue.jsp?punumber=34",
+      "tracking_priority": "核心追踪",
+      "index_status": "待核验",
+      "areas": ["detection", "representation", "segmentation", "multimodal"],
+      "fact": "IEEE Computer Society 提供期刊入口，正式记录可在 IEEE Xplore 查询。",
+      "atlas_observation": "适合跟踪基础视觉方法的完整扩展与系统性分析；需要确认它与早期会议版新增了什么。",
+      "evidence_level": "E1"
+    },
+    {
+      "id": "ijcv",
+      "name": "International Journal of Computer Vision",
+      "acronym": "IJCV",
+      "publisher": "Springer Nature",
+      "official_url": "https://link.springer.com/journal/11263",
+      "library_url": "https://link.springer.com/journal/11263/articles",
+      "tracking_priority": "核心追踪",
+      "index_status": "待核验",
+      "areas": ["detection", "representation", "segmentation", "multimodal"],
+      "fact": "Springer Link 提供期刊信息和文章列表。",
+      "atlas_observation": "适合追踪视觉表征、检测和分割的扩展研究；优先阅读有公开代码、消融与跨数据集验证的工作。",
+      "evidence_level": "E1"
+    },
+    {
+      "id": "cviu",
+      "name": "Computer Vision and Image Understanding",
+      "acronym": "CVIU",
+      "publisher": "Elsevier",
+      "official_url": "https://www.sciencedirect.com/journal/computer-vision-and-image-understanding",
+      "library_url": "https://www.sciencedirect.com/journal/computer-vision-and-image-understanding/articles-in-press",
+      "tracking_priority": "扩展追踪",
+      "index_status": "待核验",
+      "areas": ["detection", "representation", "segmentation"],
+      "fact": "ScienceDirect 提供期刊主页与在线文章入口。",
+      "atlas_observation": "可作为基础视觉方法和图像理解研究的补充来源，先按主题相关度筛选，不按期刊标签替代论文判断。",
+      "evidence_level": "E1"
+    },
+    {
+      "id": "autonomous-robots",
+      "name": "Autonomous Robots",
+      "acronym": "AURO",
+      "publisher": "Springer Nature",
+      "official_url": "https://link.springer.com/journal/10514",
+      "library_url": "https://link.springer.com/journal/10514/articles",
+      "tracking_priority": "扩展追踪",
+      "index_status": "待核验",
+      "areas": ["vla", "world", "multimodal"],
+      "fact": "Springer Link 提供期刊信息和文章列表。",
+      "atlas_observation": "适合补充自主系统、规划与感知控制闭环研究，阅读时重点核对是否有真实环境或长期运行证据。",
+      "evidence_level": "E1"
+    }
+  ],
+  "conferences": [
+    {
+      "id": "cvpr",
+      "name": "IEEE/CVF Conference on Computer Vision and Pattern Recognition",
+      "acronym": "CVPR",
+      "organizer": "IEEE / Computer Vision Foundation",
+      "official_url": "https://cvpr.thecvf.com/",
+      "library_url": "https://openaccess.thecvf.com/",
+      "tracking_priority": "核心追踪",
+      "areas": ["detection", "representation", "segmentation", "multimodal", "world"],
+      "fact": "会议官网提供当届信息；CVF Open Access 提供公开论文入口。",
+      "atlas_observation": "基础视觉与多模态方法更新密集，先追踪任务定义和训练数据变化，再看榜单增量。",
+      "evidence_level": "E1"
+    },
+    {
+      "id": "iccv",
+      "name": "IEEE/CVF International Conference on Computer Vision",
+      "acronym": "ICCV",
+      "organizer": "IEEE / Computer Vision Foundation",
+      "official_url": "https://iccv.thecvf.com/",
+      "library_url": "https://openaccess.thecvf.com/",
+      "tracking_priority": "核心追踪",
+      "areas": ["detection", "representation", "segmentation", "multimodal", "world"],
+      "fact": "会议官网提供当届信息；CVF Open Access 提供公开论文入口。",
+      "atlas_observation": "适合与 CVPR 共同观察视觉主线的结构变化；不把某一届热点自动等同为长期趋势。",
+      "evidence_level": "E1"
+    },
+    {
+      "id": "eccv",
+      "name": "European Conference on Computer Vision",
+      "acronym": "ECCV",
+      "organizer": "European Computer Vision Association",
+      "official_url": "https://eccv.ecva.net/",
+      "library_url": "https://www.ecva.net/papers.php",
+      "tracking_priority": "核心追踪",
+      "areas": ["detection", "representation", "segmentation", "multimodal", "world"],
+      "fact": "会议官网提供当届信息；ECVA 论文入口按届汇集公开内容。",
+      "atlas_observation": "与 CVPR、ICCV 组成基础视觉的主要采样窗口，适合比较同一方法在不同时间点的后续修正。",
+      "evidence_level": "E1"
+    },
+    {
+      "id": "wacv",
+      "name": "IEEE/CVF Winter Conference on Applications of Computer Vision",
+      "acronym": "WACV",
+      "organizer": "IEEE / Computer Vision Foundation",
+      "official_url": "https://wacv.thecvf.com/",
+      "library_url": "https://openaccess.thecvf.com/",
+      "tracking_priority": "扩展追踪",
+      "areas": ["detection", "representation", "segmentation", "multimodal"],
+      "fact": "会议官网提供当届信息；公开论文可从 CVF Open Access 检索。",
+      "atlas_observation": "可补充偏应用与可部署视觉工作，但仍需用实验条件和开放资源判断可迁移性。",
+      "evidence_level": "E1"
+    },
+    {
+      "id": "icra",
+      "name": "IEEE International Conference on Robotics and Automation",
+      "acronym": "ICRA",
+      "organizer": "IEEE Robotics and Automation Society",
+      "official_url": "https://www.ieee-ras.org/conferences-workshops/fully-sponsored/icra",
+      "library_url": "https://ieeexplore.ieee.org/",
+      "tracking_priority": "核心追踪",
+      "areas": ["vla", "world", "segmentation", "multimodal"],
+      "fact": "IEEE Robotics and Automation Society 提供会议系列入口；正式出版记录可在 IEEE Xplore 查询。",
+      "atlas_observation": "适合观察机器人操作、控制与系统落地；模型结果必须结合硬件、本体和评估回合阅读。",
+      "evidence_level": "E1"
+    },
+    {
+      "id": "iros",
+      "name": "IEEE/RSJ International Conference on Intelligent Robots and Systems",
+      "acronym": "IROS",
+      "organizer": "IEEE / Robotics Society of Japan",
+      "official_url": "https://www.ieee-ras.org/conferences-workshops/financially-co-sponsored/iros",
+      "library_url": "https://ieeexplore.ieee.org/",
+      "tracking_priority": "核心追踪",
+      "areas": ["vla", "world", "segmentation", "multimodal"],
+      "fact": "IEEE Robotics and Automation Society 提供会议系列入口；正式出版记录可在 IEEE Xplore 查询。",
+      "atlas_observation": "适合补充广泛的机器人系统与感知控制工作，阅读时按任务设置而非只按模型名称聚类。",
+      "evidence_level": "E1"
+    },
+    {
+      "id": "rss",
+      "name": "Robotics: Science and Systems",
+      "acronym": "RSS",
+      "organizer": "Robotics: Science and Systems Foundation",
+      "official_url": "https://roboticsconference.org/",
+      "library_url": "https://www.roboticsproceedings.org/",
+      "tracking_priority": "核心追踪",
+      "areas": ["vla", "world", "multimodal"],
+      "fact": "会议官网提供当届信息；Robotics Proceedings 提供按届论文集。",
+      "atlas_observation": "适合观察机器人学习、规划与系统方法的关键想法；样本较精炼，仍要回到实验规模判断外推范围。",
+      "evidence_level": "E1"
+    },
+    {
+      "id": "corl",
+      "name": "Conference on Robot Learning",
+      "acronym": "CoRL",
+      "organizer": "Conference on Robot Learning",
+      "official_url": "https://www.corl.org/",
+      "library_url": "https://proceedings.mlr.press/",
+      "tracking_priority": "核心追踪",
+      "areas": ["vla", "world", "representation", "multimodal"],
+      "fact": "会议官网提供当届信息；正式论文集可通过 PMLR 检索。",
+      "atlas_observation": "VLA、模仿学习和机器人基础模型的重要发现窗口；优先记录数据构成、动作表示与跨本体评估。",
+      "evidence_level": "E1"
+    },
+    {
+      "id": "neurips",
+      "name": "Conference on Neural Information Processing Systems",
+      "acronym": "NeurIPS",
+      "organizer": "Neural Information Processing Systems Foundation",
+      "official_url": "https://neurips.cc/",
+      "library_url": "https://papers.nips.cc/",
+      "tracking_priority": "核心追踪",
+      "areas": ["vla", "world", "representation", "multimodal"],
+      "fact": "会议官网提供当届信息；历届论文可从官方论文库检索。",
+      "atlas_observation": "适合追踪训练目标、生成建模、表征学习和规模化方法；机器人可用性需要额外寻找闭环实验。",
+      "evidence_level": "E1"
+    },
+    {
+      "id": "iclr",
+      "name": "International Conference on Learning Representations",
+      "acronym": "ICLR",
+      "organizer": "International Conference on Learning Representations",
+      "official_url": "https://iclr.cc/",
+      "library_url": "https://openreview.net/group?id=ICLR.cc",
+      "tracking_priority": "核心追踪",
+      "areas": ["vla", "world", "representation", "multimodal"],
+      "fact": "会议官网提供当届信息；投稿与评审记录可在其 OpenReview 组织页核对。",
+      "atlas_observation": "适合追踪表征、预训练和生成方法；引用 OpenReview 时必须确认最终决定，不能把投稿页当作录用证明。",
+      "evidence_level": "E1"
+    }
+  ],
+  "publication_events": [
+    {
+      "id": "lightocc-ijcv-2026",
+      "work_id": "doi:10.1007/s11263-026-02934-9",
+      "paper_id": "doi:10.1007/s11263-026-02934-9",
+      "title": "LightOcc: Lightweight Spatial Embedding for Efficient Vision-based 3D Occupancy Prediction",
+      "category": "world",
+      "publication_type": "journal",
+      "venue_id": "ijcv",
+      "status": "published_online",
+      "event_date": "2026-07-14",
+      "evidence_level": "E1",
+      "source_label": "Springer Nature Link 正式文章页",
+      "source_url": "https://link.springer.com/article/10.1007/s11263-026-02934-9",
+      "fact_zh": "Springer 正式页面记录该文发表于 International Journal of Computer Vision，在线发表日期为 2026-07-14。",
+      "atlas_observation_zh": "这条信号把世界模型旁边的“场景状态表示”拉回部署约束：读论文时应把占据预测质量、空间嵌入开销和硬件条件放在同一张表里。",
+      "methods": ["3D 占据预测", "空间嵌入", "轻量化"],
+      "model_ids": [],
+      "versions": [{ "kind": "journal", "identifier": "doi:10.1007/s11263-026-02934-9", "url": "https://link.springer.com/article/10.1007/s11263-026-02934-9" }],
+      "last_verified": "2026-07-19"
+    },
+    {
+      "id": "stable-sfda-seg-ijcv-2026",
+      "work_id": "doi:10.1007/s11263-026-02929-6",
+      "paper_id": "doi:10.1007/s11263-026-02929-6",
+      "title": "Towards Stable Source-Free Domain Adaptive Semantic Segmentation",
+      "category": "segmentation",
+      "publication_type": "journal",
+      "venue_id": "ijcv",
+      "status": "published_online",
+      "event_date": "2026-07-11",
+      "evidence_level": "E1",
+      "source_label": "Springer Nature Link 正式文章页",
+      "source_url": "https://link.springer.com/article/10.1007/s11263-026-02929-6",
+      "fact_zh": "Springer 正式页面记录该文发表于 International Journal of Computer Vision，在线发表日期为 2026-07-11。",
+      "atlas_observation_zh": "源自由域适应反复出现，说明分割研究不只追单域精度，也在补“拿不到原训练数据时怎样迁移”的现实约束。",
+      "methods": ["源自由域适应", "语义分割", "稳定训练"],
+      "model_ids": [],
+      "versions": [{ "kind": "journal", "identifier": "doi:10.1007/s11263-026-02929-6", "url": "https://link.springer.com/article/10.1007/s11263-026-02929-6" }],
+      "last_verified": "2026-07-19"
+    },
+    {
+      "id": "llm-multi-robot-survey-auro-2026",
+      "work_id": "doi:10.1007/s10514-026-10257-4",
+      "paper_id": "doi:10.1007/s10514-026-10257-4",
+      "title": "Large language models for multi-robot systems: a survey",
+      "category": "multimodal",
+      "publication_type": "journal",
+      "venue_id": "autonomous-robots",
+      "status": "published_online",
+      "event_date": "2026-06-10",
+      "evidence_level": "E1",
+      "source_label": "Springer Nature Link 正式文章页",
+      "source_url": "https://link.springer.com/article/10.1007/s10514-026-10257-4",
+      "fact_zh": "Springer 正式页面记录该综述发表于 Autonomous Robots，在线发表日期为 2026-06-10。",
+      "atlas_observation_zh": "综述更适合用来建立多机器人系统中的角色地图，不应被当成一个新模型；阅读重点是任务分解、通信、规划和闭环执行如何被区分。",
+      "methods": ["多机器人系统", "LLM 规划", "综述"],
+      "model_ids": [],
+      "versions": [{ "kind": "journal", "identifier": "doi:10.1007/s10514-026-10257-4", "url": "https://link.springer.com/article/10.1007/s10514-026-10257-4" }],
+      "last_verified": "2026-07-19"
+    },
+    {
+      "id": "vision-manipulation-object-graphs-auro-2026",
+      "work_id": "doi:10.1007/s10514-026-10253-8",
+      "paper_id": "doi:10.1007/s10514-026-10253-8",
+      "title": "Vision-based manipulation from single human video with open-world object graphs",
+      "category": "vla",
+      "publication_type": "journal",
+      "venue_id": "autonomous-robots",
+      "status": "issue_assigned",
+      "event_date": "2026-05-08",
+      "evidence_level": "E1",
+      "source_label": "Springer Nature Link 正式文章页",
+      "source_url": "https://link.springer.com/article/10.1007/s10514-026-10253-8",
+      "fact_zh": "Springer 正式页面记录该文发表于 Autonomous Robots，2026-05-08 上线，并标注 Volume 50、article 27。",
+      "atlas_observation_zh": "单个人类视频与开放世界对象图的组合值得作为 VLA 旁线观察：它关注的是如何把示范转成对象级结构，再支撑操作，而不是只扩大动作模型。",
+      "methods": ["单视频示范", "开放世界对象图", "视觉操作"],
+      "model_ids": [],
+      "versions": [{ "kind": "journal", "identifier": "doi:10.1007/s10514-026-10253-8", "url": "https://link.springer.com/article/10.1007/s10514-026-10253-8" }],
+      "last_verified": "2026-07-19"
+    },
+    {
+      "id": "hybriddrivevla-cvpr-2026",
+      "work_id": "cvf:cvpr2026:hybriddrivevla",
+      "paper_id": "cvf:cvpr2026:hybriddrivevla",
+      "title": "HybridDriveVLA: Vision-Language-Action Model with Visual CoT reasoning and ToT Evaluation for Autonomous Driving",
+      "category": "vla",
+      "publication_type": "conference",
+      "venue_id": "cvpr",
+      "status": "proceedings_published",
+      "event_date": "2026",
+      "evidence_level": "E1",
+      "source_label": "CVPR 2026 Open Access Repository",
+      "source_url": "https://openaccess.thecvf.com/content/CVPR2026/html/Bassole_HybridDriveVLA_Vision-Language-Action_Model_with_Visual_CoT_reasoning_and_ToT_Evaluation_CVPR_2026_paper.html",
+      "fact_zh": "CVF 官方 CVPR 2026 Open Access 论文集列出该论文，并提供正式会议论文页。",
+      "atlas_observation_zh": "视觉思维链与树式评估同时进入标题，说明自动驾驶 VLA 正在把“怎样推理”和“怎样评价推理过程”一起结构化；仍需核对闭环驾驶收益。",
+      "methods": ["Visual CoT", "ToT 评估", "自动驾驶 VLA"],
+      "model_ids": [],
+      "versions": [{ "kind": "proceedings", "identifier": "cvf:cvpr2026:hybriddrivevla", "url": "https://openaccess.thecvf.com/content/CVPR2026/html/Bassole_HybridDriveVLA_Vision-Language-Action_Model_with_Visual_CoT_reasoning_and_ToT_Evaluation_CVPR_2026_paper.html" }],
+      "last_verified": "2026-07-19"
+    },
+    {
+      "id": "raynova-cvpr-2026",
+      "work_id": "cvf:cvpr2026:raynova",
+      "paper_id": "cvf:cvpr2026:raynova",
+      "title": "RAYNOVA: Scale-Temporal Autoregressive World Modeling in Ray Space",
+      "category": "world",
+      "publication_type": "conference",
+      "venue_id": "cvpr",
+      "status": "proceedings_published",
+      "event_date": "2026",
+      "evidence_level": "E1",
+      "source_label": "CVPR 2026 Open Access Repository",
+      "source_url": "https://openaccess.thecvf.com/content/CVPR2026/html/Xie_RAYNOVA_Scale-Temporal_Autoregressive_World_Modeling_in_Ray_Space_CVPR_2026_paper.html",
+      "fact_zh": "CVF 官方 CVPR 2026 Open Access 论文集列出该论文，并提供正式会议论文页。",
+      "atlas_observation_zh": "在射线空间做尺度—时间自回归建模，是把几何观测结构直接写进世界模型的一种路线；要继续核对它对长时预测和可控性的实际贡献。",
+      "methods": ["射线空间", "尺度—时间建模", "自回归世界模型"],
+      "model_ids": [],
+      "versions": [{ "kind": "proceedings", "identifier": "cvf:cvpr2026:raynova", "url": "https://openaccess.thecvf.com/content/CVPR2026/html/Xie_RAYNOVA_Scale-Temporal_Autoregressive_World_Modeling_in_Ray_Space_CVPR_2026_paper.html" }],
+      "last_verified": "2026-07-19"
+    },
+    {
+      "id": "paq-detr-cvpr-2026",
+      "work_id": "cvf:cvpr2026:paq-detr",
+      "paper_id": "cvf:cvpr2026:paq-detr",
+      "title": "PaQ-DETR: Learning Pattern and Quality-Aware Dynamic Queries for Object Detection",
+      "category": "detection",
+      "publication_type": "conference",
+      "venue_id": "cvpr",
+      "status": "proceedings_published",
+      "event_date": "2026",
+      "evidence_level": "E1",
+      "source_label": "CVPR 2026 Open Access Repository",
+      "source_url": "https://openaccess.thecvf.com/content/CVPR2026/html/Kang_PaQ-DETR_Learning_Pattern_and_Quality-Aware_Dynamic_Queries_for_Object_Detection_CVPR_2026_paper.html",
+      "fact_zh": "CVF 官方 CVPR 2026 Open Access 论文集列出该论文，并提供正式会议论文页。",
+      "atlas_observation_zh": "DETR 路线仍在继续细化 query 的生成与质量建模；比较时应区分 query 机制的变化和训练配方带来的收益。",
+      "methods": ["动态查询", "质量感知", "DETR"],
+      "model_ids": [],
+      "versions": [{ "kind": "proceedings", "identifier": "cvf:cvpr2026:paq-detr", "url": "https://openaccess.thecvf.com/content/CVPR2026/html/Kang_PaQ-DETR_Learning_Pattern_and_Quality-Aware_Dynamic_Queries_for_Object_Detection_CVPR_2026_paper.html" }],
+      "last_verified": "2026-07-19"
+    },
+    {
+      "id": "synclip-cvpr-2026",
+      "work_id": "cvf:cvpr2026:synclip",
+      "paper_id": "cvf:cvpr2026:synclip",
+      "title": "SynCLIP: Synonym-Coherent Language-Image Pretraining for Robust Open-Vocabulary Dense Perception",
+      "category": "representation",
+      "publication_type": "conference",
+      "venue_id": "cvpr",
+      "status": "proceedings_published",
+      "event_date": "2026",
+      "evidence_level": "E1",
+      "source_label": "CVPR 2026 Open Access Repository",
+      "source_url": "https://openaccess.thecvf.com/content/CVPR2026/html/Xie_SynCLIP_Synonym-Coherent_Language-Image_Pretraining_for_Robust_Open-Vocabulary_Dense_Perception_CVPR_2026_paper.html",
+      "fact_zh": "CVF 官方 CVPR 2026 Open Access 论文集列出该论文，并提供正式会议论文页。",
+      "atlas_observation_zh": "同义词一致性被显式放进视觉—语言预训练，反映开放词汇系统正在补语言表述变化带来的不稳定，而不只是扩大文本数据量。",
+      "methods": ["同义词一致性", "图文预训练", "开放词汇密集感知"],
+      "model_ids": [],
+      "versions": [{ "kind": "proceedings", "identifier": "cvf:cvpr2026:synclip", "url": "https://openaccess.thecvf.com/content/CVPR2026/html/Xie_SynCLIP_Synonym-Coherent_Language-Image_Pretraining_for_Robust_Open-Vocabulary_Dense_Perception_CVPR_2026_paper.html" }],
+      "last_verified": "2026-07-19"
+    },
+    {
+      "id": "robust-mm-seg-cvpr-2026",
+      "work_id": "cvf:cvpr2026:robust-multimodal-segmentation",
+      "paper_id": "cvf:cvpr2026:robust-multimodal-segmentation",
+      "title": "Towards Robust Multi-Modal Semantic Segmentation with Teacher-Student Framework and Hybrid Prototype Distillation",
+      "category": "segmentation",
+      "publication_type": "conference",
+      "venue_id": "cvpr",
+      "status": "proceedings_published",
+      "event_date": "2026",
+      "evidence_level": "E1",
+      "source_label": "CVPR 2026 Open Access Repository",
+      "source_url": "https://openaccess.thecvf.com/content/CVPR2026/html/Tan_Towards_Robust_Multi-Modal_Semantic_Segmentation_with_Teacher-Student_Framework_and_Hybrid_CVPR_2026_paper.html",
+      "fact_zh": "CVF 官方 CVPR 2026 Open Access 论文集列出该论文，并提供正式会议论文页。",
+      "atlas_observation_zh": "教师—学生框架与原型蒸馏继续被用于多模态分割鲁棒性；真正可迁移的增量要看缺失模态、噪声模态和跨数据集设置。",
+      "methods": ["教师—学生", "混合原型蒸馏", "多模态分割"],
+      "model_ids": [],
+      "versions": [{ "kind": "proceedings", "identifier": "cvf:cvpr2026:robust-multimodal-segmentation", "url": "https://openaccess.thecvf.com/content/CVPR2026/html/Tan_Towards_Robust_Multi-Modal_Semantic_Segmentation_with_Teacher-Student_Framework_and_Hybrid_CVPR_2026_paper.html" }],
+      "last_verified": "2026-07-19"
+    },
+    {
+      "id": "sensesearch-cvpr-2026",
+      "work_id": "cvf:cvpr2026:sensesearch",
+      "paper_id": "cvf:cvpr2026:sensesearch",
+      "title": "SenseSearch: Empowering Vision-Language Models with High-Resolution Agentic Search-Reasoning via Reinforcement Learning",
+      "category": "multimodal",
+      "publication_type": "conference",
+      "venue_id": "cvpr",
+      "status": "proceedings_published",
+      "event_date": "2026",
+      "evidence_level": "E1",
+      "source_label": "CVPR 2026 Open Access Repository",
+      "source_url": "https://openaccess.thecvf.com/content/CVPR2026/html/Chng_SenseSearch_Empowering_Vision-Language_Models_with_High-Resolution_Agentic_Search-Reasoning_via_Reinforcement_CVPR_2026_paper.html",
+      "fact_zh": "CVF 官方 CVPR 2026 Open Access 论文集列出该论文，并提供正式会议论文页。",
+      "atlas_observation_zh": "高分辨率视觉被拆成可搜索的推理过程，并用强化学习训练代理选择观察位置；要把视觉理解收益和额外搜索成本一起读。",
+      "methods": ["代理式搜索", "高分辨率推理", "强化学习"],
+      "model_ids": [],
+      "versions": [{ "kind": "proceedings", "identifier": "cvf:cvpr2026:sensesearch", "url": "https://openaccess.thecvf.com/content/CVPR2026/html/Chng_SenseSearch_Empowering_Vision-Language_Models_with_High-Resolution_Agentic_Search-Reasoning_via_Reinforcement_CVPR_2026_paper.html" }],
+      "last_verified": "2026-07-19"
+    }
+  ],
+  "comparison_dimensions": [
+    {
+      "dimension": "更新速度",
+      "journal_fact": "期刊通常采用卷期或连续出版流程，修订链条可在出版页面或 DOI 元数据中核对。",
+      "conference_fact": "会议围绕具体届次组织，投稿、决定和 proceedings 对应明确会议周期。",
+      "atlas_observation": "要追新方法先看会议与预印本；要补完整实验和长期讨论，再找期刊版。"
+    },
+    {
+      "dimension": "证据形态",
+      "journal_fact": "期刊文章可能是独立工作，也可能是早期会议工作的扩展；两者关系需由作者说明、标题、作者和 DOI 核对。",
+      "conference_fact": "会议论文通常绑定具体届次和 proceedings；OpenReview 上还可能保留投稿版本与评审记录。",
+      "atlas_observation": "不要默认“期刊版一定更强”或“会议版一定更新”；只比较新增实验、方法变化与结论边界。"
+    },
+    {
+      "dimension": "复现线索",
+      "journal_fact": "代码、数据和补充材料是否公开取决于具体论文与出版平台。",
+      "conference_fact": "代码、数据和补充材料是否公开同样取决于具体论文，会议名称本身不能证明可复现。",
+      "atlas_observation": "用仓库、许可证、训练数据、评估脚本和失败案例五项单独评分。"
+    },
+    {
+      "dimension": "适合学习",
+      "journal_fact": "文章长度和组织形式由具体期刊与文章类型决定。",
+      "conference_fact": "文章长度和补充材料规则由具体会议当届政策决定。",
+      "atlas_observation": "初学者先读会议版建立问题地图，再用期刊扩展版补实验细节；若只有期刊版则直接从任务定义读起。"
+    },
+    {
+      "dimension": "常见误区",
+      "journal_fact": "JCR 分区、影响因子与索引状态会随年度和口径变化。",
+      "conference_fact": "录用率、track 和 workshop/main conference 状态会随届次变化。",
+      "atlas_observation": "本页不把这些数字做静态排名；需要时只保存官方当期证据和查询日期。"
+    }
+  ],
+  "direction_comparisons": [
+    {
+      "category": "vla",
+      "label": "VLA 视觉-语言-动作",
+      "conference_watch": "优先观察 CoRL、RSS、ICRA、IROS，以及机器学习会议中的机器人学习论文。",
+      "journal_watch": "用 T-RO、RA-L、IJRR 等补充完整机器人系统、长时程与真机验证。",
+      "methods": ["动作 token 化", "扩散策略", "流匹配动作头", "分层策略", "跨本体训练", "闭环纠错"],
+      "atlas_observation": "先按“数据—动作表示—本体—评估”四格阅读。会议常帮助发现新配方，期刊更适合核对系统证据；这不是质量高低判断。"
+    },
+    {
+      "category": "world",
+      "label": "世界模型",
+      "conference_watch": "追踪 NeurIPS、ICLR、CVPR、ICCV、ECCV 中的视频生成、潜空间预测和动作条件建模。",
+      "journal_watch": "在机器人与视觉期刊中寻找规划、自动驾驶、长期预测和闭环验证的扩展研究。",
+      "methods": ["潜空间动力学", "自回归视频生成", "扩散 Transformer", "JEPA 特征预测", "动作条件生成", "模型预测控制"],
+      "atlas_observation": "把“生成得像”与“预测得可用于决策”分开记录，并寻找物理一致性、可控性和闭环收益证据。"
+    },
+    {
+      "category": "detection",
+      "label": "目标检测",
+      "conference_watch": "CVPR、ICCV、ECCV、WACV 是架构、开放词汇检测和实时检测的重要发现窗口。",
+      "journal_watch": "TPAMI、IJCV、CVIU 可用于跟踪会议工作的扩展、系统分析与跨数据集验证。",
+      "methods": ["端到端集合预测", "一对一匹配", "开放词汇定位", "多尺度特征", "蒸馏与剪枝", "NMS-free 设计"],
+      "atlas_observation": "速度、输入尺寸、训练数据、硬件和后处理必须放在同一表格里，否则 FPS 与精度不可直接横比。"
+    },
+    {
+      "category": "representation",
+      "label": "图像检索 / 表征",
+      "conference_watch": "追踪 CVPR、ICCV、ECCV、NeurIPS、ICLR 中的预训练目标和规模化实验。",
+      "journal_watch": "用 TPAMI、IJCV 等观察更系统的迁移、鲁棒性和消融研究。",
+      "methods": ["视觉-语言对比学习", "自监督蒸馏", "掩码图像建模", "多模态对齐", "检索增强", "参数高效适配"],
+      "atlas_observation": "不要只看线性探测分数；同时记录冻结/微调设置、数据可得性和跨任务迁移。"
+    },
+    {
+      "category": "segmentation",
+      "label": "分割与基础视觉",
+      "conference_watch": "CVPR、ICCV、ECCV、WACV 适合发现提示式分割、开放词汇和轻量化方法。",
+      "journal_watch": "TPAMI、IJCV、CVIU 可补充边界质量、泛化与跨域评估。",
+      "methods": ["提示编码", "掩码解码器", "开放词汇分割", "高质量边界细化", "知识蒸馏", "移动端适配"],
+      "atlas_observation": "区分“能分任何对象”的覆盖范围与特定任务精度，并单独核对交互提示成本和推理延迟。"
+    },
+    {
+      "category": "multimodal",
+      "label": "多模态大模型 · 机器人",
+      "conference_watch": "综合观察视觉、机器学习和机器人会议中的视觉语言理解、具身推理与行动接口。",
+      "journal_watch": "在机器人与视觉期刊中寻找完整系统、真实环境部署和更严格失败分析。",
+      "methods": ["指令微调", "视觉 grounding", "链式推理", "工具调用", "记忆与检索", "动作条件化"],
+      "atlas_observation": "把语言回答能力与真实执行能力分开；重点核对是否有动作空间、闭环反馈、物理交互和可重复评估。"
+    }
+  ],
+  "editorial_summary": {
+    "title": "本期 Atlas 总结",
+    "fact": "截至 2026-07-19，页面收录 8 个期刊入口、10 个会议入口、14 类来源平台和 10 条人工核验发表事件：4 条来自 Springer 正式期刊页，6 条来自 CVPR 2026 官方论文集。期刊当期 SCI/SCIE 索引状态全部保持待核验，未记录 JCR 分区、影响因子或录用率。",
+    "interpretation": "最有用的呈现方式不是再造一份摘要列表，而是让论文雷达保存唯一论文身份，让本页记录“发表状态怎样变化、哪些方法在不同窗口反复出现”。本期样本里，轻量场景表示、域适应、动态 query、原型蒸馏和代理式视觉搜索都在解决模型走向真实任务时的约束；这只是编辑观察，不代表已经形成长期趋势。",
+    "next_watch": [
+      "新论文是否只是预印本，还是已有正式 proceedings / DOI",
+      "同一研究是否出现会议版与期刊扩展版，新增证据究竟是什么",
+      "CVPR 2026 条目能否与 arXiv 或本地论文雷达建立无冲突的规范 paper_id",
+      "期刊正式发表已经确认，但当期 SCI/SCIE 索引状态仍需在 Clarivate Master Journal List 人工核验",
+      "六个方向中哪些研究手法连续多期出现，哪些只是短期热点",
+      "代码、训练数据、评估脚本和失败案例是否真正公开",
+      "来源之间的标题、作者、年份或引用信息是否冲突"
+    ]
+  }
+}

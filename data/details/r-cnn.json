@@ -1,0 +1,48 @@
+{
+ "id": "r-cnn",
+ "name": "R-CNN",
+ "org": "UC Berkeley",
+ "country": "US",
+ "year": 2014,
+ "paper_url": "https://arxiv.org/abs/1311.2524",
+ "github_url": "https://github.com/rbgirshick/rcnn",
+ "category": "detection",
+ "sub_category": "region-based",
+ "one_liner_zh": "把候选区域逐个送入 CNN 提取特征，开启深度学习目标检测时代。",
+ "key_idea_zh": "Selective Search 生成候选框，CNN 编码每个区域，再由 SVM 分类和回归器精修。",
+ "tags": [
+  "R-CNN",
+  "候选区域",
+  "CNN",
+  "两阶段"
+ ],
+ "tier": "B",
+ "lineage_parent": "unknown",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "2012 年 AlexNet 在图像分类上一鸣惊人后,整个视觉界都在问:CNN 的威力能否延伸到目标检测?当时 PASCAL VOC 检测榜多年停滞,最好的方法是多种手工特征加上下文的复杂集成系统。伯克利的 Ross Girshick 等人给出了历史性答案:R-CNN——Regions with CNN features,深度学习检测时代的开山之作。"
+  },
+  {
+   "title": "方法详解",
+   "body": "R-CNN 的流水线分四步:先用 Selective Search 从图像中生成约 2000 个类别无关的候选区域;把每个区域缩放到固定大小,逐个送进在 ImageNet 上预训练、再在检测数据上微调的 CNN(AlexNet)提取 4096 维特征;然后用每类一个的线性 SVM 给区域打分;最后用边界框回归器精修框的位置。论文还确立了「监督预训练 + 领域微调」的迁移范式——这在标注稀缺的检测任务上是决定性的。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "CNN 先在 ImageNet 分类上预训练,再在 VOC 检测数据上以候选区域为样本微调;SVM 与回归器单独训练。整个系统是多阶段拼接,训练繁琐且需要缓存海量区域特征。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "R-CNN 把 VOC 2012 的 mAP 一举提升 30% 以上,达到 53.3%,在 200 类的 ILSVRC2013 检测集上也大幅领先同期的 OverFeat。它证明了「CNN 特征 + 候选区域」这条路线的有效性,直接派生出 Fast/Faster R-CNN 家族,引用近 3 万次,是计算机视觉史上被引最多的论文之一。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "每个候选区域都要独立跑一遍 CNN,一张图要前向 2000 次,检测一张图要几十秒;多阶段训练也无法端到端优化。这两个痛点分别被 Fast R-CNN(共享卷积 + RoI Pooling)和 Faster R-CNN(可学习 RPN)逐一解决。"
+  }
+ ],
+ "citations": {
+  "count": 29191,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

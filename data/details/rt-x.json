@@ -1,0 +1,47 @@
+{
+ "id": "rt-x",
+ "name": "RT-X",
+ "org": "Open X-Embodiment Collaboration",
+ "country": "INTL",
+ "year": 2023,
+ "paper_url": "https://arxiv.org/abs/2310.08864",
+ "github_url": "https://github.com/google-deepmind/open_x_embodiment",
+ "category": "vla",
+ "sub_category": "cross-embodiment",
+ "one_liner_zh": "在多机构、多机器人数据上训练跨本体通用策略。",
+ "key_idea_zh": "汇集 Open X-Embodiment 数据，并训练 RT-1-X、RT-2-X 来研究跨机器人正迁移。",
+ "tags": [
+  "跨本体",
+  "大规模数据",
+  "通用策略"
+ ],
+ "tier": "B",
+ "lineage_parent": "rt-2",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "NLP 和 CV 都经历过「各家小数据集 → 统一大数据集 → 通用预训练模型」的整合过程，机器人领域却长期各自为战：每个实验室的机器人、传感器、动作空间都不一样，数据无法互通。Open X-Embodiment 项目要回答的问题是：把不同机器人的数据汇到一起训练一个模型，会互相干扰，还是互相成就？"
+  },
+  {
+   "title": "方法详解",
+   "body": "项目本身的核心贡献是数据标准化：21 家机构、22 种机器人形态的数据被统一成一致的格式（RLDS），汇成覆盖 527 种技能、16 万余个任务的 Open X-Embodiment 数据集。在此之上训练了两个模型：RT-1-X 沿用 RT-1 的高效架构，RT-2-X 沿用 RT-2 的 VLM 架构，输入统一为图像加语言指令，输出统一的离散末端动作 token。不同本体的差异不做特殊建模，完全交给数据多样性去消化。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "训练集混合来自全球实验室的真机轨迹，从单臂桌面操作到移动机器人不一而足。这是当时规模和多样性都空前的机器人开放数据集，且持续接受社区贡献。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "关键发现是显著的正迁移：在多个实验室的原生任务上，用全体数据训练的 RT-X 模型平均超过只用本实验室数据训练的专用模型约 50%。RT-2-X 的涌现能力也强于 RT-2。这一结果奠定了「跨本体联合训练」的合法性，Open X-Embodiment 数据集从此成为 Octo、OpenVLA 等几乎所有开源 VLA 的标准预训练粮仓，论文引用超过 1100 次。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "数据集在机器人形态与场景上仍偏重轻型机械臂和桌面任务，动作统一到末端位姿也丢失了灵巧手等复杂本体的信息。后续 Octo、UniVLA 等在其基础上探索更灵活的本体适配方案，数据集本身也持续扩充。"
+  }
+ ],
+ "citations": {
+  "count": 1100,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

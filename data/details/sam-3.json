@@ -1,0 +1,38 @@
+{
+  "id": "sam-3",
+  "name": "SAM 3",
+  "org": "Meta AI",
+  "country": "US",
+  "year": 2025,
+  "paper_url": "https://arxiv.org/abs/2511.16719",
+  "github_url": "https://github.com/facebookresearch/sam3",
+  "category": "segmentation",
+  "sub_category": "promptable-concept-segmentation",
+  "one_liner_zh": "把 SAM 的点框提示升级为开放词汇概念提示，在图像和视频中检测、分割并跟踪所有匹配实例。",
+  "key_idea_zh": "共享骨干上的图像检测器与记忆视频跟踪器解耦工作，presence head 分离识别与定位。",
+  "tags": ["SAM", "开放词汇", "概念分割", "视频跟踪", "文本提示", "Hugging Face 权重"],
+  "tier": "B",
+  "lineage_parent": "sam-2",
+  "sections": [
+    {
+      "title": "背景与任务变化",
+      "body": "SAM 与 SAM 2 擅长根据点、框或掩码分割一个指定对象，但不知道“把所有穿黄色衣服的球员找出来”这类开放概念。SAM 3 在 2025 年提出 Promptable Concept Segmentation（PCS）：输入短名词短语、图像样例或二者组合，输出所有匹配实例的掩码和身份，并统一处理图像与视频。"
+    },
+    {
+      "title": "方法详解",
+      "body": "模型由共享视觉骨干、图像级检测器和带记忆的视频跟踪器组成。检测与跟踪解耦以减少任务干扰；presence head 把“概念是否存在”的识别问题与具体定位分开，提升相近文本概念的判别。视频中再通过记忆机制维持对象身份。"
+    },
+    {
+      "title": "数据引擎",
+      "body": "Meta 构建可扩展数据引擎，产生包含 hard negative 的大规模概念标注；论文与官方仓库称训练数据覆盖超过 400 万个独特概念标签，并发布 SA-Co 基准评估概念提示分割。"
+    },
+    {
+      "title": "结果与开放状态",
+      "body": "论文报告在图像和视频 PCS 上相对既有系统约翻倍，并改善原有 SAM 的视觉提示任务。代码公开，facebook/sam3 Hugging Face 权重卡创建于 2025 年 11 月；权重访问受模型卡许可与申请流程约束。"
+    },
+    {
+      "title": "局限与学习提醒",
+      "body": "开放词汇并不意味着理解任意抽象关系，文本歧义、细粒度属性和长尾概念仍会失败；视频跟踪对象数增加时，逐对象处理成本也会明显增长，这正是 SAM 3.1 重点优化的问题。"
+    }
+  ]
+}

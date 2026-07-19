@@ -1,0 +1,48 @@
+{
+ "id": "cascade-r-cnn",
+ "name": "Cascade R-CNN",
+ "org": "UC San Diego",
+ "country": "US",
+ "year": 2018,
+ "paper_url": "https://arxiv.org/abs/1712.00726",
+ "github_url": "https://github.com/zhaoweicai/cascade-rcnn",
+ "category": "detection",
+ "sub_category": "two-stage",
+ "one_liner_zh": "串联多个逐渐提高 IoU 阈值的检测头，持续精修高质量边界框。",
+ "key_idea_zh": "每一级用上一阶段更高质量的框训练下一检测器，缓解高 IoU 样本稀少问题。",
+ "tags": [
+  "级联",
+  "IoU",
+  "边界框精修",
+  "两阶段"
+ ],
+ "tier": "B",
+ "lineage_parent": "faster-r-cnn",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "检测器训练时要用 IoU 阈值定义正负样本:阈值取 0.5,产出的框噪声多;直接提高到 0.7,正样本急剧稀少反而过拟合。而且检测头只在「与其训练 IoU 匹配的输入质量」上表现最优——单一检测头无法同时对付粗糙和精细的候选框。UCSD 的 Cascade R-CNN 用「级联」化解了这个质量错配难题。"
+  },
+  {
+   "title": "方法详解",
+   "body": "Cascade R-CNN 在 Faster R-CNN 之后串联多个检测头,IoU 阈值逐级抬升(0.5→0.6→0.7)。关键观察是:一个检测头的输出框分布,天然比它的输入更靠近真值,恰好可以作为下一级更高阈值检测头的训练样本。逐级重采样保证每一级都有足量正样本,避免高阈值过拟合;推理时同样逐级精修,使假设质量与检测头质量始终匹配。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "各级检测头分阶段联合训练,共享骨干与 FPN 特征。方法与具体骨干解耦,可直接套在多数两阶段检测器上。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "Cascade R-CNN 在 COCO 上超过当时所有单模型检测器,且对不同基线都有稳定增益,尤其在高 IoU 的严格指标(AP75、AP90)上优势巨大。「级联精修」成为竞赛与工业高精度方案的标配组件,后来也被移植进 DETR 系(如级联查询精修)。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "多级头带来额外参数与推理开销;级数与阈值仍需手工设定。后续 HTC 等进一步融合分割分支强化级联,DETR 的迭代式解码则以另一种形式延续了逐轮精修思想。"
+  }
+ ],
+ "citations": {
+  "count": 6259,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

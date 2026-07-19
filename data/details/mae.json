@@ -1,0 +1,48 @@
+{
+ "id": "mae",
+ "name": "Masked Autoencoders (MAE)",
+ "org": "Meta AI",
+ "country": "US",
+ "year": 2022,
+ "paper_url": "https://arxiv.org/abs/2111.06377",
+ "github_url": "https://github.com/facebookresearch/mae",
+ "category": "representation",
+ "sub_category": "masked-image-modeling",
+ "one_liner_zh": "随机遮住大部分 patch，只编码可见部分并重建像素。",
+ "key_idea_zh": "非对称编码器—轻量解码器避免处理遮挡 token，使 75% 高遮挡率训练既高效又有效。",
+ "tags": [
+  "自监督",
+  "遮挡建模",
+  "ViT",
+  "重建"
+ ],
+ "tier": "B",
+ "lineage_parent": "unknown",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "BERT 靠「完形填空」统治了 NLP,视觉界一直想复刻却不顺利:图像信息高度冗余,遮一小块很容易靠插值猜出来,学不到深层语义。何恺明团队的 MAE 用两个反直觉的设计让视觉版 BERT 突然成立,论文标题即宣言:遮挡自编码器是可扩展的视觉学习器。"
+  },
+  {
+   "title": "方法详解",
+   "body": "第一个设计是极高遮挡率:遮掉 75% 的 patch(BERT 只遮 15%),逼模型进行真正的整体理解而非局部插值。第二个是非对称架构:编码器只处理 25% 的可见 patch(计算量骤降),一个很轻的解码器负责拿着编码特征与占位 mask token 重建全图像素;下游任务只保留编码器。两者相乘,训练加速 3 倍以上,还提高了精度——「又快又好」在自监督领域极为罕见。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "只用 ImageNet-1K,无需任何外部数据或 tokenizer;重建目标是归一化后的原始像素,简单到没有超参数可调。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "ViT-Huge 微调达到 87.8%,是当时只用 IN-1K 数据的最高纪录;检测分割迁移全面超过监督预训练。MAE 让 MIM 成为 ViT 时代的默认预训练法,其非对称思想被视频(VideoMAE)、音频、点云乃至机器人感知广泛移植,引用超过 1.2 万次。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "像素重建目标偏低层,线性探针表现不如对比/蒸馏方法,特征需要微调才能发力。EVA 用 CLIP 特征替换像素目标,DINOv2 走自蒸馏路线——两者都是对 MAE 语义短板的回应。"
+  }
+ ],
+ "citations": {
+  "count": 12106,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

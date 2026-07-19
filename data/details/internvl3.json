@@ -1,0 +1,38 @@
+{
+  "id": "internvl3",
+  "name": "InternVL3",
+  "org": "Shanghai AI Laboratory / OpenGVLab",
+  "country": "CN",
+  "year": 2025,
+  "paper_url": "https://arxiv.org/abs/2504.10479",
+  "github_url": "https://github.com/OpenGVLab/InternVL",
+  "category": "multimodal",
+  "sub_category": "open-mllm",
+  "one_liner_zh": "上海 AI Lab 的开源多模态模型族，把图文与纯文本能力放进同一原生多模态预训练阶段。",
+  "key_idea_zh": "Native Multimodal Pre-Training 联合图文、视频与文本语料，V2PE 支撑更长的可变视觉上下文。",
+  "tags": ["国产", "MLLM", "原生多模态预训练", "V2PE", "开放权重", "Hugging Face"],
+  "tier": "B",
+  "lineage_parent": "internvl2-chat",
+  "sections": [
+    {
+      "title": "背景与动机",
+      "body": "传统 MLLM 往往先训练纯文本 LLM，再追加视觉对齐阶段，容易造成训练链条复杂和语言能力损失。InternVL3 在 2025 年把视觉—语言与纯文本数据放入同一个预训练阶段，作为 InternVL2.5/2 系列的明确后继。"
+    },
+    {
+      "title": "方法详解",
+      "body": "架构继续采用 InternViT—MLP—LLM 主线和动态切图、pixel unshuffle；关键变化是 Native Multimodal Pre-Training，把图文、视频文本、交错多模态序列和大规模纯文本共同训练。Variable Visual Position Encoding（V2PE）用更灵活的位置增量支持长多模态上下文，之后再通过 SFT、Mixed Preference Optimization 与测试时扩展提高推理表现。"
+    },
+    {
+      "title": "模型与权重",
+      "body": "官方发布从 1B 到 78B 的多档模型。OpenGVLab/InternVL3-1B Hugging Face 卡创建于 2025 年 4 月，列明 InternVL3 论文与 Apache-2.0 许可；完整代码仍在 OpenGVLab/InternVL 主仓库。"
+    },
+    {
+      "title": "结果与能力",
+      "body": "论文报告 InternVL3-78B 在 MMMU 达到 72.2，并扩展到工具使用、GUI agent、工业图像分析、3D 视觉和视频理解。更重要的是，它同时保持较强纯文本能力，验证了联合预训练而非事后拼接的路线。"
+    },
+    {
+      "title": "局限与学习提醒",
+      "body": "模型族跨度很大，不能把 78B 报告结果套到 1B 权重；动态切图也会使高分辨率输入的 token 数和显存快速增加。使用时应同时标注模型尺寸、是否为 Instruct 版和推理模板。"
+    }
+  ]
+}

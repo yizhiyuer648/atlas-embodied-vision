@@ -1,0 +1,47 @@
+{
+ "id": "drivedreamer",
+ "name": "DriveDreamer",
+ "org": "Shanghai AI Laboratory",
+ "country": "CN",
+ "year": 2023,
+ "paper_url": "https://arxiv.org/abs/2309.09777",
+ "github_url": "https://github.com/JeffWang987/DriveDreamer",
+ "category": "world",
+ "sub_category": "driving-world-model",
+ "one_liner_zh": "从真实驾驶数据学习结构可控的视频生成与驾驶策略。",
+ "key_idea_zh": "第一阶段学习 HD map 与 3D 框等结构约束，第二阶段学习未来视频和动作预测。",
+ "tags": [
+  "国产",
+  "自动驾驶",
+  "真实数据"
+ ],
+ "tier": "B",
+ "lineage_parent": "unknown",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "2023 年之前的世界模型大多长在游戏和仿真里,而自动驾驶恰恰最需要「预演未来」的能力:同一个路口,不同操作会引出完全不同的事态。上海 AI 实验室等机构的 DriveDreamer 是最早完全从真实驾驶数据构建的驾驶世界模型之一,目标是同时产出高质量驾驶视频生成与合理的驾驶策略。"
+  },
+  {
+   "title": "方法详解",
+   "body": "驾驶场景搜索空间过于庞大,DriveDreamer 用扩散模型来承载复杂环境表征,并设计两阶段训练:第一阶段让模型先「懂交通结构」——以高精地图(HD map)与 3D 目标框为条件学习生成符合结构约束的驾驶画面;第二阶段接入视频预测与动作交互,让模型学会「预演未来」——给定历史帧与驾驶动作,预测未来视频,同时也能输出合理的驾驶动作。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "全部在真实驾驶基准 nuScenes 上训练评测,不依赖游戏或仿真环境——这是它与此前世界模型工作的分水岭。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "DriveDreamer 实现了忠实于交通结构约束的可控视频生成,并能生成合理驾驶策略;生成数据还可反哺感知模型训练。它开启了「驾驶世界模型」这一子方向,DriveDreamer-2、Vista、GAIA 系列等后续工作均以其为参照,引用近 300 次。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "视频时长、分辨率与多视角一致性有限;动作到未来的因果控制还比较粗。DriveDreamer-2 引入 LLM 把用户语言直接变成场景条件,Vista 则大幅提升保真度与可控性谱系。"
+  }
+ ],
+ "citations": {
+  "count": 287,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

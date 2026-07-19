@@ -1,0 +1,48 @@
+{
+ "id": "yolo-v2",
+ "name": "YOLOv2 / YOLO9000",
+ "org": "University of Washington",
+ "country": "US",
+ "year": 2017,
+ "paper_url": "https://arxiv.org/abs/1612.08242",
+ "github_url": "https://github.com/pjreddie/darknet",
+ "category": "detection",
+ "sub_category": "one-stage",
+ "one_liner_zh": "以锚框、多尺度训练和联合分类检测提升 YOLO 的精度与类别覆盖。",
+ "key_idea_zh": "引入 anchor boxes、维度聚类与 passthrough 特征，并通过 WordTree 联合训练 YOLO9000。",
+ "tags": [
+  "YOLO",
+  "anchor",
+  "多尺度训练",
+  "YOLO9000"
+ ],
+ "tier": "B",
+ "lineage_parent": "yolo-v1",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "YOLOv1 快但粗:定位误差大、召回低、每格只能出两个框。Redmon 的第二版有两个目标:一是用一系列已被验证的设计把 YOLO 的精度拉上来(YOLOv2),二是野心更大的实验——让检测器认识 9000 多类物体(YOLO9000),即使绝大多数类别从来没有检测标注。"
+  },
+  {
+   "title": "方法详解",
+   "body": "YOLOv2 的升级清单:全卷积化并引入锚框;用 k-means 对训练集真实框做「维度聚类」自动选锚框形状,取代手工设定;直接预测相对网格的偏移以稳定训练;passthrough 层把细粒度特征拼进深层;多尺度训练让同一网络适应 320 到 608 的输入。YOLO9000 则提出 WordTree:把 ImageNet 的类别体系与 COCO 检测类合并成层级标签,检测数据训练定位、分类数据训练识别,联合训练出跨 9000 类的检测器。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "骨干换成更高效的 Darknet-19;检测训练用 VOC/COCO,YOLO9000 联合 COCO 检测数据与 ImageNet 分类数据训练。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "YOLOv2 在 VOC2007 上 67 FPS 时 76.8 mAP、40 FPS 时 78.6 mAP,超过 ResNet 版 Faster R-CNN 与 SSD 且快得多。YOLO9000 在没有检测标注的 156 个 ImageNet 类上拿到 16.0 mAP,是弱监督大词表检测的先驱。维度聚类等技巧被后续版本长期沿用,引用 1.7 万余次。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "单尺度输出对小目标依然吃力;WordTree 的层级假设也过于简化。YOLOv3 补上三尺度预测,而「大词表检测」这条线在多年后被 CLIP 时代的开放词汇检测(GLIP、Grounding DINO)以全新方式实现。"
+  }
+ ],
+ "citations": {
+  "count": 17739,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

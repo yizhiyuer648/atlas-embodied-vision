@@ -1,0 +1,48 @@
+{
+ "id": "gemini-robotics",
+ "name": "Gemini Robotics",
+ "org": "Google DeepMind",
+ "country": "US",
+ "year": 2025,
+ "paper_url": "https://arxiv.org/abs/2503.20020",
+ "github_url": "unknown",
+ "category": "multimodal",
+ "sub_category": "robotics_vlm",
+ "one_liner_zh": "面向机器人具身推理与动作生成的 Gemini 2.0 衍生模型。",
+ "key_idea_zh": "强调通用性、交互性与灵巧性，把多模态推理迁移到真实机器人控制；模型权重和完整训练代码未公开。",
+ "tags": [
+  "机器人",
+  "具身推理",
+  "动作生成",
+  "闭源"
+ ],
+ "tier": "B",
+ "lineage_parent": "unknown",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "Google DeepMind 手握最强多模态模型之一的 Gemini,但数字世界的聪明并不自动变成物理世界的能干。Gemini Robotics(2025 年 3 月技术报告)是把 Gemini 2.0 正式带进机器人本体的官宣之作:让通用多模态推理直接落地为「看得懂、想得清、动得了」的机器人智能。"
+  },
+  {
+   "title": "方法详解",
+   "body": "报告介绍了两层模型。Gemini Robotics-ER(Embodied Reasoning):把 Gemini 的多模态推理向物理世界扩展——目标检测、指点(pointing)、轨迹与抓取预测、多视角对应、3D 框预测等空间理解能力,可直接为任意机器人系统提供感知与规划;Gemini Robotics(VLA):在 ER 之上接动作输出,以云端大脑 + 本地低延迟执行的架构直接控制双臂机器人,能完成折纸、整理等复杂操作,遵循开放词汇指令,并展示了百条示范级的新任务学习与跨本体适配(含人形 Apollo)。报告还专章讨论了具身模型的安全框架。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "基于 Gemini 2.0 底座,融合 ALOHA 2 双臂平台的大规模真机数据与多源具身语料;模型权重与训练细节未开放,后续以 Gemini Robotics On-Device 提供本地化版本、通过可信测试者计划开放 API。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "报告展示的泛化性(新物体、新环境、新指令)与灵巧度处于行业第一梯队,标志着「前沿多模态大厂正式下场做 VLA」。它与 π0、GR00T 一起把 2025 年的具身竞争推向「基础模型级」,其 ER 层定义的具身推理评测(指点、轨迹预测等)也被社区跟进。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "闭源且依赖云端推理,可复现性与本地部署受限;公开评测多为自建协议,横向可比性有限。后续 Gemini Robotics 1.5 与 On-Device 版本持续迭代,是观察闭源阵营具身路线的主要窗口。"
+  }
+ ],
+ "citations": {
+  "count": 0,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

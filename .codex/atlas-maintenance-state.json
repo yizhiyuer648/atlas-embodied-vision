@@ -1,0 +1,91 @@
+{
+  "schema_version": 2,
+  "updated_at": "2026-07-19T19:53:22Z",
+  "status": "partial",
+  "baseline": {
+    "formal_pages": 10,
+    "academic_views": [
+      "journals",
+      "conferences",
+      "compare"
+    ],
+    "journals": 8,
+    "conferences": 10,
+    "reviewed_publication_events": 10,
+    "paper_quality_dimensions": 5,
+    "evidence_levels": [
+      "E1",
+      "E2",
+      "E3",
+      "E4",
+      "E5"
+    ]
+  },
+  "academic_candidate_queue": {
+    "path": "data/academic_candidates.json",
+    "generated_at": "2026-07-19T19:53:21.838470+00:00",
+    "state": "partial",
+    "raw_record_count": 172,
+    "source_counts": {
+      "Crossref": 14,
+      "OpenAlex": 115,
+      "DBLP": 3,
+      "CVF Open Access": 40
+    },
+    "candidate_count": 53,
+    "all_candidates_need_review": true,
+    "frontend_reads_queue": false
+  },
+  "pending": [
+    {
+      "id": "real_phone",
+      "status": "pending",
+      "reason": "尚未在同一 Wi-Fi 的真实手机上完成 10 页与学术追踪视图验收；模拟视口和本机 LAN 请求不能替代真机。",
+      "next": "启动 0.0.0.0:8000，确认当次 IPv4；必要时只放行 LocalSubnet 到 TCP 8000，再用真机复测。"
+    },
+    {
+      "id": "public_hosting",
+      "status": "pending",
+      "reason": "长期公网托管尚未配置；当前只能称本地或局域网站点。",
+      "next": "取得明确发布授权并完成真实公网部署、URL 与静态资源回归后再关闭。"
+    },
+    {
+      "id": "lineage_physical_drag",
+      "status": "pending",
+      "reason": "当前周期尚未在可靠的真实指针环境重新采集谱系空白拖拽证据。",
+      "next": "在可确认浏览器状态的桌面环境完成拖拽、缩放和分类切换复测。"
+    }
+  ],
+  "automation": {
+    "scheduler": "systemd user timer",
+    "unit": "atlas-daily-maintenance.timer",
+    "schedule": "04:00 Asia/Shanghai daily",
+    "next_run_verified": "2026-07-19 13:00:00 PDT",
+    "persistent": true
+  },
+  "evidence": {
+    "scan_window": "2026-06-19 through 2026-07-19",
+    "model_candidate_count": 420,
+    "model_metadata_conflicts": 107,
+    "academic_candidate_count": 53,
+    "skipped_authoritative_events": 1,
+    "source_failures": [
+      "Semantic Scholar 429 for vla/detection/multimodal/representation",
+      "DBLP partial due to 429 and SSL failures",
+      "Robotics Proceedings RSS 403",
+      "PMLR CoRL volume not discovered in the requested window"
+    ],
+    "gates": [
+      "validate_data passed",
+      "Python compile and both regression suites passed",
+      "12 site JavaScript files and geometry script passed syntax checks",
+      "24 A-tier architecture diagrams passed geometry checks",
+      "10 formal pages and all three academic views returned HTTP 200"
+    ]
+  },
+  "rules": [
+    "只保留当前可执行 pending，不在本文件复制整份历史报告。",
+    "任何候选都必须人工审核；候选脚本不得直接合并 models/details/index/academic_tracker。",
+    "只要 pending 非空，status 就保持 partial。"
+  ]
+}

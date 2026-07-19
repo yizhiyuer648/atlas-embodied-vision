@@ -1,0 +1,47 @@
+{
+ "id": "spatialvla",
+ "name": "SpatialVLA",
+ "org": "Shanghai AI Laboratory",
+ "country": "CN",
+ "year": 2025,
+ "paper_url": "https://arxiv.org/abs/2501.15830",
+ "github_url": "https://github.com/SpatialVLA/SpatialVLA",
+ "category": "vla",
+ "sub_category": "spatially-grounded-vla",
+ "one_liner_zh": "显式引入空间表征的视觉语言动作模型。",
+ "key_idea_zh": "把三维位置与旋转离散为自适应空间 token，使 VLM 更直接地理解机器人动作的几何含义。",
+ "tags": [
+  "国产",
+  "空间表征",
+  "1.1M 轨迹"
+ ],
+ "tier": "B",
+ "lineage_parent": "openvla",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "2D 图像输入的 VLA 缺少显式空间几何:深度、朝向、三维位移都被隐式压在像素特征里,导致跨机器人、跨相机布局时动作难以迁移。上海 AI 实验室的 SpatialVLA 主张把「空间」作为一等公民写进 VLA 的输入与输出两端。"
+  },
+  {
+   "title": "方法详解",
+   "body": "输入端,Ego3D 位置编码把深度信息与相机几何注入视觉特征,让模型在自我中心三维坐标系中理解场景,无需额外标定;输出端,自适应动作网格(Adaptive Action Grids)按训练数据的动作分布自适应划分离散网格,把连续的平移、旋转动作编码为空间 token——密集动作区间划分更细,稀疏区间更粗,兼顾分辨率与词表规模。微调新本体时只需按新数据分布重新离散网格,预学的空间动作先验即可迁移。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "在 110 万条真实机器人轨迹(Open X-Embodiment 等)上,以 PaLiGemma 类 VLM 为底座预训练,再在 SimplerEnv、WidowX、Franka 等仿真与真机环境评测。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "SpatialVLA 在零样本与微调两种设定下都超过 OpenVLA 等基线,尤其擅长推断复杂三维运动轨迹,验证了显式空间表征对通用操作的价值。代码与模型开源,是「空间智能 × VLA」路线的代表工作之一,引用超过 450 次。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "依赖较可靠的深度估计,强反光/透明物体场景会退化;离散网格仍是量化方案,极精细操作受限。后续工作探索连续空间动作头与 3D 场景记忆的结合。"
+  }
+ ],
+ "citations": {
+  "count": 455,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

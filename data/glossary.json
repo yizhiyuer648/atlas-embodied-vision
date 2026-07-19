@@ -1,0 +1,3717 @@
+[
+  {
+    "id": "cross-attention",
+    "term": "交叉注意力",
+    "term_en": "Cross-Attention",
+    "definition_zh": "让一组 token 查询另一组 token 的信息，常用来连接文本、图像或检测查询。",
+    "example_zh": "文字 token 通过交叉注意力读取图像 patch 中与“红杯”相关的区域。",
+    "related_model_ids": [
+      "detr",
+      "blip-2"
+    ],
+    "category": "basics",
+    "kind": "formal",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "source_platforms": [
+      "Hugging Face 术语表"
+    ],
+    "source_urls": [
+      "https://huggingface.co/docs/transformers/glossary"
+    ]
+  },
+  {
+    "id": "moe",
+    "term": "专家混合",
+    "term_en": "Mixture of Experts (MoE)",
+    "definition_zh": "模型包含多个专家子网络，但每个 token 通常只激活其中少数几个，以较低计算量扩大参数规模。",
+    "example_zh": "一个视觉 token 被路由到两个最合适的专家，而不是经过全部专家。",
+    "related_model_ids": [
+      "deepseek-vl2"
+    ],
+    "category": "basics",
+    "kind": "formal",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "source_platforms": [
+      "Hugging Face MoE 博客"
+    ],
+    "source_urls": [
+      "https://huggingface.co/blog/moe"
+    ]
+  },
+  {
+    "id": "self-attention",
+    "term": "自注意力",
+    "term_en": "Self-Attention",
+    "definition_zh": "让序列中的每个 token 根据任务需要，动态关注同一序列里的其他 token。",
+    "example_zh": "“它”这个词可以重点关注前文中的“机器人”。",
+    "related_model_ids": [
+      "detr",
+      "qwen2-vl"
+    ],
+    "category": "basics",
+    "kind": "formal",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "source_platforms": [
+      "Transformer 论文"
+    ],
+    "source_urls": [
+      "https://arxiv.org/abs/1706.03762"
+    ]
+  },
+  {
+    "id": "transformer",
+    "term": "Transformer",
+    "term_en": "Transformer",
+    "definition_zh": "以注意力机制为核心的网络结构，擅长处理 token 之间的长距离关系。",
+    "example_zh": "图像可以切成 patch token，再由 Transformer 建模不同区域的联系。",
+    "related_model_ids": [
+      "detr",
+      "qwen2-vl",
+      "dinov2"
+    ],
+    "category": "basics",
+    "kind": "formal",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "source_platforms": [
+      "Transformer 论文"
+    ],
+    "source_urls": [
+      "https://arxiv.org/abs/1706.03762"
+    ]
+  },
+  {
+    "id": "baseline",
+    "term": "基线",
+    "term_en": "baseline",
+    "aliases": [],
+    "category": "community",
+    "kind": "formal",
+    "definition_zh": "用于比较的基准方法或简单方案，不必然弱或过时。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“先复现 baseline，再判断新模块是否真有增益。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "MMDetection 文档"
+    ],
+    "source_urls": [
+      "https://mmdetection.readthedocs.io/en/latest/"
+    ]
+  },
+  {
+    "id": "benchmark",
+    "term": "基准评测",
+    "term_en": "benchmark",
+    "aliases": [],
+    "category": "community",
+    "kind": "ambiguous",
+    "definition_zh": "有规定数据、任务和指标的评测集合；社区也会宽泛指一张性能表。",
+    "usage_zh": "社区里的 benchmark 既可能指准确率评测，也可能指硬件延迟测试；比较前要同时核对数据集、指标、设备、推理后端、软件版本、输入尺寸、批量和预热条件。",
+    "example_zh": "“不同 benchmark 的分数不能直接相减。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "COCO 官方评测页",
+      "GitHub Issue · Ultralytics #25030",
+      "GitHub Issue · Ultralytics #23599"
+    ],
+    "source_urls": [
+      "https://cocodataset.org/#detection-eval",
+      "https://github.com/ultralytics/ultralytics/issues/25030",
+      "https://github.com/ultralytics/ultralytics/issues/23599"
+    ]
+  },
+  {
+    "id": "breaking-change",
+    "term": "破坏性变更",
+    "term_en": "breaking change",
+    "aliases": [],
+    "category": "community",
+    "kind": "formal",
+    "definition_zh": "会破坏旧代码、配置或行为兼容性的更新。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“升级 major version 前先看 breaking changes。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "Semantic Versioning"
+    ],
+    "source_urls": [
+      "https://semver.org/"
+    ]
+  },
+  {
+    "id": "community-port",
+    "term": "社区移植",
+    "term_en": "community port",
+    "aliases": [],
+    "category": "community",
+    "kind": "community",
+    "definition_zh": "社区把模型移植到另一框架、设备或格式的实现，通常不是原作者维护。",
+    "usage_zh": "社区帖子、Issue、Discussion、模型卡和教程里常见的简称或约定说法。",
+    "example_zh": "“community port 可用，但应单独验证精度与许可证。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "GitHub README"
+    ],
+    "source_urls": [
+      "https://github.com/ggml-org/llama.cpp"
+    ]
+  },
+  {
+    "id": "cookbook",
+    "term": "教程配方",
+    "term_en": "cookbook",
+    "aliases": [],
+    "category": "community",
+    "kind": "community",
+    "definition_zh": "围绕常见任务整理的可运行配方或示例集合，不是完整 API 规范。",
+    "usage_zh": "社区帖子、Issue、Discussion、模型卡和教程里常见的简称或约定说法。",
+    "example_zh": "“先照 cookbook 跑通，再回文档理解每个参数。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "GitHub README"
+    ],
+    "source_urls": [
+      "https://github.com/QwenLM/Qwen3-VL"
+    ]
+  },
+  {
+    "id": "deprecated",
+    "term": "弃用",
+    "term_en": "deprecated",
+    "aliases": [],
+    "category": "community",
+    "kind": "formal",
+    "definition_zh": "仍可能暂时可用但已不推荐，未来版本可能移除。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“日志写 deprecated 时应按迁移指南换新接口。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "Semantic Versioning"
+    ],
+    "source_urls": [
+      "https://semver.org/"
+    ]
+  },
+  {
+    "id": "fork",
+    "term": "分叉仓库",
+    "term_en": "fork",
+    "aliases": [],
+    "category": "community",
+    "kind": "formal",
+    "definition_zh": "从现有 Git 仓库派生的独立副本，可继续开发并与上游分叉。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“这个 fork 加了部署支持，但不等于 upstream 已合并。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "GitHub 文档"
+    ],
+    "source_urls": [
+      "https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests"
+    ]
+  },
+  {
+    "id": "ga-ea",
+    "term": "正式可用",
+    "term_en": "GA / EA",
+    "aliases": [
+      "早期访问"
+    ],
+    "category": "community",
+    "kind": "ambiguous",
+    "definition_zh": "General Availability / Early Access；GA 通常表示稳定可用，EA 表示早期访问，但具体承诺由发布方定义。",
+    "usage_zh": "GA 与 EA 的承诺由发布方定义；真实社区里 EA 还可能限制 PR 接收或硬件支持，不能把早期访问当成正式稳定版。",
+    "example_zh": "“别把 EA checkpoint 当成与 GA 同样稳定。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "GitHub README",
+      "GitHub Issue（Isaac-GR00T #700）"
+    ],
+    "source_urls": [
+      "https://github.com/NVIDIA/Isaac-GR00T",
+      "https://github.com/NVIDIA/Isaac-GR00T/issues/700"
+    ]
+  },
+  {
+    "id": "gated-model",
+    "term": "门控模型",
+    "term_en": "gated model",
+    "aliases": [],
+    "category": "community",
+    "kind": "formal",
+    "definition_zh": "需要登录、同意条款或获批后才能下载的模型；元数据公开不代表权重免申请。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“代码能 clone，但 gated weights 仍需单独申请。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "Hugging Face Hub 文档"
+    ],
+    "source_urls": [
+      "https://huggingface.co/docs/hub/models-gated"
+    ]
+  },
+  {
+    "id": "issue",
+    "term": "问题单",
+    "term_en": "issue",
+    "aliases": [],
+    "category": "community",
+    "kind": "formal",
+    "definition_zh": "用于报告 bug、提需求或讨论具体问题的线程；单个 issue 不是已确认事实。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“看到 issue 里的 workaround 后还要查是否已修复。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "GitHub 文档"
+    ],
+    "source_urls": [
+      "https://docs.github.com/en/issues/tracking-your-work-with-issues/about-issues"
+    ]
+  },
+  {
+    "id": "leaderboard",
+    "term": "排行榜",
+    "term_en": "leaderboard",
+    "aliases": [],
+    "category": "community",
+    "kind": "ambiguous",
+    "definition_zh": "按某组基准和规则排列模型结果的榜单。",
+    "usage_zh": "不同项目或说话者的含义可能不同，看到时必须连同上下文一起判断。",
+    "example_zh": "“leaderboard 第一只说明该口径，不等于所有真实任务最好。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "Hugging Face Hub 文档"
+    ],
+    "source_urls": [
+      "https://huggingface.co/docs/hub/model-cards"
+    ]
+  },
+  {
+    "id": "model-card",
+    "term": "模型卡",
+    "term_en": "model card",
+    "aliases": [],
+    "category": "community",
+    "kind": "formal",
+    "definition_zh": "记录模型用途、限制、数据、评测、许可和使用方法的说明页。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“先读 model card，再决定能否商用和如何输入。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "Hugging Face Hub 文档"
+    ],
+    "source_urls": [
+      "https://huggingface.co/docs/hub/model-cards"
+    ]
+  },
+  {
+    "id": "model-id-repo-id",
+    "term": "model ID / repo ID",
+    "term_en": "model ID / repo ID",
+    "aliases": [
+      "repo_id"
+    ],
+    "category": "community",
+    "kind": "community",
+    "definition_zh": "模型托管平台上的唯一仓库标识，通常是组织/模型名。",
+    "usage_zh": "社区帖子、Issue、Discussion、模型卡和教程里常见的简称或约定说法。",
+    "example_zh": "“lerobot/smolvla_base 是 repo ID，不是本地文件路径。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "Hugging Face Hub 文档",
+      "Hugging Face Discussion"
+    ],
+    "source_urls": [
+      "https://huggingface.co/docs/huggingface_hub/guides/repository",
+      "https://huggingface.co/lerobot/smolvla_base/discussions/2"
+    ]
+  },
+  {
+    "id": "model-zoo",
+    "term": "模型动物园",
+    "term_en": "model zoo",
+    "aliases": [
+      "模型库"
+    ],
+    "category": "community",
+    "kind": "community",
+    "definition_zh": "框架集中发布配置、日志和预训练权重的集合。",
+    "usage_zh": "社区通常用它指配置、预训练权重和下载入口的集合；它是索引，不保证权重镜像永久可用。",
+    "example_zh": "“model zoo 里的权重通常对应特定 config。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "MMDetection 文档",
+      "GitHub Issue（MMDetection #12447）"
+    ],
+    "source_urls": [
+      "https://mmdetection.readthedocs.io/en/latest/",
+      "https://github.com/open-mmlab/mmdetection/issues/12447"
+    ]
+  },
+  {
+    "id": "nightly",
+    "term": "每日构建版",
+    "term_en": "nightly",
+    "aliases": [],
+    "category": "community",
+    "kind": "community",
+    "definition_zh": "从最新开发代码频繁构建的预览包，功能新但稳定性较低。",
+    "usage_zh": "Issue 里常把它和带日期的开发 wheel 连用；必须记录精确构建号，因为今天修复的问题可能伴随新的回归。",
+    "example_zh": "“nightly 修了 bug，也可能引入新的不兼容。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "PyTorch 文档",
+      "GitHub Issue（PyTorch #183815）"
+    ],
+    "source_urls": [
+      "https://pytorch.org/docs/stable/generated/torch.compile.html",
+      "https://github.com/pytorch/pytorch/issues/183815"
+    ]
+  },
+  {
+    "id": "official-implementation",
+    "term": "官方实现",
+    "term_en": "official implementation",
+    "aliases": [],
+    "category": "community",
+    "kind": "community",
+    "definition_zh": "论文作者或发布组织维护的实现；仍需核对分支、commit 和权重版本。",
+    "usage_zh": "社区帖子、Issue、Discussion、模型卡和教程里常见的简称或约定说法。",
+    "example_zh": "“official repo 不保证第三方移植结果完全一致。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "GitHub README"
+    ],
+    "source_urls": [
+      "https://github.com/openvla/openvla"
+    ]
+  },
+  {
+    "id": "one-click-demo",
+    "term": "一键体验",
+    "term_en": "one-click demo",
+    "aliases": [],
+    "category": "community",
+    "kind": "ambiguous",
+    "definition_zh": "宣传或社区常用说法，表示脚本/界面简化了启动；仍可能需要权重权限、显卡和环境。",
+    "usage_zh": "不同项目或说话者的含义可能不同，看到时必须连同上下文一起判断。",
+    "example_zh": "“one-click 不等于零依赖，也不代表可直接生产部署。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "Hugging Face Hub 文档"
+    ],
+    "source_urls": [
+      "https://huggingface.co/docs/hub/spaces-overview"
+    ]
+  },
+  {
+    "id": "open-weights-vs-open-source",
+    "term": "开放权重",
+    "term_en": "open weights vs open source",
+    "aliases": [
+      "开源模型"
+    ],
+    "category": "community",
+    "kind": "ambiguous",
+    "definition_zh": "可下载权重不必然满足开源定义；还要检查代码、训练资料和许可证权利。",
+    "usage_zh": "不同项目或说话者的含义可能不同，看到时必须连同上下文一起判断。",
+    "example_zh": "“写 open model 时要区分仅开放 weights 还是 OSI 意义的 open source。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "Open Source Initiative"
+    ],
+    "source_urls": [
+      "https://opensource.org/osd"
+    ]
+  },
+  {
+    "id": "pr",
+    "term": "合并请求",
+    "term_en": "PR",
+    "aliases": [
+      "pull request"
+    ],
+    "category": "community",
+    "kind": "formal",
+    "definition_zh": "pull request，向仓库提议合并代码或文档修改。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“PR open 表示尚未合并，不能当成已发布功能。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "GitHub 文档"
+    ],
+    "source_urls": [
+      "https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests"
+    ]
+  },
+  {
+    "id": "release",
+    "term": "版本发布",
+    "term_en": "release",
+    "aliases": [],
+    "category": "community",
+    "kind": "formal",
+    "definition_zh": "维护者打包发布的版本、说明和资产；不总等同于论文发布时间。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“模型权重可能随 release 发布，而代码 main 已更靠前。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "GitHub 文档"
+    ],
+    "source_urls": [
+      "https://docs.github.com/en/repositories/releasing-projects-on-github/about-releases"
+    ]
+  },
+  {
+    "id": "revision-commit-hash",
+    "term": "版本修订",
+    "term_en": "revision / commit hash",
+    "aliases": [
+      "提交哈希"
+    ],
+    "category": "community",
+    "kind": "formal",
+    "definition_zh": "指定仓库某个不可变版本，避免 main 更新导致结果漂移。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“复现实验时 pin revision，不要永远拉 latest。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "Hugging Face Hub 文档"
+    ],
+    "source_urls": [
+      "https://huggingface.co/docs/huggingface_hub/guides/download"
+    ]
+  },
+  {
+    "id": "safetensors",
+    "term": "safetensors",
+    "term_en": "safetensors",
+    "aliases": [
+      ".safetensors"
+    ],
+    "category": "community",
+    "kind": "formal",
+    "definition_zh": "强调安全、快速张量加载的权重文件格式，不执行 pickle 代码。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“model.safetensors 仍需配套 config 和模型实现。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "GitHub README"
+    ],
+    "source_urls": [
+      "https://github.com/huggingface/safetensors"
+    ]
+  },
+  {
+    "id": "smol-tiny-nano",
+    "term": "小模型",
+    "term_en": "smol / tiny / nano",
+    "aliases": [],
+    "category": "community",
+    "kind": "slang",
+    "definition_zh": "社区和产品用于表示“小模型”的昵称或档位名，没有跨项目统一参数上限。",
+    "usage_zh": "明显口语化的圈内说法，适合帮助读懂交流，不应当作严格学术定义。",
+    "example_zh": "“SmolVLA 的 smol 是定位语言，不是标准尺寸单位。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "Hugging Face 博客",
+      "Hugging Face Discussion"
+    ],
+    "source_urls": [
+      "https://huggingface.co/blog/smolvlm",
+      "https://huggingface.co/lerobot/smolvla_base/discussions/6"
+    ]
+  },
+  {
+    "id": "sota",
+    "term": "当前最佳",
+    "term_en": "SOTA",
+    "aliases": [
+      "state-of-the-art"
+    ],
+    "category": "community",
+    "kind": "community",
+    "definition_zh": "state of the art，声称在特定数据集、指标和设置达到当前最佳。",
+    "usage_zh": "社区常把 SOTA 当成宽泛的“榜单强”或“看起来先进”；只有数据集、切分、指标和评测设置完全对齐时才是严格比较。",
+    "example_zh": "“SOTA 必须连同 benchmark、split 和评测设置一起读。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "GitHub README",
+      "GitHub Issue（MMDetection #6202）"
+    ],
+    "source_urls": [
+      "https://github.com/QwenLM/Qwen3-VL",
+      "https://github.com/open-mmlab/mmdetection/issues/6202"
+    ]
+  },
+  {
+    "id": "space",
+    "term": "Space",
+    "term_en": "Space",
+    "aliases": [
+      "Hugging Face Space"
+    ],
+    "category": "community",
+    "kind": "formal",
+    "definition_zh": "Hugging Face 托管的可交互应用页面，常用于 Gradio 演示；不是模型权重仓库本身。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“Space 跑不动可能是配额问题，不表示模型仓库失效。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "Hugging Face Hub 文档"
+    ],
+    "source_urls": [
+      "https://huggingface.co/docs/hub/spaces-overview"
+    ]
+  },
+  {
+    "id": "trust-remote-code",
+    "term": "远程自定义代码",
+    "term_en": "trust_remote_code",
+    "aliases": [],
+    "category": "community",
+    "kind": "community",
+    "definition_zh": "允许 Transformers 等工具执行模型仓库提供的自定义 Python 代码。",
+    "usage_zh": "社区帖子、Issue、Discussion、模型卡和教程里常见的简称或约定说法。",
+    "example_zh": "“打开 trust_remote_code 前必须审查来源和固定 revision。”",
+    "related_model_ids": [],
+  "source_platforms": [
+    "Hugging Face Hub 文档",
+    "GitHub Issue（Transformers #46617）"
+  ],
+  "source_urls": [
+    "https://huggingface.co/docs/huggingface_hub/guides/repository",
+    "https://github.com/huggingface/transformers/issues/46617"
+  ]
+  },
+  {
+    "id": "works-out-of-the-box",
+    "term": "开箱即用",
+    "term_en": "works out of the box",
+    "aliases": [],
+    "category": "community",
+    "kind": "slang",
+    "definition_zh": "社区口语，意为按默认流程即可工作；没有统一硬件、数据或质量保证。",
+    "usage_zh": "真实 Issue 中它只对特定仓库版本、配置和环境成立；一个模型能直接运行，不代表用户上传的派生仓库也无需补配置。",
+    "example_zh": "“作者说 out of the box，也要检查你的 CUDA 和输入格式。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "Hugging Face Hub 文档",
+      "GitHub Issue（Transformers #8117）"
+    ],
+    "source_urls": [
+      "https://huggingface.co/docs/hub/model-cards",
+      "https://github.com/huggingface/transformers/issues/8117"
+    ]
+  },
+  {
+    "id": "awq",
+    "term": "AWQ",
+    "term_en": "AWQ",
+    "aliases": [
+      "Activation-aware Weight Quantization"
+    ],
+    "category": "deployment",
+    "kind": "formal",
+    "definition_zh": "activation-aware weight quantization，利用激活统计保护重要权重通道的低比特量化方法。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“AWQ 4-bit 与 GPTQ 4-bit 的校准和运行时不同。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "GitHub README"
+    ],
+    "source_urls": [
+      "https://github.com/mit-han-lab/llm-awq"
+    ]
+  },
+  {
+    "id": "cuda-oom",
+    "term": "爆显存",
+    "term_en": "CUDA OOM",
+    "aliases": [
+      "out of memory"
+    ],
+    "category": "deployment",
+    "kind": "community",
+    "definition_zh": "GPU 显存不足错误；社区常直接说 OOM。",
+    "usage_zh": "社区帖子、Issue、Discussion、模型卡和教程里常见的简称或约定说法。",
+    "example_zh": "“OOM 先查峰值激活、batch、分辨率和 KV cache，而不只看权重大小。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "Hugging Face 文档",
+      "GitHub Issue",
+      "Hugging Face Discussion"
+    ],
+    "source_urls": [
+      "https://huggingface.co/docs/transformers/main/en/perf_train_gpu_one",
+      "https://github.com/huggingface/transformers/issues/9996",
+      "https://huggingface.co/lerobot/smolvla_base/discussions/14"
+    ]
+  },
+  {
+    "id": "flashattention",
+    "term": "闪存注意力",
+    "term_en": "FlashAttention",
+    "aliases": [
+      "FA"
+    ],
+    "category": "deployment",
+    "kind": "formal",
+    "definition_zh": "针对注意力 IO 访问优化的精确算法/内核家族，不是近似注意力的泛称。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“是否加速取决于序列长度、dtype、GPU 和安装版本。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "GitHub README"
+    ],
+    "source_urls": [
+      "https://github.com/Dao-AILab/flash-attention"
+    ]
+  },
+  {
+    "id": "gguf",
+    "term": "GGUF",
+    "term_en": "GGUF",
+    "aliases": [
+      "GGML Unified Format"
+    ],
+    "category": "deployment",
+    "kind": "community",
+    "definition_zh": "llama.cpp 生态常用的模型文件格式，包含张量和运行所需元数据。",
+    "usage_zh": "社区帖子、Issue、Discussion、模型卡和教程里常见的简称或约定说法。",
+    "example_zh": "“GGUF 是格式，不是某一种固定量化精度。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "GitHub README",
+      "GitHub Issue",
+      "GitHub Issue"
+    ],
+    "source_urls": [
+      "https://github.com/ggml-org/llama.cpp",
+      "https://github.com/ggml-org/llama.cpp/issues/7062",
+      "https://github.com/ggml-org/llama.cpp/issues/25359"
+    ]
+  },
+  {
+    "id": "gptq",
+    "term": "GPTQ",
+    "term_en": "GPTQ",
+    "aliases": [
+      "GPTQ quantization"
+    ],
+    "category": "deployment",
+    "kind": "formal",
+    "definition_zh": "基于近似二阶信息逐层量化权重的训练后量化方法族。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“下载 GPTQ 权重前先确认 group size 和推理后端兼容。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "GitHub README"
+    ],
+    "source_urls": [
+      "https://github.com/IST-DASLab/gptq"
+    ]
+  },
+  {
+    "id": "inference",
+    "term": "推理",
+    "term_en": "inference",
+    "aliases": [],
+    "category": "deployment",
+    "kind": "formal",
+    "definition_zh": "用已训练模型产生预测，不进行参数更新。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“inference mode 会关闭梯度，但仍可能受 batch 和精度影响。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "vLLM 文档"
+    ],
+    "source_urls": [
+      "https://docs.vllm.ai/en/latest/"
+    ]
+  },
+  {
+    "id": "int8-int4",
+    "term": "INT8 / INT4",
+    "term_en": "INT8 / INT4",
+    "aliases": [
+      "8-bit",
+      "4-bit"
+    ],
+    "category": "deployment",
+    "kind": "ambiguous",
+    "definition_zh": "8 位或 4 位整数/近似低位表示；具体格式、分组和量化对象决定效果。",
+    "usage_zh": "社区里的 8-bit / 4-bit 不只表示位数；是否可加载、是否更快以及显存收益还取决于量化对象、具体格式、计算 dtype、内核和硬件。",
+    "example_zh": "“写 4-bit 还要问是 weights-only、GPTQ、AWQ 还是 bitsandbytes NF4。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "Hugging Face 文档",
+      "GitHub Issue · Transformers #24884",
+      "GitHub Issue · bitsandbytes #605"
+    ],
+    "source_urls": [
+      "https://huggingface.co/docs/bitsandbytes/main/en/index",
+      "https://github.com/huggingface/transformers/issues/24884",
+      "https://github.com/bitsandbytes-foundation/bitsandbytes/issues/605"
+    ]
+  },
+  {
+    "id": "kv-cache",
+    "term": "键值缓存",
+    "term_en": "KV cache",
+    "aliases": [],
+    "category": "deployment",
+    "kind": "formal",
+    "definition_zh": "Transformer 自回归生成时缓存历史 key/value，避免每步重复计算。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“长上下文的 KV cache 可能比权重更吃显存。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "Hugging Face 文档"
+    ],
+    "source_urls": [
+      "https://huggingface.co/docs/transformers/main/en/kv_cache"
+    ]
+  },
+  {
+    "id": "latency",
+    "term": "延迟",
+    "term_en": "latency",
+    "aliases": [],
+    "category": "deployment",
+    "kind": "formal",
+    "definition_zh": "单次请求从输入到结果的延迟；是否含排队、预处理和后处理必须说明。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“只报 kernel latency 不能代表端到端机器人响应。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "NVIDIA TensorRT 文档"
+    ],
+    "source_urls": [
+      "https://docs.nvidia.com/deeplearning/tensorrt/latest/index.html"
+    ]
+  },
+  {
+    "id": "offload",
+    "term": "卸载",
+    "term_en": "offload",
+    "aliases": [],
+    "category": "deployment",
+    "kind": "community",
+    "definition_zh": "把部分权重、激活或缓存移到 CPU、磁盘或另一设备。",
+    "usage_zh": "社区帖子、Issue、Discussion、模型卡和教程里常见的简称或约定说法。",
+    "example_zh": "“CPU offload 能跑起来，但 PCIe 传输会拉高延迟。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "Hugging Face 文档",
+      "GitHub Issue"
+    ],
+    "source_urls": [
+      "https://huggingface.co/docs/transformers/main/en/perf_train_gpu_one",
+      "https://github.com/huggingface/transformers/issues/9996"
+    ]
+  },
+  {
+    "id": "onnx",
+    "term": "ONNX",
+    "term_en": "ONNX",
+    "aliases": [
+      "Open Neural Network Exchange"
+    ],
+    "category": "deployment",
+    "kind": "formal",
+    "definition_zh": "跨框架计算图交换格式；导出成功不等于所有动态形状和自定义算子都正确。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“先导出 ONNX，再用目标 runtime 验证数值一致性。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "ONNX 文档",
+      "Hugging Face Discussion",
+      "GitHub Issue"
+    ],
+    "source_urls": [
+      "https://onnx.ai/onnx/intro/",
+      "https://huggingface.co/lerobot/smolvla_base/discussions/10",
+      "https://github.com/facebookresearch/segment-anything/issues/339"
+    ]
+  },
+  {
+    "id": "op-kernel",
+    "term": "算子",
+    "term_en": "op / kernel",
+    "aliases": [
+      "内核"
+    ],
+    "category": "deployment",
+    "kind": "ambiguous",
+    "definition_zh": "op 是计算图中的算子，kernel 是底层硬件实际执行实现；社区常混用。",
+    "usage_zh": "不同项目或说话者的含义可能不同，看到时必须连同上下文一起判断。",
+    "example_zh": "“模型 FLOPs 低但某个 op 没有快 kernel，实际仍可能慢。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "GitHub README"
+    ],
+    "source_urls": [
+      "https://github.com/Dao-AILab/flash-attention"
+    ]
+  },
+  {
+    "id": "openai-compatible-api",
+    "term": "OpenAI 兼容接口",
+    "term_en": "OpenAI-compatible API",
+    "aliases": [],
+    "category": "deployment",
+    "kind": "ambiguous",
+    "definition_zh": "复用 OpenAI 风格请求/响应 schema 的服务接口，不表示由 OpenAI 提供或行为完全一致。",
+    "usage_zh": "不同项目或说话者的含义可能不同，看到时必须连同上下文一起判断。",
+    "example_zh": "“vLLM 的 OpenAI-compatible endpoint 仍要核对支持的参数。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "vLLM 文档",
+      "GitHub Issue（vLLM #38531）"
+    ],
+    "source_urls": [
+      "https://docs.vllm.ai/en/latest/",
+      "https://github.com/vllm-project/vllm/issues/38531"
+    ]
+  },
+  {
+    "id": "pipeline-parallel",
+    "term": "流水线并行",
+    "term_en": "pipeline parallel",
+    "aliases": [
+      "PP"
+    ],
+    "category": "deployment",
+    "kind": "formal",
+    "definition_zh": "把不同网络层分到多个阶段并行流水执行。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“小 batch 时 pipeline bubble 可能很明显。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "vLLM 文档"
+    ],
+    "source_urls": [
+      "https://docs.vllm.ai/en/latest/"
+    ]
+  },
+  {
+    "id": "ptq",
+    "term": "训练后量化",
+    "term_en": "PTQ",
+    "aliases": [],
+    "category": "deployment",
+    "kind": "formal",
+    "definition_zh": "post-training quantization，模型训练完成后再校准或转换为低精度。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“PTQ 快速，但敏感层可能掉精度。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "NVIDIA TensorRT 文档"
+    ],
+    "source_urls": [
+      "https://docs.nvidia.com/deeplearning/tensorrt/latest/index.html"
+    ]
+  },
+  {
+    "id": "qat",
+    "term": "量化感知训练",
+    "term_en": "QAT",
+    "aliases": [],
+    "category": "deployment",
+    "kind": "formal",
+    "definition_zh": "quantization-aware training，训练时模拟量化误差以适应低精度。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“QAT 成本更高，但通常比直接 PTQ 更能保精度。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "NVIDIA TensorRT 文档"
+    ],
+    "source_urls": [
+      "https://docs.nvidia.com/deeplearning/tensorrt/latest/index.html"
+    ]
+  },
+  {
+    "id": "quantization",
+    "term": "量化",
+    "term_en": "quantization",
+    "aliases": [],
+    "category": "deployment",
+    "kind": "formal",
+    "definition_zh": "用更低位宽表示权重或激活，以降低显存和提高特定硬件速度。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“量化节省显存不保证所有算子都更快。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "Hugging Face 文档"
+    ],
+    "source_urls": [
+      "https://huggingface.co/docs/bitsandbytes/main/en/index"
+    ]
+  },
+  {
+    "id": "sharding",
+    "term": "分片",
+    "term_en": "sharding",
+    "aliases": [],
+    "category": "deployment",
+    "kind": "formal",
+    "definition_zh": "把模型权重或状态切分到多个文件/设备。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“下载时看到多个 safetensors shard 不是多个独立模型。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "Hugging Face Hub 文档"
+    ],
+    "source_urls": [
+      "https://huggingface.co/docs/huggingface_hub/guides/download"
+    ]
+  },
+  {
+    "id": "tensor-parallel",
+    "term": "张量并行",
+    "term_en": "tensor parallel",
+    "aliases": [
+      "TP"
+    ],
+    "category": "deployment",
+    "kind": "formal",
+    "definition_zh": "把同一层张量计算拆到多设备并行。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“TP 可容纳大模型，但设备通信会影响扩展效率。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "vLLM 文档"
+    ],
+    "source_urls": [
+      "https://docs.vllm.ai/en/latest/"
+    ]
+  },
+  {
+    "id": "tensorrt-engine",
+    "term": "推理引擎",
+    "term_en": "TensorRT engine",
+    "aliases": [
+      "TRT engine"
+    ],
+    "category": "deployment",
+    "kind": "formal",
+    "definition_zh": "TensorRT 针对目标 GPU、形状和精度构建的优化执行计划。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“engine 往往与 GPU 架构、TensorRT 版本和 profile 绑定。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "NVIDIA TensorRT 文档"
+    ],
+    "source_urls": [
+      "https://docs.nvidia.com/deeplearning/tensorrt/latest/index.html"
+    ]
+  },
+  {
+    "id": "throughput",
+    "term": "吞吐量",
+    "term_en": "throughput",
+    "aliases": [],
+    "category": "deployment",
+    "kind": "formal",
+    "definition_zh": "单位时间处理的样本、帧或 token 总量，常通过 batching 提高。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“吞吐更高可能伴随单请求 latency 变大。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "vLLM 文档"
+    ],
+    "source_urls": [
+      "https://docs.vllm.ai/en/latest/"
+    ]
+  },
+  {
+    "id": "torch-compile",
+    "term": "torch.compile",
+    "term_en": "torch.compile",
+    "aliases": [
+      "PyTorch compile"
+    ],
+    "category": "deployment",
+    "kind": "formal",
+    "definition_zh": "PyTorch 2 的图捕获与编译入口，用后端融合和优化执行。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“compile 首次有编译开销，也可能遇到 graph break。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "PyTorch 文档"
+    ],
+    "source_urls": [
+      "https://pytorch.org/docs/stable/generated/torch.compile.html"
+    ]
+  },
+  {
+    "id": "tps",
+    "term": "TPS",
+    "term_en": "TPS",
+    "aliases": [
+      "tok/s"
+    ],
+    "category": "deployment",
+    "kind": "ambiguous",
+    "definition_zh": "tokens per second，生成阶段每秒输出 token 数；不同 tokenizer 和并发条件不可直接横比。",
+    "usage_zh": "不同项目或说话者的含义可能不同，看到时必须连同上下文一起判断。",
+    "example_zh": "“同写 50 TPS，但 batch 和量化配置不同。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "vLLM 文档",
+      "GitHub Issue",
+      "GitHub Issue"
+    ],
+    "source_urls": [
+      "https://docs.vllm.ai/en/latest/",
+      "https://github.com/vllm-project/vllm/issues/7567",
+      "https://github.com/vllm-project/vllm/issues/12568"
+    ]
+  },
+  {
+    "id": "vllm",
+    "term": "vLLM",
+    "term_en": "vLLM",
+    "aliases": [
+      "vLLM serve"
+    ],
+    "category": "deployment",
+    "kind": "community",
+    "definition_zh": "面向大模型高吞吐推理与服务的开源引擎，社区也常代指其 OpenAI 兼容服务。",
+    "usage_zh": "社区帖子、Issue、Discussion、模型卡和教程里常见的简称或约定说法。",
+    "example_zh": "“用 vLLM serve 起服务后再测并发，不要只测单请求。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "vLLM 文档"
+    ],
+    "source_urls": [
+      "https://docs.vllm.ai/en/latest/"
+    ]
+  },
+  {
+    "id": "anchor",
+    "term": "锚框",
+    "term_en": "Anchor Box",
+    "definition_zh": "预先放在特征图各位置的一组参考框，模型学习把它们调整成真实目标框。",
+    "example_zh": "同一位置放置细长、方形和扁宽三种参考框来覆盖不同物体形状。",
+    "related_model_ids": [
+      "faster-r-cnn"
+    ],
+    "category": "detection",
+    "kind": "formal",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "source_platforms": [
+      "Faster R-CNN 论文"
+    ],
+    "source_urls": [
+      "https://arxiv.org/abs/1506.01497"
+    ]
+  },
+  {
+    "id": "anchor-based",
+    "term": "锚框式",
+    "term_en": "anchor-based",
+    "aliases": [],
+    "category": "detection",
+    "kind": "formal",
+    "definition_zh": "围绕预设锚框预测偏移与类别的检测设计。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“anchor-based 模型常要针对数据重聚类 anchor。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "Ultralytics 文档"
+    ],
+    "source_urls": [
+      "https://docs.ultralytics.com/guides/yolo-performance-metrics/"
+    ]
+  },
+  {
+    "id": "anchor-free-2",
+    "term": "无锚框",
+    "term_en": "anchor-free",
+    "aliases": [],
+    "category": "detection",
+    "kind": "formal",
+    "definition_zh": "不依赖预设锚框形状，直接从点或查询预测目标。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“anchor-free 不等于没有正负样本分配。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "Ultralytics 文档"
+    ],
+    "source_urls": [
+      "https://docs.ultralytics.com/guides/yolo-performance-metrics/"
+    ]
+  },
+  {
+    "id": "anchor-free",
+    "term": "无锚框检测",
+    "term_en": "Anchor-Free Detection",
+    "definition_zh": "不依赖预设参考框，而直接预测目标中心、边界距离或框坐标的检测思路。",
+    "example_zh": "模型从某个特征点直接回归它到目标四条边的距离。",
+    "related_model_ids": [
+      "yolo-v8",
+      "rt-detr"
+    ],
+    "category": "detection",
+    "kind": "formal",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "source_platforms": [
+      "FCOS 论文"
+    ],
+    "source_urls": [
+      "https://arxiv.org/abs/1904.01355"
+    ]
+  },
+  {
+    "id": "ap50-vs-ap50-95",
+    "term": "AP50 vs AP50:95",
+    "term_en": "AP50 vs AP50:95",
+    "aliases": [
+      "mAP50",
+      "mAP50-95"
+    ],
+    "category": "detection",
+    "kind": "formal",
+    "definition_zh": "AP50 只在 IoU=0.50 评估，COCO AP50:95 对 0.50 到 0.95 多阈值取平均，更严格。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“两个项目都写 mAP，但一个报 AP50、另一个报 AP50:95，不能直接比。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "COCO 官方评测页",
+      "GitHub Issue · Ultralytics #25030",
+      "GitHub Issue · Ultralytics #23599"
+    ],
+    "source_urls": [
+      "https://cocodataset.org/#detection-eval",
+      "https://github.com/ultralytics/ultralytics/issues/25030",
+      "https://github.com/ultralytics/ultralytics/issues/23599"
+    ]
+  },
+  {
+    "id": "backbone",
+    "term": "主干",
+    "term_en": "backbone",
+    "aliases": [],
+    "category": "detection",
+    "kind": "formal",
+    "definition_zh": "提取多层视觉特征的主干网络。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“换 backbone 会同时影响精度、速度和预训练兼容性。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "MMDetection 文档"
+    ],
+    "source_urls": [
+      "https://mmdetection.readthedocs.io/en/latest/"
+    ]
+  },
+  {
+    "id": "bounding-box",
+    "term": "边界框",
+    "term_en": "Bounding Box",
+    "definition_zh": "包围目标的矩形，通常用左上角与右下角坐标，或中心点、宽、高来表示。",
+    "example_zh": "猫所在矩形可记为 (x, y, width, height)。",
+    "related_model_ids": [
+      "yolo-v1",
+      "rt-detr"
+    ],
+    "aliases": [
+      "bounding box"
+    ],
+    "category": "detection",
+    "kind": "community",
+    "usage_zh": "社区帖子、Issue、Discussion、模型卡和教程里常见的简称或约定说法。",
+    "source_platforms": [
+      "Ultralytics 文档",
+      "COCO 评测"
+    ],
+    "source_urls": [
+      "https://docs.ultralytics.com/tasks/detect/",
+      "https://cocodataset.org/#detection-eval"
+    ]
+  },
+  {
+    "id": "conf-threshold",
+    "term": "conf threshold",
+    "term_en": "conf threshold",
+    "aliases": [
+      "confidence threshold",
+      "conf"
+    ],
+    "category": "detection",
+    "kind": "community",
+    "definition_zh": "只保留置信度高于阈值的预测；社区命令行常简称 conf。",
+    "usage_zh": "社区帖子、Issue、Discussion、模型卡和教程里常见的简称或约定说法。",
+    "example_zh": "“漏检多时先检查 conf threshold 是否过高。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "Ultralytics 文档",
+      "GitHub Issue",
+      "GitHub Issue"
+    ],
+    "source_urls": [
+      "https://docs.ultralytics.com/tasks/detect/",
+      "https://github.com/ultralytics/ultralytics/issues/1429",
+      "https://github.com/ultralytics/ultralytics/issues/189"
+    ]
+  },
+  {
+    "id": "feature-pyramid",
+    "term": "特征金字塔",
+    "term_en": "Feature Pyramid",
+    "definition_zh": "同时使用不同分辨率的特征图，让模型兼顾小目标细节和大目标语义。",
+    "example_zh": "高分辨率层找小行人，低分辨率层识别大型车辆。",
+    "related_model_ids": [
+      "faster-r-cnn",
+      "segformer"
+    ],
+    "category": "detection",
+    "kind": "formal",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "source_platforms": [
+      "FPN 论文"
+    ],
+    "source_urls": [
+      "https://arxiv.org/abs/1612.03144"
+    ]
+  },
+  {
+    "id": "grounding-2",
+    "term": "短语定位",
+    "term_en": "grounding",
+    "aliases": [],
+    "category": "detection",
+    "kind": "formal",
+    "definition_zh": "把语言短语与图像中的区域或框对齐。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“输入短语后 Grounding DINO 返回对应 bbox。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "GitHub README"
+    ],
+    "source_urls": [
+      "https://github.com/IDEA-Research/GroundingDINO"
+    ]
+  },
+  {
+    "id": "head",
+    "term": "检测头",
+    "term_en": "head",
+    "aliases": [],
+    "category": "detection",
+    "kind": "formal",
+    "definition_zh": "输出分类、边框或其他任务预测的末端模块。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“检测 head 轻量不代表整个模型都轻。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "Ultralytics 文档"
+    ],
+    "source_urls": [
+      "https://docs.ultralytics.com/guides/yolo-performance-metrics/"
+    ]
+  },
+  {
+    "id": "iou",
+    "term": "交并比",
+    "term_en": "Intersection over Union (IoU)",
+    "definition_zh": "预测框与真实框的交集面积除以并集面积，越接近 1 表示重合越好。",
+    "example_zh": "两个框完全重合时 IoU 为 1，完全不相交时为 0。",
+    "related_model_ids": [
+      "yolo-v8",
+      "faster-r-cnn"
+    ],
+    "aliases": [],
+    "category": "detection",
+    "kind": "formal",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "source_platforms": [
+      "COCO 官方评测页"
+    ],
+    "source_urls": [
+      "https://cocodataset.org/#detection-eval"
+    ]
+  },
+  {
+    "id": "map",
+    "term": "平均精度均值",
+    "term_en": "mean Average Precision (mAP)",
+    "definition_zh": "把多个类别或多个 IoU 阈值下的检测平均精度汇总成一个指标，用来比较检测器整体表现。",
+    "example_zh": "COCO 常报告 mAP@[0.5:0.95]，比只看 IoU=0.5 更严格。",
+    "related_model_ids": [
+      "yolo-v8",
+      "detr",
+      "rt-detr"
+    ],
+    "aliases": [
+      "mean Average Precision"
+    ],
+    "category": "detection",
+    "kind": "ambiguous",
+    "usage_zh": "不同项目或说话者的含义可能不同，看到时必须连同上下文一起判断。",
+    "source_platforms": [
+      "COCO 官方评测页",
+      "GitHub Issue（Ultralytics #24637）"
+    ],
+    "source_urls": [
+      "https://cocodataset.org/#detection-eval",
+      "https://github.com/ultralytics/ultralytics/issues/24637"
+    ]
+  },
+  {
+    "id": "n-s-m-l-x",
+    "term": "n/s/m/l/x",
+    "term_en": "n/s/m/l/x",
+    "aliases": [
+      "Nano",
+      "Small",
+      "Medium",
+      "Large",
+      "X-Large"
+    ],
+    "category": "detection",
+    "kind": "ambiguous",
+    "definition_zh": "YOLO 等模型族常用的 Nano/Small/Medium/Large/Extra-Large 尺寸后缀；不同模型族之间参数量并不等价。",
+    "usage_zh": "不同项目或说话者的含义可能不同，看到时必须连同上下文一起判断。",
+    "example_zh": "“YOLO26n 的 n 只能表示该家族内较小档位。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "Ultralytics 文档"
+    ],
+    "source_urls": [
+      "https://docs.ultralytics.com/tasks/detect/"
+    ]
+  },
+  {
+    "id": "neck",
+    "term": "颈部网络",
+    "term_en": "neck",
+    "aliases": [],
+    "category": "detection",
+    "kind": "formal",
+    "definition_zh": "连接主干与任务头、融合多尺度特征的模块，如 FPN/PAN。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“小目标收益可能主要来自 neck 的高分辨率特征。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "MMDetection 文档"
+    ],
+    "source_urls": [
+      "https://mmdetection.readthedocs.io/en/latest/"
+    ]
+  },
+  {
+    "id": "nms",
+    "term": "非极大值抑制",
+    "term_en": "Non-Maximum Suppression (NMS)",
+    "definition_zh": "当多个预测框覆盖同一物体时，保留高分框并抑制重复框的后处理方法。",
+    "example_zh": "检测器对同一个人画出五个框，NMS 最终只留下最可信的一个。",
+    "related_model_ids": [
+      "yolo-v1",
+      "faster-r-cnn"
+    ],
+    "aliases": [],
+    "category": "detection",
+    "kind": "formal",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "source_platforms": [
+      "Ultralytics 文档",
+      "arXiv 论文",
+      "Torchvision 文档"
+    ],
+    "source_urls": [
+      "https://docs.ultralytics.com/guides/yolo-performance-metrics/",
+      "https://arxiv.org/abs/2606.03748",
+      "https://pytorch.org/vision/stable/generated/torchvision.ops.nms.html"
+    ]
+  },
+  {
+    "id": "object-detection",
+    "term": "目标检测",
+    "term_en": "Object Detection",
+    "definition_zh": "既判断图中有哪些目标，又用矩形框标出每个目标位置的视觉任务。",
+    "example_zh": "在街景中框出行人、自行车和汽车，并给出各自类别。",
+    "related_model_ids": [
+      "yolo-v8",
+      "faster-r-cnn",
+      "detr"
+    ],
+    "category": "detection",
+    "kind": "formal",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "source_platforms": [
+      "MMDetection 文档"
+    ],
+    "source_urls": [
+      "https://mmdetection.readthedocs.io/en/latest/"
+    ]
+  },
+  {
+    "id": "one-stage-detector",
+    "term": "单阶段检测",
+    "term_en": "one-stage detector",
+    "aliases": [],
+    "category": "detection",
+    "kind": "formal",
+    "definition_zh": "单阶段检测器，直接从特征预测类别和框。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“YOLO 通常被归为 one-stage detector。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "Ultralytics 文档"
+    ],
+    "source_urls": [
+      "https://docs.ultralytics.com/tasks/detect/"
+    ]
+  },
+  {
+    "id": "open-vocabulary",
+    "term": "开放词汇",
+    "term_en": "Open-Vocabulary",
+    "definition_zh": "类别不被固定标签表限制，用户可以用自然语言临时指定要寻找的物体。",
+    "example_zh": "输入“带黄色安全帽的人”，模型按这段文字寻找目标。",
+    "related_model_ids": [
+      "clip",
+      "internvl"
+    ],
+    "category": "detection",
+    "kind": "formal",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "source_platforms": [
+      "Grounding DINO 论文"
+    ],
+    "source_urls": [
+      "https://arxiv.org/abs/2303.05499"
+    ]
+  },
+  {
+    "id": "open-vocabulary-detection",
+    "term": "开放词汇检测",
+    "term_en": "open-vocabulary detection",
+    "aliases": [
+      "OVD"
+    ],
+    "category": "detection",
+    "kind": "formal",
+    "definition_zh": "用文本或开放类别词表检测训练类别之外的概念。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“open-vocabulary 不等于任何生僻名词都能稳定识别。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "GitHub README"
+    ],
+    "source_urls": [
+      "https://github.com/AILab-CVC/YOLO-World"
+    ]
+  },
+  {
+    "id": "precision",
+    "term": "精确率",
+    "term_en": "precision",
+    "aliases": [],
+    "category": "detection",
+    "kind": "formal",
+    "definition_zh": "所有预测为正的结果中有多少是真的，强调少误报。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“误报多时 precision 会下降。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "Ultralytics 文档"
+    ],
+    "source_urls": [
+      "https://docs.ultralytics.com/guides/yolo-performance-metrics/"
+    ]
+  },
+  {
+    "id": "real-time-fps",
+    "term": "实时检测",
+    "term_en": "real-time / FPS",
+    "aliases": [
+      "frames per second"
+    ],
+    "category": "detection",
+    "kind": "ambiguous",
+    "definition_zh": "实时与每秒帧数；若不说明硬件、batch、精度和是否含预处理/NMS，含义不完整。",
+    "usage_zh": "不同项目或说话者的含义可能不同，看到时必须连同上下文一起判断。",
+    "example_zh": "“60 FPS on GPU 不能直接推出边缘设备也实时。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "Ultralytics 文档",
+      "GitHub Issue（Ultralytics #24426）"
+    ],
+    "source_urls": [
+      "https://docs.ultralytics.com/tasks/detect/",
+      "https://github.com/ultralytics/ultralytics/issues/24426"
+    ]
+  },
+  {
+    "id": "recall",
+    "term": "召回率",
+    "term_en": "recall",
+    "aliases": [],
+    "category": "detection",
+    "kind": "formal",
+    "definition_zh": "所有真实目标中有多少被检出，强调少漏检。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“小目标漏得多会拉低 recall。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "Ultralytics 文档"
+    ],
+    "source_urls": [
+      "https://docs.ultralytics.com/guides/yolo-performance-metrics/"
+    ]
+  },
+  {
+    "id": "two-stage-detector",
+    "term": "两阶段检测",
+    "term_en": "two-stage detector",
+    "aliases": [],
+    "category": "detection",
+    "kind": "formal",
+    "definition_zh": "两阶段检测器，先产生候选区域，再分类和精修框。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“Faster R-CNN 是经典 two-stage baseline。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "MMDetection 文档"
+    ],
+    "source_urls": [
+      "https://mmdetection.readthedocs.io/en/latest/"
+    ]
+  },
+  {
+    "id": "zero-shot",
+    "term": "零样本",
+    "term_en": "Zero-Shot",
+    "definition_zh": "模型没有针对某个具体下游类别再训练，也能依据预训练知识完成任务。",
+    "example_zh": "只输入类别文字提示，CLIP 就能在没有额外分类训练时识别图像。",
+    "related_model_ids": [
+      "clip",
+      "siglip"
+    ],
+    "category": "evaluation",
+    "kind": "formal",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "source_platforms": [
+      "CLIP 论文"
+    ],
+    "source_urls": [
+      "https://arxiv.org/abs/2103.00020"
+    ]
+  },
+  {
+    "id": "agentic",
+    "term": "智能体式",
+    "term_en": "agentic",
+    "aliases": [],
+    "category": "multimodal",
+    "kind": "ambiguous",
+    "definition_zh": "社区和产品常用的宽泛形容词，表示模型能规划并多步使用工具；缺少统一能力门槛。",
+    "usage_zh": "不同项目或说话者的含义可能不同，看到时必须连同上下文一起判断。",
+    "example_zh": "“agentic benchmark 提升不等于机器人已具备长期自主性。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "GitHub README"
+    ],
+    "source_urls": [
+      "https://github.com/OpenGVLab/InternVL"
+    ]
+  },
+  {
+    "id": "anyres",
+    "term": "AnyRes",
+    "term_en": "AnyRes",
+    "aliases": [
+      "any resolution"
+    ],
+    "category": "multimodal",
+    "kind": "community",
+    "definition_zh": "LLaVA 系社区用语：把任意分辨率图像拆成多块并组合局部与全局特征。",
+    "usage_zh": "社区帖子、Issue、Discussion、模型卡和教程里常见的简称或约定说法。",
+    "example_zh": "“AnyRes 提升细节读取，但输入成本也会升高。”",
+    "related_model_ids": [],
+  "source_platforms": [
+    "GitHub README",
+    "GitHub Issue（LLaVA #1590）"
+  ],
+  "source_urls": [
+    "https://github.com/haotian-liu/LLaVA",
+    "https://github.com/haotian-liu/LLaVA/issues/1590"
+  ]
+  },
+  {
+    "id": "chat-template",
+    "term": "对话模板",
+    "term_en": "chat template",
+    "aliases": [],
+    "category": "multimodal",
+    "kind": "formal",
+    "definition_zh": "把角色、消息、图片占位符和特殊 token 转成模型训练时预期的序列格式。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“权重没坏，可能只是用了错误 chat template。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "Hugging Face 文档"
+    ],
+    "source_urls": [
+      "https://huggingface.co/docs/transformers/main/en/chat_templating"
+    ]
+  },
+  {
+    "id": "context-window",
+    "term": "上下文窗口",
+    "term_en": "context window",
+    "aliases": [],
+    "category": "multimodal",
+    "kind": "formal",
+    "definition_zh": "一次推理可处理的 token 上限，视觉 token 也会占用它。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“长视频很快吃满 context window。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "GitHub README"
+    ],
+    "source_urls": [
+      "https://github.com/QwenLM/Qwen3-VL"
+    ]
+  },
+  {
+    "id": "cot-thinking",
+    "term": "思维链",
+    "term_en": "CoT / thinking",
+    "aliases": [
+      "Chain of Thought"
+    ],
+    "category": "multimodal",
+    "kind": "ambiguous",
+    "definition_zh": "chain-of-thought 或显式推理过程；产品中的 thinking 标签不保证完全暴露真实内部推理。",
+    "usage_zh": "社区说的 thinking 可能指可见推理输出、聊天模板开关或模型能力宣称；开关还可能改变特殊 token、工具调用与 KV cache，不能把三者混为一谈。",
+    "example_zh": "“Thinking 版通常更慢，也不一定每题都更准。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "GitHub README",
+      "GitHub Issue · Qwen3 #1817",
+      "GitHub Issue · Qwen3 #1826"
+    ],
+    "source_urls": [
+      "https://github.com/QwenLM/Qwen3-VL",
+      "https://github.com/QwenLM/Qwen3/issues/1817",
+      "https://github.com/QwenLM/Qwen3/issues/1826"
+    ]
+  },
+  {
+    "id": "dynamic-resolution",
+    "term": "动态分辨率",
+    "term_en": "Dynamic Resolution",
+    "definition_zh": "不把所有图像强制缩成同一个固定大小，而按原始尺寸和预算生成不同数量的视觉 token。",
+    "example_zh": "长截图可以保留长宽比，并比普通照片产生更多 patch token。",
+    "related_model_ids": [
+      "qwen2-vl",
+      "internvl2-chat",
+      "deepseek-vl2"
+    ],
+    "category": "multimodal",
+    "kind": "formal",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "source_platforms": [
+      "Qwen2-VL 论文"
+    ],
+    "source_urls": [
+      "https://arxiv.org/abs/2409.12191"
+    ]
+  },
+  {
+    "id": "dynamic-tiling",
+    "term": "动态切图",
+    "term_en": "dynamic tiling",
+    "aliases": [],
+    "category": "multimodal",
+    "kind": "formal",
+    "definition_zh": "按图像长宽比分成多个局部切片，再加缩略图供模型读取。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“高分辨率文档启用 dynamic tiling 会增加视觉 token 和显存。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "GitHub README"
+    ],
+    "source_urls": [
+      "https://github.com/OpenGVLab/InternVL"
+    ]
+  },
+  {
+    "id": "hallucination",
+    "term": "幻觉",
+    "term_en": "hallucination",
+    "aliases": [],
+    "category": "multimodal",
+    "kind": "formal",
+    "definition_zh": "模型生成与输入、事实或图像不一致的内容；视觉场景常特指凭空声称不存在的物体。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“图中没有狗却回答有狗，是 object hallucination。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "arXiv 论文"
+    ],
+    "source_urls": [
+      "https://arxiv.org/abs/2305.10355"
+    ]
+  },
+  {
+    "id": "instruction-tuning",
+    "term": "指令微调",
+    "term_en": "instruction tuning",
+    "aliases": [],
+    "category": "multimodal",
+    "kind": "formal",
+    "definition_zh": "用指令—响应样本训练模型遵循任务和对话格式。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“base 模型经 instruction tuning 后才更像聊天助手。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "GitHub README"
+    ],
+    "source_urls": [
+      "https://github.com/haotian-liu/LLaVA"
+    ]
+  },
+  {
+    "id": "interleaved-multimodal-data",
+    "term": "图文交错数据",
+    "term_en": "interleaved multimodal data",
+    "aliases": [],
+    "category": "multimodal",
+    "kind": "formal",
+    "definition_zh": "文本、图像或视频在同一长序列中交错出现的数据。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“网页式 interleaved data 不同于单图单问答对。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "GitHub README"
+    ],
+    "source_urls": [
+      "https://github.com/QwenLM/Qwen3-VL"
+    ]
+  },
+  {
+    "id": "mllm",
+    "term": "多模态大语言模型",
+    "term_en": "MLLM",
+    "aliases": [],
+    "category": "multimodal",
+    "kind": "formal",
+    "definition_zh": "multimodal large language model，以大语言模型为核心接入视觉等模态。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“论文里的 MLLM 常指可对话的图文大模型。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "GitHub README"
+    ],
+    "source_urls": [
+      "https://github.com/OpenGVLab/InternVL"
+    ]
+  },
+  {
+    "id": "multimodal-message",
+    "term": "多模态消息",
+    "term_en": "multimodal message",
+    "aliases": [],
+    "category": "multimodal",
+    "kind": "formal",
+    "definition_zh": "在一条消息中以结构化 content 同时包含文本、图片或视频。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“不要只拼图片路径字符串，要按 processor 的 multimodal message 格式传入。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "Hugging Face 文档"
+    ],
+    "source_urls": [
+      "https://huggingface.co/docs/transformers/main/en/chat_templating_multimodal"
+    ]
+  },
+  {
+    "id": "mrope",
+    "term": "多模态旋转位置编码",
+    "term_en": "Multimodal Rotary Position Embedding (M-RoPE)",
+    "definition_zh": "把旋转位置编码扩展到多种轴，用不同维度表达文字顺序、图像二维位置和视频时间。",
+    "example_zh": "视频 token 同时带有时间、高度和宽度坐标。",
+    "related_model_ids": [
+      "qwen2-vl",
+      "qwen2-5-vl"
+    ],
+    "category": "multimodal",
+    "kind": "formal",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "source_platforms": [
+      "Qwen2-VL 论文"
+    ],
+    "source_urls": [
+      "https://arxiv.org/abs/2409.12191"
+    ]
+  },
+  {
+    "id": "ocr",
+    "term": "光学字符识别",
+    "term_en": "OCR",
+    "aliases": [],
+    "category": "multimodal",
+    "kind": "formal",
+    "definition_zh": "optical character recognition；在 MLLM 评测中常指读取图片文字的能力。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“OCR 强不代表模型理解了表格计算关系。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "GitHub README"
+    ],
+    "source_urls": [
+      "https://github.com/QwenLM/Qwen3-VL"
+    ]
+  },
+  {
+    "id": "pixel-unshuffle",
+    "term": "像素反重排",
+    "term_en": "pixel unshuffle",
+    "aliases": [],
+    "category": "multimodal",
+    "kind": "formal",
+    "definition_zh": "把空间分辨率重排进通道，减少视觉 token 数而保留局部信息。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“InternVL 用 pixel unshuffle 压缩视觉序列。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "GitHub README"
+    ],
+    "source_urls": [
+      "https://github.com/OpenGVLab/InternVL"
+    ]
+  },
+  {
+    "id": "projector-adapter",
+    "term": "视觉适配器",
+    "term_en": "projector / adapter",
+    "aliases": [
+      "projection layer"
+    ],
+    "category": "multimodal",
+    "kind": "ambiguous",
+    "definition_zh": "把视觉编码器维度映射到语言模型嵌入空间的小型连接模块。",
+    "usage_zh": "不同项目或说话者的含义可能不同，看到时必须连同上下文一起判断。",
+    "example_zh": "“只训 projector 是轻量对齐，不等于全模型微调。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "GitHub README",
+      "GitHub Issue（LLaVA #1884）"
+    ],
+    "source_urls": [
+      "https://github.com/haotian-liu/LLaVA",
+      "https://github.com/haotian-liu/LLaVA/issues/1884"
+    ]
+  },
+  {
+    "id": "q-former",
+    "term": "Q-Former",
+    "term_en": "Querying Transformer (Q-Former)",
+    "definition_zh": "用一组可学习查询从视觉特征中提取固定长度信息，并把它传给语言模型的轻量桥接模块。",
+    "example_zh": "无论原图有多少 patch，都由少量查询 token 汇总关键视觉内容。",
+    "related_model_ids": [
+      "blip-2",
+      "minigpt-4"
+    ],
+    "category": "multimodal",
+    "kind": "formal",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "source_platforms": [
+      "BLIP-2 论文"
+    ],
+    "source_urls": [
+      "https://arxiv.org/abs/2301.12597"
+    ]
+  },
+  {
+    "id": "sft",
+    "term": "监督微调",
+    "term_en": "SFT",
+    "aliases": [],
+    "category": "multimodal",
+    "kind": "formal",
+    "definition_zh": "supervised fine-tuning，用带标准答案的监督数据进行微调。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“SFT 阶段学习格式，后续偏好优化再调行为。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "Hugging Face 文档"
+    ],
+    "source_urls": [
+      "https://huggingface.co/docs/transformers/main/en/trainer"
+    ]
+  },
+  {
+    "id": "token",
+    "term": "Token",
+    "term_en": "Token",
+    "definition_zh": "模型处理信息的基本单位，可以是文字片段、图像 patch、视频片段或离散动作。",
+    "example_zh": "在多模态模型中，图像 patch token 会与文字 token 放进同一序列。",
+    "related_model_ids": [
+      "qwen2-vl",
+      "openvla"
+    ],
+    "aliases": [],
+    "category": "multimodal",
+    "kind": "formal",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "source_platforms": [
+      "GitHub README",
+      "vLLM 文档",
+      "GitHub Issue",
+      "GitHub Issue",
+      "Hugging Face 术语表"
+    ],
+    "source_urls": [
+      "https://github.com/OpenGVLab/InternVL",
+      "https://docs.vllm.ai/en/latest/",
+      "https://github.com/vllm-project/vllm/issues/39790",
+      "https://github.com/vllm-project/vllm/issues/12568",
+      "https://huggingface.co/docs/transformers/glossary"
+    ]
+  },
+  {
+    "id": "tool-use-function-calling",
+    "term": "工具调用",
+    "term_en": "tool use / function calling",
+    "aliases": [
+      "函数调用"
+    ],
+    "category": "multimodal",
+    "kind": "formal",
+    "definition_zh": "模型生成结构化调用参数，让外部程序执行搜索、计算或控制。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“tool use 是调用接口，不是模型自己访问了数据库。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "GitHub README"
+    ],
+    "source_urls": [
+      "https://github.com/QwenLM/Qwen3-VL"
+    ]
+  },
+  {
+    "id": "vision-encoder",
+    "term": "视觉编码器",
+    "term_en": "vision encoder",
+    "aliases": [],
+    "category": "multimodal",
+    "kind": "formal",
+    "definition_zh": "把图像或视频编码为视觉特征/token 的网络。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“冻结 vision encoder 可以省显存，但可能限制领域适配。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "GitHub README"
+    ],
+    "source_urls": [
+      "https://github.com/QwenLM/Qwen3-VL"
+    ]
+  },
+  {
+    "id": "vision-projector",
+    "term": "视觉投影器",
+    "term_en": "Vision Projector",
+    "definition_zh": "把视觉编码器的特征维度映射到语言模型隐藏维度的小型网络。",
+    "example_zh": "LLaVA 用线性层或 MLP 把 CLIP 特征变成可插入文本序列的 token。",
+    "related_model_ids": [
+      "llava",
+      "minigpt-4",
+      "internvl2-chat"
+    ],
+    "category": "multimodal",
+    "kind": "formal",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "source_platforms": [
+      "LLaVA 仓库"
+    ],
+    "source_urls": [
+      "https://github.com/haotian-liu/LLaVA"
+    ]
+  },
+  {
+    "id": "vlm",
+    "term": "视觉语言模型",
+    "term_en": "Vision-Language Model (VLM)",
+    "definition_zh": "能联合理解图像或视频与文字的模型，常用于看图问答、描述、OCR 和视觉推理。",
+    "example_zh": "上传一张厨房照片，询问“水槽旁有什么物体？”。",
+    "related_model_ids": [
+      "qwen2-vl",
+      "llava",
+      "cogvlm"
+    ],
+    "aliases": [],
+    "category": "multimodal",
+    "kind": "formal",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "source_platforms": [
+      "GitHub README",
+      "Hugging Face 文档"
+    ],
+    "source_urls": [
+      "https://github.com/haotian-liu/LLaVA",
+      "https://huggingface.co/docs/transformers/tasks/image_text_to_text"
+    ]
+  },
+  {
+    "id": "grounding",
+    "term": "视觉定位",
+    "term_en": "Visual Grounding",
+    "definition_zh": "把文字中的对象或概念对应到图像中的具体区域。",
+    "example_zh": "问题提到“左边的杯子”时，模型返回那个杯子的边界框。",
+    "related_model_ids": [
+      "qwen-vl",
+      "cogvlm"
+    ],
+    "aliases": [],
+    "category": "multimodal",
+    "kind": "formal",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "source_platforms": [
+      "GitHub README",
+      "Grounding DINO 论文"
+    ],
+    "source_urls": [
+      "https://github.com/QwenLM/Qwen3-VL",
+      "https://arxiv.org/abs/2303.05499"
+    ]
+  },
+  {
+    "id": "contrastive-learning",
+    "term": "对比学习",
+    "term_en": "Contrastive Learning",
+    "definition_zh": "拉近匹配样本的表示、推远不匹配样本表示的训练方法。",
+    "example_zh": "让一张猫图更接近“猫”的文字，而远离“卡车”的文字。",
+    "related_model_ids": [
+      "clip",
+      "siglip"
+    ],
+    "category": "representation",
+    "kind": "formal",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "source_platforms": [
+      "CLIP 论文"
+    ],
+    "source_urls": [
+      "https://arxiv.org/abs/2103.00020"
+    ]
+  },
+  {
+    "id": "embedding",
+    "term": "嵌入向量",
+    "term_en": "Embedding",
+    "definition_zh": "把文字、图像或动作转换成一串数字，使语义相近的内容在向量空间里更接近。",
+    "example_zh": "“小狗”的文字向量会靠近狗照片的图像向量。",
+    "related_model_ids": [
+      "clip",
+      "siglip",
+      "internvl"
+    ],
+    "category": "representation",
+    "kind": "formal",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "source_platforms": [
+      "Hugging Face 术语表"
+    ],
+    "source_urls": [
+      "https://huggingface.co/docs/transformers/glossary"
+    ]
+  },
+  {
+    "id": "vit",
+    "term": "视觉 Transformer",
+    "term_en": "Vision Transformer (ViT)",
+    "definition_zh": "把图像切成小块并当作 token 序列，用 Transformer 编码图像的网络。",
+    "example_zh": "一张 224×224 图像可切成多个 14×14 或 16×16 像素的 patch。",
+    "related_model_ids": [
+      "dinov2",
+      "clip",
+      "llava"
+    ],
+    "category": "representation",
+    "kind": "formal",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "source_platforms": [
+      "Vision Transformer 论文"
+    ],
+    "source_urls": [
+      "https://arxiv.org/abs/2010.11929"
+    ]
+  },
+  {
+    "id": "amg",
+    "term": "AMG",
+    "term_en": "AMG",
+    "aliases": [
+      "Automatic Mask Generator"
+    ],
+    "category": "segmentation",
+    "kind": "community",
+    "definition_zh": "automatic mask generation，对整张图规则采样提示并生成候选掩码。",
+    "usage_zh": "社区帖子、Issue、Discussion、模型卡和教程里常见的简称或约定说法。",
+    "example_zh": "“AMG 生成很多 mask，不等同于带语义类别的检测。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "GitHub README",
+      "GitHub Issue",
+      "GitHub Issue"
+    ],
+    "source_urls": [
+      "https://github.com/facebookresearch/segment-anything",
+      "https://github.com/facebookresearch/segment-anything/issues/339",
+      "https://github.com/facebookresearch/segment-anything/issues/414"
+    ]
+  },
+  {
+    "id": "box-prompt",
+    "term": "框提示",
+    "term_en": "box prompt",
+    "aliases": [],
+    "category": "segmentation",
+    "kind": "formal",
+    "definition_zh": "用边界框限定希望分割的区域或对象。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“检测框可作为 box prompt 传给 SAM。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "GitHub README"
+    ],
+    "source_urls": [
+      "https://github.com/facebookresearch/segment-anything"
+    ]
+  },
+  {
+    "id": "grounded-sam",
+    "term": "Grounded-SAM",
+    "term_en": "Grounded-SAM",
+    "aliases": [
+      "Grounded Segment Anything"
+    ],
+    "category": "segmentation",
+    "kind": "community",
+    "definition_zh": "社区常用组合名：先由 grounding 检测文本对应区域，再交给 SAM 生成精细 mask。",
+    "usage_zh": "社区帖子、Issue、Discussion、模型卡和教程里常见的简称或约定说法。",
+    "example_zh": "“Grounded-SAM 是流水线组合，不是一张统一训练的 SAM 权重。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "GitHub README",
+      "GitHub Issue"
+    ],
+    "source_urls": [
+      "https://github.com/IDEA-Research/Grounded-Segment-Anything",
+      "https://github.com/facebookresearch/segment-anything/issues/530"
+    ]
+  },
+  {
+    "id": "instance-segmentation",
+    "term": "实例分割",
+    "term_en": "Instance Segmentation",
+    "definition_zh": "既判断像素类别，又把同类的每个独立物体分别编号。",
+    "example_zh": "画面中三个人会得到三个彼此独立的掩码。",
+    "related_model_ids": [
+      "mask-r-cnn",
+      "mask2former"
+    ],
+    "aliases": [],
+    "category": "segmentation",
+    "kind": "formal",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "source_platforms": [
+      "GitHub README",
+      "Mask R-CNN 论文"
+    ],
+    "source_urls": [
+      "https://github.com/facebookresearch/segment-anything",
+      "https://arxiv.org/abs/1703.06870"
+    ]
+  },
+  {
+    "id": "mask",
+    "term": "掩码",
+    "term_en": "Mask",
+    "definition_zh": "与图像像素一一对应的区域标记，用来表示哪些像素属于目标。",
+    "example_zh": "SAM 输出的二值掩码中，目标区域为 1，背景为 0。",
+    "related_model_ids": [
+      "sam",
+      "sam-2",
+      "mask-r-cnn"
+    ],
+    "category": "segmentation",
+    "kind": "formal",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "source_platforms": [
+      "Segment Anything 仓库"
+    ],
+    "source_urls": [
+      "https://github.com/facebookresearch/segment-anything"
+    ]
+  },
+  {
+    "id": "mask-logits",
+    "term": "掩码 logits",
+    "term_en": "mask logits",
+    "aliases": [],
+    "category": "segmentation",
+    "kind": "formal",
+    "definition_zh": "分割头输出的未归一化掩码分数，阈值化后才成为二值 mask。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“不要把 mask logits 直接当 0/1 图保存。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "GitHub README"
+    ],
+    "source_urls": [
+      "https://github.com/facebookresearch/sam2"
+    ]
+  },
+  {
+    "id": "masklet",
+    "term": "时空掩码序列",
+    "term_en": "masklet",
+    "aliases": [],
+    "category": "segmentation",
+    "kind": "formal",
+    "definition_zh": "SAM 2 数据语境中，一个对象跨多帧的连续掩码序列。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“SA-V 的标注单位包含时空 masklet。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "GitHub README"
+    ],
+    "source_urls": [
+      "https://github.com/facebookresearch/sam2"
+    ]
+  },
+  {
+    "id": "memory-bank",
+    "term": "记忆库",
+    "term_en": "memory bank",
+    "aliases": [],
+    "category": "segmentation",
+    "kind": "formal",
+    "definition_zh": "保存历史帧特征、掩码或对象信息，供当前帧跟踪读取。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“长视频 memory bank 太短会忘，太长会增加计算。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "GitHub README"
+    ],
+    "source_urls": [
+      "https://github.com/facebookresearch/sam2"
+    ]
+  },
+  {
+    "id": "multimask-output",
+    "term": "多掩码输出",
+    "term_en": "multimask output",
+    "aliases": [],
+    "category": "segmentation",
+    "kind": "formal",
+    "definition_zh": "对歧义提示返回多个候选掩码及质量分数。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“单点提示不确定时先看 multimask candidates。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "GitHub README"
+    ],
+    "source_urls": [
+      "https://github.com/facebookresearch/segment-anything"
+    ]
+  },
+  {
+    "id": "object-pointer",
+    "term": "对象指针",
+    "term_en": "object pointer",
+    "aliases": [],
+    "category": "segmentation",
+    "kind": "formal",
+    "definition_zh": "代表某一被跟踪对象身份的特征 token/向量。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“遮挡期间依靠 object pointer 维持身份线索。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "GitHub README"
+    ],
+    "source_urls": [
+      "https://github.com/facebookresearch/sam2"
+    ]
+  },
+  {
+    "id": "panoptic-segmentation",
+    "term": "全景分割",
+    "term_en": "Panoptic Segmentation",
+    "definition_zh": "把可数物体的实例分割与天空、道路等不可数区域的语义分割统一起来。",
+    "example_zh": "一张街景中，每辆车单独编号，同时道路和天空也都有完整标签。",
+    "related_model_ids": [
+      "mask2former"
+    ],
+    "aliases": [],
+    "category": "segmentation",
+    "kind": "formal",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "source_platforms": [
+      "MMSegmentation 文档",
+      "Panoptic Segmentation 论文"
+    ],
+    "source_urls": [
+      "https://mmsegmentation.readthedocs.io/en/latest/",
+      "https://arxiv.org/abs/1801.00868"
+    ]
+  },
+  {
+    "id": "pcs",
+    "term": "概念提示分割",
+    "term_en": "PCS",
+    "aliases": [],
+    "category": "segmentation",
+    "kind": "formal",
+    "definition_zh": "Promptable Concept Segmentation，SAM 3 用短语或图像样例找出并跟踪所有匹配概念实例。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“‘yellow school bus’ 是 concept prompt，不是单个点提示。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "GitHub README"
+    ],
+    "source_urls": [
+      "https://github.com/facebookresearch/sam3"
+    ]
+  },
+  {
+    "id": "point-prompt",
+    "term": "点提示",
+    "term_en": "point prompt",
+    "aliases": [],
+    "category": "segmentation",
+    "kind": "formal",
+    "definition_zh": "用正点或负点告诉模型目标内外位置。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“点错对象时加 negative point 修正。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "GitHub README"
+    ],
+    "source_urls": [
+      "https://github.com/facebookresearch/segment-anything"
+    ]
+  },
+  {
+    "id": "promptable-segmentation",
+    "term": "提示式分割",
+    "term_en": "promptable segmentation",
+    "aliases": [],
+    "category": "segmentation",
+    "kind": "formal",
+    "definition_zh": "由点、框、掩码、文本或样例等提示指定要分割内容。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“SAM 的 promptable 不等于模型自动知道业务类别。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "GitHub README"
+    ],
+    "source_urls": [
+      "https://github.com/facebookresearch/segment-anything"
+    ]
+  },
+  {
+    "id": "referring-segmentation",
+    "term": "指代分割",
+    "term_en": "referring segmentation",
+    "aliases": [],
+    "category": "segmentation",
+    "kind": "formal",
+    "definition_zh": "根据自然语言指代表达分割特定对象。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“把‘左边拿杯子的人’作为 referring expression。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "GitHub README"
+    ],
+    "source_urls": [
+      "https://github.com/IDEA-Research/Grounded-Segment-Anything"
+    ]
+  },
+  {
+    "id": "semantic-segmentation",
+    "term": "语义分割",
+    "term_en": "Semantic Segmentation",
+    "definition_zh": "给每个像素分配类别，但同类的不同实例不单独区分。",
+    "example_zh": "把所有道路像素涂成一类、所有车辆像素涂成另一类。",
+    "related_model_ids": [
+      "segformer",
+      "mask2former"
+    ],
+    "aliases": [],
+    "category": "segmentation",
+    "kind": "formal",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "source_platforms": [
+      "MMSegmentation 文档"
+    ],
+    "source_urls": [
+      "https://mmsegmentation.readthedocs.io/en/latest/"
+    ]
+  },
+  {
+    "id": "vos",
+    "term": "视频对象分割",
+    "term_en": "VOS",
+    "aliases": [],
+    "category": "segmentation",
+    "kind": "formal",
+    "definition_zh": "video object segmentation，在视频中持续分割并通常跟踪指定对象。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“VOS 要关注遮挡后能否恢复对象身份。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "GitHub README"
+    ],
+    "source_urls": [
+      "https://github.com/facebookresearch/sam2"
+    ]
+  },
+  {
+    "id": "ablation",
+    "term": "消融实验",
+    "term_en": "ablation",
+    "aliases": [],
+    "category": "training",
+    "kind": "formal",
+    "definition_zh": "通过移除或替换组件判断各设计对结果的贡献。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“只报最终 SOTA 不如加 ablation 说明改进来自哪里。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "arXiv 论文"
+    ],
+    "source_urls": [
+      "https://arxiv.org/abs/2606.03748"
+    ]
+  },
+  {
+    "id": "base-model",
+    "term": "基础模型",
+    "term_en": "base model",
+    "aliases": [],
+    "category": "training",
+    "kind": "community",
+    "definition_zh": "尚未针对对话或具体任务充分后训练的基础权重。",
+    "usage_zh": "社区可能用它指直接训练祖先、架构兼容底座或实际加载的权重仓库；必须同时写明具体 repo、版本和关系。",
+    "example_zh": "“base 与 instruct 的输入模板和用途不同。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "Hugging Face Hub 文档",
+      "Hugging Face Discussion（Qwen2.5-7B-Instruct #28）"
+    ],
+    "source_urls": [
+      "https://huggingface.co/docs/hub/model-cards",
+      "https://huggingface.co/Qwen/Qwen2.5-7B-Instruct/discussions/28"
+    ]
+  },
+  {
+    "id": "checkpoint-ckpt",
+    "term": "检查点",
+    "term_en": "checkpoint / ckpt",
+    "aliases": [],
+    "category": "training",
+    "kind": "community",
+    "definition_zh": "某一步保存的模型参数及可选优化器、调度器状态；不一定等于最终模型。",
+    "usage_zh": "社区帖子、Issue、Discussion、模型卡和教程里常见的简称或约定说法。",
+    "example_zh": "“从 ckpt-2000 恢复训练，而不是只加载推理 weights。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "Hugging Face 文档",
+      "GitHub Issue",
+      "GitHub Issue"
+    ],
+    "source_urls": [
+      "https://huggingface.co/docs/transformers/main/en/trainer",
+      "https://github.com/huggingface/transformers/issues/27925",
+      "https://github.com/huggingface/transformers/issues/9996"
+    ]
+  },
+  {
+    "id": "data-leakage",
+    "term": "数据泄漏",
+    "term_en": "data leakage",
+    "aliases": [],
+    "category": "training",
+    "kind": "formal",
+    "definition_zh": "验证/测试信息直接或间接进入训练，导致结果虚高。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“同一视频切成相邻帧后随机分 train/test 可能产生 leakage。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "Hugging Face 文档"
+    ],
+    "source_urls": [
+      "https://huggingface.co/docs/transformers/main/en/trainer"
+    ]
+  },
+  {
+    "id": "ema",
+    "term": "指数滑动平均",
+    "term_en": "EMA",
+    "aliases": [],
+    "category": "training",
+    "kind": "formal",
+    "definition_zh": "exponential moving average，用训练参数的指数滑动平均作为更平滑的评估权重。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“评测要说明用 raw weights 还是 EMA weights。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "GitHub README"
+    ],
+    "source_urls": [
+      "https://github.com/real-stanford/diffusion_policy"
+    ]
+  },
+  {
+    "id": "epoch-vs-step",
+    "term": "训练轮次",
+    "term_en": "epoch vs step",
+    "aliases": [
+      "训练步"
+    ],
+    "category": "training",
+    "kind": "ambiguous",
+    "definition_zh": "epoch 是完整遍历一次数据集；step 通常指一次优化器更新，但框架日志定义可能不同。",
+    "usage_zh": "不同项目或说话者的含义可能不同，看到时必须连同上下文一起判断。",
+    "example_zh": "“数据集变化后同样 3 epochs 对应的 steps 会变。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "Hugging Face 文档",
+      "GitHub Issue"
+    ],
+    "source_urls": [
+      "https://huggingface.co/docs/transformers/main/en/trainer",
+      "https://github.com/huggingface/transformers/issues/9996"
+    ]
+  },
+  {
+    "id": "fine-tuning",
+    "term": "微调",
+    "term_en": "fine-tuning",
+    "aliases": [
+      "FT"
+    ],
+    "category": "training",
+    "kind": "formal",
+    "definition_zh": "在已有权重上继续训练以适配任务或领域。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“fine-tuning 需要核对数据格式和许可证。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "Hugging Face 文档"
+    ],
+    "source_urls": [
+      "https://huggingface.co/docs/transformers/main/en/trainer"
+    ]
+  },
+  {
+    "id": "fp16-vs-bf16",
+    "term": "半精度",
+    "term_en": "FP16 vs BF16",
+    "aliases": [],
+    "category": "training",
+    "kind": "formal",
+    "definition_zh": "两种 16 位浮点格式；BF16 指数范围更接近 FP32，通常更稳，但需硬件支持。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“BF16 稳不代表所有 GPU 都更快。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "PyTorch 文档"
+    ],
+    "source_urls": [
+      "https://pytorch.org/docs/stable/amp.html"
+    ]
+  },
+  {
+    "id": "frozen-backbone",
+    "term": "冻结主干",
+    "term_en": "frozen backbone",
+    "aliases": [],
+    "category": "training",
+    "kind": "formal",
+    "definition_zh": "训练时冻结主干参数，不计算或不应用其梯度更新。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“frozen backbone 省资源，但新域差异大时可能欠拟合。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "MMDetection 文档"
+    ],
+    "source_urls": [
+      "https://mmdetection.readthedocs.io/en/latest/"
+    ]
+  },
+  {
+    "id": "full-fine-tuning",
+    "term": "全参数微调",
+    "term_en": "full fine-tuning",
+    "aliases": [],
+    "category": "training",
+    "kind": "community",
+    "definition_zh": "更新模型全部或绝大部分参数的微调。",
+    "usage_zh": "社区帖子、Issue、Discussion、模型卡和教程里常见的简称或约定说法。",
+    "example_zh": "“full FT 通常比 LoRA 更吃显存和存储。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "Hugging Face 文档"
+    ],
+    "source_urls": [
+      "https://huggingface.co/docs/peft/index"
+    ]
+  },
+  {
+    "id": "gradient-accumulation",
+    "term": "梯度累积",
+    "term_en": "gradient accumulation",
+    "aliases": [],
+    "category": "training",
+    "kind": "formal",
+    "definition_zh": "多次小批次反向后再更新一次参数，用时间换显存。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“accumulation=8 不会让单步前向一次塞入 8 倍样本。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "Hugging Face 文档"
+    ],
+    "source_urls": [
+      "https://huggingface.co/docs/transformers/main/en/perf_train_gpu_one"
+    ]
+  },
+  {
+    "id": "gradient-clipping",
+    "term": "梯度裁剪",
+    "term_en": "gradient clipping",
+    "aliases": [],
+    "category": "training",
+    "kind": "formal",
+    "definition_zh": "限制梯度范数或数值，缓解梯度爆炸。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“clip_grad_norm_ 能稳训练，但不能掩盖所有数据和 LR 问题。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "PyTorch 文档"
+    ],
+    "source_urls": [
+      "https://pytorch.org/docs/stable/generated/torch.nn.utils.clip_grad_norm_.html"
+    ]
+  },
+  {
+    "id": "knowledge-distillation",
+    "term": "知识蒸馏",
+    "term_en": "Knowledge Distillation",
+    "definition_zh": "让较小的学生模型学习较大教师模型的输出或中间表示，以减少推理成本。",
+    "example_zh": "小型分割模型模仿 SAM 产生的掩码。",
+    "related_model_ids": [
+      "sam"
+    ],
+    "category": "training",
+    "kind": "formal",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "source_platforms": [
+      "Distilling the Knowledge 论文"
+    ],
+    "source_urls": [
+      "https://arxiv.org/abs/1503.02531"
+    ]
+  },
+  {
+    "id": "learning-rate-lr",
+    "term": "学习率",
+    "term_en": "learning rate / LR",
+    "aliases": [],
+    "category": "training",
+    "kind": "formal",
+    "definition_zh": "控制每次参数更新幅度的超参数。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“loss 发散先检查 LR 是否过高。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "Hugging Face 文档"
+    ],
+    "source_urls": [
+      "https://huggingface.co/docs/transformers/main/en/trainer"
+    ]
+  },
+  {
+    "id": "lora",
+    "term": "LoRA",
+    "term_en": "LoRA",
+    "aliases": [
+      "Low-Rank Adaptation"
+    ],
+    "category": "training",
+    "kind": "formal",
+    "definition_zh": "用低秩矩阵增量适配线性层，主权重通常保持冻结。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“LoRA rank 越高参数越多，但不保证一定更好。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "arXiv 论文",
+      "arXiv 论文"
+    ],
+    "source_urls": [
+      "https://arxiv.org/abs/2106.09685",
+      "https://arxiv.org/abs/2305.14314"
+    ]
+  },
+  {
+    "id": "loss",
+    "term": "损失",
+    "term_en": "loss",
+    "aliases": [],
+    "category": "training",
+    "kind": "formal",
+    "definition_zh": "训练优化的目标函数值；不同任务或加权方式下数值不能直接横比。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“训练 loss 更低不一定代表部署指标更高。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "Hugging Face 文档"
+    ],
+    "source_urls": [
+      "https://huggingface.co/docs/transformers/main/en/trainer"
+    ]
+  },
+  {
+    "id": "micro-batch-global-batch",
+    "term": "微批次",
+    "term_en": "micro-batch / global batch",
+    "aliases": [
+      "全局批次"
+    ],
+    "category": "training",
+    "kind": "formal",
+    "definition_zh": "micro-batch 是单设备单次前反向样本数；global batch 还乘设备数和梯度累积步数。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“显存只容纳 micro-batch=2，但累积后 global batch=64。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "Hugging Face 文档"
+    ],
+    "source_urls": [
+      "https://huggingface.co/docs/transformers/main/en/perf_train_gpu_one"
+    ]
+  },
+  {
+    "id": "mixed-precision",
+    "term": "混合精度",
+    "term_en": "mixed precision",
+    "aliases": [
+      "AMP"
+    ],
+    "category": "training",
+    "kind": "formal",
+    "definition_zh": "混合使用低精度和 FP32 以加速并节省显存，通常配合自动缩放。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“开启 AMP 后仍要监控溢出和算子兼容性。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "PyTorch 文档"
+    ],
+    "source_urls": [
+      "https://pytorch.org/docs/stable/amp.html"
+    ]
+  },
+  {
+    "id": "nan-loss",
+    "term": "loss 爆 NaN",
+    "term_en": "NaN loss",
+    "aliases": [],
+    "category": "training",
+    "kind": "community",
+    "definition_zh": "损失变成 not-a-number，常见于数值溢出、坏数据、学习率过高或非法运算。",
+    "usage_zh": "社区帖子、Issue、Discussion、模型卡和教程里常见的简称或约定说法。",
+    "example_zh": "“出现 NaN loss 要定位首个异常 batch，不要只重启。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "PyTorch 文档",
+      "GitHub Issue",
+      "GitHub Issue"
+    ],
+    "source_urls": [
+      "https://pytorch.org/docs/stable/amp.html",
+      "https://github.com/huggingface/transformers/issues/11076",
+      "https://github.com/huggingface/transformers/issues/26498"
+    ]
+  },
+  {
+    "id": "overfitting",
+    "term": "过拟合",
+    "term_en": "overfitting",
+    "aliases": [],
+    "category": "training",
+    "kind": "formal",
+    "definition_zh": "训练集表现继续变好而验证或真实场景表现变差。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“真机成功率下降但 train loss 下降，可能是 overfitting。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "Hugging Face 文档"
+    ],
+    "source_urls": [
+      "https://huggingface.co/docs/transformers/main/en/trainer"
+    ]
+  },
+  {
+    "id": "peft",
+    "term": "参数高效微调",
+    "term_en": "PEFT",
+    "aliases": [],
+    "category": "training",
+    "kind": "formal",
+    "definition_zh": "parameter-efficient fine-tuning，只训练少量附加或选定参数。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“PEFT 是方法大类，LoRA 是其中一种。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "Hugging Face 文档"
+    ],
+    "source_urls": [
+      "https://huggingface.co/docs/peft/index"
+    ]
+  },
+  {
+    "id": "pretrained",
+    "term": "预训练",
+    "term_en": "pretrained",
+    "aliases": [],
+    "category": "training",
+    "kind": "formal",
+    "definition_zh": "已在某类大数据上预训练，可作为下游初始化；不表示适合当前任务直接使用。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“用 pretrained vision encoder 再做机器人数据微调。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "Hugging Face 文档"
+    ],
+    "source_urls": [
+      "https://huggingface.co/docs/transformers/main/en/trainer"
+    ]
+  },
+  {
+    "id": "reinforcement-learning",
+    "term": "强化学习",
+    "term_en": "Reinforcement Learning (RL)",
+    "definition_zh": "智能体通过与环境交互获得奖励，逐步学会能让累计奖励更高的策略。",
+    "example_zh": "机器人成功把物体放进盒子得到正奖励，掉落则受到惩罚。",
+    "related_model_ids": [
+      "dreamer-v3"
+    ],
+    "category": "training",
+    "kind": "formal",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "source_platforms": [
+      "Hugging Face RL Course"
+    ],
+    "source_urls": [
+      "https://huggingface.co/learn/deep-rl-course/unit1/what-is-rl"
+    ]
+  },
+  {
+    "id": "scheduler",
+    "term": "学习率调度器",
+    "term_en": "scheduler",
+    "aliases": [],
+    "category": "training",
+    "kind": "ambiguous",
+    "definition_zh": "按训练进度改变学习率的策略；不要与扩散采样 scheduler 混为一谈。",
+    "usage_zh": "不同项目或说话者的含义可能不同，看到时必须连同上下文一起判断。",
+    "example_zh": "“cosine scheduler 会让后期 LR 逐渐下降。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "Hugging Face 文档"
+    ],
+    "source_urls": [
+      "https://huggingface.co/docs/transformers/main/en/trainer"
+    ]
+  },
+  {
+    "id": "seed-reproducibility",
+    "term": "复现性",
+    "term_en": "seed / reproducibility",
+    "aliases": [],
+    "category": "training",
+    "kind": "formal",
+    "definition_zh": "训练随机种子与可复现设置；相同 seed 也可能受硬件和非确定算子影响。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“至少报告多 seed 均值，而不是只挑最好一次。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "Hugging Face 文档"
+    ],
+    "source_urls": [
+      "https://huggingface.co/docs/transformers/main/en/trainer"
+    ]
+  },
+  {
+    "id": "warmup",
+    "term": "学习率预热",
+    "term_en": "warmup",
+    "aliases": [],
+    "category": "training",
+    "kind": "formal",
+    "definition_zh": "训练初期逐步把学习率从较小值升到目标值，以减少不稳定。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“大 batch 训练常设置 warmup ratio。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "Hugging Face 文档"
+    ],
+    "source_urls": [
+      "https://huggingface.co/docs/transformers/main/en/trainer"
+    ]
+  },
+  {
+    "id": "weights",
+    "term": "权重",
+    "term_en": "weights",
+    "aliases": [],
+    "category": "training",
+    "kind": "formal",
+    "definition_zh": "模型学到的参数文件；只有 weights 不一定包含架构代码、配置或 tokenizer。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“repo 开源了代码，但 weights 是否可下载要另查。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "Hugging Face Hub 文档"
+    ],
+    "source_urls": [
+      "https://huggingface.co/docs/hub/model-cards"
+    ]
+  },
+  {
+    "id": "action-chunking",
+    "term": "动作分块",
+    "term_en": "Action Chunking",
+    "definition_zh": "模型一次预测未来多个连续动作，而不是每一步只预测一个动作。",
+    "example_zh": "一次输出未来 20 个关节控制点，减少高层模型调用频率。",
+    "related_model_ids": [
+      "pi0",
+      "rdt-1b"
+    ],
+    "aliases": [],
+    "category": "vla",
+    "kind": "formal",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "source_platforms": [
+      "Hugging Face 模型卡",
+      "ACT 论文"
+    ],
+    "source_urls": [
+      "https://huggingface.co/lerobot/smolvla_base",
+      "https://arxiv.org/abs/2304.13705"
+    ]
+  },
+  {
+    "id": "action-horizon",
+    "term": "预测时域",
+    "term_en": "action horizon",
+    "aliases": [],
+    "category": "vla",
+    "kind": "formal",
+    "definition_zh": "模型一次预测或计划的未来动作长度；execution horizon 可能只执行其中一部分。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“预测 horizon=40，但每次只执行前 8 步再重规划。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "GitHub README"
+    ],
+    "source_urls": [
+      "https://github.com/NVIDIA/Isaac-GR00T"
+    ]
+  },
+  {
+    "id": "asynchronous-inference",
+    "term": "异步控制",
+    "term_en": "asynchronous inference",
+    "aliases": [],
+    "category": "vla",
+    "kind": "formal",
+    "definition_zh": "把动作预测与机器人动作执行解耦并行，减少等待模型的停顿。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“异步推理更流畅，但要避免执行过时的 action chunk。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "Hugging Face 模型卡"
+    ],
+    "source_urls": [
+      "https://huggingface.co/lerobot/smolvla_base"
+    ]
+  },
+  {
+    "id": "behavior-cloning",
+    "term": "行为克隆",
+    "term_en": "Behavior Cloning",
+    "definition_zh": "把模仿学习直接当作监督学习：输入观察，预测专家当时执行的动作。",
+    "example_zh": "用相机画面作输入、遥操作手柄指令作标签训练机械臂。",
+    "related_model_ids": [
+      "rt-1",
+      "openvla"
+    ],
+    "aliases": [
+      "BC"
+    ],
+    "category": "vla",
+    "kind": "formal",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "source_platforms": [
+      "Hugging Face 文档"
+    ],
+    "source_urls": [
+      "https://huggingface.co/docs/lerobot/index"
+    ]
+  },
+  {
+    "id": "cross-embodiment",
+    "term": "跨本体",
+    "term_en": "cross-embodiment",
+    "aliases": [],
+    "category": "vla",
+    "kind": "formal",
+    "definition_zh": "跨机器人本体共享数据或策略能力。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“cross-embodiment 预训练不代表无需适配即可控制任意机器。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "GitHub README"
+    ],
+    "source_urls": [
+      "https://github.com/NVIDIA/Isaac-GR00T"
+    ]
+  },
+  {
+    "id": "demonstration-demo",
+    "term": "demonstration / demo",
+    "term_en": "demonstration / demo",
+    "aliases": [
+      "expert demonstration"
+    ],
+    "category": "vla",
+    "kind": "ambiguous",
+    "definition_zh": "示范轨迹，通常由人或专家策略提供的观察—动作序列；此处 demo 不一定指网页演示。",
+    "usage_zh": "不同项目或说话者的含义可能不同，看到时必须连同上下文一起判断。",
+    "example_zh": "“用 50 条 teleop demos 做行为克隆。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "Hugging Face 文档"
+    ],
+    "source_urls": [
+      "https://huggingface.co/docs/lerobot/index"
+    ]
+  },
+  {
+    "id": "dof",
+    "term": "自由度",
+    "term_en": "DoF",
+    "aliases": [],
+    "category": "vla",
+    "kind": "formal",
+    "definition_zh": "degrees of freedom，自由度；描述可独立运动的关节或控制维度。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“7-DoF 机械臂加 1 维夹爪动作。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "Hugging Face 文档"
+    ],
+    "source_urls": [
+      "https://huggingface.co/docs/lerobot/index"
+    ]
+  },
+  {
+    "id": "eef-end-effector",
+    "term": "末端执行器",
+    "term_en": "EEF / end effector",
+    "aliases": [
+      "EE"
+    ],
+    "category": "vla",
+    "kind": "formal",
+    "definition_zh": "末端执行器，通常是夹爪、吸盘或工具的位姿与动作。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“relative EEF action 表示相对当前末端位姿的增量。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "GitHub README"
+    ],
+    "source_urls": [
+      "https://github.com/NVIDIA/Isaac-GR00T"
+    ]
+  },
+  {
+    "id": "embodiment",
+    "term": "本体",
+    "term_en": "embodiment",
+    "aliases": [],
+    "category": "vla",
+    "kind": "formal",
+    "definition_zh": "机器人本体及其传感器、关节、动作空间组合。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“同一个任务换到另一种 embodiment，动作维度可能不同。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "GitHub README",
+      "GitHub Issue",
+      "GitHub Issue"
+    ],
+    "source_urls": [
+      "https://github.com/octo-models/octo",
+      "https://github.com/NVIDIA/Isaac-GR00T/issues/214",
+      "https://github.com/NVIDIA/Isaac-GR00T/issues/650"
+    ]
+  },
+  {
+    "id": "flow-matching-action-head",
+    "term": "flow-matching action head",
+    "term_en": "flow-matching action head",
+    "aliases": [
+      "flow matching policy"
+    ],
+    "category": "vla",
+    "kind": "formal",
+    "definition_zh": "通过流匹配从噪声连续还原动作块的生成式动作头。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“N1.7 的 action head 仍是 flow-matching DiT。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "GitHub README"
+    ],
+    "source_urls": [
+      "https://github.com/NVIDIA/Isaac-GR00T"
+    ]
+  },
+  {
+    "id": "imitation-learning",
+    "term": "模仿学习",
+    "term_en": "Imitation Learning",
+    "definition_zh": "让智能体从人类或专家示范中学习如何行动，而不是完全靠自己试错。",
+    "example_zh": "记录人遥操作机械臂叠衣服的过程，再训练机器人复现。",
+    "related_model_ids": [
+      "rt-1",
+      "diffusion-policy",
+      "rdt-1b"
+    ],
+    "category": "vla",
+    "kind": "formal",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "source_platforms": [
+      "LeRobot 文档"
+    ],
+    "source_urls": [
+      "https://huggingface.co/docs/lerobot/index"
+    ]
+  },
+  {
+    "id": "policy",
+    "term": "策略网络",
+    "term_en": "policy",
+    "aliases": [],
+    "category": "vla",
+    "kind": "formal",
+    "definition_zh": "策略；把当前观察或状态映射为动作的函数/模型，不等同于公司政策。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“先加载 policy，再让它根据相机帧选动作。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "Hugging Face 文档"
+    ],
+    "source_urls": [
+      "https://huggingface.co/docs/lerobot/index"
+    ]
+  },
+  {
+    "id": "proprioception",
+    "term": "proprioception",
+    "term_en": "proprioception",
+    "aliases": [
+      "proprio",
+      "robot state"
+    ],
+    "category": "vla",
+    "kind": "formal",
+    "definition_zh": "本体感知，如关节角、速度、夹爪状态和末端位姿。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“相机图像之外还要把 proprioception 喂给动作头。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "Hugging Face 模型卡"
+    ],
+    "source_urls": [
+      "https://huggingface.co/lerobot/smolvla_base"
+    ]
+  },
+  {
+    "id": "receding-horizon-control",
+    "term": "滚动规划",
+    "term_en": "receding-horizon control",
+    "aliases": [
+      "RHC"
+    ],
+    "category": "vla",
+    "kind": "formal",
+    "definition_zh": "滚动时域控制：不断重规划未来动作，只执行前面一小段。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“Diffusion Policy 用 receding horizon 提高闭环稳定性。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "GitHub README"
+    ],
+    "source_urls": [
+      "https://github.com/real-stanford/diffusion_policy"
+    ]
+  },
+  {
+    "id": "rollout",
+    "term": "策略展开",
+    "term_en": "rollout",
+    "aliases": [
+      "轨迹执行"
+    ],
+    "category": "vla",
+    "kind": "community",
+    "definition_zh": "让策略在环境中连续执行并收集一段轨迹；社区也常泛指一次完整评测。",
+    "usage_zh": "社区帖子、Issue、Discussion、模型卡和教程里常见的简称或约定说法。",
+    "example_zh": "“这个 checkpoint 跑 20 个 rollout 看成功率。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "GitHub README",
+      "GitHub Issue",
+      "GitHub Issue"
+    ],
+    "source_urls": [
+      "https://github.com/NVIDIA/Isaac-GR00T",
+      "https://github.com/huggingface/lerobot/issues/4034",
+      "https://github.com/openvla/openvla/issues/7"
+    ]
+  },
+  {
+    "id": "sim2real",
+    "term": "仿真到真实",
+    "term_en": "sim2real",
+    "aliases": [],
+    "category": "vla",
+    "kind": "community",
+    "definition_zh": "把仿真训练或数据获得的能力迁移到真实机器人。",
+    "usage_zh": "社区帖子、Issue、Discussion、模型卡和教程里常见的简称或约定说法。",
+    "example_zh": "“做 sim2real 时要处理视觉、动力学和时延差距。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "GitHub README",
+      "GitHub Issue（Isaac-GR00T #583）"
+    ],
+    "source_urls": [
+      "https://github.com/NVIDIA/Isaac-GR00T",
+      "https://github.com/NVIDIA/Isaac-GR00T/issues/583"
+    ]
+  },
+  {
+    "id": "teleop",
+    "term": "遥操作",
+    "term_en": "teleop",
+    "aliases": [],
+    "category": "vla",
+    "kind": "community",
+    "definition_zh": "teleoperation，人工遥操作机器人并同时采集训练轨迹。",
+    "usage_zh": "社区帖子、Issue、Discussion、模型卡和教程里常见的简称或约定说法。",
+    "example_zh": "“先 teleop 录数据，再微调 policy。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "Hugging Face 文档",
+      "GitHub Issue",
+      "GitHub Issue"
+    ],
+    "source_urls": [
+      "https://huggingface.co/docs/lerobot/index",
+      "https://github.com/huggingface/lerobot/issues/3740",
+      "https://github.com/huggingface/lerobot/issues/3131"
+    ]
+  },
+  {
+    "id": "vla",
+    "term": "视觉-语言-动作模型",
+    "term_en": "Vision-Language-Action Model (VLA)",
+    "definition_zh": "同时接收视觉和语言指令，并直接预测机器人动作的模型。它把“看见什么、听懂什么、下一步怎么动”连成一条链。",
+    "example_zh": "看到桌上的红杯并听到“拿给我”，模型输出机械臂末端位姿或关节动作。",
+    "related_model_ids": [
+      "rt-1",
+      "openvla",
+      "pi0"
+    ],
+    "aliases": [
+      "Vision-Language-Action"
+    ],
+    "category": "vla",
+    "kind": "formal",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "source_platforms": [
+      "GitHub README",
+      "OpenVLA 论文"
+    ],
+    "source_urls": [
+      "https://github.com/openvla/openvla",
+      "https://arxiv.org/abs/2406.09246"
+    ]
+  },
+  {
+    "id": "autoregressive-ar",
+    "term": "自回归",
+    "term_en": "autoregressive / AR",
+    "aliases": [],
+    "category": "world_model",
+    "kind": "formal",
+    "definition_zh": "按顺序预测下一个 token 或时空块的生成方式。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“AR world model 逐 token 生成，速度和误差累积都要关注。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "GitHub README"
+    ],
+    "source_urls": [
+      "https://github.com/NVIDIA/Cosmos"
+    ]
+  },
+  {
+    "id": "camera-control",
+    "term": "相机轨迹控制",
+    "term_en": "camera control",
+    "aliases": [],
+    "category": "world_model",
+    "kind": "formal",
+    "definition_zh": "用轨迹、位姿或相机参数控制生成视频的视角运动。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“camera control 是条件控制，不等同于模型理解三维世界。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "GitHub README"
+    ],
+    "source_urls": [
+      "https://github.com/NVIDIA/Cosmos"
+    ]
+  },
+  {
+    "id": "cfg",
+    "term": "CFG",
+    "term_en": "CFG",
+    "aliases": [
+      "guidance scale"
+    ],
+    "category": "world_model",
+    "kind": "formal",
+    "definition_zh": "classifier-free guidance，用条件与无条件预测差值增强条件遵循。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“CFG 太高可能更贴提示词但画面更僵或过饱和。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "Hugging Face 文档"
+    ],
+    "source_urls": [
+      "https://huggingface.co/docs/diffusers/index"
+    ]
+  },
+  {
+    "id": "denoising-steps",
+    "term": "采样步数",
+    "term_en": "denoising steps",
+    "aliases": [
+      "steps"
+    ],
+    "category": "world_model",
+    "kind": "community",
+    "definition_zh": "推理时执行去噪更新的次数；社区常简称 steps。",
+    "usage_zh": "社区帖子、Issue、Discussion、模型卡和教程里常见的简称或约定说法。",
+    "example_zh": "“先试 20 steps，不要默认越多越好。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "Hugging Face 文档",
+      "GitHub Issue（Diffusers #7333）"
+    ],
+    "source_urls": [
+      "https://huggingface.co/docs/diffusers/index",
+      "https://github.com/huggingface/diffusers/issues/7333"
+    ]
+  },
+  {
+    "id": "diffusion-model",
+    "term": "扩散模型",
+    "term_en": "Diffusion Model",
+    "definition_zh": "学习逐步去除噪声并恢复数据的生成模型，也可用来生成一段平滑动作。",
+    "example_zh": "从随机动作序列开始，多次去噪后得到机械臂抓取轨迹。",
+    "related_model_ids": [
+      "diffusion-policy",
+      "wan-2-1"
+    ],
+    "aliases": [],
+    "category": "world_model",
+    "kind": "formal",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "source_platforms": [
+      "Hugging Face 文档"
+    ],
+    "source_urls": [
+      "https://huggingface.co/docs/diffusers/index"
+    ]
+  },
+  {
+    "id": "i2v",
+    "term": "图生视频",
+    "term_en": "I2V",
+    "aliases": [
+      "image-to-video"
+    ],
+    "category": "world_model",
+    "kind": "community",
+    "definition_zh": "image-to-video，以输入图像作为外观或首帧条件生成视频。",
+    "usage_zh": "社区帖子、Issue、Discussion、模型卡和教程里常见的简称或约定说法。",
+    "example_zh": "“I2V 的首帧保真与运动幅度要分开评估。”",
+    "related_model_ids": [],
+  "source_platforms": [
+    "GitHub README",
+    "GitHub Issue（Wan2.1 #597）"
+  ],
+  "source_urls": [
+    "https://github.com/Wan-Video/Wan2.1",
+    "https://github.com/Wan-Video/Wan2.1/issues/597"
+  ]
+  },
+  {
+    "id": "imagination-rollout",
+    "term": "想象展开",
+    "term_en": "imagination rollout",
+    "aliases": [],
+    "category": "world_model",
+    "kind": "formal",
+    "definition_zh": "由世界模型在内部预测的虚拟轨迹，不是真机采集的 rollout。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“actor 在 imagination rollout 上学习回报。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "GitHub README"
+    ],
+    "source_urls": [
+      "https://github.com/danijar/dreamerv3"
+    ]
+  },
+  {
+    "id": "latent-dynamics",
+    "term": "潜在动力学",
+    "term_en": "latent dynamics",
+    "aliases": [],
+    "category": "world_model",
+    "kind": "formal",
+    "definition_zh": "在压缩的潜空间而非原始像素中预测状态演化。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“Dreamer 在 latent dynamics 里做想象训练。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "GitHub README"
+    ],
+    "source_urls": [
+      "https://github.com/danijar/dreamerv3"
+    ]
+  },
+  {
+    "id": "latent-space",
+    "term": "潜空间",
+    "term_en": "latent space",
+    "aliases": [],
+    "category": "world_model",
+    "kind": "formal",
+    "definition_zh": "编码器产生的压缩特征空间；“latent”不是隐藏文件。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“扩散过程发生在 latent space，可显著减少计算。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "GitHub README"
+    ],
+    "source_urls": [
+      "https://github.com/CompVis/stable-diffusion"
+    ]
+  },
+  {
+    "id": "negative-prompt",
+    "term": "负面提示词",
+    "term_en": "negative prompt",
+    "aliases": [],
+    "category": "world_model",
+    "kind": "community",
+    "definition_zh": "描述希望模型避免生成内容的负向条件，属于常见工作流用语。",
+    "usage_zh": "社区帖子、Issue、Discussion、模型卡和教程里常见的简称或约定说法。",
+    "example_zh": "“negative prompt 不能保证安全或彻底消除物体。”",
+    "related_model_ids": [],
+  "source_platforms": [
+    "Hugging Face 文档",
+    "GitHub Issue（Diffusers #13416）"
+  ],
+  "source_urls": [
+    "https://huggingface.co/docs/diffusers/index",
+    "https://github.com/huggingface/diffusers/issues/13416"
+  ]
+  },
+  {
+    "id": "physics-consistency",
+    "term": "物理一致性",
+    "term_en": "physics consistency",
+    "aliases": [
+      "physical plausibility"
+    ],
+    "category": "world_model",
+    "kind": "ambiguous",
+    "definition_zh": "生成运动是否符合几何、碰撞和动力学；社区常作宽泛评价，通常没有统一单一指标。",
+    "usage_zh": "不同项目或说话者的含义可能不同，看到时必须连同上下文一起判断。",
+    "example_zh": "“看起来真实不等于 physics consistency 已验证。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "GitHub README"
+    ],
+    "source_urls": [
+      "https://github.com/NVIDIA/Cosmos"
+    ]
+  },
+  {
+    "id": "sampler-scheduler",
+    "term": "采样器",
+    "term_en": "sampler / scheduler",
+    "aliases": [
+      "噪声调度器"
+    ],
+    "category": "world_model",
+    "kind": "ambiguous",
+    "definition_zh": "规定扩散推理每一步如何更新噪声与时间步的算法；训练 scheduler 与推理 sampler 语境可能不同。",
+    "usage_zh": "不同项目或说话者的含义可能不同，看到时必须连同上下文一起判断。",
+    "example_zh": "“同一权重换 sampler 后画面和速度会变化。”",
+    "related_model_ids": [],
+  "source_platforms": [
+    "Hugging Face 文档",
+    "GitHub Issue（Diffusers #10277）"
+  ],
+  "source_urls": [
+    "https://huggingface.co/docs/diffusers/index",
+    "https://github.com/huggingface/diffusers/issues/10277"
+  ]
+  },
+  {
+    "id": "seed",
+    "term": "随机种子",
+    "term_en": "seed",
+    "aliases": [],
+    "category": "world_model",
+    "kind": "community",
+    "definition_zh": "伪随机种子；在环境和实现相同的前提下用于复现采样起点。",
+    "usage_zh": "seed 只固定被它覆盖的随机流；跨实现、分辨率、调度器或内部随机源时，相同 seed 仍不保证像素级一致。",
+    "example_zh": "“固定 seed 比较不同 prompt，而不是把它当画面编号。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "Hugging Face 文档",
+      "GitHub Issue（Diffusers #12216）"
+    ],
+    "source_urls": [
+      "https://huggingface.co/docs/diffusers/index",
+      "https://github.com/huggingface/diffusers/issues/12216"
+    ]
+  },
+  {
+    "id": "t2v",
+    "term": "文生视频",
+    "term_en": "T2V",
+    "aliases": [
+      "text-to-video"
+    ],
+    "category": "world_model",
+    "kind": "community",
+    "definition_zh": "text-to-video，从文本条件生成视频。",
+    "usage_zh": "社区帖子、Issue、Discussion、模型卡和教程里常见的简称或约定说法。",
+    "example_zh": "“Wan 同时提供 T2V 与 I2V 权重。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "GitHub README"
+    ],
+    "source_urls": [
+      "https://github.com/Wan-Video/Wan2.1"
+    ]
+  },
+  {
+    "id": "temporal-consistency",
+    "term": "时序一致性",
+    "term_en": "temporal consistency",
+    "aliases": [],
+    "category": "world_model",
+    "kind": "formal",
+    "definition_zh": "跨帧身份、纹理、结构与运动是否连续一致。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“单帧很漂亮但 temporal consistency 差，物体会闪烁变形。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "GitHub README"
+    ],
+    "source_urls": [
+      "https://github.com/Wan-Video/Wan2.1"
+    ]
+  },
+  {
+    "id": "temporal-modeling",
+    "term": "时序建模",
+    "term_en": "Temporal Modeling",
+    "definition_zh": "理解数据随时间变化的顺序和因果关系，常用于视频、轨迹和未来预测。",
+    "example_zh": "根据连续视频帧判断物体正在靠近还是远离。",
+    "related_model_ids": [
+      "v-jepa",
+      "cosmos",
+      "qwen2-vl"
+    ],
+    "category": "world_model",
+    "kind": "formal",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "source_platforms": [
+      "V-JEPA 论文"
+    ],
+    "source_urls": [
+      "https://arxiv.org/abs/2404.08471"
+    ]
+  },
+  {
+    "id": "video-tokenizer",
+    "term": "视频分词器",
+    "term_en": "video tokenizer",
+    "aliases": [],
+    "category": "world_model",
+    "kind": "formal",
+    "definition_zh": "把视频压缩成连续或离散潜表示，供生成模型处理。",
+    "usage_zh": "论文、官方文档和技术实现里含义较稳定；仍要结合具体任务与指标口径。",
+    "example_zh": "“先看 tokenizer 的压缩率，再比较生成器大小。”",
+    "related_model_ids": [],
+    "source_platforms": [
+      "GitHub README"
+    ],
+    "source_urls": [
+      "https://github.com/NVIDIA/Cosmos"
+    ]
+  },
+  {
+    "id": "world-model",
+    "term": "世界模型",
+    "term_en": "World Model",
+    "definition_zh": "学习环境如何随动作和时间变化的模型，可在内部预测未来状态或生成可能发生的画面。",
+    "example_zh": "给定当前道路画面和转向动作，预测几秒后的交通场景。",
+    "related_model_ids": [
+      "world-models",
+      "dreamer-v3",
+      "cosmos"
+    ],
+    "aliases": [],
+    "category": "world_model",
+    "kind": "ambiguous",
+    "usage_zh": "不同项目或说话者的含义可能不同，看到时必须连同上下文一起判断。",
+    "source_platforms": [
+      "arXiv 论文"
+    ],
+    "source_urls": [
+      "https://arxiv.org/abs/1803.10122"
+    ]
+  }
+]

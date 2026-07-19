@@ -1,0 +1,34 @@
+{
+ "id": "galaxea-g0-5",
+ "name": "Galaxea G0.5",
+ "org": "Galaxea AI",
+ "country": "CN",
+ "year": 2026,
+ "paper_url": "https://opengalaxea.github.io/G05/Galaxea_G0_5.pdf",
+ "github_url": "https://github.com/OpenGalaxea/GalaxeaVLA",
+ "category": "vla",
+ "sub_category": "autoregressive-vla",
+ "one_liner_zh": "统一自回归生成推理 token 与动作 token 的开源 VLA。",
+ "key_idea_zh": "让同一个 VLM 解码器同时承担语义推理与动作生成，并以统一的 next-token 目标训练。",
+ "tags": [
+  "国产",
+  "开源",
+  "自回归"
+ ],
+ "tier": "B",
+ "lineage_parent": "unknown",
+ "sections": [
+  {
+   "title": "背景与定位",
+   "body": "Galaxea G0.5 是银河通用机器人(Galaxea AI)发布的开源 VLA 模型,定位是把语义推理与动作生成统一进同一个自回归解码器:推理 token 与动作 token 由同一个 VLM 主干按 next-token 目标顺序生成,而不是外挂独立动作专家。"
+  },
+  {
+   "title": "已公开的技术信息",
+   "body": "根据官方发布信息,G0.5 强调统一自回归框架带来的两点好处:推理与动作共享表征,任务分解能力可以直接迁移到控制;训练与部署管线简单,无需协调两套生成机制。模型面向双臂与移动操作场景,权重与代码对社区开放。"
+  },
+  {
+   "title": "资料状态与提醒",
+   "body": "该条目整理时,G0.5 的系统性第三方评测与完整技术报告仍较少,具体训练数据规模、与主流基线的对比数字有待官方论文补全。图鉴按 B 级收录,以官方仓库与后续论文为准。"
+  }
+ ]
+}

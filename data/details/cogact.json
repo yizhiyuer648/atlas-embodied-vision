@@ -1,0 +1,47 @@
+{
+ "id": "cogact",
+ "name": "CogACT",
+ "org": "Microsoft Research Asia / Tsinghua University",
+ "country": "CN",
+ "year": 2024,
+ "paper_url": "https://arxiv.org/abs/2411.19650",
+ "github_url": "https://github.com/microsoft/CogACT",
+ "category": "vla",
+ "sub_category": "componentized-vla",
+ "one_liner_zh": "把 VLM 认知主干与专用扩散动作 Transformer 解耦。",
+ "key_idea_zh": "保留大模型的视觉语言推理能力，同时让独立动作模块对连续动作序列建模并随规模提升性能。",
+ "tags": [
+  "国产",
+  "扩散动作头",
+  "模块化"
+ ],
+ "tier": "B",
+ "lineage_parent": "openvla",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "第一代 VLA（如 OpenVLA）直接让 VLM 输出量化动作 token，任务成功率始终不理想——语言模型的离散词表并不适合表达连续、多峰、高频的机械臂轨迹。微软亚洲研究院与清华的 CogACT 提出「组件化 VLA」：认知归认知，动作归动作，各用最合适的模块。"
+  },
+  {
+   "title": "方法详解",
+   "body": "CogACT 保留 VLM 作为认知主干，负责场景理解与指令推理，输出压缩后的认知特征；动作则由一个专门的扩散动作 Transformer（DiT）建模——以认知特征为条件，对整段连续动作序列去噪。论文系统比较了不同动作模块设计，发现扩散动作 Transformer 不仅性能最好，还表现出良好的规模化行为：动作模块越大，成功率持续上升。这一「VLM + 扩散动作专家」的解耦结构后来成为 VLA 的主流形态之一。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "在 Open X-Embodiment 等跨本体数据上预训练，并在仿真与真机的多个本体上微调评测。由于动作模块独立，认知主干可以较少更新,训练成本可控。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "在 5 种机器人本体的仿真与真机评测中，CogACT（7B）比同规模的 OpenVLA 仿真成功率高 35% 以上、真机高 55% 以上，甚至比 55B 的 RT-2-X 在仿真中高 18 个百分点，代价只是多了一个可控规模的动作头。它有力证明了动作表示才是当时 VLA 的主要瓶颈。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "扩散头带来额外推理延迟；认知与动作两模块的信息接口（单一认知特征）可能成为新的信息瓶颈。后续工作探索更细粒度的特征传递与流匹配加速，π0 的动作专家路线与之殊途同归。"
+  }
+ ],
+ "citations": {
+  "count": 386,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

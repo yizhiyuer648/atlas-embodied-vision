@@ -1,0 +1,46 @@
+{
+  "id": "videochat3",
+  "name": "VideoChat3",
+  "org": "Nanjing University / Shanghai AI Laboratory / Nanyang Technological University / Peking University",
+  "country": "CN",
+  "year": 2026,
+  "paper_url": "https://arxiv.org/abs/2607.14935",
+  "github_url": "https://github.com/MCG-NJU/VideoChat3",
+  "category": "multimodal",
+  "sub_category": "video-mllm",
+  "one_liner_zh": "面向通用、长视频与流式场景的 4B 视频多模态大模型，以时空压缩降低视频理解成本。",
+  "key_idea_zh": "用 I3D-ViT 做 16 倍时空压缩，并根据内容动态分配帧分辨率，再以多阶段视频数据训练统一覆盖通用、长时与流式理解。",
+  "tags": [
+    "国产",
+    "视频 MLLM",
+    "I3D-ViT",
+    "长视频",
+    "流式视频",
+    "Qwen3-4B",
+    "公开权重"
+  ],
+  "tier": "B",
+  "lineage_parent": "unknown",
+  "sections": [
+    {
+      "title": "模型定位与机构",
+      "body": "VideoChat3 是南京大学牵头，并与上海人工智能实验室、南洋理工大学和北京大学合作发布的 4B 视频多模态大模型。论文、官方项目页、MCG-NJU 仓库与 Hugging Face 模型卡在正式名称、作者、公开检查点和主要能力上相互一致；图鉴把主导地区记为中国，并在机构字段保留新加坡合作单位。"
+    },
+    {
+      "title": "I3D-ViT 与自适应帧分辨率",
+      "body": "普通图像视觉编码器逐帧处理视频，容易让 token 数随时长迅速膨胀。VideoChat3 的 I3D-ViT 同时压缩空间与时间信息，官方材料给出 16 倍时空压缩；Adaptive Frame Resolution 再按帧内容动态分配分辨率，使长视频和流式输入不必对每一帧使用同样昂贵的视觉预算。"
+    },
+    {
+      "title": "骨干与谱系处理",
+      "body": "论文说明视觉部分从图像预训练的 MoonViT 初始化，语言侧使用 Qwen3-4B；训练早期的临时解码器随后会被丢弃，最终公开配置仍采用 Qwen3ForCausalLM。由于这是视觉与语言双上游，而当前谱系字段只能表达一个父节点，lineage_parent 保守写为 unknown，不能误挂到作为对比基线出现的 Qwen3-VL。"
+    },
+    {
+      "title": "训练覆盖与结果",
+      "body": "团队构建 VideoChat3-Academic2M、VideoChat3-LV116K 和 VideoChat3-OL617K，分别覆盖通用、长视频和流式交互。论文报告 4B 模型在多组通用、长时和流式基准上，以较小参数量取得有竞争力的结果。排行榜数字依赖采样帧数、提示模板和评测脚本，不能脱离同一设置直接与任意闭源系统比较。"
+    },
+    {
+      "title": "实际开放状态",
+      "body": "截至 2026 年 7 月 19 日，官方 Hugging Face 仓库可下载 4B 权重和自定义推理代码，相关训练数据也已公开；但 GitHub 主分支尚未看到训练脚本，README 仍把训练代码列为待发布。Hugging Face 元数据声明 Apache-2.0，而仓库内未见独立 LICENSE 文本，因此这里不直接复述论文标题中的 fully open，而是明确区分已公开权重、推理材料与仍缺失的训练实现。"
+    }
+  ]
+}

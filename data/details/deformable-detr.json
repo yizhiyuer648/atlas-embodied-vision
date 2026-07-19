@@ -1,0 +1,48 @@
+{
+ "id": "deformable-detr",
+ "name": "Deformable DETR",
+ "org": "SenseTime Research",
+ "country": "CN",
+ "year": 2021,
+ "paper_url": "https://arxiv.org/abs/2010.04159",
+ "github_url": "https://github.com/fundamentalvision/Deformable-DETR",
+ "category": "detection",
+ "sub_category": "transformer",
+ "one_liner_zh": "让注意力只采样少量关键位置，大幅加快 DETR 收敛并增强小目标能力。",
+ "key_idea_zh": "围绕参考点在多尺度特征图上学习稀疏采样偏移和权重，替代全局密集注意力。",
+ "tags": [
+  "国产",
+  "Transformer",
+  "deformable attention",
+  "多尺度"
+ ],
+ "tier": "B",
+ "lineage_parent": "detr",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "DETR 优雅但有两大硬伤:训练 500 个 epoch 才收敛(Faster R-CNN 只要 12),小目标明显偏弱。根源都在注意力:初始化时每个 query 对全图所有像素几乎均匀关注,要花大量迭代才学会聚焦;而高分辨率特征图的全局注意力计算量又是平方级,根本用不起多尺度特征。商汤的 Deformable DETR 把可变形卷积的思想嫁接到注意力上,一举破局。"
+  },
+  {
+   "title": "方法详解",
+   "body": "可变形注意力不再看全图:每个 query 围绕一个参考点,只学习采样 K 个(如 4 个)位置的偏移量与注意力权重,复杂度从平方降到线性。由于计算便宜,注意力可以横跨多尺度特征图采样,小目标直接受益。论文还提出两阶段变体(编码器先出候选再精修)与 iterative bounding box refinement,进一步提升精度。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "在 COCO 上训练,10 倍更少的训练轮数(50 epoch)即超过 DETR 500 epoch 的结果。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "Deformable DETR 让 DETR 系从「概念优美」变成「实用可行」:收敛快、小目标强、支持多尺度。它定义的可变形注意力成为后续几乎所有 DETR 变体(DAB、DN、DINO、Co-DETR、RT-DETR)的基础算子,引用近 8000 次,是 DETR 生态真正的承重墙。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "稀疏采样丢失了全局关系建模的部分优势;偏移采样在部分推理硬件上算子支持不佳。DINO 在其上叠加去噪训练与查询优化,RT-DETR 则重新设计编码器以兼容 TensorRT 部署。"
+  }
+ ],
+ "citations": {
+  "count": 7864,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

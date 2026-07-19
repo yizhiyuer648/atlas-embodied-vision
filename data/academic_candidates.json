@@ -1,0 +1,4829 @@
+{
+  "generated_at": "2026-07-19T19:53:21.838470+00:00",
+  "state": "partial",
+  "window": {
+    "days": 30,
+    "from": "2026-06-19",
+    "to": "2026-07-19"
+  },
+  "categories": [
+    "vla",
+    "world",
+    "detection",
+    "representation",
+    "segmentation",
+    "multimodal"
+  ],
+  "manual_review_required": true,
+  "warning_zh": "这是半自动发现结果，不是录用、SCI/SCIE 索引或论文质量证明。人工核验后才能手动合并；脚本绝不修改 papers.json、academic_tracker.json 或模型主数据。",
+  "read_only_inputs": [
+    "data/papers.json",
+    "data/academic_tracker.json"
+  ],
+  "write_target": "data/academic_candidates.json",
+  "deduplication_order": [
+    "DOI",
+    "去除 v1/v2 的 arXiv ID",
+    "同一来源的平台 ID",
+    "标准化标题 + 第一作者 + 年份"
+  ],
+  "candidate_id_order": [
+    "DOI",
+    "去除 v1/v2 的 arXiv ID",
+    "同一来源的平台 ID",
+    "标准化标题 + 第一作者 + 年份"
+  ],
+  "candidate_id_note": "平台 ID 参与同源去重，但候选 ID 优先使用 arXiv，以免某个聚合平台临时失败导致队列 ID 漂移。",
+  "evidence_model": {
+    "schema_version": 2,
+    "levels": [
+      {
+        "id": "E1",
+        "label": "E1 · 正式出版"
+      },
+      {
+        "id": "E2",
+        "label": "E2 · 官方决定"
+      },
+      {
+        "id": "E3",
+        "label": "E3 · 双元数据一致"
+      },
+      {
+        "id": "E4",
+        "label": "E4 · 聚合线索"
+      },
+      {
+        "id": "E5",
+        "label": "E5 · 预印本 / 自述"
+      }
+    ],
+    "promotion_rule": "官方论文库为 E1；Crossref 与 DBLP 同一候选相互印证时为 E3；单一聚合元数据为 E4。"
+  },
+  "date_precision_note": "Crossref/OpenAlex 可按日过滤；DBLP 与官方 proceedings 常只提供年份，这类候选会明确标 date_precision=year，并要求人工确认是否落在实际回溯窗口。",
+  "source_status": [
+    {
+      "source": "crossref",
+      "state": "ready",
+      "record_count": 14,
+      "date_filter_precision": "day",
+      "warnings": []
+    },
+    {
+      "source": "openalex",
+      "state": "ready",
+      "record_count": 115,
+      "date_filter_precision": "day",
+      "warnings": []
+    },
+    {
+      "source": "dblp",
+      "state": "partial",
+      "record_count": 3,
+      "date_filter_precision": "year",
+      "warnings": [
+        "representation: 429 Client Error: Too Many Requests for url: https://dblp.org/search/publ/api?q=%22visual+representation%22+self+supervised+vision&h=20&format=json",
+        "segmentation: HTTPSConnectionPool(host='dblp.org', port=443): Max retries exceeded with url: /search/publ/api?q=%22image+segmentation%22+vision+model&h=20&format=json (Caused by SSLError(SSLError(1, '[SSL: DECRYPTION_FAILED_OR_BAD_RECORD_MAC] decryption failed or bad record mac (_ssl.c:2559)')))",
+        "multimodal: HTTPSConnectionPool(host='dblp.org', port=443): Max retries exceeded with url: /search/publ/api?q=%22vision+language+model%22+multimodal+robot&h=20&format=json (Caused by SSLError(SSLError(1, '[SSL: DECRYPTION_FAILED_OR_BAD_RECORD_MAC] decryption failed or bad record mac (_ssl.c:2559)')))"
+      ]
+    },
+    {
+      "source": "cvf",
+      "state": "ready",
+      "record_count": 40,
+      "date_filter_precision": "year",
+      "warnings": []
+    },
+    {
+      "source": "rss",
+      "state": "failed",
+      "record_count": 0,
+      "date_filter_precision": "year",
+      "warnings": [
+        "rss22: 403 Client Error: Forbidden for url: https://www.roboticsproceedings.org/rss22/"
+      ]
+    },
+    {
+      "source": "pmlr",
+      "state": "failed",
+      "record_count": 0,
+      "date_filter_precision": "year",
+      "warnings": [
+        "目录可访问但未发现回溯年份内的 CoRL volume，需核对 PMLR 目录结构或发布状态"
+      ]
+    }
+  ],
+  "raw_source_counts": {
+    "CVF Open Access": 40,
+    "Crossref": 14,
+    "DBLP": 3,
+    "OpenAlex": 115
+  },
+  "raw_record_count": 172,
+  "candidate_count": 53,
+  "skipped_authoritative_event_count": 1,
+  "skipped_authoritative_events": [
+    {
+      "title": "Towards Stable Source-Free Domain Adaptive Semantic Segmentation",
+      "venue": {
+        "id": "ijcv",
+        "name": "International Journal of Computer Vision",
+        "acronym": "IJCV",
+        "type": "journal",
+        "tracking_priority": "核心追踪",
+        "match_mode": "official-explicit",
+        "conflicting_matches": []
+      },
+      "sources": [
+        "Crossref"
+      ],
+      "external_ids": {
+        "doi": [
+          "10.1007/s11263-026-02929-6"
+        ],
+        "platform": [
+          "crossref:101007s11263026029296"
+        ],
+        "arxiv": []
+      },
+      "publication_event_match": {
+        "is_known": true,
+        "matched_by": "doi",
+        "events": [
+          {
+            "event_id": "stable-sfda-seg-ijcv-2026",
+            "paper_id": "doi:10.1007/s11263-026-02929-6",
+            "title": "Towards Stable Source-Free Domain Adaptive Semantic Segmentation",
+            "status": "published_online",
+            "evidence_level": "E1",
+            "source_url": "https://link.springer.com/article/10.1007/s11263-026-02929-6"
+          }
+        ],
+        "note": "已存在于 academic_tracker.json.publication_events，未重复进入待审核候选。"
+      }
+    }
+  ],
+  "existing_paper_event_count": 1,
+  "candidates": [
+    {
+      "id": "academic-4135968cd0ae6f",
+      "title": "EMO-LLaMA: Enhancing Facial Emotion Understanding with Instruction Tuning",
+      "authors": [
+        "Bohao Xing",
+        "Zitong Yu",
+        "Xin Liu",
+        "Kaishen Yuan",
+        "Qilang Ye",
+        "Weicheng Xie",
+        "Huanjing Yue",
+        "Jingyu Yang",
+        "Heikki Kälviäinen"
+      ],
+      "first_author": "Bohao Xing",
+      "published": "2026-07-15",
+      "date_precision": "day",
+      "venue": {
+        "id": "ijcv",
+        "name": "International Journal of Computer Vision",
+        "acronym": "IJCV",
+        "type": "journal",
+        "tracking_priority": "核心追踪",
+        "match_mode": "official-explicit",
+        "conflicting_matches": []
+      },
+      "directions": [
+        "multimodal",
+        "representation"
+      ],
+      "status": "needs_review",
+      "status_label": "待人工核验",
+      "candidate_kind": "聚合元数据发表事件候选",
+      "evidence_level": "E4",
+      "sources": [
+        "Crossref"
+      ],
+      "fact_sources": [
+        {
+          "source": "Crossref",
+          "evidence_level": "E4",
+          "source_id": "10.1007/s11263-026-02918-9",
+          "url": "https://doi.org/10.1007/s11263-026-02918-9",
+          "observed_fields": [
+            "title",
+            "authors",
+            "published",
+            "venue_hint",
+            "doi"
+          ]
+        }
+      ],
+      "external_ids": {
+        "doi": [
+          "10.1007/s11263-026-02918-9"
+        ],
+        "platform": [
+          "crossref:101007s11263026029189"
+        ],
+        "arxiv": []
+      },
+      "links": {
+        "landing": "https://doi.org/10.1007/s11263-026-02918-9",
+        "doi": "https://doi.org/10.1007/s11263-026-02918-9",
+        "arxiv": ""
+      },
+      "confidence": {
+        "level": "medium",
+        "score": 0.64,
+        "reason": "目前只有 E4 聚合元数据线索；含 DOI；命中跟踪 venue 的完整名称或官方入口；标题或摘要命中 Atlas 技术方向"
+      },
+      "duplicate_match": {
+        "is_duplicate": false,
+        "matched_by": "none",
+        "matches": [],
+        "possible_matches": [],
+        "note": "未按稳定标识或严格标题键命中已有论文。"
+      },
+      "deduplication_notes": [],
+      "manual_review_required": true,
+      "manual_review_items": [
+        "确认论文确已收入该 venue，而非预印本、workshop、海报页面、勘误或元数据误配。",
+        "核对标题、作者、DOI/arXiv 与正式出版页是否一致。",
+        "确认方向标签与 Atlas 六类定义相符。",
+        "当前尚无 E1 正式出版证据；需回到出版方或官方 proceedings 核验。",
+        "如需标注 SCI/SCIE，必须在 Clarivate Master Journal List 按当期结果人工核验。"
+      ],
+      "source_record_count": 1,
+      "publication_event_match": {
+        "is_known": false,
+        "matched_by": "none",
+        "events": [],
+        "note": "未命中已确认发表事件。"
+      }
+    },
+    {
+      "id": "academic-87f623cc3966fa",
+      "title": "Rethinking Neuromorphic Object Detection with Hybrid Dynamic Interaction Transformers",
+      "authors": [
+        "Dianze Li",
+        "Jianing Li",
+        "Xu Liu",
+        "Zhaokun Zhou",
+        "Xiaopeng Fan",
+        "Yonghong Tian"
+      ],
+      "first_author": "Dianze Li",
+      "published": "2026-07-09",
+      "date_precision": "day",
+      "venue": {
+        "id": "ijcv",
+        "name": "International Journal of Computer Vision",
+        "acronym": "IJCV",
+        "type": "journal",
+        "tracking_priority": "核心追踪",
+        "match_mode": "official-explicit",
+        "conflicting_matches": []
+      },
+      "directions": [
+        "detection"
+      ],
+      "status": "needs_review",
+      "status_label": "待人工核验",
+      "candidate_kind": "聚合元数据发表事件候选",
+      "evidence_level": "E4",
+      "sources": [
+        "Crossref"
+      ],
+      "fact_sources": [
+        {
+          "source": "Crossref",
+          "evidence_level": "E4",
+          "source_id": "10.1007/s11263-026-02927-8",
+          "url": "https://doi.org/10.1007/s11263-026-02927-8",
+          "observed_fields": [
+            "title",
+            "authors",
+            "published",
+            "venue_hint",
+            "doi"
+          ]
+        }
+      ],
+      "external_ids": {
+        "doi": [
+          "10.1007/s11263-026-02927-8"
+        ],
+        "platform": [
+          "crossref:101007s11263026029278"
+        ],
+        "arxiv": []
+      },
+      "links": {
+        "landing": "https://doi.org/10.1007/s11263-026-02927-8",
+        "doi": "https://doi.org/10.1007/s11263-026-02927-8",
+        "arxiv": ""
+      },
+      "confidence": {
+        "level": "medium",
+        "score": 0.64,
+        "reason": "目前只有 E4 聚合元数据线索；含 DOI；命中跟踪 venue 的完整名称或官方入口；标题或摘要命中 Atlas 技术方向"
+      },
+      "duplicate_match": {
+        "is_duplicate": false,
+        "matched_by": "none",
+        "matches": [],
+        "possible_matches": [],
+        "note": "未按稳定标识或严格标题键命中已有论文。"
+      },
+      "deduplication_notes": [],
+      "manual_review_required": true,
+      "manual_review_items": [
+        "确认论文确已收入该 venue，而非预印本、workshop、海报页面、勘误或元数据误配。",
+        "核对标题、作者、DOI/arXiv 与正式出版页是否一致。",
+        "确认方向标签与 Atlas 六类定义相符。",
+        "当前尚无 E1 正式出版证据；需回到出版方或官方 proceedings 核验。",
+        "如需标注 SCI/SCIE，必须在 Clarivate Master Journal List 按当期结果人工核验。"
+      ],
+      "source_record_count": 1,
+      "publication_event_match": {
+        "is_known": false,
+        "matched_by": "none",
+        "events": [],
+        "note": "未命中已确认发表事件。"
+      }
+    },
+    {
+      "id": "academic-b8d569aa602f6c",
+      "title": "IPDiff: Diffusion-driven ORSI Salient Object Detection with Information Reconstruction and Multi-Prior Guidance",
+      "authors": [
+        "Gongyang Li",
+        "Zhen Bai",
+        "Runmin Cong",
+        "Dan Zeng",
+        "Weisi Lin",
+        "Xiao-Ping Zhang"
+      ],
+      "first_author": "Gongyang Li",
+      "published": "2026-07-09",
+      "date_precision": "day",
+      "venue": {
+        "id": "ijcv",
+        "name": "International Journal of Computer Vision",
+        "acronym": "IJCV",
+        "type": "journal",
+        "tracking_priority": "核心追踪",
+        "match_mode": "official-explicit",
+        "conflicting_matches": []
+      },
+      "directions": [
+        "detection"
+      ],
+      "status": "needs_review",
+      "status_label": "待人工核验",
+      "candidate_kind": "已有论文的发表事件候选",
+      "evidence_level": "E4",
+      "sources": [
+        "Crossref"
+      ],
+      "fact_sources": [
+        {
+          "source": "Crossref",
+          "evidence_level": "E4",
+          "source_id": "10.1007/s11263-026-02931-y",
+          "url": "https://doi.org/10.1007/s11263-026-02931-y",
+          "observed_fields": [
+            "title",
+            "authors",
+            "published",
+            "venue_hint",
+            "doi"
+          ]
+        }
+      ],
+      "external_ids": {
+        "doi": [
+          "10.1007/s11263-026-02931-y"
+        ],
+        "platform": [
+          "crossref:101007s1126302602931y"
+        ],
+        "arxiv": []
+      },
+      "links": {
+        "landing": "https://doi.org/10.1007/s11263-026-02931-y",
+        "doi": "https://doi.org/10.1007/s11263-026-02931-y",
+        "arxiv": ""
+      },
+      "confidence": {
+        "level": "medium",
+        "score": 0.64,
+        "reason": "目前只有 E4 聚合元数据线索；含 DOI；命中跟踪 venue 的完整名称或官方入口；标题或摘要命中 Atlas 技术方向"
+      },
+      "duplicate_match": {
+        "is_duplicate": true,
+        "matched_by": "title",
+        "matches": [
+          {
+            "paper_id": "2607.03696",
+            "title": "IPDiff: Diffusion-driven ORSI Salient Object Detection with Information Reconstruction and Multi-Prior Guidance",
+            "dois": [],
+            "arxivs": [
+              "2607.03696"
+            ]
+          }
+        ],
+        "possible_matches": [],
+        "note": "保留为发表事件候选；审核后应挂到已有 paper_id，不复制论文正文。"
+      },
+      "deduplication_notes": [],
+      "manual_review_required": true,
+      "manual_review_items": [
+        "确认论文确已收入该 venue，而非预印本、workshop、海报页面、勘误或元数据误配。",
+        "核对标题、作者、DOI/arXiv 与正式出版页是否一致。",
+        "确认方向标签与 Atlas 六类定义相符。",
+        "当前尚无 E1 正式出版证据；需回到出版方或官方 proceedings 核验。",
+        "如需标注 SCI/SCIE，必须在 Clarivate Master Journal List 按当期结果人工核验。",
+        "核对与已有 paper_id 的版本关系；只补 versions/venue 引用，不复制标题、摘要或导读正文。"
+      ],
+      "source_record_count": 1,
+      "publication_event_match": {
+        "is_known": false,
+        "matched_by": "none",
+        "events": [],
+        "note": "未命中已确认发表事件。"
+      }
+    },
+    {
+      "id": "academic-99e90bd2c1dc92",
+      "title": "Personal-3D: A Comprehensive Benchmark for Personalized Embodied AI Agents",
+      "authors": [
+        "Filippo Ziliotto",
+        "Jelin Raphael Akkara",
+        "Alessandro Daniele",
+        "Lamberto Ballan",
+        "Luciano Serafini",
+        "Tommaso Campari"
+      ],
+      "first_author": "Filippo Ziliotto",
+      "published": "2026-07-04",
+      "date_precision": "day",
+      "venue": {
+        "id": "ijcv",
+        "name": "International Journal of Computer Vision",
+        "acronym": "IJCV",
+        "type": "journal",
+        "tracking_priority": "核心追踪",
+        "match_mode": "official-explicit",
+        "conflicting_matches": []
+      },
+      "directions": [
+        "multimodal"
+      ],
+      "status": "needs_review",
+      "status_label": "待人工核验",
+      "candidate_kind": "聚合元数据发表事件候选",
+      "evidence_level": "E4",
+      "sources": [
+        "Crossref"
+      ],
+      "fact_sources": [
+        {
+          "source": "Crossref",
+          "evidence_level": "E4",
+          "source_id": "10.1007/s11263-026-02922-z",
+          "url": "https://doi.org/10.1007/s11263-026-02922-z",
+          "observed_fields": [
+            "title",
+            "authors",
+            "published",
+            "venue_hint",
+            "doi"
+          ]
+        }
+      ],
+      "external_ids": {
+        "doi": [
+          "10.1007/s11263-026-02922-z"
+        ],
+        "platform": [
+          "crossref:101007s1126302602922z"
+        ],
+        "arxiv": []
+      },
+      "links": {
+        "landing": "https://doi.org/10.1007/s11263-026-02922-z",
+        "doi": "https://doi.org/10.1007/s11263-026-02922-z",
+        "arxiv": ""
+      },
+      "confidence": {
+        "level": "medium",
+        "score": 0.64,
+        "reason": "目前只有 E4 聚合元数据线索；含 DOI；命中跟踪 venue 的完整名称或官方入口；标题或摘要命中 Atlas 技术方向"
+      },
+      "duplicate_match": {
+        "is_duplicate": false,
+        "matched_by": "none",
+        "matches": [],
+        "possible_matches": [],
+        "note": "未按稳定标识或严格标题键命中已有论文。"
+      },
+      "deduplication_notes": [],
+      "manual_review_required": true,
+      "manual_review_items": [
+        "确认论文确已收入该 venue，而非预印本、workshop、海报页面、勘误或元数据误配。",
+        "核对标题、作者、DOI/arXiv 与正式出版页是否一致。",
+        "确认方向标签与 Atlas 六类定义相符。",
+        "当前尚无 E1 正式出版证据；需回到出版方或官方 proceedings 核验。",
+        "如需标注 SCI/SCIE，必须在 Clarivate Master Journal List 按当期结果人工核验。"
+      ],
+      "source_record_count": 1,
+      "publication_event_match": {
+        "is_known": false,
+        "matched_by": "none",
+        "events": [],
+        "note": "未命中已确认发表事件。"
+      }
+    },
+    {
+      "id": "academic-1008c2f1809aaf",
+      "title": "ImageBind Guided Progressive Transformation Network for Alignment-free RGBT Video Object Detection",
+      "authors": [
+        "Zhengzheng Tu",
+        "Chuanwang Guo",
+        "Qishun Wang",
+        "Chenglong Li",
+        "Jin Tang"
+      ],
+      "first_author": "Zhengzheng Tu",
+      "published": "2026-07-04",
+      "date_precision": "day",
+      "venue": {
+        "id": "ijcv",
+        "name": "International Journal of Computer Vision",
+        "acronym": "IJCV",
+        "type": "journal",
+        "tracking_priority": "核心追踪",
+        "match_mode": "official-explicit",
+        "conflicting_matches": []
+      },
+      "directions": [
+        "detection"
+      ],
+      "status": "needs_review",
+      "status_label": "待人工核验",
+      "candidate_kind": "聚合元数据发表事件候选",
+      "evidence_level": "E4",
+      "sources": [
+        "Crossref"
+      ],
+      "fact_sources": [
+        {
+          "source": "Crossref",
+          "evidence_level": "E4",
+          "source_id": "10.1007/s11263-026-02935-8",
+          "url": "https://doi.org/10.1007/s11263-026-02935-8",
+          "observed_fields": [
+            "title",
+            "authors",
+            "published",
+            "venue_hint",
+            "doi"
+          ]
+        }
+      ],
+      "external_ids": {
+        "doi": [
+          "10.1007/s11263-026-02935-8"
+        ],
+        "platform": [
+          "crossref:101007s11263026029358"
+        ],
+        "arxiv": []
+      },
+      "links": {
+        "landing": "https://doi.org/10.1007/s11263-026-02935-8",
+        "doi": "https://doi.org/10.1007/s11263-026-02935-8",
+        "arxiv": ""
+      },
+      "confidence": {
+        "level": "medium",
+        "score": 0.64,
+        "reason": "目前只有 E4 聚合元数据线索；含 DOI；命中跟踪 venue 的完整名称或官方入口；标题或摘要命中 Atlas 技术方向"
+      },
+      "duplicate_match": {
+        "is_duplicate": false,
+        "matched_by": "none",
+        "matches": [],
+        "possible_matches": [],
+        "note": "未按稳定标识或严格标题键命中已有论文。"
+      },
+      "deduplication_notes": [],
+      "manual_review_required": true,
+      "manual_review_items": [
+        "确认论文确已收入该 venue，而非预印本、workshop、海报页面、勘误或元数据误配。",
+        "核对标题、作者、DOI/arXiv 与正式出版页是否一致。",
+        "确认方向标签与 Atlas 六类定义相符。",
+        "当前尚无 E1 正式出版证据；需回到出版方或官方 proceedings 核验。",
+        "如需标注 SCI/SCIE，必须在 Clarivate Master Journal List 按当期结果人工核验。"
+      ],
+      "source_record_count": 1,
+      "publication_event_match": {
+        "is_known": false,
+        "matched_by": "none",
+        "events": [],
+        "note": "未命中已确认发表事件。"
+      }
+    },
+    {
+      "id": "academic-350705ee10447a",
+      "title": "Outlier-Aware Contrastive Learning",
+      "authors": [
+        "Jen-Tzung Chien",
+        "Kuan Chen"
+      ],
+      "first_author": "Jen-Tzung Chien",
+      "published": "2026-07",
+      "date_precision": "month",
+      "venue": {
+        "id": "tpami",
+        "name": "IEEE Transactions on Pattern Analysis and Machine Intelligence",
+        "acronym": "TPAMI",
+        "type": "journal",
+        "tracking_priority": "核心追踪",
+        "match_mode": "official-explicit",
+        "conflicting_matches": []
+      },
+      "directions": [
+        "representation"
+      ],
+      "status": "needs_review",
+      "status_label": "待人工核验",
+      "candidate_kind": "聚合元数据发表事件候选",
+      "evidence_level": "E4",
+      "sources": [
+        "Crossref"
+      ],
+      "fact_sources": [
+        {
+          "source": "Crossref",
+          "evidence_level": "E4",
+          "source_id": "10.1109/tpami.2026.3669598",
+          "url": "https://doi.org/10.1109/tpami.2026.3669598",
+          "observed_fields": [
+            "title",
+            "authors",
+            "published",
+            "venue_hint",
+            "doi"
+          ]
+        }
+      ],
+      "external_ids": {
+        "doi": [
+          "10.1109/tpami.2026.3669598"
+        ],
+        "platform": [
+          "crossref:101109tpami20263669598"
+        ],
+        "arxiv": []
+      },
+      "links": {
+        "landing": "https://doi.org/10.1109/tpami.2026.3669598",
+        "doi": "https://doi.org/10.1109/tpami.2026.3669598",
+        "arxiv": ""
+      },
+      "confidence": {
+        "level": "medium",
+        "score": 0.64,
+        "reason": "目前只有 E4 聚合元数据线索；含 DOI；命中跟踪 venue 的完整名称或官方入口；标题或摘要命中 Atlas 技术方向"
+      },
+      "duplicate_match": {
+        "is_duplicate": false,
+        "matched_by": "none",
+        "matches": [],
+        "possible_matches": [],
+        "note": "未按稳定标识或严格标题键命中已有论文。"
+      },
+      "deduplication_notes": [],
+      "manual_review_required": true,
+      "manual_review_items": [
+        "确认论文确已收入该 venue，而非预印本、workshop、海报页面、勘误或元数据误配。",
+        "核对标题、作者、DOI/arXiv 与正式出版页是否一致。",
+        "确认方向标签与 Atlas 六类定义相符。",
+        "当前尚无 E1 正式出版证据；需回到出版方或官方 proceedings 核验。",
+        "日期精度不足；核对实际在线发表/会议日期是否落在本次回溯窗口。",
+        "如需标注 SCI/SCIE，必须在 Clarivate Master Journal List 按当期结果人工核验。"
+      ],
+      "source_record_count": 1,
+      "publication_event_match": {
+        "is_known": false,
+        "matched_by": "none",
+        "events": [],
+        "note": "未命中已确认发表事件。"
+      }
+    },
+    {
+      "id": "academic-90377bb862b1d2",
+      "title": "OCR-3D: Occlusion-Robust Context-Guided Relative Depth for Monocular 3D Object Detection",
+      "authors": [
+        "Jiasheng Su",
+        "Chenchao Hu",
+        "Yayan Xu",
+        "Siyu Chen",
+        "Yang Sun",
+        "Jinhe Su"
+      ],
+      "first_author": "Jiasheng Su",
+      "published": "2026-07",
+      "date_precision": "month",
+      "venue": {
+        "id": "ral",
+        "name": "IEEE Robotics and Automation Letters",
+        "acronym": "RA-L",
+        "type": "journal",
+        "tracking_priority": "核心追踪",
+        "match_mode": "official-explicit",
+        "conflicting_matches": []
+      },
+      "directions": [
+        "detection"
+      ],
+      "status": "needs_review",
+      "status_label": "待人工核验",
+      "candidate_kind": "聚合元数据发表事件候选",
+      "evidence_level": "E4",
+      "sources": [
+        "Crossref"
+      ],
+      "fact_sources": [
+        {
+          "source": "Crossref",
+          "evidence_level": "E4",
+          "source_id": "10.1109/lra.2026.3700380",
+          "url": "https://doi.org/10.1109/lra.2026.3700380",
+          "observed_fields": [
+            "title",
+            "authors",
+            "published",
+            "venue_hint",
+            "doi"
+          ]
+        }
+      ],
+      "external_ids": {
+        "doi": [
+          "10.1109/lra.2026.3700380"
+        ],
+        "platform": [
+          "crossref:101109lra20263700380"
+        ],
+        "arxiv": []
+      },
+      "links": {
+        "landing": "https://doi.org/10.1109/lra.2026.3700380",
+        "doi": "https://doi.org/10.1109/lra.2026.3700380",
+        "arxiv": ""
+      },
+      "confidence": {
+        "level": "medium",
+        "score": 0.64,
+        "reason": "目前只有 E4 聚合元数据线索；含 DOI；命中跟踪 venue 的完整名称或官方入口；标题或摘要命中 Atlas 技术方向"
+      },
+      "duplicate_match": {
+        "is_duplicate": false,
+        "matched_by": "none",
+        "matches": [],
+        "possible_matches": [],
+        "note": "未按稳定标识或严格标题键命中已有论文。"
+      },
+      "deduplication_notes": [],
+      "manual_review_required": true,
+      "manual_review_items": [
+        "确认论文确已收入该 venue，而非预印本、workshop、海报页面、勘误或元数据误配。",
+        "核对标题、作者、DOI/arXiv 与正式出版页是否一致。",
+        "确认方向标签与 Atlas 六类定义相符。",
+        "当前尚无 E1 正式出版证据；需回到出版方或官方 proceedings 核验。",
+        "日期精度不足；核对实际在线发表/会议日期是否落在本次回溯窗口。",
+        "如需标注 SCI/SCIE，必须在 Clarivate Master Journal List 按当期结果人工核验。"
+      ],
+      "source_record_count": 1,
+      "publication_event_match": {
+        "is_known": false,
+        "matched_by": "none",
+        "events": [],
+        "note": "未命中已确认发表事件。"
+      }
+    },
+    {
+      "id": "academic-945830c4c6fdfd",
+      "title": "Hybrid Consistency Policy: Decoupling Multi-Modal Diversity and Real-Time Efficiency in Robotic Manipulation",
+      "authors": [
+        "Qianyou Zhao",
+        "Yuliang Shen",
+        "Xuanran Zhai",
+        "Duidi Wu",
+        "Jin Qi",
+        "Ce Hao",
+        "Jie Hu",
+        "Qiaojun Yu"
+      ],
+      "first_author": "Qianyou Zhao",
+      "published": "2026-07",
+      "date_precision": "month",
+      "venue": {
+        "id": "ral",
+        "name": "IEEE Robotics and Automation Letters",
+        "acronym": "RA-L",
+        "type": "journal",
+        "tracking_priority": "核心追踪",
+        "match_mode": "official-explicit",
+        "conflicting_matches": []
+      },
+      "directions": [
+        "vla"
+      ],
+      "status": "needs_review",
+      "status_label": "待人工核验",
+      "candidate_kind": "聚合元数据发表事件候选",
+      "evidence_level": "E4",
+      "sources": [
+        "Crossref"
+      ],
+      "fact_sources": [
+        {
+          "source": "Crossref",
+          "evidence_level": "E4",
+          "source_id": "10.1109/lra.2026.3701559",
+          "url": "https://doi.org/10.1109/lra.2026.3701559",
+          "observed_fields": [
+            "title",
+            "authors",
+            "published",
+            "venue_hint",
+            "doi"
+          ]
+        }
+      ],
+      "external_ids": {
+        "doi": [
+          "10.1109/lra.2026.3701559"
+        ],
+        "platform": [
+          "crossref:101109lra20263701559"
+        ],
+        "arxiv": []
+      },
+      "links": {
+        "landing": "https://doi.org/10.1109/lra.2026.3701559",
+        "doi": "https://doi.org/10.1109/lra.2026.3701559",
+        "arxiv": ""
+      },
+      "confidence": {
+        "level": "medium",
+        "score": 0.64,
+        "reason": "目前只有 E4 聚合元数据线索；含 DOI；命中跟踪 venue 的完整名称或官方入口；标题或摘要命中 Atlas 技术方向"
+      },
+      "duplicate_match": {
+        "is_duplicate": false,
+        "matched_by": "none",
+        "matches": [],
+        "possible_matches": [],
+        "note": "未按稳定标识或严格标题键命中已有论文。"
+      },
+      "deduplication_notes": [],
+      "manual_review_required": true,
+      "manual_review_items": [
+        "确认论文确已收入该 venue，而非预印本、workshop、海报页面、勘误或元数据误配。",
+        "核对标题、作者、DOI/arXiv 与正式出版页是否一致。",
+        "确认方向标签与 Atlas 六类定义相符。",
+        "当前尚无 E1 正式出版证据；需回到出版方或官方 proceedings 核验。",
+        "日期精度不足；核对实际在线发表/会议日期是否落在本次回溯窗口。",
+        "如需标注 SCI/SCIE，必须在 Clarivate Master Journal List 按当期结果人工核验。"
+      ],
+      "source_record_count": 1,
+      "publication_event_match": {
+        "is_known": false,
+        "matched_by": "none",
+        "events": [],
+        "note": "未命中已确认发表事件。"
+      }
+    },
+    {
+      "id": "academic-161ebdbc2f5b1c",
+      "title": "Deployment Prior Injection for Run-Time Re-Biasable Object Detection",
+      "authors": [
+        "Mo Zhou",
+        "Yiding Yang",
+        "Haoxiang Li",
+        "Vishal M. Patel",
+        "Gang Hua"
+      ],
+      "first_author": "Mo Zhou",
+      "published": "2026-07",
+      "date_precision": "month",
+      "venue": {
+        "id": "tpami",
+        "name": "IEEE Transactions on Pattern Analysis and Machine Intelligence",
+        "acronym": "TPAMI",
+        "type": "journal",
+        "tracking_priority": "核心追踪",
+        "match_mode": "official-explicit",
+        "conflicting_matches": []
+      },
+      "directions": [
+        "detection"
+      ],
+      "status": "needs_review",
+      "status_label": "待人工核验",
+      "candidate_kind": "聚合元数据发表事件候选",
+      "evidence_level": "E4",
+      "sources": [
+        "Crossref"
+      ],
+      "fact_sources": [
+        {
+          "source": "Crossref",
+          "evidence_level": "E4",
+          "source_id": "10.1109/tpami.2026.3667914",
+          "url": "https://doi.org/10.1109/tpami.2026.3667914",
+          "observed_fields": [
+            "title",
+            "authors",
+            "published",
+            "venue_hint",
+            "doi"
+          ]
+        }
+      ],
+      "external_ids": {
+        "doi": [
+          "10.1109/tpami.2026.3667914"
+        ],
+        "platform": [
+          "crossref:101109tpami20263667914"
+        ],
+        "arxiv": []
+      },
+      "links": {
+        "landing": "https://doi.org/10.1109/tpami.2026.3667914",
+        "doi": "https://doi.org/10.1109/tpami.2026.3667914",
+        "arxiv": ""
+      },
+      "confidence": {
+        "level": "medium",
+        "score": 0.64,
+        "reason": "目前只有 E4 聚合元数据线索；含 DOI；命中跟踪 venue 的完整名称或官方入口；标题或摘要命中 Atlas 技术方向"
+      },
+      "duplicate_match": {
+        "is_duplicate": false,
+        "matched_by": "none",
+        "matches": [],
+        "possible_matches": [],
+        "note": "未按稳定标识或严格标题键命中已有论文。"
+      },
+      "deduplication_notes": [],
+      "manual_review_required": true,
+      "manual_review_items": [
+        "确认论文确已收入该 venue，而非预印本、workshop、海报页面、勘误或元数据误配。",
+        "核对标题、作者、DOI/arXiv 与正式出版页是否一致。",
+        "确认方向标签与 Atlas 六类定义相符。",
+        "当前尚无 E1 正式出版证据；需回到出版方或官方 proceedings 核验。",
+        "日期精度不足；核对实际在线发表/会议日期是否落在本次回溯窗口。",
+        "如需标注 SCI/SCIE，必须在 Clarivate Master Journal List 按当期结果人工核验。"
+      ],
+      "source_record_count": 1,
+      "publication_event_match": {
+        "is_known": false,
+        "matched_by": "none",
+        "events": [],
+        "note": "未命中已确认发表事件。"
+      }
+    },
+    {
+      "id": "academic-cb99e689a1e7c5",
+      "title": "Causal Prompts for Open-Vocabulary Video Instance Segmentation",
+      "authors": [
+        "Rongkun Zheng",
+        "Lu Qi",
+        "Xi Chen",
+        "Yi Wang",
+        "Kun Wang",
+        "Yu Qiao",
+        "Hengshuang Zhao"
+      ],
+      "first_author": "Rongkun Zheng",
+      "published": "2026-07",
+      "date_precision": "month",
+      "venue": {
+        "id": "tpami",
+        "name": "IEEE Transactions on Pattern Analysis and Machine Intelligence",
+        "acronym": "TPAMI",
+        "type": "journal",
+        "tracking_priority": "核心追踪",
+        "match_mode": "official-explicit",
+        "conflicting_matches": []
+      },
+      "directions": [
+        "segmentation"
+      ],
+      "status": "needs_review",
+      "status_label": "待人工核验",
+      "candidate_kind": "聚合元数据发表事件候选",
+      "evidence_level": "E4",
+      "sources": [
+        "Crossref"
+      ],
+      "fact_sources": [
+        {
+          "source": "Crossref",
+          "evidence_level": "E4",
+          "source_id": "10.1109/tpami.2026.3669976",
+          "url": "https://doi.org/10.1109/tpami.2026.3669976",
+          "observed_fields": [
+            "title",
+            "authors",
+            "published",
+            "venue_hint",
+            "doi"
+          ]
+        }
+      ],
+      "external_ids": {
+        "doi": [
+          "10.1109/tpami.2026.3669976"
+        ],
+        "platform": [
+          "crossref:101109tpami20263669976"
+        ],
+        "arxiv": []
+      },
+      "links": {
+        "landing": "https://doi.org/10.1109/tpami.2026.3669976",
+        "doi": "https://doi.org/10.1109/tpami.2026.3669976",
+        "arxiv": ""
+      },
+      "confidence": {
+        "level": "medium",
+        "score": 0.64,
+        "reason": "目前只有 E4 聚合元数据线索；含 DOI；命中跟踪 venue 的完整名称或官方入口；标题或摘要命中 Atlas 技术方向"
+      },
+      "duplicate_match": {
+        "is_duplicate": false,
+        "matched_by": "none",
+        "matches": [],
+        "possible_matches": [],
+        "note": "未按稳定标识或严格标题键命中已有论文。"
+      },
+      "deduplication_notes": [],
+      "manual_review_required": true,
+      "manual_review_items": [
+        "确认论文确已收入该 venue，而非预印本、workshop、海报页面、勘误或元数据误配。",
+        "核对标题、作者、DOI/arXiv 与正式出版页是否一致。",
+        "确认方向标签与 Atlas 六类定义相符。",
+        "当前尚无 E1 正式出版证据；需回到出版方或官方 proceedings 核验。",
+        "日期精度不足；核对实际在线发表/会议日期是否落在本次回溯窗口。",
+        "如需标注 SCI/SCIE，必须在 Clarivate Master Journal List 按当期结果人工核验。"
+      ],
+      "source_record_count": 1,
+      "publication_event_match": {
+        "is_known": false,
+        "matched_by": "none",
+        "events": [],
+        "note": "未命中已确认发表事件。"
+      }
+    },
+    {
+      "id": "academic-cdc667f0457927",
+      "title": "Camouflaged object detection via deep assistance sparsely weighted attention",
+      "authors": [
+        "Xiaogang Song",
+        "Kaixuan Yang",
+        "Peirui Li",
+        "Haoyu Yuan",
+        "Qin Zhao",
+        "Xinhong Hei"
+      ],
+      "first_author": "Xiaogang Song",
+      "published": "2026-07",
+      "date_precision": "month",
+      "venue": {
+        "id": "cviu",
+        "name": "Computer Vision and Image Understanding",
+        "acronym": "CVIU",
+        "type": "journal",
+        "tracking_priority": "扩展追踪",
+        "match_mode": "official-explicit",
+        "conflicting_matches": []
+      },
+      "directions": [
+        "detection"
+      ],
+      "status": "needs_review",
+      "status_label": "待人工核验",
+      "candidate_kind": "聚合元数据发表事件候选",
+      "evidence_level": "E4",
+      "sources": [
+        "Crossref"
+      ],
+      "fact_sources": [
+        {
+          "source": "Crossref",
+          "evidence_level": "E4",
+          "source_id": "10.1016/j.cviu.2026.104877",
+          "url": "https://doi.org/10.1016/j.cviu.2026.104877",
+          "observed_fields": [
+            "title",
+            "authors",
+            "published",
+            "venue_hint",
+            "doi"
+          ]
+        }
+      ],
+      "external_ids": {
+        "doi": [
+          "10.1016/j.cviu.2026.104877"
+        ],
+        "platform": [
+          "crossref:101016jcviu2026104877"
+        ],
+        "arxiv": []
+      },
+      "links": {
+        "landing": "https://doi.org/10.1016/j.cviu.2026.104877",
+        "doi": "https://doi.org/10.1016/j.cviu.2026.104877",
+        "arxiv": ""
+      },
+      "confidence": {
+        "level": "medium",
+        "score": 0.64,
+        "reason": "目前只有 E4 聚合元数据线索；含 DOI；命中跟踪 venue 的完整名称或官方入口；标题或摘要命中 Atlas 技术方向"
+      },
+      "duplicate_match": {
+        "is_duplicate": false,
+        "matched_by": "none",
+        "matches": [],
+        "possible_matches": [],
+        "note": "未按稳定标识或严格标题键命中已有论文。"
+      },
+      "deduplication_notes": [],
+      "manual_review_required": true,
+      "manual_review_items": [
+        "确认论文确已收入该 venue，而非预印本、workshop、海报页面、勘误或元数据误配。",
+        "核对标题、作者、DOI/arXiv 与正式出版页是否一致。",
+        "确认方向标签与 Atlas 六类定义相符。",
+        "当前尚无 E1 正式出版证据；需回到出版方或官方 proceedings 核验。",
+        "日期精度不足；核对实际在线发表/会议日期是否落在本次回溯窗口。",
+        "如需标注 SCI/SCIE，必须在 Clarivate Master Journal List 按当期结果人工核验。"
+      ],
+      "source_record_count": 1,
+      "publication_event_match": {
+        "is_known": false,
+        "matched_by": "none",
+        "events": [],
+        "note": "未命中已确认发表事件。"
+      }
+    },
+    {
+      "id": "academic-e48b00d2262426",
+      "title": "Benchmarking Semantic Segmentation Models via Appearance and Geometry Attribute Editing",
+      "authors": [
+        "Zijin Yin",
+        "Bing Li",
+        "Kongming Liang",
+        "Hao Sun",
+        "Zhongjiang He",
+        "Zhanyu Ma",
+        "Jun Guo"
+      ],
+      "first_author": "Zijin Yin",
+      "published": "2026-07",
+      "date_precision": "month",
+      "venue": {
+        "id": "tpami",
+        "name": "IEEE Transactions on Pattern Analysis and Machine Intelligence",
+        "acronym": "TPAMI",
+        "type": "journal",
+        "tracking_priority": "核心追踪",
+        "match_mode": "official-explicit",
+        "conflicting_matches": []
+      },
+      "directions": [
+        "segmentation"
+      ],
+      "status": "needs_review",
+      "status_label": "待人工核验",
+      "candidate_kind": "聚合元数据发表事件候选",
+      "evidence_level": "E4",
+      "sources": [
+        "Crossref"
+      ],
+      "fact_sources": [
+        {
+          "source": "Crossref",
+          "evidence_level": "E4",
+          "source_id": "10.1109/tpami.2026.3674640",
+          "url": "https://doi.org/10.1109/tpami.2026.3674640",
+          "observed_fields": [
+            "title",
+            "authors",
+            "published",
+            "venue_hint",
+            "doi"
+          ]
+        }
+      ],
+      "external_ids": {
+        "doi": [
+          "10.1109/tpami.2026.3674640"
+        ],
+        "platform": [
+          "crossref:101109tpami20263674640"
+        ],
+        "arxiv": []
+      },
+      "links": {
+        "landing": "https://doi.org/10.1109/tpami.2026.3674640",
+        "doi": "https://doi.org/10.1109/tpami.2026.3674640",
+        "arxiv": ""
+      },
+      "confidence": {
+        "level": "medium",
+        "score": 0.64,
+        "reason": "目前只有 E4 聚合元数据线索；含 DOI；命中跟踪 venue 的完整名称或官方入口；标题或摘要命中 Atlas 技术方向"
+      },
+      "duplicate_match": {
+        "is_duplicate": false,
+        "matched_by": "none",
+        "matches": [],
+        "possible_matches": [],
+        "note": "未按稳定标识或严格标题键命中已有论文。"
+      },
+      "deduplication_notes": [],
+      "manual_review_required": true,
+      "manual_review_items": [
+        "确认论文确已收入该 venue，而非预印本、workshop、海报页面、勘误或元数据误配。",
+        "核对标题、作者、DOI/arXiv 与正式出版页是否一致。",
+        "确认方向标签与 Atlas 六类定义相符。",
+        "当前尚无 E1 正式出版证据；需回到出版方或官方 proceedings 核验。",
+        "日期精度不足；核对实际在线发表/会议日期是否落在本次回溯窗口。",
+        "如需标注 SCI/SCIE，必须在 Clarivate Master Journal List 按当期结果人工核验。"
+      ],
+      "source_record_count": 1,
+      "publication_event_match": {
+        "is_known": false,
+        "matched_by": "none",
+        "events": [],
+        "note": "未命中已确认发表事件。"
+      }
+    },
+    {
+      "id": "academic-61c918c96ff40a",
+      "title": "Cognition-inspired Robot Learning and Manipulation for Assembly in Semi-structured Environments",
+      "authors": [
+        "Chuang Wang",
+        "Lie Yang",
+        "Ze Lin",
+        "Gang Chen",
+        "Jun Cheng",
+        "Jianxin Pang"
+      ],
+      "first_author": "Chuang Wang",
+      "published": "2026-06-26",
+      "date_precision": "day",
+      "venue": {
+        "id": "autonomous-robots",
+        "name": "Autonomous Robots",
+        "acronym": "AURO",
+        "type": "journal",
+        "tracking_priority": "扩展追踪",
+        "match_mode": "official-explicit",
+        "conflicting_matches": []
+      },
+      "directions": [
+        "vla"
+      ],
+      "status": "needs_review",
+      "status_label": "待人工核验",
+      "candidate_kind": "聚合元数据发表事件候选",
+      "evidence_level": "E4",
+      "sources": [
+        "Crossref"
+      ],
+      "fact_sources": [
+        {
+          "source": "Crossref",
+          "evidence_level": "E4",
+          "source_id": "10.1007/s10514-026-10259-2",
+          "url": "https://doi.org/10.1007/s10514-026-10259-2",
+          "observed_fields": [
+            "title",
+            "authors",
+            "published",
+            "venue_hint",
+            "doi"
+          ]
+        }
+      ],
+      "external_ids": {
+        "doi": [
+          "10.1007/s10514-026-10259-2"
+        ],
+        "platform": [
+          "crossref:101007s10514026102592"
+        ],
+        "arxiv": []
+      },
+      "links": {
+        "landing": "https://doi.org/10.1007/s10514-026-10259-2",
+        "doi": "https://doi.org/10.1007/s10514-026-10259-2",
+        "arxiv": ""
+      },
+      "confidence": {
+        "level": "medium",
+        "score": 0.64,
+        "reason": "目前只有 E4 聚合元数据线索；含 DOI；命中跟踪 venue 的完整名称或官方入口；标题或摘要命中 Atlas 技术方向"
+      },
+      "duplicate_match": {
+        "is_duplicate": false,
+        "matched_by": "none",
+        "matches": [],
+        "possible_matches": [],
+        "note": "未按稳定标识或严格标题键命中已有论文。"
+      },
+      "deduplication_notes": [],
+      "manual_review_required": true,
+      "manual_review_items": [
+        "确认论文确已收入该 venue，而非预印本、workshop、海报页面、勘误或元数据误配。",
+        "核对标题、作者、DOI/arXiv 与正式出版页是否一致。",
+        "确认方向标签与 Atlas 六类定义相符。",
+        "当前尚无 E1 正式出版证据；需回到出版方或官方 proceedings 核验。",
+        "如需标注 SCI/SCIE，必须在 Clarivate Master Journal List 按当期结果人工核验。"
+      ],
+      "source_record_count": 1,
+      "publication_event_match": {
+        "is_known": false,
+        "matched_by": "none",
+        "events": [],
+        "note": "未命中已确认发表事件。"
+      }
+    },
+    {
+      "id": "academic-de79e468f326b0",
+      "title": "White-Balance First, Adjust Later: Cross-Camera Color Constancy via Vision-Language Evaluation",
+      "authors": [
+        "Shuwei Li",
+        "Lei Tan",
+        "Robby T. Tan"
+      ],
+      "first_author": "Shuwei Li",
+      "published": "2026",
+      "date_precision": "year",
+      "venue": {
+        "id": "cvpr",
+        "name": "IEEE/CVF Conference on Computer Vision and Pattern Recognition",
+        "acronym": "CVPR",
+        "type": "conference",
+        "tracking_priority": "核心追踪",
+        "match_mode": "official-explicit",
+        "conflicting_matches": []
+      },
+      "directions": [
+        "multimodal"
+      ],
+      "status": "needs_review",
+      "status_label": "待人工核验",
+      "candidate_kind": "官方论文集新条目候选",
+      "evidence_level": "E1",
+      "sources": [
+        "CVF Open Access"
+      ],
+      "fact_sources": [
+        {
+          "source": "CVF Open Access",
+          "evidence_level": "E1",
+          "source_id": "/content/CVPR2026/html/Li_White-Balance_First_Adjust_Later_Cross-Camera_Color_Constancy_via_Vision-Language_Evaluation_CVPR_2026_paper.html",
+          "url": "https://openaccess.thecvf.com/content/CVPR2026/html/Li_White-Balance_First_Adjust_Later_Cross-Camera_Color_Constancy_via_Vision-Language_Evaluation_CVPR_2026_paper.html",
+          "observed_fields": [
+            "title",
+            "authors",
+            "published",
+            "venue_hint"
+          ]
+        }
+      ],
+      "external_ids": {
+        "doi": [],
+        "platform": [
+          "cvf-open-access:contentcvpr2026htmlliwhitebalancefirstadjustlatercrosscameracolorconstancyviavisionlanguageevaluationcvpr2026paperhtml"
+        ],
+        "arxiv": []
+      },
+      "links": {
+        "landing": "https://openaccess.thecvf.com/content/CVPR2026/html/Li_White-Balance_First_Adjust_Later_Cross-Camera_Color_Constancy_via_Vision-Language_Evaluation_CVPR_2026_paper.html",
+        "doi": "",
+        "arxiv": ""
+      },
+      "confidence": {
+        "level": "medium",
+        "score": 0.62,
+        "reason": "含官方论文库 E1 正式出版记录；命中跟踪 venue 的完整名称或官方入口；标题或摘要命中 Atlas 技术方向；日期只有年份精度"
+      },
+      "duplicate_match": {
+        "is_duplicate": false,
+        "matched_by": "none",
+        "matches": [],
+        "possible_matches": [],
+        "note": "未按稳定标识或严格标题键命中已有论文。"
+      },
+      "deduplication_notes": [],
+      "manual_review_required": true,
+      "manual_review_items": [
+        "确认论文确已收入该 venue，而非预印本、workshop、海报页面、勘误或元数据误配。",
+        "核对标题、作者、DOI/arXiv 与正式出版页是否一致。",
+        "确认方向标签与 Atlas 六类定义相符。",
+        "日期精度不足；核对实际在线发表/会议日期是否落在本次回溯窗口。"
+      ],
+      "source_record_count": 1,
+      "publication_event_match": {
+        "is_known": false,
+        "matched_by": "none",
+        "events": [],
+        "note": "未命中已确认发表事件。"
+      }
+    },
+    {
+      "id": "academic-584ee49505288f",
+      "title": "Uncertainty-Aware Vision-Language Segmentation for Medical Imaging",
+      "authors": [
+        "Aryan Das",
+        "Tanishq Rachamalla",
+        "Koushik Biswas",
+        "Swalpa Kumar Roy",
+        "Vinay Kumar Verma"
+      ],
+      "first_author": "Aryan Das",
+      "published": "2026",
+      "date_precision": "year",
+      "venue": {
+        "id": "wacv",
+        "name": "IEEE/CVF Winter Conference on Applications of Computer Vision",
+        "acronym": "WACV",
+        "type": "conference",
+        "tracking_priority": "扩展追踪",
+        "match_mode": "official-explicit",
+        "conflicting_matches": []
+      },
+      "directions": [
+        "multimodal"
+      ],
+      "status": "needs_review",
+      "status_label": "待人工核验",
+      "candidate_kind": "官方论文集新条目候选",
+      "evidence_level": "E1",
+      "sources": [
+        "CVF Open Access"
+      ],
+      "fact_sources": [
+        {
+          "source": "CVF Open Access",
+          "evidence_level": "E1",
+          "source_id": "/content/WACV2026/html/Das_Uncertainty-Aware_Vision-Language_Segmentation_for_Medical_Imaging_WACV_2026_paper.html",
+          "url": "https://openaccess.thecvf.com/content/WACV2026/html/Das_Uncertainty-Aware_Vision-Language_Segmentation_for_Medical_Imaging_WACV_2026_paper.html",
+          "observed_fields": [
+            "title",
+            "authors",
+            "published",
+            "venue_hint"
+          ]
+        }
+      ],
+      "external_ids": {
+        "doi": [],
+        "platform": [
+          "cvf-open-access:contentwacv2026htmldasuncertaintyawarevisionlanguagesegmentationformedicalimagingwacv2026paperhtml"
+        ],
+        "arxiv": []
+      },
+      "links": {
+        "landing": "https://openaccess.thecvf.com/content/WACV2026/html/Das_Uncertainty-Aware_Vision-Language_Segmentation_for_Medical_Imaging_WACV_2026_paper.html",
+        "doi": "",
+        "arxiv": ""
+      },
+      "confidence": {
+        "level": "medium",
+        "score": 0.62,
+        "reason": "含官方论文库 E1 正式出版记录；命中跟踪 venue 的完整名称或官方入口；标题或摘要命中 Atlas 技术方向；日期只有年份精度"
+      },
+      "duplicate_match": {
+        "is_duplicate": false,
+        "matched_by": "none",
+        "matches": [],
+        "possible_matches": [],
+        "note": "未按稳定标识或严格标题键命中已有论文。"
+      },
+      "deduplication_notes": [],
+      "manual_review_required": true,
+      "manual_review_items": [
+        "确认论文确已收入该 venue，而非预印本、workshop、海报页面、勘误或元数据误配。",
+        "核对标题、作者、DOI/arXiv 与正式出版页是否一致。",
+        "确认方向标签与 Atlas 六类定义相符。",
+        "日期精度不足；核对实际在线发表/会议日期是否落在本次回溯窗口。"
+      ],
+      "source_record_count": 1,
+      "publication_event_match": {
+        "is_known": false,
+        "matched_by": "none",
+        "events": [],
+        "note": "未命中已确认发表事件。"
+      }
+    },
+    {
+      "id": "academic-6987566508dc4d",
+      "title": "Towards Robust Multi-Modal Semantic Segmentation with Teacher-Student Framework and Hybrid Prototype Distillation",
+      "authors": [
+        "Jiaqi Tan",
+        "Xu Zheng",
+        "Yang Liu"
+      ],
+      "first_author": "Jiaqi Tan",
+      "published": "2026",
+      "date_precision": "year",
+      "venue": {
+        "id": "cvpr",
+        "name": "IEEE/CVF Conference on Computer Vision and Pattern Recognition",
+        "acronym": "CVPR",
+        "type": "conference",
+        "tracking_priority": "核心追踪",
+        "match_mode": "official-explicit",
+        "conflicting_matches": []
+      },
+      "directions": [
+        "segmentation"
+      ],
+      "status": "needs_review",
+      "status_label": "待人工核验",
+      "candidate_kind": "官方论文集新条目候选",
+      "evidence_level": "E1",
+      "sources": [
+        "CVF Open Access"
+      ],
+      "fact_sources": [
+        {
+          "source": "CVF Open Access",
+          "evidence_level": "E1",
+          "source_id": "/content/CVPR2026/html/Tan_Towards_Robust_Multi-Modal_Semantic_Segmentation_with_Teacher-Student_Framework_and_Hybrid_CVPR_2026_paper.html",
+          "url": "https://openaccess.thecvf.com/content/CVPR2026/html/Tan_Towards_Robust_Multi-Modal_Semantic_Segmentation_with_Teacher-Student_Framework_and_Hybrid_CVPR_2026_paper.html",
+          "observed_fields": [
+            "title",
+            "authors",
+            "published",
+            "venue_hint"
+          ]
+        }
+      ],
+      "external_ids": {
+        "doi": [],
+        "platform": [
+          "cvf-open-access:contentcvpr2026htmltantowardsrobustmultimodalsemanticsegmentationwithteacherstudentframeworkandhybridcvpr2026paperhtml"
+        ],
+        "arxiv": []
+      },
+      "links": {
+        "landing": "https://openaccess.thecvf.com/content/CVPR2026/html/Tan_Towards_Robust_Multi-Modal_Semantic_Segmentation_with_Teacher-Student_Framework_and_Hybrid_CVPR_2026_paper.html",
+        "doi": "",
+        "arxiv": ""
+      },
+      "confidence": {
+        "level": "medium",
+        "score": 0.62,
+        "reason": "含官方论文库 E1 正式出版记录；命中跟踪 venue 的完整名称或官方入口；标题或摘要命中 Atlas 技术方向；日期只有年份精度"
+      },
+      "duplicate_match": {
+        "is_duplicate": false,
+        "matched_by": "none",
+        "matches": [],
+        "possible_matches": [],
+        "note": "未按稳定标识或严格标题键命中已有论文。"
+      },
+      "deduplication_notes": [],
+      "manual_review_required": true,
+      "manual_review_items": [
+        "确认论文确已收入该 venue，而非预印本、workshop、海报页面、勘误或元数据误配。",
+        "核对标题、作者、DOI/arXiv 与正式出版页是否一致。",
+        "确认方向标签与 Atlas 六类定义相符。",
+        "日期精度不足；核对实际在线发表/会议日期是否落在本次回溯窗口。"
+      ],
+      "source_record_count": 1,
+      "publication_event_match": {
+        "is_known": false,
+        "matched_by": "none",
+        "events": [],
+        "note": "未命中已确认发表事件。"
+      }
+    },
+    {
+      "id": "academic-5715872f01a059",
+      "title": "SurgXBench: Explainable Vision-Language Model Benchmark for Surgery",
+      "authors": [
+        "Jiajun Cheng",
+        "Xianwu Zhao",
+        "Sainan Liu",
+        "Xiaofan Yu",
+        "Ravi Prakash",
+        "Patrick J. Codd",
+        "Jonathan Elliott Katz",
+        "Shan Lin"
+      ],
+      "first_author": "Jiajun Cheng",
+      "published": "2026",
+      "date_precision": "year",
+      "venue": {
+        "id": "wacv",
+        "name": "IEEE/CVF Winter Conference on Applications of Computer Vision",
+        "acronym": "WACV",
+        "type": "conference",
+        "tracking_priority": "扩展追踪",
+        "match_mode": "official-explicit",
+        "conflicting_matches": []
+      },
+      "directions": [
+        "multimodal"
+      ],
+      "status": "needs_review",
+      "status_label": "待人工核验",
+      "candidate_kind": "官方论文集新条目候选",
+      "evidence_level": "E1",
+      "sources": [
+        "CVF Open Access"
+      ],
+      "fact_sources": [
+        {
+          "source": "CVF Open Access",
+          "evidence_level": "E1",
+          "source_id": "/content/WACV2026/html/Cheng_SurgXBench_Explainable_Vision-Language_Model_Benchmark_for_Surgery_WACV_2026_paper.html",
+          "url": "https://openaccess.thecvf.com/content/WACV2026/html/Cheng_SurgXBench_Explainable_Vision-Language_Model_Benchmark_for_Surgery_WACV_2026_paper.html",
+          "observed_fields": [
+            "title",
+            "authors",
+            "published",
+            "venue_hint"
+          ]
+        }
+      ],
+      "external_ids": {
+        "doi": [],
+        "platform": [
+          "cvf-open-access:contentwacv2026htmlchengsurgxbenchexplainablevisionlanguagemodelbenchmarkforsurgerywacv2026paperhtml"
+        ],
+        "arxiv": []
+      },
+      "links": {
+        "landing": "https://openaccess.thecvf.com/content/WACV2026/html/Cheng_SurgXBench_Explainable_Vision-Language_Model_Benchmark_for_Surgery_WACV_2026_paper.html",
+        "doi": "",
+        "arxiv": ""
+      },
+      "confidence": {
+        "level": "medium",
+        "score": 0.62,
+        "reason": "含官方论文库 E1 正式出版记录；命中跟踪 venue 的完整名称或官方入口；标题或摘要命中 Atlas 技术方向；日期只有年份精度"
+      },
+      "duplicate_match": {
+        "is_duplicate": false,
+        "matched_by": "none",
+        "matches": [],
+        "possible_matches": [],
+        "note": "未按稳定标识或严格标题键命中已有论文。"
+      },
+      "deduplication_notes": [],
+      "manual_review_required": true,
+      "manual_review_items": [
+        "确认论文确已收入该 venue，而非预印本、workshop、海报页面、勘误或元数据误配。",
+        "核对标题、作者、DOI/arXiv 与正式出版页是否一致。",
+        "确认方向标签与 Atlas 六类定义相符。",
+        "日期精度不足；核对实际在线发表/会议日期是否落在本次回溯窗口。"
+      ],
+      "source_record_count": 1,
+      "publication_event_match": {
+        "is_known": false,
+        "matched_by": "none",
+        "events": [],
+        "note": "未命中已确认发表事件。"
+      }
+    },
+    {
+      "id": "academic-7960422c828774",
+      "title": "SmokeBench: Evaluating Multimodal Large Language Models for Wildfire Smoke Detection",
+      "authors": [
+        "Tianye Qi",
+        "Weihao Li",
+        "Nick Barnes"
+      ],
+      "first_author": "Tianye Qi",
+      "published": "2026",
+      "date_precision": "year",
+      "venue": {
+        "id": "wacv",
+        "name": "IEEE/CVF Winter Conference on Applications of Computer Vision",
+        "acronym": "WACV",
+        "type": "conference",
+        "tracking_priority": "扩展追踪",
+        "match_mode": "official-explicit",
+        "conflicting_matches": []
+      },
+      "directions": [
+        "multimodal"
+      ],
+      "status": "needs_review",
+      "status_label": "待人工核验",
+      "candidate_kind": "官方论文集新条目候选",
+      "evidence_level": "E1",
+      "sources": [
+        "CVF Open Access"
+      ],
+      "fact_sources": [
+        {
+          "source": "CVF Open Access",
+          "evidence_level": "E1",
+          "source_id": "/content/WACV2026/html/Qi_SmokeBench_Evaluating_Multimodal_Large_Language_Models_for_Wildfire_Smoke_Detection_WACV_2026_paper.html",
+          "url": "https://openaccess.thecvf.com/content/WACV2026/html/Qi_SmokeBench_Evaluating_Multimodal_Large_Language_Models_for_Wildfire_Smoke_Detection_WACV_2026_paper.html",
+          "observed_fields": [
+            "title",
+            "authors",
+            "published",
+            "venue_hint"
+          ]
+        }
+      ],
+      "external_ids": {
+        "doi": [],
+        "platform": [
+          "cvf-open-access:contentwacv2026htmlqismokebenchevaluatingmultimodallargelanguagemodelsforwildfiresmokedetectionwacv2026paperhtml"
+        ],
+        "arxiv": []
+      },
+      "links": {
+        "landing": "https://openaccess.thecvf.com/content/WACV2026/html/Qi_SmokeBench_Evaluating_Multimodal_Large_Language_Models_for_Wildfire_Smoke_Detection_WACV_2026_paper.html",
+        "doi": "",
+        "arxiv": ""
+      },
+      "confidence": {
+        "level": "medium",
+        "score": 0.62,
+        "reason": "含官方论文库 E1 正式出版记录；命中跟踪 venue 的完整名称或官方入口；标题或摘要命中 Atlas 技术方向；日期只有年份精度"
+      },
+      "duplicate_match": {
+        "is_duplicate": false,
+        "matched_by": "none",
+        "matches": [],
+        "possible_matches": [],
+        "note": "未按稳定标识或严格标题键命中已有论文。"
+      },
+      "deduplication_notes": [],
+      "manual_review_required": true,
+      "manual_review_items": [
+        "确认论文确已收入该 venue，而非预印本、workshop、海报页面、勘误或元数据误配。",
+        "核对标题、作者、DOI/arXiv 与正式出版页是否一致。",
+        "确认方向标签与 Atlas 六类定义相符。",
+        "日期精度不足；核对实际在线发表/会议日期是否落在本次回溯窗口。"
+      ],
+      "source_record_count": 1,
+      "publication_event_match": {
+        "is_known": false,
+        "matched_by": "none",
+        "events": [],
+        "note": "未命中已确认发表事件。"
+      }
+    },
+    {
+      "id": "academic-ecca96f14fcbca",
+      "title": "SenseSearch: Empowering Vision-Language Models with High-Resolution Agentic Search-Reasoning via Reinforcement Learning",
+      "authors": [
+        "Yong Xien Chng",
+        "Tao Hu",
+        "Wenwen Tong",
+        "Xueheng Li",
+        "Jiandong Chen",
+        "Haojia Yu",
+        "Jiefan Lu",
+        "Hewei Guo",
+        "Hanming Deng",
+        "Chengjun Xie",
+        "Gao Huang",
+        "Lewei Lu"
+      ],
+      "first_author": "Yong Xien Chng",
+      "published": "2026",
+      "date_precision": "year",
+      "venue": {
+        "id": "cvpr",
+        "name": "IEEE/CVF Conference on Computer Vision and Pattern Recognition",
+        "acronym": "CVPR",
+        "type": "conference",
+        "tracking_priority": "核心追踪",
+        "match_mode": "official-explicit",
+        "conflicting_matches": []
+      },
+      "directions": [
+        "multimodal"
+      ],
+      "status": "needs_review",
+      "status_label": "待人工核验",
+      "candidate_kind": "官方论文集新条目候选",
+      "evidence_level": "E1",
+      "sources": [
+        "CVF Open Access"
+      ],
+      "fact_sources": [
+        {
+          "source": "CVF Open Access",
+          "evidence_level": "E1",
+          "source_id": "/content/CVPR2026/html/Chng_SenseSearch_Empowering_Vision-Language_Models_with_High-Resolution_Agentic_Search-Reasoning_via_Reinforcement_CVPR_2026_paper.html",
+          "url": "https://openaccess.thecvf.com/content/CVPR2026/html/Chng_SenseSearch_Empowering_Vision-Language_Models_with_High-Resolution_Agentic_Search-Reasoning_via_Reinforcement_CVPR_2026_paper.html",
+          "observed_fields": [
+            "title",
+            "authors",
+            "published",
+            "venue_hint"
+          ]
+        }
+      ],
+      "external_ids": {
+        "doi": [],
+        "platform": [
+          "cvf-open-access:contentcvpr2026htmlchngsensesearchempoweringvisionlanguagemodelswithhighresolutionagenticsearchreasoningviareinforcementcvpr2026paperhtml"
+        ],
+        "arxiv": []
+      },
+      "links": {
+        "landing": "https://openaccess.thecvf.com/content/CVPR2026/html/Chng_SenseSearch_Empowering_Vision-Language_Models_with_High-Resolution_Agentic_Search-Reasoning_via_Reinforcement_CVPR_2026_paper.html",
+        "doi": "",
+        "arxiv": ""
+      },
+      "confidence": {
+        "level": "medium",
+        "score": 0.62,
+        "reason": "含官方论文库 E1 正式出版记录；命中跟踪 venue 的完整名称或官方入口；标题或摘要命中 Atlas 技术方向；日期只有年份精度"
+      },
+      "duplicate_match": {
+        "is_duplicate": false,
+        "matched_by": "none",
+        "matches": [],
+        "possible_matches": [],
+        "note": "未按稳定标识或严格标题键命中已有论文。"
+      },
+      "deduplication_notes": [],
+      "manual_review_required": true,
+      "manual_review_items": [
+        "确认论文确已收入该 venue，而非预印本、workshop、海报页面、勘误或元数据误配。",
+        "核对标题、作者、DOI/arXiv 与正式出版页是否一致。",
+        "确认方向标签与 Atlas 六类定义相符。",
+        "日期精度不足；核对实际在线发表/会议日期是否落在本次回溯窗口。"
+      ],
+      "source_record_count": 1,
+      "publication_event_match": {
+        "is_known": false,
+        "matched_by": "none",
+        "events": [],
+        "note": "未命中已确认发表事件。"
+      }
+    },
+    {
+      "id": "academic-92cc5a6801f66d",
+      "title": "Scalpel: Fine-Grained Alignment of Attention Activation Manifolds via Mixture Gaussian Bridges to Mitigate Multimodal Hallucination",
+      "authors": [
+        "Ziqiang Shi",
+        "Rujie Liu",
+        "Shanshan Yu",
+        "Satoshi Munakata",
+        "Koichi Shirahata"
+      ],
+      "first_author": "Ziqiang Shi",
+      "published": "2026",
+      "date_precision": "year",
+      "venue": {
+        "id": "wacv",
+        "name": "IEEE/CVF Winter Conference on Applications of Computer Vision",
+        "acronym": "WACV",
+        "type": "conference",
+        "tracking_priority": "扩展追踪",
+        "match_mode": "official-explicit",
+        "conflicting_matches": []
+      },
+      "directions": [
+        "multimodal"
+      ],
+      "status": "needs_review",
+      "status_label": "待人工核验",
+      "candidate_kind": "官方论文集新条目候选",
+      "evidence_level": "E1",
+      "sources": [
+        "CVF Open Access"
+      ],
+      "fact_sources": [
+        {
+          "source": "CVF Open Access",
+          "evidence_level": "E1",
+          "source_id": "/content/WACV2026/html/Shi_Scalpel_Fine-Grained_Alignment_of_Attention_Activation_Manifolds_via_Mixture_Gaussian_WACV_2026_paper.html",
+          "url": "https://openaccess.thecvf.com/content/WACV2026/html/Shi_Scalpel_Fine-Grained_Alignment_of_Attention_Activation_Manifolds_via_Mixture_Gaussian_WACV_2026_paper.html",
+          "observed_fields": [
+            "title",
+            "authors",
+            "published",
+            "venue_hint"
+          ]
+        }
+      ],
+      "external_ids": {
+        "doi": [],
+        "platform": [
+          "cvf-open-access:contentwacv2026htmlshiscalpelfinegrainedalignmentofattentionactivationmanifoldsviamixturegaussianwacv2026paperhtml"
+        ],
+        "arxiv": []
+      },
+      "links": {
+        "landing": "https://openaccess.thecvf.com/content/WACV2026/html/Shi_Scalpel_Fine-Grained_Alignment_of_Attention_Activation_Manifolds_via_Mixture_Gaussian_WACV_2026_paper.html",
+        "doi": "",
+        "arxiv": ""
+      },
+      "confidence": {
+        "level": "medium",
+        "score": 0.62,
+        "reason": "含官方论文库 E1 正式出版记录；命中跟踪 venue 的完整名称或官方入口；标题或摘要命中 Atlas 技术方向；日期只有年份精度"
+      },
+      "duplicate_match": {
+        "is_duplicate": false,
+        "matched_by": "none",
+        "matches": [],
+        "possible_matches": [],
+        "note": "未按稳定标识或严格标题键命中已有论文。"
+      },
+      "deduplication_notes": [],
+      "manual_review_required": true,
+      "manual_review_items": [
+        "确认论文确已收入该 venue，而非预印本、workshop、海报页面、勘误或元数据误配。",
+        "核对标题、作者、DOI/arXiv 与正式出版页是否一致。",
+        "确认方向标签与 Atlas 六类定义相符。",
+        "日期精度不足；核对实际在线发表/会议日期是否落在本次回溯窗口。"
+      ],
+      "source_record_count": 1,
+      "publication_event_match": {
+        "is_known": false,
+        "matched_by": "none",
+        "events": [],
+        "note": "未命中已确认发表事件。"
+      }
+    },
+    {
+      "id": "academic-8fa43b5fc09de7",
+      "title": "STARS: Self-supervised Tuning for 3D Action Recognition in Skeleton Sequences",
+      "authors": [
+        "Soroush Mehraban",
+        "Mohammad Javad Rajabi",
+        "Andrea Iaboni",
+        "Babak Taati"
+      ],
+      "first_author": "Soroush Mehraban",
+      "published": "2026",
+      "date_precision": "year",
+      "venue": {
+        "id": "wacv",
+        "name": "IEEE/CVF Winter Conference on Applications of Computer Vision",
+        "acronym": "WACV",
+        "type": "conference",
+        "tracking_priority": "扩展追踪",
+        "match_mode": "official-explicit",
+        "conflicting_matches": []
+      },
+      "directions": [
+        "representation"
+      ],
+      "status": "needs_review",
+      "status_label": "待人工核验",
+      "candidate_kind": "官方论文集新条目候选",
+      "evidence_level": "E1",
+      "sources": [
+        "CVF Open Access"
+      ],
+      "fact_sources": [
+        {
+          "source": "CVF Open Access",
+          "evidence_level": "E1",
+          "source_id": "/content/WACV2026/html/Mehraban_STARS_Self-supervised_Tuning_for_3D_Action_Recognition_in_Skeleton_Sequences_WACV_2026_paper.html",
+          "url": "https://openaccess.thecvf.com/content/WACV2026/html/Mehraban_STARS_Self-supervised_Tuning_for_3D_Action_Recognition_in_Skeleton_Sequences_WACV_2026_paper.html",
+          "observed_fields": [
+            "title",
+            "authors",
+            "published",
+            "venue_hint"
+          ]
+        }
+      ],
+      "external_ids": {
+        "doi": [],
+        "platform": [
+          "cvf-open-access:contentwacv2026htmlmehrabanstarsselfsupervisedtuningfor3dactionrecognitioninskeletonsequenceswacv2026paperhtml"
+        ],
+        "arxiv": []
+      },
+      "links": {
+        "landing": "https://openaccess.thecvf.com/content/WACV2026/html/Mehraban_STARS_Self-supervised_Tuning_for_3D_Action_Recognition_in_Skeleton_Sequences_WACV_2026_paper.html",
+        "doi": "",
+        "arxiv": ""
+      },
+      "confidence": {
+        "level": "medium",
+        "score": 0.62,
+        "reason": "含官方论文库 E1 正式出版记录；命中跟踪 venue 的完整名称或官方入口；标题或摘要命中 Atlas 技术方向；日期只有年份精度"
+      },
+      "duplicate_match": {
+        "is_duplicate": false,
+        "matched_by": "none",
+        "matches": [],
+        "possible_matches": [],
+        "note": "未按稳定标识或严格标题键命中已有论文。"
+      },
+      "deduplication_notes": [],
+      "manual_review_required": true,
+      "manual_review_items": [
+        "确认论文确已收入该 venue，而非预印本、workshop、海报页面、勘误或元数据误配。",
+        "核对标题、作者、DOI/arXiv 与正式出版页是否一致。",
+        "确认方向标签与 Atlas 六类定义相符。",
+        "日期精度不足；核对实际在线发表/会议日期是否落在本次回溯窗口。"
+      ],
+      "source_record_count": 1,
+      "publication_event_match": {
+        "is_known": false,
+        "matched_by": "none",
+        "events": [],
+        "note": "未命中已确认发表事件。"
+      }
+    },
+    {
+      "id": "academic-c0901ff681edfe",
+      "title": "SPEGC: Continual Test-Time Adaptation via Semantic-Prompt-Enhanced Graph Clustering for Medical Image Segmentation",
+      "authors": [
+        "Xiaogang Du",
+        "Jiawei Zhang",
+        "Tongfei Liu",
+        "Tao Lei",
+        "Yingbo Wang"
+      ],
+      "first_author": "Xiaogang Du",
+      "published": "2026",
+      "date_precision": "year",
+      "venue": {
+        "id": "cvpr",
+        "name": "IEEE/CVF Conference on Computer Vision and Pattern Recognition",
+        "acronym": "CVPR",
+        "type": "conference",
+        "tracking_priority": "核心追踪",
+        "match_mode": "official-explicit",
+        "conflicting_matches": []
+      },
+      "directions": [
+        "segmentation"
+      ],
+      "status": "needs_review",
+      "status_label": "待人工核验",
+      "candidate_kind": "官方论文集新条目候选",
+      "evidence_level": "E1",
+      "sources": [
+        "CVF Open Access"
+      ],
+      "fact_sources": [
+        {
+          "source": "CVF Open Access",
+          "evidence_level": "E1",
+          "source_id": "/content/CVPR2026/html/Du_SPEGC_Continual_Test-Time_Adaptation_via_Semantic-Prompt-Enhanced_Graph_Clustering_for_Medical_CVPR_2026_paper.html",
+          "url": "https://openaccess.thecvf.com/content/CVPR2026/html/Du_SPEGC_Continual_Test-Time_Adaptation_via_Semantic-Prompt-Enhanced_Graph_Clustering_for_Medical_CVPR_2026_paper.html",
+          "observed_fields": [
+            "title",
+            "authors",
+            "published",
+            "venue_hint"
+          ]
+        }
+      ],
+      "external_ids": {
+        "doi": [],
+        "platform": [
+          "cvf-open-access:contentcvpr2026htmlduspegccontinualtesttimeadaptationviasemanticpromptenhancedgraphclusteringformedicalcvpr2026paperhtml"
+        ],
+        "arxiv": []
+      },
+      "links": {
+        "landing": "https://openaccess.thecvf.com/content/CVPR2026/html/Du_SPEGC_Continual_Test-Time_Adaptation_via_Semantic-Prompt-Enhanced_Graph_Clustering_for_Medical_CVPR_2026_paper.html",
+        "doi": "",
+        "arxiv": ""
+      },
+      "confidence": {
+        "level": "medium",
+        "score": 0.62,
+        "reason": "含官方论文库 E1 正式出版记录；命中跟踪 venue 的完整名称或官方入口；标题或摘要命中 Atlas 技术方向；日期只有年份精度"
+      },
+      "duplicate_match": {
+        "is_duplicate": false,
+        "matched_by": "none",
+        "matches": [],
+        "possible_matches": [],
+        "note": "未按稳定标识或严格标题键命中已有论文。"
+      },
+      "deduplication_notes": [],
+      "manual_review_required": true,
+      "manual_review_items": [
+        "确认论文确已收入该 venue，而非预印本、workshop、海报页面、勘误或元数据误配。",
+        "核对标题、作者、DOI/arXiv 与正式出版页是否一致。",
+        "确认方向标签与 Atlas 六类定义相符。",
+        "日期精度不足；核对实际在线发表/会议日期是否落在本次回溯窗口。"
+      ],
+      "source_record_count": 1,
+      "publication_event_match": {
+        "is_known": false,
+        "matched_by": "none",
+        "events": [],
+        "note": "未命中已确认发表事件。"
+      }
+    },
+    {
+      "id": "academic-995df299116b19",
+      "title": "RetouchIQ: MLLM Agents for Instruction-Based Image Retouching with Generalist Reward",
+      "authors": [
+        "Qiucheng Wu",
+        "Jing Shi",
+        "Simon Jenni",
+        "Kushal Kafle",
+        "Tianyu Wang",
+        "Shiyu Chang",
+        "Handong Zhao"
+      ],
+      "first_author": "Qiucheng Wu",
+      "published": "2026",
+      "date_precision": "year",
+      "venue": {
+        "id": "cvpr",
+        "name": "IEEE/CVF Conference on Computer Vision and Pattern Recognition",
+        "acronym": "CVPR",
+        "type": "conference",
+        "tracking_priority": "核心追踪",
+        "match_mode": "official-explicit",
+        "conflicting_matches": []
+      },
+      "directions": [
+        "multimodal"
+      ],
+      "status": "needs_review",
+      "status_label": "待人工核验",
+      "candidate_kind": "官方论文集新条目候选",
+      "evidence_level": "E1",
+      "sources": [
+        "CVF Open Access"
+      ],
+      "fact_sources": [
+        {
+          "source": "CVF Open Access",
+          "evidence_level": "E1",
+          "source_id": "/content/CVPR2026/html/Wu_RetouchIQ_MLLM_Agents_for_Instruction-Based_Image_Retouching_with_Generalist_Reward_CVPR_2026_paper.html",
+          "url": "https://openaccess.thecvf.com/content/CVPR2026/html/Wu_RetouchIQ_MLLM_Agents_for_Instruction-Based_Image_Retouching_with_Generalist_Reward_CVPR_2026_paper.html",
+          "observed_fields": [
+            "title",
+            "authors",
+            "published",
+            "venue_hint"
+          ]
+        }
+      ],
+      "external_ids": {
+        "doi": [],
+        "platform": [
+          "cvf-open-access:contentcvpr2026htmlwuretouchiqmllmagentsforinstructionbasedimageretouchingwithgeneralistrewardcvpr2026paperhtml"
+        ],
+        "arxiv": []
+      },
+      "links": {
+        "landing": "https://openaccess.thecvf.com/content/CVPR2026/html/Wu_RetouchIQ_MLLM_Agents_for_Instruction-Based_Image_Retouching_with_Generalist_Reward_CVPR_2026_paper.html",
+        "doi": "",
+        "arxiv": ""
+      },
+      "confidence": {
+        "level": "medium",
+        "score": 0.62,
+        "reason": "含官方论文库 E1 正式出版记录；命中跟踪 venue 的完整名称或官方入口；标题或摘要命中 Atlas 技术方向；日期只有年份精度"
+      },
+      "duplicate_match": {
+        "is_duplicate": false,
+        "matched_by": "none",
+        "matches": [],
+        "possible_matches": [],
+        "note": "未按稳定标识或严格标题键命中已有论文。"
+      },
+      "deduplication_notes": [],
+      "manual_review_required": true,
+      "manual_review_items": [
+        "确认论文确已收入该 venue，而非预印本、workshop、海报页面、勘误或元数据误配。",
+        "核对标题、作者、DOI/arXiv 与正式出版页是否一致。",
+        "确认方向标签与 Atlas 六类定义相符。",
+        "日期精度不足；核对实际在线发表/会议日期是否落在本次回溯窗口。"
+      ],
+      "source_record_count": 1,
+      "publication_event_match": {
+        "is_known": false,
+        "matched_by": "none",
+        "events": [],
+        "note": "未命中已确认发表事件。"
+      }
+    },
+    {
+      "id": "academic-8c9a8a863bfc22",
+      "title": "Reallocating Attention Across Layers to Reduce Multimodal Hallucination",
+      "authors": [
+        "Haolang Lu",
+        "Bolun Chu",
+        "WeiYe Fu",
+        "Guoshun Nan",
+        "Junning Liu",
+        "Minghui Pan",
+        "Qiankun Li",
+        "Yi Yu",
+        "Hua Wang",
+        "Kun Wang"
+      ],
+      "first_author": "Haolang Lu",
+      "published": "2026",
+      "date_precision": "year",
+      "venue": {
+        "id": "cvpr",
+        "name": "IEEE/CVF Conference on Computer Vision and Pattern Recognition",
+        "acronym": "CVPR",
+        "type": "conference",
+        "tracking_priority": "核心追踪",
+        "match_mode": "official-explicit",
+        "conflicting_matches": []
+      },
+      "directions": [
+        "multimodal"
+      ],
+      "status": "needs_review",
+      "status_label": "待人工核验",
+      "candidate_kind": "官方论文集新条目候选",
+      "evidence_level": "E1",
+      "sources": [
+        "CVF Open Access"
+      ],
+      "fact_sources": [
+        {
+          "source": "CVF Open Access",
+          "evidence_level": "E1",
+          "source_id": "/content/CVPR2026/html/Lu_Reallocating_Attention_Across_Layers_to_Reduce_Multimodal_Hallucination_CVPR_2026_paper.html",
+          "url": "https://openaccess.thecvf.com/content/CVPR2026/html/Lu_Reallocating_Attention_Across_Layers_to_Reduce_Multimodal_Hallucination_CVPR_2026_paper.html",
+          "observed_fields": [
+            "title",
+            "authors",
+            "published",
+            "venue_hint"
+          ]
+        }
+      ],
+      "external_ids": {
+        "doi": [],
+        "platform": [
+          "cvf-open-access:contentcvpr2026htmllureallocatingattentionacrosslayerstoreducemultimodalhallucinationcvpr2026paperhtml"
+        ],
+        "arxiv": []
+      },
+      "links": {
+        "landing": "https://openaccess.thecvf.com/content/CVPR2026/html/Lu_Reallocating_Attention_Across_Layers_to_Reduce_Multimodal_Hallucination_CVPR_2026_paper.html",
+        "doi": "",
+        "arxiv": ""
+      },
+      "confidence": {
+        "level": "medium",
+        "score": 0.62,
+        "reason": "含官方论文库 E1 正式出版记录；命中跟踪 venue 的完整名称或官方入口；标题或摘要命中 Atlas 技术方向；日期只有年份精度"
+      },
+      "duplicate_match": {
+        "is_duplicate": false,
+        "matched_by": "none",
+        "matches": [],
+        "possible_matches": [],
+        "note": "未按稳定标识或严格标题键命中已有论文。"
+      },
+      "deduplication_notes": [],
+      "manual_review_required": true,
+      "manual_review_items": [
+        "确认论文确已收入该 venue，而非预印本、workshop、海报页面、勘误或元数据误配。",
+        "核对标题、作者、DOI/arXiv 与正式出版页是否一致。",
+        "确认方向标签与 Atlas 六类定义相符。",
+        "日期精度不足；核对实际在线发表/会议日期是否落在本次回溯窗口。"
+      ],
+      "source_record_count": 1,
+      "publication_event_match": {
+        "is_known": false,
+        "matched_by": "none",
+        "events": [],
+        "note": "未命中已确认发表事件。"
+      }
+    },
+    {
+      "id": "academic-963953478577e9",
+      "title": "RAYNOVA: Scale-Temporal Autoregressive World Modeling in Ray Space",
+      "authors": [
+        "Yichen Xie",
+        "Chensheng Peng",
+        "Mazen Abdelfattah",
+        "Yihan Hu",
+        "Jiezhi Yang",
+        "Eric Higgins",
+        "Ryan Brigden",
+        "Masayoshi Tomizuka",
+        "Wei Zhan"
+      ],
+      "first_author": "Yichen Xie",
+      "published": "2026",
+      "date_precision": "year",
+      "venue": {
+        "id": "cvpr",
+        "name": "IEEE/CVF Conference on Computer Vision and Pattern Recognition",
+        "acronym": "CVPR",
+        "type": "conference",
+        "tracking_priority": "核心追踪",
+        "match_mode": "official-explicit",
+        "conflicting_matches": []
+      },
+      "directions": [
+        "world"
+      ],
+      "status": "needs_review",
+      "status_label": "待人工核验",
+      "candidate_kind": "官方论文集新条目候选",
+      "evidence_level": "E1",
+      "sources": [
+        "CVF Open Access"
+      ],
+      "fact_sources": [
+        {
+          "source": "CVF Open Access",
+          "evidence_level": "E1",
+          "source_id": "/content/CVPR2026/html/Xie_RAYNOVA_Scale-Temporal_Autoregressive_World_Modeling_in_Ray_Space_CVPR_2026_paper.html",
+          "url": "https://openaccess.thecvf.com/content/CVPR2026/html/Xie_RAYNOVA_Scale-Temporal_Autoregressive_World_Modeling_in_Ray_Space_CVPR_2026_paper.html",
+          "observed_fields": [
+            "title",
+            "authors",
+            "published",
+            "venue_hint"
+          ]
+        }
+      ],
+      "external_ids": {
+        "doi": [],
+        "platform": [
+          "cvf-open-access:contentcvpr2026htmlxieraynovascaletemporalautoregressiveworldmodelinginrayspacecvpr2026paperhtml"
+        ],
+        "arxiv": []
+      },
+      "links": {
+        "landing": "https://openaccess.thecvf.com/content/CVPR2026/html/Xie_RAYNOVA_Scale-Temporal_Autoregressive_World_Modeling_in_Ray_Space_CVPR_2026_paper.html",
+        "doi": "",
+        "arxiv": ""
+      },
+      "confidence": {
+        "level": "medium",
+        "score": 0.62,
+        "reason": "含官方论文库 E1 正式出版记录；命中跟踪 venue 的完整名称或官方入口；标题或摘要命中 Atlas 技术方向；日期只有年份精度"
+      },
+      "duplicate_match": {
+        "is_duplicate": false,
+        "matched_by": "none",
+        "matches": [],
+        "possible_matches": [],
+        "note": "未按稳定标识或严格标题键命中已有论文。"
+      },
+      "deduplication_notes": [],
+      "manual_review_required": true,
+      "manual_review_items": [
+        "确认论文确已收入该 venue，而非预印本、workshop、海报页面、勘误或元数据误配。",
+        "核对标题、作者、DOI/arXiv 与正式出版页是否一致。",
+        "确认方向标签与 Atlas 六类定义相符。",
+        "日期精度不足；核对实际在线发表/会议日期是否落在本次回溯窗口。"
+      ],
+      "source_record_count": 1,
+      "publication_event_match": {
+        "is_known": false,
+        "matched_by": "none",
+        "events": [],
+        "note": "未命中已确认发表事件。"
+      }
+    },
+    {
+      "id": "academic-b37f6b2c62af57",
+      "title": "Quantized Residuals to Continuous Prompts for Few-Shot Class Incremental Learning in Vision-Language Models",
+      "authors": [
+        "Abhishek Kumar Sinha",
+        "Nitant Dube",
+        "Soma Biswas"
+      ],
+      "first_author": "Abhishek Kumar Sinha",
+      "published": "2026",
+      "date_precision": "year",
+      "venue": {
+        "id": "cvpr",
+        "name": "IEEE/CVF Conference on Computer Vision and Pattern Recognition",
+        "acronym": "CVPR",
+        "type": "conference",
+        "tracking_priority": "核心追踪",
+        "match_mode": "official-explicit",
+        "conflicting_matches": []
+      },
+      "directions": [
+        "multimodal"
+      ],
+      "status": "needs_review",
+      "status_label": "待人工核验",
+      "candidate_kind": "官方论文集新条目候选",
+      "evidence_level": "E1",
+      "sources": [
+        "CVF Open Access"
+      ],
+      "fact_sources": [
+        {
+          "source": "CVF Open Access",
+          "evidence_level": "E1",
+          "source_id": "/content/CVPR2026/html/Sinha_Quantized_Residuals_to_Continuous_Prompts_for_Few-Shot_Class_Incremental_Learning_CVPR_2026_paper.html",
+          "url": "https://openaccess.thecvf.com/content/CVPR2026/html/Sinha_Quantized_Residuals_to_Continuous_Prompts_for_Few-Shot_Class_Incremental_Learning_CVPR_2026_paper.html",
+          "observed_fields": [
+            "title",
+            "authors",
+            "published",
+            "venue_hint"
+          ]
+        }
+      ],
+      "external_ids": {
+        "doi": [],
+        "platform": [
+          "cvf-open-access:contentcvpr2026htmlsinhaquantizedresidualstocontinuouspromptsforfewshotclassincrementallearningcvpr2026paperhtml"
+        ],
+        "arxiv": []
+      },
+      "links": {
+        "landing": "https://openaccess.thecvf.com/content/CVPR2026/html/Sinha_Quantized_Residuals_to_Continuous_Prompts_for_Few-Shot_Class_Incremental_Learning_CVPR_2026_paper.html",
+        "doi": "",
+        "arxiv": ""
+      },
+      "confidence": {
+        "level": "medium",
+        "score": 0.62,
+        "reason": "含官方论文库 E1 正式出版记录；命中跟踪 venue 的完整名称或官方入口；标题或摘要命中 Atlas 技术方向；日期只有年份精度"
+      },
+      "duplicate_match": {
+        "is_duplicate": false,
+        "matched_by": "none",
+        "matches": [],
+        "possible_matches": [],
+        "note": "未按稳定标识或严格标题键命中已有论文。"
+      },
+      "deduplication_notes": [],
+      "manual_review_required": true,
+      "manual_review_items": [
+        "确认论文确已收入该 venue，而非预印本、workshop、海报页面、勘误或元数据误配。",
+        "核对标题、作者、DOI/arXiv 与正式出版页是否一致。",
+        "确认方向标签与 Atlas 六类定义相符。",
+        "日期精度不足；核对实际在线发表/会议日期是否落在本次回溯窗口。"
+      ],
+      "source_record_count": 1,
+      "publication_event_match": {
+        "is_known": false,
+        "matched_by": "none",
+        "events": [],
+        "note": "未命中已确认发表事件。"
+      }
+    },
+    {
+      "id": "academic-997d6f42a42ef4",
+      "title": "Quant Experts: Token-aware Adaptive Error Reconstruction with Mixture of Experts for Large Vision-Language Models Quantization",
+      "authors": [
+        "Chenwei Jia",
+        "Baoting Li",
+        "Xuchong Zhang",
+        "Mingzhuo Wei",
+        "Bochen Lin",
+        "Hongbin Sun"
+      ],
+      "first_author": "Chenwei Jia",
+      "published": "2026",
+      "date_precision": "year",
+      "venue": {
+        "id": "cvpr",
+        "name": "IEEE/CVF Conference on Computer Vision and Pattern Recognition",
+        "acronym": "CVPR",
+        "type": "conference",
+        "tracking_priority": "核心追踪",
+        "match_mode": "official-explicit",
+        "conflicting_matches": []
+      },
+      "directions": [
+        "multimodal"
+      ],
+      "status": "needs_review",
+      "status_label": "待人工核验",
+      "candidate_kind": "官方论文集新条目候选",
+      "evidence_level": "E1",
+      "sources": [
+        "CVF Open Access"
+      ],
+      "fact_sources": [
+        {
+          "source": "CVF Open Access",
+          "evidence_level": "E1",
+          "source_id": "/content/CVPR2026/html/Jia_Quant_Experts_Token-aware_Adaptive_Error_Reconstruction_with_Mixture_of_Experts_CVPR_2026_paper.html",
+          "url": "https://openaccess.thecvf.com/content/CVPR2026/html/Jia_Quant_Experts_Token-aware_Adaptive_Error_Reconstruction_with_Mixture_of_Experts_CVPR_2026_paper.html",
+          "observed_fields": [
+            "title",
+            "authors",
+            "published",
+            "venue_hint"
+          ]
+        }
+      ],
+      "external_ids": {
+        "doi": [],
+        "platform": [
+          "cvf-open-access:contentcvpr2026htmljiaquantexpertstokenawareadaptiveerrorreconstructionwithmixtureofexpertscvpr2026paperhtml"
+        ],
+        "arxiv": []
+      },
+      "links": {
+        "landing": "https://openaccess.thecvf.com/content/CVPR2026/html/Jia_Quant_Experts_Token-aware_Adaptive_Error_Reconstruction_with_Mixture_of_Experts_CVPR_2026_paper.html",
+        "doi": "",
+        "arxiv": ""
+      },
+      "confidence": {
+        "level": "medium",
+        "score": 0.62,
+        "reason": "含官方论文库 E1 正式出版记录；命中跟踪 venue 的完整名称或官方入口；标题或摘要命中 Atlas 技术方向；日期只有年份精度"
+      },
+      "duplicate_match": {
+        "is_duplicate": false,
+        "matched_by": "none",
+        "matches": [],
+        "possible_matches": [],
+        "note": "未按稳定标识或严格标题键命中已有论文。"
+      },
+      "deduplication_notes": [],
+      "manual_review_required": true,
+      "manual_review_items": [
+        "确认论文确已收入该 venue，而非预印本、workshop、海报页面、勘误或元数据误配。",
+        "核对标题、作者、DOI/arXiv 与正式出版页是否一致。",
+        "确认方向标签与 Atlas 六类定义相符。",
+        "日期精度不足；核对实际在线发表/会议日期是否落在本次回溯窗口。"
+      ],
+      "source_record_count": 1,
+      "publication_event_match": {
+        "is_known": false,
+        "matched_by": "none",
+        "events": [],
+        "note": "未命中已确认发表事件。"
+      }
+    },
+    {
+      "id": "academic-8b60f139a585e4",
+      "title": "Physical Simulator In-the-Loop Video Generation",
+      "authors": [
+        "Lin Geng Foo",
+        "Mark He Huang",
+        "Alexandros Lattas",
+        "Stylianos Moschoglou",
+        "Thabo Beeler",
+        "Christian Theobalt"
+      ],
+      "first_author": "Lin Geng Foo",
+      "published": "2026",
+      "date_precision": "year",
+      "venue": {
+        "id": "cvpr",
+        "name": "IEEE/CVF Conference on Computer Vision and Pattern Recognition",
+        "acronym": "CVPR",
+        "type": "conference",
+        "tracking_priority": "核心追踪",
+        "match_mode": "official-explicit",
+        "conflicting_matches": []
+      },
+      "directions": [
+        "world"
+      ],
+      "status": "needs_review",
+      "status_label": "待人工核验",
+      "candidate_kind": "官方论文集新条目候选",
+      "evidence_level": "E1",
+      "sources": [
+        "CVF Open Access"
+      ],
+      "fact_sources": [
+        {
+          "source": "CVF Open Access",
+          "evidence_level": "E1",
+          "source_id": "/content/CVPR2026/html/Foo_Physical_Simulator_In-the-Loop_Video_Generation_CVPR_2026_paper.html",
+          "url": "https://openaccess.thecvf.com/content/CVPR2026/html/Foo_Physical_Simulator_In-the-Loop_Video_Generation_CVPR_2026_paper.html",
+          "observed_fields": [
+            "title",
+            "authors",
+            "published",
+            "venue_hint"
+          ]
+        }
+      ],
+      "external_ids": {
+        "doi": [],
+        "platform": [
+          "cvf-open-access:contentcvpr2026htmlfoophysicalsimulatorintheloopvideogenerationcvpr2026paperhtml"
+        ],
+        "arxiv": []
+      },
+      "links": {
+        "landing": "https://openaccess.thecvf.com/content/CVPR2026/html/Foo_Physical_Simulator_In-the-Loop_Video_Generation_CVPR_2026_paper.html",
+        "doi": "",
+        "arxiv": ""
+      },
+      "confidence": {
+        "level": "medium",
+        "score": 0.62,
+        "reason": "含官方论文库 E1 正式出版记录；命中跟踪 venue 的完整名称或官方入口；标题或摘要命中 Atlas 技术方向；日期只有年份精度"
+      },
+      "duplicate_match": {
+        "is_duplicate": false,
+        "matched_by": "none",
+        "matches": [],
+        "possible_matches": [],
+        "note": "未按稳定标识或严格标题键命中已有论文。"
+      },
+      "deduplication_notes": [],
+      "manual_review_required": true,
+      "manual_review_items": [
+        "确认论文确已收入该 venue，而非预印本、workshop、海报页面、勘误或元数据误配。",
+        "核对标题、作者、DOI/arXiv 与正式出版页是否一致。",
+        "确认方向标签与 Atlas 六类定义相符。",
+        "日期精度不足；核对实际在线发表/会议日期是否落在本次回溯窗口。"
+      ],
+      "source_record_count": 1,
+      "publication_event_match": {
+        "is_known": false,
+        "matched_by": "none",
+        "events": [],
+        "note": "未命中已确认发表事件。"
+      }
+    },
+    {
+      "id": "academic-e1e6bf18f155db",
+      "title": "PersonaVLM: Long-Term Personalized Multimodal LLMs",
+      "authors": [
+        "Chang Nie",
+        "Chaoyou Fu",
+        "Yifan Zhang",
+        "Haihua Yang",
+        "Caifeng Shan"
+      ],
+      "first_author": "Chang Nie",
+      "published": "2026",
+      "date_precision": "year",
+      "venue": {
+        "id": "cvpr",
+        "name": "IEEE/CVF Conference on Computer Vision and Pattern Recognition",
+        "acronym": "CVPR",
+        "type": "conference",
+        "tracking_priority": "核心追踪",
+        "match_mode": "official-explicit",
+        "conflicting_matches": []
+      },
+      "directions": [
+        "multimodal"
+      ],
+      "status": "needs_review",
+      "status_label": "待人工核验",
+      "candidate_kind": "官方论文集新条目候选",
+      "evidence_level": "E1",
+      "sources": [
+        "CVF Open Access"
+      ],
+      "fact_sources": [
+        {
+          "source": "CVF Open Access",
+          "evidence_level": "E1",
+          "source_id": "/content/CVPR2026/html/Nie_PersonaVLM_Long-Term_Personalized_Multimodal_LLMs_CVPR_2026_paper.html",
+          "url": "https://openaccess.thecvf.com/content/CVPR2026/html/Nie_PersonaVLM_Long-Term_Personalized_Multimodal_LLMs_CVPR_2026_paper.html",
+          "observed_fields": [
+            "title",
+            "authors",
+            "published",
+            "venue_hint"
+          ]
+        }
+      ],
+      "external_ids": {
+        "doi": [],
+        "platform": [
+          "cvf-open-access:contentcvpr2026htmlniepersonavlmlongtermpersonalizedmultimodalllmscvpr2026paperhtml"
+        ],
+        "arxiv": []
+      },
+      "links": {
+        "landing": "https://openaccess.thecvf.com/content/CVPR2026/html/Nie_PersonaVLM_Long-Term_Personalized_Multimodal_LLMs_CVPR_2026_paper.html",
+        "doi": "",
+        "arxiv": ""
+      },
+      "confidence": {
+        "level": "medium",
+        "score": 0.62,
+        "reason": "含官方论文库 E1 正式出版记录；命中跟踪 venue 的完整名称或官方入口；标题或摘要命中 Atlas 技术方向；日期只有年份精度"
+      },
+      "duplicate_match": {
+        "is_duplicate": false,
+        "matched_by": "none",
+        "matches": [],
+        "possible_matches": [],
+        "note": "未按稳定标识或严格标题键命中已有论文。"
+      },
+      "deduplication_notes": [],
+      "manual_review_required": true,
+      "manual_review_items": [
+        "确认论文确已收入该 venue，而非预印本、workshop、海报页面、勘误或元数据误配。",
+        "核对标题、作者、DOI/arXiv 与正式出版页是否一致。",
+        "确认方向标签与 Atlas 六类定义相符。",
+        "日期精度不足；核对实际在线发表/会议日期是否落在本次回溯窗口。"
+      ],
+      "source_record_count": 1,
+      "publication_event_match": {
+        "is_known": false,
+        "matched_by": "none",
+        "events": [],
+        "note": "未命中已确认发表事件。"
+      }
+    },
+    {
+      "id": "academic-0ac1c58a0db7fd",
+      "title": "OW-Rep: Open World Object Detection with Instance Representation Learning",
+      "authors": [
+        "Sunoh Lee",
+        "Minsik Jeon",
+        "Jihong Min",
+        "Junwon Seo"
+      ],
+      "first_author": "Sunoh Lee",
+      "published": "2026",
+      "date_precision": "year",
+      "venue": {
+        "id": "wacv",
+        "name": "IEEE/CVF Winter Conference on Applications of Computer Vision",
+        "acronym": "WACV",
+        "type": "conference",
+        "tracking_priority": "扩展追踪",
+        "match_mode": "official-explicit",
+        "conflicting_matches": []
+      },
+      "directions": [
+        "detection",
+        "representation"
+      ],
+      "status": "needs_review",
+      "status_label": "待人工核验",
+      "candidate_kind": "官方论文集新条目候选",
+      "evidence_level": "E1",
+      "sources": [
+        "CVF Open Access"
+      ],
+      "fact_sources": [
+        {
+          "source": "CVF Open Access",
+          "evidence_level": "E1",
+          "source_id": "/content/WACV2026/html/Lee_OW-Rep_Open_World_Object_Detection_with_Instance_Representation_Learning_WACV_2026_paper.html",
+          "url": "https://openaccess.thecvf.com/content/WACV2026/html/Lee_OW-Rep_Open_World_Object_Detection_with_Instance_Representation_Learning_WACV_2026_paper.html",
+          "observed_fields": [
+            "title",
+            "authors",
+            "published",
+            "venue_hint"
+          ]
+        }
+      ],
+      "external_ids": {
+        "doi": [],
+        "platform": [
+          "cvf-open-access:contentwacv2026htmlleeowrepopenworldobjectdetectionwithinstancerepresentationlearningwacv2026paperhtml"
+        ],
+        "arxiv": []
+      },
+      "links": {
+        "landing": "https://openaccess.thecvf.com/content/WACV2026/html/Lee_OW-Rep_Open_World_Object_Detection_with_Instance_Representation_Learning_WACV_2026_paper.html",
+        "doi": "",
+        "arxiv": ""
+      },
+      "confidence": {
+        "level": "medium",
+        "score": 0.62,
+        "reason": "含官方论文库 E1 正式出版记录；命中跟踪 venue 的完整名称或官方入口；标题或摘要命中 Atlas 技术方向；日期只有年份精度"
+      },
+      "duplicate_match": {
+        "is_duplicate": false,
+        "matched_by": "none",
+        "matches": [],
+        "possible_matches": [],
+        "note": "未按稳定标识或严格标题键命中已有论文。"
+      },
+      "deduplication_notes": [],
+      "manual_review_required": true,
+      "manual_review_items": [
+        "确认论文确已收入该 venue，而非预印本、workshop、海报页面、勘误或元数据误配。",
+        "核对标题、作者、DOI/arXiv 与正式出版页是否一致。",
+        "确认方向标签与 Atlas 六类定义相符。",
+        "日期精度不足；核对实际在线发表/会议日期是否落在本次回溯窗口。"
+      ],
+      "source_record_count": 1,
+      "publication_event_match": {
+        "is_known": false,
+        "matched_by": "none",
+        "events": [],
+        "note": "未命中已确认发表事件。"
+      }
+    },
+    {
+      "id": "academic-cfbe07cf21ef8a",
+      "title": "Multimodal Protein Language Models for Enzyme Kinetic Parameters: From Substrate Recognition to Conformational Adaptation",
+      "authors": [
+        "Fei Wang",
+        "Xinye Zheng",
+        "Kun Li",
+        "Yanyan Wei",
+        "Yuxin Liu",
+        "Ganpeng Hu",
+        "Tong Bao",
+        "Jingwen Yang"
+      ],
+      "first_author": "Fei Wang",
+      "published": "2026",
+      "date_precision": "year",
+      "venue": {
+        "id": "cvpr",
+        "name": "IEEE/CVF Conference on Computer Vision and Pattern Recognition",
+        "acronym": "CVPR",
+        "type": "conference",
+        "tracking_priority": "核心追踪",
+        "match_mode": "official-explicit",
+        "conflicting_matches": []
+      },
+      "directions": [
+        "multimodal"
+      ],
+      "status": "needs_review",
+      "status_label": "待人工核验",
+      "candidate_kind": "官方论文集新条目候选",
+      "evidence_level": "E1",
+      "sources": [
+        "CVF Open Access"
+      ],
+      "fact_sources": [
+        {
+          "source": "CVF Open Access",
+          "evidence_level": "E1",
+          "source_id": "/content/CVPR2026/html/Wang_Multimodal_Protein_Language_Models_for_Enzyme_Kinetic_Parameters_From_Substrate_CVPR_2026_paper.html",
+          "url": "https://openaccess.thecvf.com/content/CVPR2026/html/Wang_Multimodal_Protein_Language_Models_for_Enzyme_Kinetic_Parameters_From_Substrate_CVPR_2026_paper.html",
+          "observed_fields": [
+            "title",
+            "authors",
+            "published",
+            "venue_hint"
+          ]
+        }
+      ],
+      "external_ids": {
+        "doi": [],
+        "platform": [
+          "cvf-open-access:contentcvpr2026htmlwangmultimodalproteinlanguagemodelsforenzymekineticparametersfromsubstratecvpr2026paperhtml"
+        ],
+        "arxiv": []
+      },
+      "links": {
+        "landing": "https://openaccess.thecvf.com/content/CVPR2026/html/Wang_Multimodal_Protein_Language_Models_for_Enzyme_Kinetic_Parameters_From_Substrate_CVPR_2026_paper.html",
+        "doi": "",
+        "arxiv": ""
+      },
+      "confidence": {
+        "level": "medium",
+        "score": 0.62,
+        "reason": "含官方论文库 E1 正式出版记录；命中跟踪 venue 的完整名称或官方入口；标题或摘要命中 Atlas 技术方向；日期只有年份精度"
+      },
+      "duplicate_match": {
+        "is_duplicate": false,
+        "matched_by": "none",
+        "matches": [],
+        "possible_matches": [],
+        "note": "未按稳定标识或严格标题键命中已有论文。"
+      },
+      "deduplication_notes": [],
+      "manual_review_required": true,
+      "manual_review_items": [
+        "确认论文确已收入该 venue，而非预印本、workshop、海报页面、勘误或元数据误配。",
+        "核对标题、作者、DOI/arXiv 与正式出版页是否一致。",
+        "确认方向标签与 Atlas 六类定义相符。",
+        "日期精度不足；核对实际在线发表/会议日期是否落在本次回溯窗口。"
+      ],
+      "source_record_count": 1,
+      "publication_event_match": {
+        "is_known": false,
+        "matched_by": "none",
+        "events": [],
+        "note": "未命中已确认发表事件。"
+      }
+    },
+    {
+      "id": "academic-95798ff9e5fe4a",
+      "title": "Multimodal Graph Representation Learning over Arbitrary Sets of Modalities",
+      "authors": [
+        "Santosh Patapati",
+        "Trisanth Srinivasan"
+      ],
+      "first_author": "Santosh Patapati",
+      "published": "2026",
+      "date_precision": "year",
+      "venue": {
+        "id": "wacv",
+        "name": "IEEE/CVF Winter Conference on Applications of Computer Vision",
+        "acronym": "WACV",
+        "type": "conference",
+        "tracking_priority": "扩展追踪",
+        "match_mode": "official-explicit",
+        "conflicting_matches": []
+      },
+      "directions": [
+        "multimodal",
+        "representation"
+      ],
+      "status": "needs_review",
+      "status_label": "待人工核验",
+      "candidate_kind": "官方论文集新条目候选",
+      "evidence_level": "E1",
+      "sources": [
+        "CVF Open Access"
+      ],
+      "fact_sources": [
+        {
+          "source": "CVF Open Access",
+          "evidence_level": "E1",
+          "source_id": "/content/WACV2026/html/Patapati_Multimodal_Graph_Representation_Learning_over_Arbitrary_Sets_of_Modalities_WACV_2026_paper.html",
+          "url": "https://openaccess.thecvf.com/content/WACV2026/html/Patapati_Multimodal_Graph_Representation_Learning_over_Arbitrary_Sets_of_Modalities_WACV_2026_paper.html",
+          "observed_fields": [
+            "title",
+            "authors",
+            "published",
+            "venue_hint"
+          ]
+        }
+      ],
+      "external_ids": {
+        "doi": [],
+        "platform": [
+          "cvf-open-access:contentwacv2026htmlpatapatimultimodalgraphrepresentationlearningoverarbitrarysetsofmodalitieswacv2026paperhtml"
+        ],
+        "arxiv": []
+      },
+      "links": {
+        "landing": "https://openaccess.thecvf.com/content/WACV2026/html/Patapati_Multimodal_Graph_Representation_Learning_over_Arbitrary_Sets_of_Modalities_WACV_2026_paper.html",
+        "doi": "",
+        "arxiv": ""
+      },
+      "confidence": {
+        "level": "medium",
+        "score": 0.62,
+        "reason": "含官方论文库 E1 正式出版记录；命中跟踪 venue 的完整名称或官方入口；标题或摘要命中 Atlas 技术方向；日期只有年份精度"
+      },
+      "duplicate_match": {
+        "is_duplicate": false,
+        "matched_by": "none",
+        "matches": [],
+        "possible_matches": [],
+        "note": "未按稳定标识或严格标题键命中已有论文。"
+      },
+      "deduplication_notes": [],
+      "manual_review_required": true,
+      "manual_review_items": [
+        "确认论文确已收入该 venue，而非预印本、workshop、海报页面、勘误或元数据误配。",
+        "核对标题、作者、DOI/arXiv 与正式出版页是否一致。",
+        "确认方向标签与 Atlas 六类定义相符。",
+        "日期精度不足；核对实际在线发表/会议日期是否落在本次回溯窗口。"
+      ],
+      "source_record_count": 1,
+      "publication_event_match": {
+        "is_known": false,
+        "matched_by": "none",
+        "events": [],
+        "note": "未命中已确认发表事件。"
+      }
+    },
+    {
+      "id": "academic-d405b305d8c614",
+      "title": "MovieRecapsQA: A Multimodal Open-Ended Video Question-Answering Benchmark",
+      "authors": [
+        "Shaden Shaar",
+        "Bradon Thymes",
+        "Sirawut Chaixanien",
+        "Claire Cardie",
+        "Bharath Hariharan"
+      ],
+      "first_author": "Shaden Shaar",
+      "published": "2026",
+      "date_precision": "year",
+      "venue": {
+        "id": "cvpr",
+        "name": "IEEE/CVF Conference on Computer Vision and Pattern Recognition",
+        "acronym": "CVPR",
+        "type": "conference",
+        "tracking_priority": "核心追踪",
+        "match_mode": "official-explicit",
+        "conflicting_matches": []
+      },
+      "directions": [
+        "multimodal"
+      ],
+      "status": "needs_review",
+      "status_label": "待人工核验",
+      "candidate_kind": "官方论文集新条目候选",
+      "evidence_level": "E1",
+      "sources": [
+        "CVF Open Access"
+      ],
+      "fact_sources": [
+        {
+          "source": "CVF Open Access",
+          "evidence_level": "E1",
+          "source_id": "/content/CVPR2026/html/Shaar_MovieRecapsQA_A_Multimodal_Open-Ended_Video_Question-Answering_Benchmark_CVPR_2026_paper.html",
+          "url": "https://openaccess.thecvf.com/content/CVPR2026/html/Shaar_MovieRecapsQA_A_Multimodal_Open-Ended_Video_Question-Answering_Benchmark_CVPR_2026_paper.html",
+          "observed_fields": [
+            "title",
+            "authors",
+            "published",
+            "venue_hint"
+          ]
+        }
+      ],
+      "external_ids": {
+        "doi": [],
+        "platform": [
+          "cvf-open-access:contentcvpr2026htmlshaarmovierecapsqaamultimodalopenendedvideoquestionansweringbenchmarkcvpr2026paperhtml"
+        ],
+        "arxiv": []
+      },
+      "links": {
+        "landing": "https://openaccess.thecvf.com/content/CVPR2026/html/Shaar_MovieRecapsQA_A_Multimodal_Open-Ended_Video_Question-Answering_Benchmark_CVPR_2026_paper.html",
+        "doi": "",
+        "arxiv": ""
+      },
+      "confidence": {
+        "level": "medium",
+        "score": 0.62,
+        "reason": "含官方论文库 E1 正式出版记录；命中跟踪 venue 的完整名称或官方入口；标题或摘要命中 Atlas 技术方向；日期只有年份精度"
+      },
+      "duplicate_match": {
+        "is_duplicate": false,
+        "matched_by": "none",
+        "matches": [],
+        "possible_matches": [],
+        "note": "未按稳定标识或严格标题键命中已有论文。"
+      },
+      "deduplication_notes": [],
+      "manual_review_required": true,
+      "manual_review_items": [
+        "确认论文确已收入该 venue，而非预印本、workshop、海报页面、勘误或元数据误配。",
+        "核对标题、作者、DOI/arXiv 与正式出版页是否一致。",
+        "确认方向标签与 Atlas 六类定义相符。",
+        "日期精度不足；核对实际在线发表/会议日期是否落在本次回溯窗口。"
+      ],
+      "source_record_count": 1,
+      "publication_event_match": {
+        "is_known": false,
+        "matched_by": "none",
+        "events": [],
+        "note": "未命中已确认发表事件。"
+      }
+    },
+    {
+      "id": "academic-88a0fdc909ab86",
+      "title": "Modeling and Learning Multiple Hypotheses for Monocular 3D Object Detection",
+      "authors": [
+        "Hyeonjeong Park",
+        "Peixi Xiong",
+        "Pei Yu",
+        "Wei Tang"
+      ],
+      "first_author": "Hyeonjeong Park",
+      "published": "2026",
+      "date_precision": "year",
+      "venue": {
+        "id": "wacv",
+        "name": "IEEE/CVF Winter Conference on Applications of Computer Vision",
+        "acronym": "WACV",
+        "type": "conference",
+        "tracking_priority": "扩展追踪",
+        "match_mode": "official-explicit",
+        "conflicting_matches": []
+      },
+      "directions": [
+        "detection"
+      ],
+      "status": "needs_review",
+      "status_label": "待人工核验",
+      "candidate_kind": "官方论文集新条目候选",
+      "evidence_level": "E1",
+      "sources": [
+        "CVF Open Access"
+      ],
+      "fact_sources": [
+        {
+          "source": "CVF Open Access",
+          "evidence_level": "E1",
+          "source_id": "/content/WACV2026/html/Park_Modeling_and_Learning_Multiple_Hypotheses_for_Monocular_3D_Object_Detection_WACV_2026_paper.html",
+          "url": "https://openaccess.thecvf.com/content/WACV2026/html/Park_Modeling_and_Learning_Multiple_Hypotheses_for_Monocular_3D_Object_Detection_WACV_2026_paper.html",
+          "observed_fields": [
+            "title",
+            "authors",
+            "published",
+            "venue_hint"
+          ]
+        }
+      ],
+      "external_ids": {
+        "doi": [],
+        "platform": [
+          "cvf-open-access:contentwacv2026htmlparkmodelingandlearningmultiplehypothesesformonocular3dobjectdetectionwacv2026paperhtml"
+        ],
+        "arxiv": []
+      },
+      "links": {
+        "landing": "https://openaccess.thecvf.com/content/WACV2026/html/Park_Modeling_and_Learning_Multiple_Hypotheses_for_Monocular_3D_Object_Detection_WACV_2026_paper.html",
+        "doi": "",
+        "arxiv": ""
+      },
+      "confidence": {
+        "level": "medium",
+        "score": 0.62,
+        "reason": "含官方论文库 E1 正式出版记录；命中跟踪 venue 的完整名称或官方入口；标题或摘要命中 Atlas 技术方向；日期只有年份精度"
+      },
+      "duplicate_match": {
+        "is_duplicate": false,
+        "matched_by": "none",
+        "matches": [],
+        "possible_matches": [],
+        "note": "未按稳定标识或严格标题键命中已有论文。"
+      },
+      "deduplication_notes": [],
+      "manual_review_required": true,
+      "manual_review_items": [
+        "确认论文确已收入该 venue，而非预印本、workshop、海报页面、勘误或元数据误配。",
+        "核对标题、作者、DOI/arXiv 与正式出版页是否一致。",
+        "确认方向标签与 Atlas 六类定义相符。",
+        "日期精度不足；核对实际在线发表/会议日期是否落在本次回溯窗口。"
+      ],
+      "source_record_count": 1,
+      "publication_event_match": {
+        "is_known": false,
+        "matched_by": "none",
+        "events": [],
+        "note": "未命中已确认发表事件。"
+      }
+    },
+    {
+      "id": "academic-86607ed64a0ad0",
+      "title": "MedROV: Towards Real-Time Open-Vocabulary Detection Across Diverse Medical Imaging Modalities",
+      "authors": [
+        "Tooba Tehreem Sheikh",
+        "Jean Lahoud",
+        "Rao Muhammad Anwer",
+        "Fahad Shahbaz Khan",
+        "Salman Khan",
+        "Hisham Cholakkal"
+      ],
+      "first_author": "Tooba Tehreem Sheikh",
+      "published": "2026",
+      "date_precision": "year",
+      "venue": {
+        "id": "wacv",
+        "name": "IEEE/CVF Winter Conference on Applications of Computer Vision",
+        "acronym": "WACV",
+        "type": "conference",
+        "tracking_priority": "扩展追踪",
+        "match_mode": "official-explicit",
+        "conflicting_matches": []
+      },
+      "directions": [
+        "detection"
+      ],
+      "status": "needs_review",
+      "status_label": "待人工核验",
+      "candidate_kind": "官方论文集新条目候选",
+      "evidence_level": "E1",
+      "sources": [
+        "CVF Open Access"
+      ],
+      "fact_sources": [
+        {
+          "source": "CVF Open Access",
+          "evidence_level": "E1",
+          "source_id": "/content/WACV2026/html/Sheikh_MedROV_Towards_Real-Time_Open-Vocabulary_Detection_Across_Diverse_Medical_Imaging_Modalities_WACV_2026_paper.html",
+          "url": "https://openaccess.thecvf.com/content/WACV2026/html/Sheikh_MedROV_Towards_Real-Time_Open-Vocabulary_Detection_Across_Diverse_Medical_Imaging_Modalities_WACV_2026_paper.html",
+          "observed_fields": [
+            "title",
+            "authors",
+            "published",
+            "venue_hint"
+          ]
+        }
+      ],
+      "external_ids": {
+        "doi": [],
+        "platform": [
+          "cvf-open-access:contentwacv2026htmlsheikhmedrovtowardsrealtimeopenvocabularydetectionacrossdiversemedicalimagingmodalitieswacv2026paperhtml"
+        ],
+        "arxiv": []
+      },
+      "links": {
+        "landing": "https://openaccess.thecvf.com/content/WACV2026/html/Sheikh_MedROV_Towards_Real-Time_Open-Vocabulary_Detection_Across_Diverse_Medical_Imaging_Modalities_WACV_2026_paper.html",
+        "doi": "",
+        "arxiv": ""
+      },
+      "confidence": {
+        "level": "medium",
+        "score": 0.62,
+        "reason": "含官方论文库 E1 正式出版记录；命中跟踪 venue 的完整名称或官方入口；标题或摘要命中 Atlas 技术方向；日期只有年份精度"
+      },
+      "duplicate_match": {
+        "is_duplicate": false,
+        "matched_by": "none",
+        "matches": [],
+        "possible_matches": [],
+        "note": "未按稳定标识或严格标题键命中已有论文。"
+      },
+      "deduplication_notes": [],
+      "manual_review_required": true,
+      "manual_review_items": [
+        "确认论文确已收入该 venue，而非预印本、workshop、海报页面、勘误或元数据误配。",
+        "核对标题、作者、DOI/arXiv 与正式出版页是否一致。",
+        "确认方向标签与 Atlas 六类定义相符。",
+        "日期精度不足；核对实际在线发表/会议日期是否落在本次回溯窗口。"
+      ],
+      "source_record_count": 1,
+      "publication_event_match": {
+        "is_known": false,
+        "matched_by": "none",
+        "events": [],
+        "note": "未命中已确认发表事件。"
+      }
+    },
+    {
+      "id": "academic-f837097d0316ca",
+      "title": "MUSE: Model-based Uncertainty-aware Similarity Estimation for zero-shot 2D Object Detection and Segmentation",
+      "authors": [
+        "Sungmin Cho",
+        "Sungbum Park",
+        "Insoo Oh"
+      ],
+      "first_author": "Sungmin Cho",
+      "published": "2026",
+      "date_precision": "year",
+      "venue": {
+        "id": "wacv",
+        "name": "IEEE/CVF Winter Conference on Applications of Computer Vision",
+        "acronym": "WACV",
+        "type": "conference",
+        "tracking_priority": "扩展追踪",
+        "match_mode": "official-explicit",
+        "conflicting_matches": []
+      },
+      "directions": [
+        "detection"
+      ],
+      "status": "needs_review",
+      "status_label": "待人工核验",
+      "candidate_kind": "官方论文集新条目候选",
+      "evidence_level": "E1",
+      "sources": [
+        "CVF Open Access"
+      ],
+      "fact_sources": [
+        {
+          "source": "CVF Open Access",
+          "evidence_level": "E1",
+          "source_id": "/content/WACV2026/html/Cho_MUSE_Model-based_Uncertainty-aware_Similarity_Estimation_for_zero-shot_2D_Object_Detection_WACV_2026_paper.html",
+          "url": "https://openaccess.thecvf.com/content/WACV2026/html/Cho_MUSE_Model-based_Uncertainty-aware_Similarity_Estimation_for_zero-shot_2D_Object_Detection_WACV_2026_paper.html",
+          "observed_fields": [
+            "title",
+            "authors",
+            "published",
+            "venue_hint"
+          ]
+        }
+      ],
+      "external_ids": {
+        "doi": [],
+        "platform": [
+          "cvf-open-access:contentwacv2026htmlchomusemodelbaseduncertaintyawaresimilarityestimationforzeroshot2dobjectdetectionwacv2026paperhtml"
+        ],
+        "arxiv": []
+      },
+      "links": {
+        "landing": "https://openaccess.thecvf.com/content/WACV2026/html/Cho_MUSE_Model-based_Uncertainty-aware_Similarity_Estimation_for_zero-shot_2D_Object_Detection_WACV_2026_paper.html",
+        "doi": "",
+        "arxiv": ""
+      },
+      "confidence": {
+        "level": "medium",
+        "score": 0.62,
+        "reason": "含官方论文库 E1 正式出版记录；命中跟踪 venue 的完整名称或官方入口；标题或摘要命中 Atlas 技术方向；日期只有年份精度"
+      },
+      "duplicate_match": {
+        "is_duplicate": false,
+        "matched_by": "none",
+        "matches": [],
+        "possible_matches": [],
+        "note": "未按稳定标识或严格标题键命中已有论文。"
+      },
+      "deduplication_notes": [],
+      "manual_review_required": true,
+      "manual_review_items": [
+        "确认论文确已收入该 venue，而非预印本、workshop、海报页面、勘误或元数据误配。",
+        "核对标题、作者、DOI/arXiv 与正式出版页是否一致。",
+        "确认方向标签与 Atlas 六类定义相符。",
+        "日期精度不足；核对实际在线发表/会议日期是否落在本次回溯窗口。"
+      ],
+      "source_record_count": 1,
+      "publication_event_match": {
+        "is_known": false,
+        "matched_by": "none",
+        "events": [],
+        "note": "未命中已确认发表事件。"
+      }
+    },
+    {
+      "id": "academic-654c53a20e544e",
+      "title": "MMCM: Multimodality-aware Metric using Clustering-based Modes for Probabilistic Human Motion Prediction",
+      "authors": [
+        "Kyotaro Tokoro",
+        "Hiromu Taketsugu",
+        "Norimichi Ukita"
+      ],
+      "first_author": "Kyotaro Tokoro",
+      "published": "2026",
+      "date_precision": "year",
+      "venue": {
+        "id": "wacv",
+        "name": "IEEE/CVF Winter Conference on Applications of Computer Vision",
+        "acronym": "WACV",
+        "type": "conference",
+        "tracking_priority": "扩展追踪",
+        "match_mode": "official-explicit",
+        "conflicting_matches": []
+      },
+      "directions": [
+        "multimodal"
+      ],
+      "status": "needs_review",
+      "status_label": "待人工核验",
+      "candidate_kind": "官方论文集新条目候选",
+      "evidence_level": "E1",
+      "sources": [
+        "CVF Open Access"
+      ],
+      "fact_sources": [
+        {
+          "source": "CVF Open Access",
+          "evidence_level": "E1",
+          "source_id": "/content/WACV2026/html/Tokoro_MMCM_Multimodality-aware_Metric_using_Clustering-based_Modes_for_Probabilistic_Human_Motion_WACV_2026_paper.html",
+          "url": "https://openaccess.thecvf.com/content/WACV2026/html/Tokoro_MMCM_Multimodality-aware_Metric_using_Clustering-based_Modes_for_Probabilistic_Human_Motion_WACV_2026_paper.html",
+          "observed_fields": [
+            "title",
+            "authors",
+            "published",
+            "venue_hint"
+          ]
+        }
+      ],
+      "external_ids": {
+        "doi": [],
+        "platform": [
+          "cvf-open-access:contentwacv2026htmltokorommcmmultimodalityawaremetricusingclusteringbasedmodesforprobabilistichumanmotionwacv2026paperhtml"
+        ],
+        "arxiv": []
+      },
+      "links": {
+        "landing": "https://openaccess.thecvf.com/content/WACV2026/html/Tokoro_MMCM_Multimodality-aware_Metric_using_Clustering-based_Modes_for_Probabilistic_Human_Motion_WACV_2026_paper.html",
+        "doi": "",
+        "arxiv": ""
+      },
+      "confidence": {
+        "level": "medium",
+        "score": 0.62,
+        "reason": "含官方论文库 E1 正式出版记录；命中跟踪 venue 的完整名称或官方入口；标题或摘要命中 Atlas 技术方向；日期只有年份精度"
+      },
+      "duplicate_match": {
+        "is_duplicate": false,
+        "matched_by": "none",
+        "matches": [],
+        "possible_matches": [],
+        "note": "未按稳定标识或严格标题键命中已有论文。"
+      },
+      "deduplication_notes": [],
+      "manual_review_required": true,
+      "manual_review_items": [
+        "确认论文确已收入该 venue，而非预印本、workshop、海报页面、勘误或元数据误配。",
+        "核对标题、作者、DOI/arXiv 与正式出版页是否一致。",
+        "确认方向标签与 Atlas 六类定义相符。",
+        "日期精度不足；核对实际在线发表/会议日期是否落在本次回溯窗口。"
+      ],
+      "source_record_count": 1,
+      "publication_event_match": {
+        "is_known": false,
+        "matched_by": "none",
+        "events": [],
+        "note": "未命中已确认发表事件。"
+      }
+    },
+    {
+      "id": "academic-90b15e3472890b",
+      "title": "MDUNet: Multimodal Decoding UNet for Passive Occluder-Aided Non-line-of-sight 3D Imaging",
+      "authors": [
+        "Fadlullah Raji",
+        "John Murray-Bruce"
+      ],
+      "first_author": "Fadlullah Raji",
+      "published": "2026",
+      "date_precision": "year",
+      "venue": {
+        "id": "wacv",
+        "name": "IEEE/CVF Winter Conference on Applications of Computer Vision",
+        "acronym": "WACV",
+        "type": "conference",
+        "tracking_priority": "扩展追踪",
+        "match_mode": "official-explicit",
+        "conflicting_matches": []
+      },
+      "directions": [
+        "multimodal"
+      ],
+      "status": "needs_review",
+      "status_label": "待人工核验",
+      "candidate_kind": "官方论文集新条目候选",
+      "evidence_level": "E1",
+      "sources": [
+        "CVF Open Access"
+      ],
+      "fact_sources": [
+        {
+          "source": "CVF Open Access",
+          "evidence_level": "E1",
+          "source_id": "/content/WACV2026/html/Raji_MDUNet_Multimodal_Decoding_UNet_for_Passive_Occluder-Aided_Non-line-of-sight_3D_Imaging_WACV_2026_paper.html",
+          "url": "https://openaccess.thecvf.com/content/WACV2026/html/Raji_MDUNet_Multimodal_Decoding_UNet_for_Passive_Occluder-Aided_Non-line-of-sight_3D_Imaging_WACV_2026_paper.html",
+          "observed_fields": [
+            "title",
+            "authors",
+            "published",
+            "venue_hint"
+          ]
+        }
+      ],
+      "external_ids": {
+        "doi": [],
+        "platform": [
+          "cvf-open-access:contentwacv2026htmlrajimdunetmultimodaldecodingunetforpassiveoccluderaidednonlineofsight3dimagingwacv2026paperhtml"
+        ],
+        "arxiv": []
+      },
+      "links": {
+        "landing": "https://openaccess.thecvf.com/content/WACV2026/html/Raji_MDUNet_Multimodal_Decoding_UNet_for_Passive_Occluder-Aided_Non-line-of-sight_3D_Imaging_WACV_2026_paper.html",
+        "doi": "",
+        "arxiv": ""
+      },
+      "confidence": {
+        "level": "medium",
+        "score": 0.62,
+        "reason": "含官方论文库 E1 正式出版记录；命中跟踪 venue 的完整名称或官方入口；标题或摘要命中 Atlas 技术方向；日期只有年份精度"
+      },
+      "duplicate_match": {
+        "is_duplicate": false,
+        "matched_by": "none",
+        "matches": [],
+        "possible_matches": [],
+        "note": "未按稳定标识或严格标题键命中已有论文。"
+      },
+      "deduplication_notes": [],
+      "manual_review_required": true,
+      "manual_review_items": [
+        "确认论文确已收入该 venue，而非预印本、workshop、海报页面、勘误或元数据误配。",
+        "核对标题、作者、DOI/arXiv 与正式出版页是否一致。",
+        "确认方向标签与 Atlas 六类定义相符。",
+        "日期精度不足；核对实际在线发表/会议日期是否落在本次回溯窗口。"
+      ],
+      "source_record_count": 1,
+      "publication_event_match": {
+        "is_known": false,
+        "matched_by": "none",
+        "events": [],
+        "note": "未命中已确认发表事件。"
+      }
+    },
+    {
+      "id": "academic-4a8004efb5a076",
+      "title": "HybridDriveVLA: Vision-Language-Action Model with Visual CoT reasoning and ToT Evaluation for Autonomous Driving",
+      "authors": [
+        "Yipene Cedric Francois Bassole",
+        "Sungwoo Kim",
+        "Jiwoo Jung",
+        "Yunsick Sung"
+      ],
+      "first_author": "Yipene Cedric Francois Bassole",
+      "published": "2026",
+      "date_precision": "year",
+      "venue": {
+        "id": "cvpr",
+        "name": "IEEE/CVF Conference on Computer Vision and Pattern Recognition",
+        "acronym": "CVPR",
+        "type": "conference",
+        "tracking_priority": "核心追踪",
+        "match_mode": "official-explicit",
+        "conflicting_matches": []
+      },
+      "directions": [
+        "multimodal",
+        "vla"
+      ],
+      "status": "needs_review",
+      "status_label": "待人工核验",
+      "candidate_kind": "官方论文集新条目候选",
+      "evidence_level": "E1",
+      "sources": [
+        "CVF Open Access"
+      ],
+      "fact_sources": [
+        {
+          "source": "CVF Open Access",
+          "evidence_level": "E1",
+          "source_id": "/content/CVPR2026/html/Bassole_HybridDriveVLA_Vision-Language-Action_Model_with_Visual_CoT_reasoning_and_ToT_Evaluation_CVPR_2026_paper.html",
+          "url": "https://openaccess.thecvf.com/content/CVPR2026/html/Bassole_HybridDriveVLA_Vision-Language-Action_Model_with_Visual_CoT_reasoning_and_ToT_Evaluation_CVPR_2026_paper.html",
+          "observed_fields": [
+            "title",
+            "authors",
+            "published",
+            "venue_hint"
+          ]
+        }
+      ],
+      "external_ids": {
+        "doi": [],
+        "platform": [
+          "cvf-open-access:contentcvpr2026htmlbassolehybriddrivevlavisionlanguageactionmodelwithvisualcotreasoningandtotevaluationcvpr2026paperhtml"
+        ],
+        "arxiv": []
+      },
+      "links": {
+        "landing": "https://openaccess.thecvf.com/content/CVPR2026/html/Bassole_HybridDriveVLA_Vision-Language-Action_Model_with_Visual_CoT_reasoning_and_ToT_Evaluation_CVPR_2026_paper.html",
+        "doi": "",
+        "arxiv": ""
+      },
+      "confidence": {
+        "level": "medium",
+        "score": 0.62,
+        "reason": "含官方论文库 E1 正式出版记录；命中跟踪 venue 的完整名称或官方入口；标题或摘要命中 Atlas 技术方向；日期只有年份精度"
+      },
+      "duplicate_match": {
+        "is_duplicate": false,
+        "matched_by": "none",
+        "matches": [],
+        "possible_matches": [],
+        "note": "未按稳定标识或严格标题键命中已有论文。"
+      },
+      "deduplication_notes": [],
+      "manual_review_required": true,
+      "manual_review_items": [
+        "确认论文确已收入该 venue，而非预印本、workshop、海报页面、勘误或元数据误配。",
+        "核对标题、作者、DOI/arXiv 与正式出版页是否一致。",
+        "确认方向标签与 Atlas 六类定义相符。",
+        "日期精度不足；核对实际在线发表/会议日期是否落在本次回溯窗口。"
+      ],
+      "source_record_count": 1,
+      "publication_event_match": {
+        "is_known": false,
+        "matched_by": "none",
+        "events": [],
+        "note": "未命中已确认发表事件。"
+      }
+    },
+    {
+      "id": "academic-eac284f78a2b4e",
+      "title": "Grounded 3D-Aware Spatial Vision-Language Modeling",
+      "authors": [
+        "An-Chieh Cheng",
+        "Yang Fu",
+        "Yatai Ji",
+        "Ligeng Zhu",
+        "Guanqi Zhan",
+        "Zhuoyang Zhang",
+        "Zhaojing Yang",
+        "Song Han",
+        "Yao Lu",
+        "Pavlo Molchanov",
+        "Vidya Nariyambut Murali",
+        "Jan Kautz",
+        "Xiaolong Wang",
+        "Hongxu Yin",
+        "Sifei Liu"
+      ],
+      "first_author": "An-Chieh Cheng",
+      "published": "2026",
+      "date_precision": "year",
+      "venue": {
+        "id": "cvpr",
+        "name": "IEEE/CVF Conference on Computer Vision and Pattern Recognition",
+        "acronym": "CVPR",
+        "type": "conference",
+        "tracking_priority": "核心追踪",
+        "match_mode": "official-explicit",
+        "conflicting_matches": []
+      },
+      "directions": [
+        "multimodal"
+      ],
+      "status": "needs_review",
+      "status_label": "待人工核验",
+      "candidate_kind": "官方论文集新条目候选",
+      "evidence_level": "E1",
+      "sources": [
+        "CVF Open Access"
+      ],
+      "fact_sources": [
+        {
+          "source": "CVF Open Access",
+          "evidence_level": "E1",
+          "source_id": "/content/CVPR2026/html/Cheng_Grounded_3D-Aware_Spatial_Vision-Language_Modeling_CVPR_2026_paper.html",
+          "url": "https://openaccess.thecvf.com/content/CVPR2026/html/Cheng_Grounded_3D-Aware_Spatial_Vision-Language_Modeling_CVPR_2026_paper.html",
+          "observed_fields": [
+            "title",
+            "authors",
+            "published",
+            "venue_hint"
+          ]
+        }
+      ],
+      "external_ids": {
+        "doi": [],
+        "platform": [
+          "cvf-open-access:contentcvpr2026htmlchenggrounded3dawarespatialvisionlanguagemodelingcvpr2026paperhtml"
+        ],
+        "arxiv": []
+      },
+      "links": {
+        "landing": "https://openaccess.thecvf.com/content/CVPR2026/html/Cheng_Grounded_3D-Aware_Spatial_Vision-Language_Modeling_CVPR_2026_paper.html",
+        "doi": "",
+        "arxiv": ""
+      },
+      "confidence": {
+        "level": "medium",
+        "score": 0.62,
+        "reason": "含官方论文库 E1 正式出版记录；命中跟踪 venue 的完整名称或官方入口；标题或摘要命中 Atlas 技术方向；日期只有年份精度"
+      },
+      "duplicate_match": {
+        "is_duplicate": false,
+        "matched_by": "none",
+        "matches": [],
+        "possible_matches": [],
+        "note": "未按稳定标识或严格标题键命中已有论文。"
+      },
+      "deduplication_notes": [],
+      "manual_review_required": true,
+      "manual_review_items": [
+        "确认论文确已收入该 venue，而非预印本、workshop、海报页面、勘误或元数据误配。",
+        "核对标题、作者、DOI/arXiv 与正式出版页是否一致。",
+        "确认方向标签与 Atlas 六类定义相符。",
+        "日期精度不足；核对实际在线发表/会议日期是否落在本次回溯窗口。"
+      ],
+      "source_record_count": 1,
+      "publication_event_match": {
+        "is_known": false,
+        "matched_by": "none",
+        "events": [],
+        "note": "未命中已确认发表事件。"
+      }
+    },
+    {
+      "id": "academic-ccc9314e93a11e",
+      "title": "GraphVLM: Benchmarking Vision Language Models for Multimodal Graph Learning",
+      "authors": [
+        "Jiajin Liu",
+        "Dongzhe Fan",
+        "Chuanhao Ji",
+        "Daochen Zha",
+        "Qiaoyu Tan"
+      ],
+      "first_author": "Jiajin Liu",
+      "published": "2026",
+      "date_precision": "year",
+      "venue": {
+        "id": "cvpr",
+        "name": "IEEE/CVF Conference on Computer Vision and Pattern Recognition",
+        "acronym": "CVPR",
+        "type": "conference",
+        "tracking_priority": "核心追踪",
+        "match_mode": "official-explicit",
+        "conflicting_matches": []
+      },
+      "directions": [
+        "multimodal"
+      ],
+      "status": "needs_review",
+      "status_label": "待人工核验",
+      "candidate_kind": "官方论文集新条目候选",
+      "evidence_level": "E1",
+      "sources": [
+        "CVF Open Access"
+      ],
+      "fact_sources": [
+        {
+          "source": "CVF Open Access",
+          "evidence_level": "E1",
+          "source_id": "/content/CVPR2026/html/Liu_GraphVLM_Benchmarking_Vision_Language_Models_for_Multimodal_Graph_Learning_CVPR_2026_paper.html",
+          "url": "https://openaccess.thecvf.com/content/CVPR2026/html/Liu_GraphVLM_Benchmarking_Vision_Language_Models_for_Multimodal_Graph_Learning_CVPR_2026_paper.html",
+          "observed_fields": [
+            "title",
+            "authors",
+            "published",
+            "venue_hint"
+          ]
+        }
+      ],
+      "external_ids": {
+        "doi": [],
+        "platform": [
+          "cvf-open-access:contentcvpr2026htmlliugraphvlmbenchmarkingvisionlanguagemodelsformultimodalgraphlearningcvpr2026paperhtml"
+        ],
+        "arxiv": []
+      },
+      "links": {
+        "landing": "https://openaccess.thecvf.com/content/CVPR2026/html/Liu_GraphVLM_Benchmarking_Vision_Language_Models_for_Multimodal_Graph_Learning_CVPR_2026_paper.html",
+        "doi": "",
+        "arxiv": ""
+      },
+      "confidence": {
+        "level": "medium",
+        "score": 0.62,
+        "reason": "含官方论文库 E1 正式出版记录；命中跟踪 venue 的完整名称或官方入口；标题或摘要命中 Atlas 技术方向；日期只有年份精度"
+      },
+      "duplicate_match": {
+        "is_duplicate": false,
+        "matched_by": "none",
+        "matches": [],
+        "possible_matches": [],
+        "note": "未按稳定标识或严格标题键命中已有论文。"
+      },
+      "deduplication_notes": [],
+      "manual_review_required": true,
+      "manual_review_items": [
+        "确认论文确已收入该 venue，而非预印本、workshop、海报页面、勘误或元数据误配。",
+        "核对标题、作者、DOI/arXiv 与正式出版页是否一致。",
+        "确认方向标签与 Atlas 六类定义相符。",
+        "日期精度不足；核对实际在线发表/会议日期是否落在本次回溯窗口。"
+      ],
+      "source_record_count": 1,
+      "publication_event_match": {
+        "is_known": false,
+        "matched_by": "none",
+        "events": [],
+        "note": "未命中已确认发表事件。"
+      }
+    },
+    {
+      "id": "academic-b62bdd448d46cf",
+      "title": "GT-SVJ: Generative-Transformer-Based Self-Supervised Video Judge For Efficient Video Reward Modeling",
+      "authors": [
+        "Shivanshu Shekhar",
+        "Uttaran Bhattacharya",
+        "Raghavendra Addanki",
+        "Mehrab Tanjim",
+        "Somdeb Sarkhel",
+        "Tong Zhang"
+      ],
+      "first_author": "Shivanshu Shekhar",
+      "published": "2026",
+      "date_precision": "year",
+      "venue": {
+        "id": "cvpr",
+        "name": "IEEE/CVF Conference on Computer Vision and Pattern Recognition",
+        "acronym": "CVPR",
+        "type": "conference",
+        "tracking_priority": "核心追踪",
+        "match_mode": "official-explicit",
+        "conflicting_matches": []
+      },
+      "directions": [
+        "representation"
+      ],
+      "status": "needs_review",
+      "status_label": "待人工核验",
+      "candidate_kind": "官方论文集新条目候选",
+      "evidence_level": "E1",
+      "sources": [
+        "CVF Open Access"
+      ],
+      "fact_sources": [
+        {
+          "source": "CVF Open Access",
+          "evidence_level": "E1",
+          "source_id": "/content/CVPR2026/html/Shekhar_GT-SVJ_Generative-Transformer-Based_Self-Supervised_Video_Judge_For_Efficient_Video_Reward_Modeling_CVPR_2026_paper.html",
+          "url": "https://openaccess.thecvf.com/content/CVPR2026/html/Shekhar_GT-SVJ_Generative-Transformer-Based_Self-Supervised_Video_Judge_For_Efficient_Video_Reward_Modeling_CVPR_2026_paper.html",
+          "observed_fields": [
+            "title",
+            "authors",
+            "published",
+            "venue_hint"
+          ]
+        }
+      ],
+      "external_ids": {
+        "doi": [],
+        "platform": [
+          "cvf-open-access:contentcvpr2026htmlshekhargtsvjgenerativetransformerbasedselfsupervisedvideojudgeforefficientvideorewardmodelingcvpr2026paperhtml"
+        ],
+        "arxiv": []
+      },
+      "links": {
+        "landing": "https://openaccess.thecvf.com/content/CVPR2026/html/Shekhar_GT-SVJ_Generative-Transformer-Based_Self-Supervised_Video_Judge_For_Efficient_Video_Reward_Modeling_CVPR_2026_paper.html",
+        "doi": "",
+        "arxiv": ""
+      },
+      "confidence": {
+        "level": "medium",
+        "score": 0.62,
+        "reason": "含官方论文库 E1 正式出版记录；命中跟踪 venue 的完整名称或官方入口；标题或摘要命中 Atlas 技术方向；日期只有年份精度"
+      },
+      "duplicate_match": {
+        "is_duplicate": false,
+        "matched_by": "none",
+        "matches": [],
+        "possible_matches": [],
+        "note": "未按稳定标识或严格标题键命中已有论文。"
+      },
+      "deduplication_notes": [],
+      "manual_review_required": true,
+      "manual_review_items": [
+        "确认论文确已收入该 venue，而非预印本、workshop、海报页面、勘误或元数据误配。",
+        "核对标题、作者、DOI/arXiv 与正式出版页是否一致。",
+        "确认方向标签与 Atlas 六类定义相符。",
+        "日期精度不足；核对实际在线发表/会议日期是否落在本次回溯窗口。"
+      ],
+      "source_record_count": 1,
+      "publication_event_match": {
+        "is_known": false,
+        "matched_by": "none",
+        "events": [],
+        "note": "未命中已确认发表事件。"
+      }
+    },
+    {
+      "id": "academic-2644496f4da932",
+      "title": "Fine-Grained Post-Training Quantization for Large Vision Language Models with Quantization-Aware Integrated Gradients",
+      "authors": [
+        "Ziwei Xiang",
+        "Fanhu Zeng",
+        "Hongjian Fang",
+        "Rui-Qi Wang",
+        "Renxing Chen",
+        "Yanan Zhu",
+        "Yi Chen",
+        "Peipei Yang",
+        "Xu-Yao Zhang"
+      ],
+      "first_author": "Ziwei Xiang",
+      "published": "2026",
+      "date_precision": "year",
+      "venue": {
+        "id": "cvpr",
+        "name": "IEEE/CVF Conference on Computer Vision and Pattern Recognition",
+        "acronym": "CVPR",
+        "type": "conference",
+        "tracking_priority": "核心追踪",
+        "match_mode": "official-explicit",
+        "conflicting_matches": []
+      },
+      "directions": [
+        "multimodal"
+      ],
+      "status": "needs_review",
+      "status_label": "待人工核验",
+      "candidate_kind": "官方论文集新条目候选",
+      "evidence_level": "E1",
+      "sources": [
+        "CVF Open Access"
+      ],
+      "fact_sources": [
+        {
+          "source": "CVF Open Access",
+          "evidence_level": "E1",
+          "source_id": "/content/CVPR2026/html/Xiang_Fine-Grained_Post-Training_Quantization_for_Large_Vision_Language_Models_with_Quantization-Aware_CVPR_2026_paper.html",
+          "url": "https://openaccess.thecvf.com/content/CVPR2026/html/Xiang_Fine-Grained_Post-Training_Quantization_for_Large_Vision_Language_Models_with_Quantization-Aware_CVPR_2026_paper.html",
+          "observed_fields": [
+            "title",
+            "authors",
+            "published",
+            "venue_hint"
+          ]
+        }
+      ],
+      "external_ids": {
+        "doi": [],
+        "platform": [
+          "cvf-open-access:contentcvpr2026htmlxiangfinegrainedposttrainingquantizationforlargevisionlanguagemodelswithquantizationawarecvpr2026paperhtml"
+        ],
+        "arxiv": []
+      },
+      "links": {
+        "landing": "https://openaccess.thecvf.com/content/CVPR2026/html/Xiang_Fine-Grained_Post-Training_Quantization_for_Large_Vision_Language_Models_with_Quantization-Aware_CVPR_2026_paper.html",
+        "doi": "",
+        "arxiv": ""
+      },
+      "confidence": {
+        "level": "medium",
+        "score": 0.62,
+        "reason": "含官方论文库 E1 正式出版记录；命中跟踪 venue 的完整名称或官方入口；标题或摘要命中 Atlas 技术方向；日期只有年份精度"
+      },
+      "duplicate_match": {
+        "is_duplicate": false,
+        "matched_by": "none",
+        "matches": [],
+        "possible_matches": [],
+        "note": "未按稳定标识或严格标题键命中已有论文。"
+      },
+      "deduplication_notes": [],
+      "manual_review_required": true,
+      "manual_review_items": [
+        "确认论文确已收入该 venue，而非预印本、workshop、海报页面、勘误或元数据误配。",
+        "核对标题、作者、DOI/arXiv 与正式出版页是否一致。",
+        "确认方向标签与 Atlas 六类定义相符。",
+        "日期精度不足；核对实际在线发表/会议日期是否落在本次回溯窗口。"
+      ],
+      "source_record_count": 1,
+      "publication_event_match": {
+        "is_known": false,
+        "matched_by": "none",
+        "events": [],
+        "note": "未命中已确认发表事件。"
+      }
+    },
+    {
+      "id": "academic-ac8a5419f31794",
+      "title": "FG-TRACER: Tracing Information Flow in Multimodal Large Language Models in Free-Form Generation",
+      "authors": [
+        "Alessia Saporita",
+        "Vittorio Pipoli",
+        "Federico Bolelli",
+        "Lorenzo Baraldi",
+        "Andrea Acquaviva",
+        "Elisa Ficarra"
+      ],
+      "first_author": "Alessia Saporita",
+      "published": "2026",
+      "date_precision": "year",
+      "venue": {
+        "id": "wacv",
+        "name": "IEEE/CVF Winter Conference on Applications of Computer Vision",
+        "acronym": "WACV",
+        "type": "conference",
+        "tracking_priority": "扩展追踪",
+        "match_mode": "official-explicit",
+        "conflicting_matches": []
+      },
+      "directions": [
+        "multimodal"
+      ],
+      "status": "needs_review",
+      "status_label": "待人工核验",
+      "candidate_kind": "官方论文集新条目候选",
+      "evidence_level": "E1",
+      "sources": [
+        "CVF Open Access"
+      ],
+      "fact_sources": [
+        {
+          "source": "CVF Open Access",
+          "evidence_level": "E1",
+          "source_id": "/content/WACV2026/html/Saporita_FG-TRACER_Tracing_Information_Flow_in_Multimodal_Large_Language_Models_in_WACV_2026_paper.html",
+          "url": "https://openaccess.thecvf.com/content/WACV2026/html/Saporita_FG-TRACER_Tracing_Information_Flow_in_Multimodal_Large_Language_Models_in_WACV_2026_paper.html",
+          "observed_fields": [
+            "title",
+            "authors",
+            "published",
+            "venue_hint"
+          ]
+        }
+      ],
+      "external_ids": {
+        "doi": [],
+        "platform": [
+          "cvf-open-access:contentwacv2026htmlsaporitafgtracertracinginformationflowinmultimodallargelanguagemodelsinwacv2026paperhtml"
+        ],
+        "arxiv": []
+      },
+      "links": {
+        "landing": "https://openaccess.thecvf.com/content/WACV2026/html/Saporita_FG-TRACER_Tracing_Information_Flow_in_Multimodal_Large_Language_Models_in_WACV_2026_paper.html",
+        "doi": "",
+        "arxiv": ""
+      },
+      "confidence": {
+        "level": "medium",
+        "score": 0.62,
+        "reason": "含官方论文库 E1 正式出版记录；命中跟踪 venue 的完整名称或官方入口；标题或摘要命中 Atlas 技术方向；日期只有年份精度"
+      },
+      "duplicate_match": {
+        "is_duplicate": false,
+        "matched_by": "none",
+        "matches": [],
+        "possible_matches": [],
+        "note": "未按稳定标识或严格标题键命中已有论文。"
+      },
+      "deduplication_notes": [],
+      "manual_review_required": true,
+      "manual_review_items": [
+        "确认论文确已收入该 venue，而非预印本、workshop、海报页面、勘误或元数据误配。",
+        "核对标题、作者、DOI/arXiv 与正式出版页是否一致。",
+        "确认方向标签与 Atlas 六类定义相符。",
+        "日期精度不足；核对实际在线发表/会议日期是否落在本次回溯窗口。"
+      ],
+      "source_record_count": 1,
+      "publication_event_match": {
+        "is_known": false,
+        "matched_by": "none",
+        "events": [],
+        "note": "未命中已确认发表事件。"
+      }
+    },
+    {
+      "id": "academic-bf063e5ce37c6f",
+      "title": "Enhancing Vision Language Corruption Robustness using Cross-Distribution & Prompted Denoisers",
+      "authors": [
+        "Sameer Shafayet Latif",
+        "Sadab Shiper",
+        "K. M. Rahiduzzaman Kiran",
+        "Md Farhan Ishmam",
+        "Md Azam Hossain",
+        "Abu Raihan Mostofa Kamal",
+        "Md Hamjajul Ashmafee"
+      ],
+      "first_author": "Sameer Shafayet Latif",
+      "published": "2026",
+      "date_precision": "year",
+      "venue": {
+        "id": "wacv",
+        "name": "IEEE/CVF Winter Conference on Applications of Computer Vision",
+        "acronym": "WACV",
+        "type": "conference",
+        "tracking_priority": "扩展追踪",
+        "match_mode": "official-explicit",
+        "conflicting_matches": []
+      },
+      "directions": [
+        "multimodal"
+      ],
+      "status": "needs_review",
+      "status_label": "待人工核验",
+      "candidate_kind": "官方论文集新条目候选",
+      "evidence_level": "E1",
+      "sources": [
+        "CVF Open Access"
+      ],
+      "fact_sources": [
+        {
+          "source": "CVF Open Access",
+          "evidence_level": "E1",
+          "source_id": "/content/WACV2026/html/Latif_Enhancing_Vision_Language_Corruption_Robustness_using_Cross-Distribution__Prompted_Denoisers_WACV_2026_paper.html",
+          "url": "https://openaccess.thecvf.com/content/WACV2026/html/Latif_Enhancing_Vision_Language_Corruption_Robustness_using_Cross-Distribution__Prompted_Denoisers_WACV_2026_paper.html",
+          "observed_fields": [
+            "title",
+            "authors",
+            "published",
+            "venue_hint"
+          ]
+        }
+      ],
+      "external_ids": {
+        "doi": [],
+        "platform": [
+          "cvf-open-access:contentwacv2026htmllatifenhancingvisionlanguagecorruptionrobustnessusingcrossdistributionprompteddenoiserswacv2026paperhtml"
+        ],
+        "arxiv": []
+      },
+      "links": {
+        "landing": "https://openaccess.thecvf.com/content/WACV2026/html/Latif_Enhancing_Vision_Language_Corruption_Robustness_using_Cross-Distribution__Prompted_Denoisers_WACV_2026_paper.html",
+        "doi": "",
+        "arxiv": ""
+      },
+      "confidence": {
+        "level": "medium",
+        "score": 0.62,
+        "reason": "含官方论文库 E1 正式出版记录；命中跟踪 venue 的完整名称或官方入口；标题或摘要命中 Atlas 技术方向；日期只有年份精度"
+      },
+      "duplicate_match": {
+        "is_duplicate": false,
+        "matched_by": "none",
+        "matches": [],
+        "possible_matches": [],
+        "note": "未按稳定标识或严格标题键命中已有论文。"
+      },
+      "deduplication_notes": [],
+      "manual_review_required": true,
+      "manual_review_items": [
+        "确认论文确已收入该 venue，而非预印本、workshop、海报页面、勘误或元数据误配。",
+        "核对标题、作者、DOI/arXiv 与正式出版页是否一致。",
+        "确认方向标签与 Atlas 六类定义相符。",
+        "日期精度不足；核对实际在线发表/会议日期是否落在本次回溯窗口。"
+      ],
+      "source_record_count": 1,
+      "publication_event_match": {
+        "is_known": false,
+        "matched_by": "none",
+        "events": [],
+        "note": "未命中已确认发表事件。"
+      }
+    },
+    {
+      "id": "academic-eea6c9fd231ea7",
+      "title": "DOODLE: Diffusion-based Out-of-Distribution Learning for Open-set LiDAR Semantic Segmentation",
+      "authors": [
+        "Changgyoon Oh",
+        "Hyeonseong Kim",
+        "Daehyun We",
+        "Jongoh Jeong",
+        "Yujeong Chae",
+        "Kuk-Jin Yoon"
+      ],
+      "first_author": "Changgyoon Oh",
+      "published": "2026",
+      "date_precision": "year",
+      "venue": {
+        "id": "wacv",
+        "name": "IEEE/CVF Winter Conference on Applications of Computer Vision",
+        "acronym": "WACV",
+        "type": "conference",
+        "tracking_priority": "扩展追踪",
+        "match_mode": "official-explicit",
+        "conflicting_matches": []
+      },
+      "directions": [
+        "segmentation"
+      ],
+      "status": "needs_review",
+      "status_label": "待人工核验",
+      "candidate_kind": "官方论文集新条目候选",
+      "evidence_level": "E1",
+      "sources": [
+        "CVF Open Access"
+      ],
+      "fact_sources": [
+        {
+          "source": "CVF Open Access",
+          "evidence_level": "E1",
+          "source_id": "/content/WACV2026/html/Oh_DOODLE_Diffusion-based_Out-of-Distribution_Learning_for_Open-set_LiDAR_Semantic_Segmentation_WACV_2026_paper.html",
+          "url": "https://openaccess.thecvf.com/content/WACV2026/html/Oh_DOODLE_Diffusion-based_Out-of-Distribution_Learning_for_Open-set_LiDAR_Semantic_Segmentation_WACV_2026_paper.html",
+          "observed_fields": [
+            "title",
+            "authors",
+            "published",
+            "venue_hint"
+          ]
+        }
+      ],
+      "external_ids": {
+        "doi": [],
+        "platform": [
+          "cvf-open-access:contentwacv2026htmlohdoodlediffusionbasedoutofdistributionlearningforopensetlidarsemanticsegmentationwacv2026paperhtml"
+        ],
+        "arxiv": []
+      },
+      "links": {
+        "landing": "https://openaccess.thecvf.com/content/WACV2026/html/Oh_DOODLE_Diffusion-based_Out-of-Distribution_Learning_for_Open-set_LiDAR_Semantic_Segmentation_WACV_2026_paper.html",
+        "doi": "",
+        "arxiv": ""
+      },
+      "confidence": {
+        "level": "medium",
+        "score": 0.62,
+        "reason": "含官方论文库 E1 正式出版记录；命中跟踪 venue 的完整名称或官方入口；标题或摘要命中 Atlas 技术方向；日期只有年份精度"
+      },
+      "duplicate_match": {
+        "is_duplicate": false,
+        "matched_by": "none",
+        "matches": [],
+        "possible_matches": [],
+        "note": "未按稳定标识或严格标题键命中已有论文。"
+      },
+      "deduplication_notes": [],
+      "manual_review_required": true,
+      "manual_review_items": [
+        "确认论文确已收入该 venue，而非预印本、workshop、海报页面、勘误或元数据误配。",
+        "核对标题、作者、DOI/arXiv 与正式出版页是否一致。",
+        "确认方向标签与 Atlas 六类定义相符。",
+        "日期精度不足；核对实际在线发表/会议日期是否落在本次回溯窗口。"
+      ],
+      "source_record_count": 1,
+      "publication_event_match": {
+        "is_known": false,
+        "matched_by": "none",
+        "events": [],
+        "note": "未命中已确认发表事件。"
+      }
+    },
+    {
+      "id": "academic-c3f4b4f99b5b99",
+      "title": "Conjuring Positive Pairs for Efficient Unification of Representation Learning and Image Synthesis",
+      "authors": [
+        "Imanol G. Estepa",
+        "Jesús M. Rodríguez-de-Vera",
+        "Ignacio Sarasúa",
+        "Bhalaji Nagarajan",
+        "Petia Radeva"
+      ],
+      "first_author": "Imanol G. Estepa",
+      "published": "2026",
+      "date_precision": "year",
+      "venue": {
+        "id": "wacv",
+        "name": "IEEE/CVF Winter Conference on Applications of Computer Vision",
+        "acronym": "WACV",
+        "type": "conference",
+        "tracking_priority": "扩展追踪",
+        "match_mode": "official-explicit",
+        "conflicting_matches": []
+      },
+      "directions": [
+        "representation"
+      ],
+      "status": "needs_review",
+      "status_label": "待人工核验",
+      "candidate_kind": "官方论文集新条目候选",
+      "evidence_level": "E1",
+      "sources": [
+        "CVF Open Access"
+      ],
+      "fact_sources": [
+        {
+          "source": "CVF Open Access",
+          "evidence_level": "E1",
+          "source_id": "/content/WACV2026/html/Estepa_Conjuring_Positive_Pairs_for_Efficient_Unification_of_Representation_Learning_and_WACV_2026_paper.html",
+          "url": "https://openaccess.thecvf.com/content/WACV2026/html/Estepa_Conjuring_Positive_Pairs_for_Efficient_Unification_of_Representation_Learning_and_WACV_2026_paper.html",
+          "observed_fields": [
+            "title",
+            "authors",
+            "published",
+            "venue_hint"
+          ]
+        }
+      ],
+      "external_ids": {
+        "doi": [],
+        "platform": [
+          "cvf-open-access:contentwacv2026htmlestepaconjuringpositivepairsforefficientunificationofrepresentationlearningandwacv2026paperhtml"
+        ],
+        "arxiv": []
+      },
+      "links": {
+        "landing": "https://openaccess.thecvf.com/content/WACV2026/html/Estepa_Conjuring_Positive_Pairs_for_Efficient_Unification_of_Representation_Learning_and_WACV_2026_paper.html",
+        "doi": "",
+        "arxiv": ""
+      },
+      "confidence": {
+        "level": "medium",
+        "score": 0.62,
+        "reason": "含官方论文库 E1 正式出版记录；命中跟踪 venue 的完整名称或官方入口；标题或摘要命中 Atlas 技术方向；日期只有年份精度"
+      },
+      "duplicate_match": {
+        "is_duplicate": false,
+        "matched_by": "none",
+        "matches": [],
+        "possible_matches": [],
+        "note": "未按稳定标识或严格标题键命中已有论文。"
+      },
+      "deduplication_notes": [],
+      "manual_review_required": true,
+      "manual_review_items": [
+        "确认论文确已收入该 venue，而非预印本、workshop、海报页面、勘误或元数据误配。",
+        "核对标题、作者、DOI/arXiv 与正式出版页是否一致。",
+        "确认方向标签与 Atlas 六类定义相符。",
+        "日期精度不足；核对实际在线发表/会议日期是否落在本次回溯窗口。"
+      ],
+      "source_record_count": 1,
+      "publication_event_match": {
+        "is_known": false,
+        "matched_by": "none",
+        "events": [],
+        "note": "未命中已确认发表事件。"
+      }
+    },
+    {
+      "id": "academic-367452ae540875",
+      "title": "Cloning Deterministic Worlds: The Critical Role of Latent Geometry in Long-Horizon World Models",
+      "authors": [
+        "Zaishuo Xia",
+        "Yukuan Lu",
+        "Xinyi Li",
+        "Yifan Xu",
+        "Yubei Chen"
+      ],
+      "first_author": "Zaishuo Xia",
+      "published": "2026",
+      "date_precision": "year",
+      "venue": {
+        "id": "cvpr",
+        "name": "IEEE/CVF Conference on Computer Vision and Pattern Recognition",
+        "acronym": "CVPR",
+        "type": "conference",
+        "tracking_priority": "核心追踪",
+        "match_mode": "official-explicit",
+        "conflicting_matches": []
+      },
+      "directions": [
+        "world"
+      ],
+      "status": "needs_review",
+      "status_label": "待人工核验",
+      "candidate_kind": "官方论文集新条目候选",
+      "evidence_level": "E1",
+      "sources": [
+        "CVF Open Access"
+      ],
+      "fact_sources": [
+        {
+          "source": "CVF Open Access",
+          "evidence_level": "E1",
+          "source_id": "/content/CVPR2026/html/Xia_Cloning_Deterministic_Worlds_The_Critical_Role_of_Latent_Geometry_in_CVPR_2026_paper.html",
+          "url": "https://openaccess.thecvf.com/content/CVPR2026/html/Xia_Cloning_Deterministic_Worlds_The_Critical_Role_of_Latent_Geometry_in_CVPR_2026_paper.html",
+          "observed_fields": [
+            "title",
+            "authors",
+            "published",
+            "venue_hint"
+          ]
+        }
+      ],
+      "external_ids": {
+        "doi": [],
+        "platform": [
+          "cvf-open-access:contentcvpr2026htmlxiacloningdeterministicworldsthecriticalroleoflatentgeometryincvpr2026paperhtml"
+        ],
+        "arxiv": []
+      },
+      "links": {
+        "landing": "https://openaccess.thecvf.com/content/CVPR2026/html/Xia_Cloning_Deterministic_Worlds_The_Critical_Role_of_Latent_Geometry_in_CVPR_2026_paper.html",
+        "doi": "",
+        "arxiv": ""
+      },
+      "confidence": {
+        "level": "medium",
+        "score": 0.62,
+        "reason": "含官方论文库 E1 正式出版记录；命中跟踪 venue 的完整名称或官方入口；标题或摘要命中 Atlas 技术方向；日期只有年份精度"
+      },
+      "duplicate_match": {
+        "is_duplicate": false,
+        "matched_by": "none",
+        "matches": [],
+        "possible_matches": [],
+        "note": "未按稳定标识或严格标题键命中已有论文。"
+      },
+      "deduplication_notes": [],
+      "manual_review_required": true,
+      "manual_review_items": [
+        "确认论文确已收入该 venue，而非预印本、workshop、海报页面、勘误或元数据误配。",
+        "核对标题、作者、DOI/arXiv 与正式出版页是否一致。",
+        "确认方向标签与 Atlas 六类定义相符。",
+        "日期精度不足；核对实际在线发表/会议日期是否落在本次回溯窗口。"
+      ],
+      "source_record_count": 1,
+      "publication_event_match": {
+        "is_known": false,
+        "matched_by": "none",
+        "events": [],
+        "note": "未命中已确认发表事件。"
+      }
+    },
+    {
+      "id": "academic-808db59d469466",
+      "title": "Boosting Unsupervised Video Instance Segmentation with Automatic Quality-Guided Self-Training",
+      "authors": [
+        "Kaixuan Lu",
+        "Mehmet Onurcan Kaya",
+        "Dim P. Papadopoulos"
+      ],
+      "first_author": "Kaixuan Lu",
+      "published": "2026",
+      "date_precision": "year",
+      "venue": {
+        "id": "wacv",
+        "name": "IEEE/CVF Winter Conference on Applications of Computer Vision",
+        "acronym": "WACV",
+        "type": "conference",
+        "tracking_priority": "扩展追踪",
+        "match_mode": "official-explicit",
+        "conflicting_matches": []
+      },
+      "directions": [
+        "segmentation"
+      ],
+      "status": "needs_review",
+      "status_label": "待人工核验",
+      "candidate_kind": "官方论文集新条目候选",
+      "evidence_level": "E1",
+      "sources": [
+        "CVF Open Access"
+      ],
+      "fact_sources": [
+        {
+          "source": "CVF Open Access",
+          "evidence_level": "E1",
+          "source_id": "/content/WACV2026/html/Lu_Boosting_Unsupervised_Video_Instance_Segmentation_with_Automatic_Quality-Guided_Self-Training_WACV_2026_paper.html",
+          "url": "https://openaccess.thecvf.com/content/WACV2026/html/Lu_Boosting_Unsupervised_Video_Instance_Segmentation_with_Automatic_Quality-Guided_Self-Training_WACV_2026_paper.html",
+          "observed_fields": [
+            "title",
+            "authors",
+            "published",
+            "venue_hint"
+          ]
+        }
+      ],
+      "external_ids": {
+        "doi": [],
+        "platform": [
+          "cvf-open-access:contentwacv2026htmlluboostingunsupervisedvideoinstancesegmentationwithautomaticqualityguidedselftrainingwacv2026paperhtml"
+        ],
+        "arxiv": []
+      },
+      "links": {
+        "landing": "https://openaccess.thecvf.com/content/WACV2026/html/Lu_Boosting_Unsupervised_Video_Instance_Segmentation_with_Automatic_Quality-Guided_Self-Training_WACV_2026_paper.html",
+        "doi": "",
+        "arxiv": ""
+      },
+      "confidence": {
+        "level": "medium",
+        "score": 0.62,
+        "reason": "含官方论文库 E1 正式出版记录；命中跟踪 venue 的完整名称或官方入口；标题或摘要命中 Atlas 技术方向；日期只有年份精度"
+      },
+      "duplicate_match": {
+        "is_duplicate": false,
+        "matched_by": "none",
+        "matches": [],
+        "possible_matches": [],
+        "note": "未按稳定标识或严格标题键命中已有论文。"
+      },
+      "deduplication_notes": [],
+      "manual_review_required": true,
+      "manual_review_items": [
+        "确认论文确已收入该 venue，而非预印本、workshop、海报页面、勘误或元数据误配。",
+        "核对标题、作者、DOI/arXiv 与正式出版页是否一致。",
+        "确认方向标签与 Atlas 六类定义相符。",
+        "日期精度不足；核对实际在线发表/会议日期是否落在本次回溯窗口。"
+      ],
+      "source_record_count": 1,
+      "publication_event_match": {
+        "is_known": false,
+        "matched_by": "none",
+        "events": [],
+        "note": "未命中已确认发表事件。"
+      }
+    },
+    {
+      "id": "academic-21b93ad8946579",
+      "title": "Boosting Medical Vision-Language Pretraining via Momentum Self-Distillation under Limited Computing Resources",
+      "authors": [
+        "Phuc Pham",
+        "Nhu Pham",
+        "Ngoc Quoc Ly"
+      ],
+      "first_author": "Phuc Pham",
+      "published": "2026",
+      "date_precision": "year",
+      "venue": {
+        "id": "wacv",
+        "name": "IEEE/CVF Winter Conference on Applications of Computer Vision",
+        "acronym": "WACV",
+        "type": "conference",
+        "tracking_priority": "扩展追踪",
+        "match_mode": "official-explicit",
+        "conflicting_matches": []
+      },
+      "directions": [
+        "multimodal"
+      ],
+      "status": "needs_review",
+      "status_label": "待人工核验",
+      "candidate_kind": "官方论文集新条目候选",
+      "evidence_level": "E1",
+      "sources": [
+        "CVF Open Access"
+      ],
+      "fact_sources": [
+        {
+          "source": "CVF Open Access",
+          "evidence_level": "E1",
+          "source_id": "/content/WACV2026/html/Pham_Boosting_Medical_Vision-Language_Pretraining_via_Momentum_Self-Distillation_under_Limited_Computing_WACV_2026_paper.html",
+          "url": "https://openaccess.thecvf.com/content/WACV2026/html/Pham_Boosting_Medical_Vision-Language_Pretraining_via_Momentum_Self-Distillation_under_Limited_Computing_WACV_2026_paper.html",
+          "observed_fields": [
+            "title",
+            "authors",
+            "published",
+            "venue_hint"
+          ]
+        }
+      ],
+      "external_ids": {
+        "doi": [],
+        "platform": [
+          "cvf-open-access:contentwacv2026htmlphamboostingmedicalvisionlanguagepretrainingviamomentumselfdistillationunderlimitedcomputingwacv2026paperhtml"
+        ],
+        "arxiv": []
+      },
+      "links": {
+        "landing": "https://openaccess.thecvf.com/content/WACV2026/html/Pham_Boosting_Medical_Vision-Language_Pretraining_via_Momentum_Self-Distillation_under_Limited_Computing_WACV_2026_paper.html",
+        "doi": "",
+        "arxiv": ""
+      },
+      "confidence": {
+        "level": "medium",
+        "score": 0.62,
+        "reason": "含官方论文库 E1 正式出版记录；命中跟踪 venue 的完整名称或官方入口；标题或摘要命中 Atlas 技术方向；日期只有年份精度"
+      },
+      "duplicate_match": {
+        "is_duplicate": false,
+        "matched_by": "none",
+        "matches": [],
+        "possible_matches": [],
+        "note": "未按稳定标识或严格标题键命中已有论文。"
+      },
+      "deduplication_notes": [],
+      "manual_review_required": true,
+      "manual_review_items": [
+        "确认论文确已收入该 venue，而非预印本、workshop、海报页面、勘误或元数据误配。",
+        "核对标题、作者、DOI/arXiv 与正式出版页是否一致。",
+        "确认方向标签与 Atlas 六类定义相符。",
+        "日期精度不足；核对实际在线发表/会议日期是否落在本次回溯窗口。"
+      ],
+      "source_record_count": 1,
+      "publication_event_match": {
+        "is_known": false,
+        "matched_by": "none",
+        "events": [],
+        "note": "未命中已确认发表事件。"
+      }
+    },
+    {
+      "id": "academic-cf7b83d4f041bb",
+      "title": "Being Positive about Negative Queries: Exclusion Aware Multimodal Retrieval using Disentangled Representations",
+      "authors": [
+        "Prachi Jha",
+        "Sumit Bhatia",
+        "Srikanta Bedathur"
+      ],
+      "first_author": "Prachi Jha",
+      "published": "2026",
+      "date_precision": "year",
+      "venue": {
+        "id": "wacv",
+        "name": "IEEE/CVF Winter Conference on Applications of Computer Vision",
+        "acronym": "WACV",
+        "type": "conference",
+        "tracking_priority": "扩展追踪",
+        "match_mode": "official-explicit",
+        "conflicting_matches": []
+      },
+      "directions": [
+        "multimodal"
+      ],
+      "status": "needs_review",
+      "status_label": "待人工核验",
+      "candidate_kind": "官方论文集新条目候选",
+      "evidence_level": "E1",
+      "sources": [
+        "CVF Open Access"
+      ],
+      "fact_sources": [
+        {
+          "source": "CVF Open Access",
+          "evidence_level": "E1",
+          "source_id": "/content/WACV2026/html/Jha_Being_Positive_about_Negative_Queries_Exclusion_Aware_Multimodal_Retrieval_using_WACV_2026_paper.html",
+          "url": "https://openaccess.thecvf.com/content/WACV2026/html/Jha_Being_Positive_about_Negative_Queries_Exclusion_Aware_Multimodal_Retrieval_using_WACV_2026_paper.html",
+          "observed_fields": [
+            "title",
+            "authors",
+            "published",
+            "venue_hint"
+          ]
+        }
+      ],
+      "external_ids": {
+        "doi": [],
+        "platform": [
+          "cvf-open-access:contentwacv2026htmljhabeingpositiveaboutnegativequeriesexclusionawaremultimodalretrievalusingwacv2026paperhtml"
+        ],
+        "arxiv": []
+      },
+      "links": {
+        "landing": "https://openaccess.thecvf.com/content/WACV2026/html/Jha_Being_Positive_about_Negative_Queries_Exclusion_Aware_Multimodal_Retrieval_using_WACV_2026_paper.html",
+        "doi": "",
+        "arxiv": ""
+      },
+      "confidence": {
+        "level": "medium",
+        "score": 0.62,
+        "reason": "含官方论文库 E1 正式出版记录；命中跟踪 venue 的完整名称或官方入口；标题或摘要命中 Atlas 技术方向；日期只有年份精度"
+      },
+      "duplicate_match": {
+        "is_duplicate": false,
+        "matched_by": "none",
+        "matches": [],
+        "possible_matches": [],
+        "note": "未按稳定标识或严格标题键命中已有论文。"
+      },
+      "deduplication_notes": [],
+      "manual_review_required": true,
+      "manual_review_items": [
+        "确认论文确已收入该 venue，而非预印本、workshop、海报页面、勘误或元数据误配。",
+        "核对标题、作者、DOI/arXiv 与正式出版页是否一致。",
+        "确认方向标签与 Atlas 六类定义相符。",
+        "日期精度不足；核对实际在线发表/会议日期是否落在本次回溯窗口。"
+      ],
+      "source_record_count": 1,
+      "publication_event_match": {
+        "is_known": false,
+        "matched_by": "none",
+        "events": [],
+        "note": "未命中已确认发表事件。"
+      }
+    },
+    {
+      "id": "academic-e8070da1b584b1",
+      "title": "Anatomy-VLM: A Fine-grained Vision-Language Model for Medical Interpretation",
+      "authors": [
+        "Difei Gu",
+        "Yunhe Gao",
+        "Mu Zhou",
+        "Dimitris Metaxas"
+      ],
+      "first_author": "Difei Gu",
+      "published": "2026",
+      "date_precision": "year",
+      "venue": {
+        "id": "wacv",
+        "name": "IEEE/CVF Winter Conference on Applications of Computer Vision",
+        "acronym": "WACV",
+        "type": "conference",
+        "tracking_priority": "扩展追踪",
+        "match_mode": "official-explicit",
+        "conflicting_matches": []
+      },
+      "directions": [
+        "multimodal"
+      ],
+      "status": "needs_review",
+      "status_label": "待人工核验",
+      "candidate_kind": "官方论文集新条目候选",
+      "evidence_level": "E1",
+      "sources": [
+        "CVF Open Access"
+      ],
+      "fact_sources": [
+        {
+          "source": "CVF Open Access",
+          "evidence_level": "E1",
+          "source_id": "/content/WACV2026/html/Gu_Anatomy-VLM_A_Fine-grained_Vision-Language_Model_for_Medical_Interpretation_WACV_2026_paper.html",
+          "url": "https://openaccess.thecvf.com/content/WACV2026/html/Gu_Anatomy-VLM_A_Fine-grained_Vision-Language_Model_for_Medical_Interpretation_WACV_2026_paper.html",
+          "observed_fields": [
+            "title",
+            "authors",
+            "published",
+            "venue_hint"
+          ]
+        }
+      ],
+      "external_ids": {
+        "doi": [],
+        "platform": [
+          "cvf-open-access:contentwacv2026htmlguanatomyvlmafinegrainedvisionlanguagemodelformedicalinterpretationwacv2026paperhtml"
+        ],
+        "arxiv": []
+      },
+      "links": {
+        "landing": "https://openaccess.thecvf.com/content/WACV2026/html/Gu_Anatomy-VLM_A_Fine-grained_Vision-Language_Model_for_Medical_Interpretation_WACV_2026_paper.html",
+        "doi": "",
+        "arxiv": ""
+      },
+      "confidence": {
+        "level": "medium",
+        "score": 0.62,
+        "reason": "含官方论文库 E1 正式出版记录；命中跟踪 venue 的完整名称或官方入口；标题或摘要命中 Atlas 技术方向；日期只有年份精度"
+      },
+      "duplicate_match": {
+        "is_duplicate": false,
+        "matched_by": "none",
+        "matches": [],
+        "possible_matches": [],
+        "note": "未按稳定标识或严格标题键命中已有论文。"
+      },
+      "deduplication_notes": [],
+      "manual_review_required": true,
+      "manual_review_items": [
+        "确认论文确已收入该 venue，而非预印本、workshop、海报页面、勘误或元数据误配。",
+        "核对标题、作者、DOI/arXiv 与正式出版页是否一致。",
+        "确认方向标签与 Atlas 六类定义相符。",
+        "日期精度不足；核对实际在线发表/会议日期是否落在本次回溯窗口。"
+      ],
+      "source_record_count": 1,
+      "publication_event_match": {
+        "is_known": false,
+        "matched_by": "none",
+        "events": [],
+        "note": "未命中已确认发表事件。"
+      }
+    },
+    {
+      "id": "academic-ac81f3c4263ebb",
+      "title": "AD-GBC: Anisotropic Granular-Ball Skip-Connection Refiner for UNet-Based Medical Image Segmentation",
+      "authors": [
+        "Xiya Shen",
+        "Qinglin Zhao",
+        "Li Feng"
+      ],
+      "first_author": "Xiya Shen",
+      "published": "2026",
+      "date_precision": "year",
+      "venue": {
+        "id": "cvpr",
+        "name": "IEEE/CVF Conference on Computer Vision and Pattern Recognition",
+        "acronym": "CVPR",
+        "type": "conference",
+        "tracking_priority": "核心追踪",
+        "match_mode": "official-explicit",
+        "conflicting_matches": []
+      },
+      "directions": [
+        "segmentation"
+      ],
+      "status": "needs_review",
+      "status_label": "待人工核验",
+      "candidate_kind": "官方论文集新条目候选",
+      "evidence_level": "E1",
+      "sources": [
+        "CVF Open Access"
+      ],
+      "fact_sources": [
+        {
+          "source": "CVF Open Access",
+          "evidence_level": "E1",
+          "source_id": "/content/CVPR2026/html/Shen_AD-GBC_Anisotropic_Granular-Ball_Skip-Connection_Refiner_for_UNet-Based_Medical_Image_Segmentation_CVPR_2026_paper.html",
+          "url": "https://openaccess.thecvf.com/content/CVPR2026/html/Shen_AD-GBC_Anisotropic_Granular-Ball_Skip-Connection_Refiner_for_UNet-Based_Medical_Image_Segmentation_CVPR_2026_paper.html",
+          "observed_fields": [
+            "title",
+            "authors",
+            "published",
+            "venue_hint"
+          ]
+        }
+      ],
+      "external_ids": {
+        "doi": [],
+        "platform": [
+          "cvf-open-access:contentcvpr2026htmlshenadgbcanisotropicgranularballskipconnectionrefinerforunetbasedmedicalimagesegmentationcvpr2026paperhtml"
+        ],
+        "arxiv": []
+      },
+      "links": {
+        "landing": "https://openaccess.thecvf.com/content/CVPR2026/html/Shen_AD-GBC_Anisotropic_Granular-Ball_Skip-Connection_Refiner_for_UNet-Based_Medical_Image_Segmentation_CVPR_2026_paper.html",
+        "doi": "",
+        "arxiv": ""
+      },
+      "confidence": {
+        "level": "medium",
+        "score": 0.62,
+        "reason": "含官方论文库 E1 正式出版记录；命中跟踪 venue 的完整名称或官方入口；标题或摘要命中 Atlas 技术方向；日期只有年份精度"
+      },
+      "duplicate_match": {
+        "is_duplicate": false,
+        "matched_by": "none",
+        "matches": [],
+        "possible_matches": [],
+        "note": "未按稳定标识或严格标题键命中已有论文。"
+      },
+      "deduplication_notes": [],
+      "manual_review_required": true,
+      "manual_review_items": [
+        "确认论文确已收入该 venue，而非预印本、workshop、海报页面、勘误或元数据误配。",
+        "核对标题、作者、DOI/arXiv 与正式出版页是否一致。",
+        "确认方向标签与 Atlas 六类定义相符。",
+        "日期精度不足；核对实际在线发表/会议日期是否落在本次回溯窗口。"
+      ],
+      "source_record_count": 1,
+      "publication_event_match": {
+        "is_known": false,
+        "matched_by": "none",
+        "events": [],
+        "note": "未命中已确认发表事件。"
+      }
+    }
+  ]
+}

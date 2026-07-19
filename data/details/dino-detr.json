@@ -1,0 +1,48 @@
+{
+ "id": "dino-detr",
+ "name": "DINO-DETR",
+ "org": "IDEA Research",
+ "country": "CN",
+ "year": 2022,
+ "paper_url": "https://arxiv.org/abs/2203.03605",
+ "github_url": "https://github.com/IDEA-Research/DINO",
+ "category": "detection",
+ "sub_category": "transformer",
+ "one_liner_zh": "IDEA 通过对比去噪训练、混合查询选择和逐框细化增强 DETR。",
+ "key_idea_zh": "向训练注入带噪真实框构造正负查询，同时用编码器候选初始化位置查询并逐层精修。",
+ "tags": [
+  "国产",
+  "DETR",
+  "去噪训练",
+  "查询选择"
+ ],
+ "tier": "B",
+ "lineage_parent": "deformable-detr",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "到 2022 年,DETR 系已有 Deformable(效率)、DAB(查询即锚框)、DN(去噪训练)等改进,但在 COCO 榜单上始终压不过强化过的传统检测器。IDEA 研究院的 DINO(DETR with Improved deNoising anchOr boxes)整合并升级这些组件,誓要让端到端检测第一次登顶主流榜单。"
+  },
+  {
+   "title": "方法详解",
+   "body": "三项关键改进:对比去噪训练(CDN)——在 DN-DETR 的「加噪真值框重建」基础上,同时构造正负两组噪声查询,让模型学会拒绝「接近但不是」的困难负例,抑制重复预测;混合查询选择——位置查询由编码器 top-k 候选初始化(利用图像先验),内容查询保持可学习(避免被候选特征污染);Look Forward Twice——精修框时让梯度跨层回传,当前层的框同时受本层与下一层损失指导,提高框回归精度。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "ResNet-50 骨干 12 epoch 即达 49.4 AP、24 epoch 达 51.3;SwinL 骨干在 Objects365 预训练后于 COCO 微调。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "DINO 以小得多的模型与数据,在 COCO val(63.2 AP)与 test-dev(63.3 AP)双双登顶——这是 DETR 系首次拿下 COCO 第一,宣告端到端范式全面成熟。DINO 从此成为高精度检测的默认底座:Grounding DINO、Co-DETR、Mask DINO 都直接构建其上,引用近 3000 次。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "训练资源需求高,小模型档位优势不明显;实时化需要重新设计(RT-DETR 承接)。其去噪训练与查询选择已成为 DETR 生态的标准组件。"
+  }
+ ],
+ "citations": {
+  "count": 2893,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

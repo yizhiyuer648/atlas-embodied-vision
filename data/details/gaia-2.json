@@ -1,0 +1,34 @@
+{
+ "id": "gaia-2",
+ "name": "GAIA-2",
+ "org": "Wayve",
+ "country": "UK",
+ "year": "unknown",
+ "paper_url": "unknown",
+ "github_url": "unknown",
+ "category": "world",
+ "sub_category": "driving-world-model",
+ "one_liner_zh": "Wayve 后续驾驶世界模型名称，公开可核验技术资料有限。",
+ "key_idea_zh": "因未找到足以核对年份、论文与实现的一手公开资料，本条不补写未证实的架构细节。",
+ "tags": [
+  "自动驾驶",
+  "闭源",
+  "资料待补"
+ ],
+ "tier": "B",
+ "lineage_parent": "gaia-1",
+ "sections": [
+  {
+   "title": "背景与定位",
+   "body": "GAIA-2 是 Wayve 在 GAIA-1 之后公布的第二代驾驶世界模型,官方定位是「面向辅助驾驶与自动驾驶的可控多视角生成式世界模型」,核心用途是大规模生成安全关键场景,替代昂贵的实车路测里程。"
+  },
+  {
+   "title": "已公开的技术信息",
+   "body": "根据 Wayve 官方博客与技术报告摘要:GAIA-2 从 GAIA-1 的单视角升级为多相机一致生成,支持以自车动作、其他交通参与者状态、天气时间等结构化条件控制场景,并强调跨国家道路风格(英国、美国、德国)的泛化。架构延续「潜空间世界模型 + 视频解码器」的生成式路线。"
+  },
+  {
+   "title": "资料状态与提醒",
+   "body": "GAIA-2 有官方技术介绍但缺少可复现的开源实现与同行评审论文,发布年份等以官方口径为准,本条目年份保持 unknown。建议关注 Wayve 官方渠道获取评测细节。"
+  }
+ ]
+}

@@ -1,0 +1,38 @@
+{
+  "id": "internvl3-5",
+  "name": "InternVL3.5",
+  "org": "Shanghai AI Laboratory / OpenGVLab",
+  "country": "CN",
+  "year": 2025,
+  "paper_url": "https://arxiv.org/abs/2508.18265",
+  "github_url": "https://github.com/OpenGVLab/InternVL",
+  "category": "multimodal",
+  "sub_category": "open-mllm",
+  "one_liner_zh": "InternVL3 的推理与效率升级，引入级联强化学习、视觉分辨率路由和视觉语言解耦部署。",
+  "key_idea_zh": "Cascade RL 先离线稳定优化再在线精调，ViR 动态选择视觉分辨率，DvD 平衡多 GPU 负载。",
+  "tags": ["国产", "MLLM", "Cascade RL", "视觉分辨率路由", "GUI Agent", "Hugging Face", "ModelScope"],
+  "tier": "B",
+  "lineage_parent": "internvl3",
+  "sections": [
+    {
+      "title": "背景与版本定位",
+      "body": "InternVL3.5 于 2025 年 8 月公开，是 InternVL3 的明确迭代，重点不再只是扩大预训练，而是同时改善多模态推理、推理效率与部署弹性。"
+    },
+    {
+      "title": "方法详解",
+      "body": "Cascade Reinforcement Learning 采用两阶段强化学习：先离线 RL 获得较稳定收敛，再在线 RL 做更细的对齐。Visual Resolution Router（ViR）依据输入动态调整视觉 token 分辨率；Decoupled Vision-Language Deployment（DvD）把视觉编码器与语言模型分配到不同 GPU，减少一侧过载。"
+    },
+    {
+      "title": "模型与开放生态",
+      "body": "官方提供 1B、2B、4B、8B、14B、38B 以及 MoE 大模型等多个档位，并同时给出原项目格式与 Hugging Face Transformers 格式。OpenGVLab/InternVL3_5-1B 模型卡创建于 2025 年 8 月，官方表格也提供 ModelScope 镜像。"
+    },
+    {
+      "title": "结果与能力",
+      "body": "论文报告相对 InternVL3 最多可获得 16.0% 的综合推理增益与 4.05 倍推理加速，并增强 GUI 交互和具身 agent 能力。具体增益随模型尺寸、路由配置与硬件部署方式变化。"
+    },
+    {
+      "title": "局限与学习提醒",
+      "body": "DvD 的加速依赖多 GPU 拓扑，单卡用户不能直接获得同样收益；级联 RL 的训练细节和数据质量也会显著影响结果。对比时要区分 dense、MoE、GitHub 格式与 HF 格式。"
+    }
+  ]
+}

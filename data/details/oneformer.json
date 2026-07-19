@@ -1,0 +1,48 @@
+{
+ "id": "oneformer",
+ "name": "OneFormer",
+ "org": "SHI Labs",
+ "country": "US",
+ "year": 2023,
+ "paper_url": "https://arxiv.org/abs/2211.06220",
+ "github_url": "https://github.com/SHI-Labs/OneFormer",
+ "category": "segmentation",
+ "sub_category": "universal-segmentation",
+ "one_liner_zh": "单个模型通过任务文本提示统一完成语义、实例和全景分割。",
+ "key_idea_zh": "把任务写成文本 token 条件化对象查询，并用统一的二部匹配损失训练三类标注。",
+ "tags": [
+  "通用分割",
+  "任务提示",
+  "Transformer",
+  "多任务"
+ ],
+ "tier": "B",
+ "lineage_parent": "mask2former",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "Mask2Former 统一了架构,却没统一训练:想要三种分割的最优结果,还得分别训练三个模型。SHI Labs 的 OneFormer 把目标再推进一步:只训练一次,一个模型在语义、实例、全景三个任务上同时达到最优——真正的「一个模型统治分割」。"
+  },
+  {
+   "title": "方法详解",
+   "body": "三项设计支撑「train once」:任务条件联合训练——每个样本随机指定一个任务(the task is {panoptic/instance/semantic}),从全景标注中派生对应监督;任务 token——把任务文本编码成 token 拼入查询,让模型按任务动态调整行为;查询-文本对比损失——用「a photo with a {类别}」构造文本列表与对象查询对比对齐,强化任务间与类别间的区分。推理时改一句任务提示即可切换输出形式。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "在 ADE20K、Cityscapes、COCO 上以单次多任务训练完成;骨干覆盖 Swin、ConvNeXt、DiNAT。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "单个 OneFormer 在三个数据集的三类任务上全面超过分别训练三次的 Mask2Former,训练资源只需三分之一。它把「任务提示」这一语言模型思想成功移植到密集视觉任务,是通用分割方向的代表工作,引用超过 600 次。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "类别体系仍是闭集,新增类别需重训;文本的作用限于任务与类别名,尚非真正的开放词汇。随后的 SAM 与开放词汇分割(结合 CLIP/Grounding DINO)把这条路推向开放世界。"
+  }
+ ],
+ "citations": {
+  "count": 603,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

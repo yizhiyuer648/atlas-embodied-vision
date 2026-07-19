@@ -1,0 +1,43 @@
+{
+ "id": "nanodet",
+ "name": "NanoDet",
+ "org": "RangiLyu",
+ "country": "CN",
+ "year": 2020,
+ "paper_url": "unknown",
+ "github_url": "https://github.com/RangiLyu/nanodet",
+ "category": "detection",
+ "sub_category": "edge",
+ "one_liner_zh": "面向移动端的轻量无锚检测器，可在很小计算量下运行。",
+ "key_idea_zh": "采用 anchor-free 检测头、Generalized Focal Loss 与轻量特征融合，突出端侧速度。",
+ "tags": [
+  "国产",
+  "移动端",
+  "anchor-free",
+  "轻量化"
+ ],
+ "tier": "B",
+ "lineage_parent": "fcos",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "学术检测器动辄数十 GFLOPs,而大量真实需求是在手机、嵌入式 NPU 上跑实时检测。NanoDet 是开发者 RangiLyu 发布的开源项目,目标非常纯粹:把 anchor-free 检测压缩到「毫瓦级」算力也能实时。"
+  },
+  {
+   "title": "方法详解",
+   "body": "NanoDet 以 FCOS 式 anchor-free 头为基础做极限瘦身:骨干用 ShuffleNetV2 级轻量网络,颈部用极简 PAN(去卷积、只留插值与相加),检测头共享并裁剪通道;训练用 Generalized Focal Loss 把分类与框质量统一为分布学习,并配合 ATSS/SimOTA 式动态分配在小模型上榨出精度。升级版 NanoDet-Plus 还加入了简化的辅助训练模块与更优分配策略。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "在 COCO 上训练,提供 ncnn、MNN、OpenVINO 等端侧推理框架的完整部署示例,这也是项目广受欢迎的原因之一。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "1.8M 参数的 NanoDet-Plus-m 在 COCO 上可达约 30 AP,手机 CPU 上实时运行。作为纯社区项目,它成为移动端检测的常用起点与 YOLOX-Nano、PP-PicoDet 等轻量模型的直接对照对象,GitHub 星标数万。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "极限压缩必然牺牲精度上限,复杂场景(小目标、密集遮挡)能力有限;项目为个人维护,迭代节奏不如商业框架。后续 PP-PicoDet、YOLO 系列 nano 档在同一生态位持续竞争。"
+  }
+ ]
+}

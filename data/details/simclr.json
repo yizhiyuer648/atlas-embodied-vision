@@ -1,0 +1,48 @@
+{
+ "id": "simclr",
+ "name": "SimCLR",
+ "org": "Google Research",
+ "country": "US",
+ "year": 2020,
+ "paper_url": "https://arxiv.org/abs/2002.05709",
+ "github_url": "https://github.com/google-research/simclr",
+ "category": "representation",
+ "sub_category": "self-supervised",
+ "one_liner_zh": "用强数据增强、投影头和大批量对比损失建立简洁自监督基线。",
+ "key_idea_zh": "同图两次增强视为正对，批内其他图为负对；非线性投影头只在预训练损失中使用。",
+ "tags": [
+  "自监督",
+  "对比学习",
+  "数据增强",
+  "NT-Xent"
+ ],
+ "tier": "B",
+ "lineage_parent": "unknown",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "同一时期,Hinton 组的 SimCLR 选择了与 MoCo 相反的策略:不搞专门架构、不搞记忆库,把对比学习的框架简化到极致,然后用系统消融回答一个问题——对比学习有效的关键成分到底是什么?"
+  },
+  {
+   "title": "方法详解",
+   "body": "框架只有四件东西:强数据增强(随机裁剪 + 颜色扰动 + 高斯模糊的组合被证明至关重要)、编码器、一个只在训练时使用的非线性投影头,以及 NT-Xent 对比损失。同一张图的两个增强视图互为正对,batch 内其余样本全部当负样本——因此需要非常大的 batch(4096+)与长训练。论文的三个结论成为领域常识:增强组合决定任务难度与质量;投影头让表征层免于对比损失的过度特化;对比学习比监督学习更吃 batch 和训练时长。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "在 ImageNet-1K 上用 TPU 大批量训练 ResNet 系列;半监督设定下用 1% / 10% 标签微调评估。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "线性探针 76.5% top-1,首次追平监督训练的 ResNet-50;1% 标签微调 85.8% top-5,超过用百倍标签的 AlexNet。SimCLR 与 MoCo 一起确立了对比学习的黄金时代,其增强配方与投影头设计沿用至今,引用超过 2.5 万次。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "大 batch 依赖使复现成本高;负样本机制在语义相近样本上会产生错误排斥。BYOL 与 SimSiam 随后证明无负样本也可行,DINO 把自蒸馏推向 ViT 时代。"
+  }
+ ],
+ "citations": {
+  "count": 25206,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

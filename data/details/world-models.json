@@ -1,0 +1,47 @@
+{
+ "id": "world-models",
+ "name": "World Models",
+ "org": "independent / IDSIA",
+ "country": "EU",
+ "year": 2018,
+ "paper_url": "https://arxiv.org/abs/1803.10122",
+ "github_url": "https://github.com/hardmaru/WorldModelsExperiments",
+ "category": "world",
+ "sub_category": "latent-dynamics",
+ "one_liner_zh": "在压缩潜空间里学习环境动力学，并让控制器在想象中训练。",
+ "key_idea_zh": "VAE 把画面压缩为潜变量，MDN-RNN 预测潜状态与终止信号，小型控制器据此选动作。",
+ "tags": [
+  "VAE",
+  "RNN",
+  "潜空间"
+ ],
+ "tier": "B",
+ "lineage_parent": "unknown",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "人类在行动前会在脑中「预演」结果,这种内部模拟长期被认知科学称为心智模型。David Ha 与 Jürgen Schmidhuber 2018 年的 World Models 把这个想法变成了可运行的代码:让智能体先学会一个环境的生成式模型,然后完全在自己的「梦境」里训练策略——这篇论文让「世界模型」一词正式进入深度学习主流词汇。"
+  },
+  {
+   "title": "方法详解",
+   "body": "系统由三个各司其职的模块组成:V(Vision)是一个变分自编码器,把每帧画面压缩成低维潜向量 z;M(Memory)是一个混合密度网络 RNN(MDN-RNN),在潜空间里预测下一个 z 的概率分布以及回合终止信号,承担「预测未来」的职责;C(Controller)是一个刻意做小的线性控制器,只根据 z 和 RNN 隐状态选动作,用进化策略(CMA-ES)优化。由于 V 和 M 承担了全部感知与预测负担,策略本身可以简单到几百个参数。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "先用随机策略收集环境画面训练 VAE 与 MDN-RNN,再在真实环境或模型「梦境」中训练控制器。实验环境为 CarRacing 与 VizDoom。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "智能体在 CarRacing 上刷新当时纪录;更惊人的是 VizDoom 实验:策略完全在世界模型的幻觉中训练,再放回真实环境依然有效。这一「在想象中学习」的完整闭环启发了 Dreamer 系列、MuZero 到今天的生成式世界模型浪潮,引用近 1900 次,交互式论文网页也成为科研传播的经典范例。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "VAE 压缩会丢弃任务相关细节,MDN-RNN 容量有限,「梦境」与现实的偏差会被策略利用(reward hacking 幻觉);进化策略也难扩展。Dreamer 用 RSSM 与解析梯度系统性解决了这些问题,把该范式推向实用。"
+  }
+ ],
+ "citations": {
+  "count": 1884,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

@@ -1,0 +1,47 @@
+{
+ "id": "dreamer-v2",
+ "name": "DreamerV2",
+ "org": "Google Research",
+ "country": "US",
+ "year": 2020,
+ "paper_url": "https://arxiv.org/abs/2010.02193",
+ "github_url": "https://github.com/danijar/dreamerv2",
+ "category": "world",
+ "sub_category": "discrete-latent-rl",
+ "one_liner_zh": "以离散潜变量世界模型在 Atari 上实现单一配置的高性能控制。",
+ "key_idea_zh": "将 RSSM 的随机状态改为分类离散变量，并以 actor-critic 在想象轨迹中优化。",
+ "tags": [
+  "离散潜变量",
+  "Atari",
+  "Actor-Critic"
+ ],
+ "tier": "B",
+ "lineage_parent": "dreamer",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "Atari 一直是世界模型的滑铁卢:画面元素离散跳变(得分、道具、敌人出现消失),高斯潜变量模糊的重建难以支撑策略学习,以致「模型型方法打不过无模型方法」成为社区共识。DreamerV2 的目标就是正面攻下这座山头。"
+  },
+  {
+   "title": "方法详解",
+   "body": "关键改动是把 RSSM 的随机潜状态从高斯换成 32 组、每组 32 类的分类离散变量,用直通梯度(straight-through)训练——离散表示天然适配 Atari 的跳变结构,还能防止后验塌缩。第二个改动是 KL balancing:分别缩放先验与后验侧的 KL 梯度,让先验更努力地追上后验。行为学习沿用想象中的 actor-critic,离散动作用 REINFORCE 梯度、连续动作用解析梯度。世界模型与策略分开训练,职责清晰。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "在 Atari 55 games 基准上以 200M 帧、单 GPU 预算训练;另在连续控制上验证,包括从像素学会人形机器人站立行走。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "DreamerV2 成为第一个在 Atari 上达到人类水平的「纯世界模型内学习」智能体,同预算下超过 IQN 与 Rainbow 等顶级单 GPU 无模型算法。离散潜变量从此成为世界模型的默认设计,直接影响 DreamerV3、Genie 以及各类 token 化世界模型,引用近 1300 次。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "超参数仍需按域调整,奖励尺度差异大的环境不稳定。DreamerV3 引入 symlog 变换、free bits 等稳健化手段,把「同一配置跨 150 个任务」变成现实。"
+  }
+ ],
+ "citations": {
+  "count": 1281,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

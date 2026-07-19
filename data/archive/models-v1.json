@@ -1,0 +1,6827 @@
+[
+  {
+    "id": "rt-1",
+    "name": "RT-1",
+    "org": "Google Robotics",
+    "country": "US",
+    "year": 2022,
+    "paper_url": "https://arxiv.org/abs/2212.06817",
+    "github_url": "https://github.com/google-research/robotics_transformer",
+    "category": "vla",
+    "sub_category": "robotics-transformer",
+    "one_liner_zh": "把图像、语言指令与机器人动作统一到可规模化训练的 Transformer 策略中。",
+    "key_idea_zh": "将相机观测与自然语言编码成 token，由 TokenLearner 压缩视觉特征，再以 Transformer 直接预测离散动作 token。",
+    "tags": [
+      "Transformer",
+      "操作",
+      "闭环控制"
+    ],
+    "tier": "B",
+    "lineage_parent": "unknown"
+  },
+  {
+    "id": "rt-2",
+    "name": "RT-2",
+    "org": "Google DeepMind",
+    "country": "US",
+    "year": 2023,
+    "paper_url": "https://arxiv.org/abs/2307.15818",
+    "github_url": "unknown",
+    "category": "vla",
+    "sub_category": "vision-language-action",
+    "one_liner_zh": "把机器人动作写成文本 token，让视觉语言模型把网络知识迁移到控制。",
+    "key_idea_zh": "在网页视觉语言数据和机器人轨迹上共同训练 VLM，以动作 token 形式输出控制指令。",
+    "tags": [
+      "VLM",
+      "动作分词",
+      "知识迁移"
+    ],
+    "tier": "B",
+    "lineage_parent": "rt-1"
+  },
+  {
+    "id": "rt-x",
+    "name": "RT-X",
+    "org": "Open X-Embodiment Collaboration",
+    "country": "INTL",
+    "year": 2023,
+    "paper_url": "https://arxiv.org/abs/2310.08864",
+    "github_url": "https://github.com/google-deepmind/open_x_embodiment",
+    "category": "vla",
+    "sub_category": "cross-embodiment",
+    "one_liner_zh": "在多机构、多机器人数据上训练跨本体通用策略。",
+    "key_idea_zh": "汇集 Open X-Embodiment 数据，并训练 RT-1-X、RT-2-X 来研究跨机器人正迁移。",
+    "tags": [
+      "跨本体",
+      "大规模数据",
+      "通用策略"
+    ],
+    "tier": "B",
+    "lineage_parent": "rt-2"
+  },
+  {
+    "id": "openvla",
+    "name": "OpenVLA",
+    "org": "Stanford University / UC Berkeley / Toyota Research Institute",
+    "country": "US",
+    "year": 2024,
+    "paper_url": "https://arxiv.org/abs/2406.09246",
+    "github_url": "https://github.com/openvla/openvla",
+    "category": "vla",
+    "sub_category": "open-source-vla",
+    "one_liner_zh": "基于开源 VLM 构建的 7B 通用机器人动作模型。",
+    "key_idea_zh": "融合 DINOv2 与 SigLIP 视觉特征，经投影器送入 Llama 2，并把连续动作离散成语言模型可生成的 token。",
+    "tags": [
+      "开源",
+      "7B",
+      "动作分词"
+    ],
+    "tier": "A",
+    "lineage_parent": "rt-2",
+    "architecture": {
+      "description_zh": "OpenVLA 使用 Prismatic 双视觉骨干提取图像特征，将视觉 token 与指令 token 一同输入 Llama 2，生成离散动作 token 后再反归一化为连续控制量。",
+      "modules": [
+        {
+          "id": "ov-image",
+          "label": "机器人图像",
+          "type": "input"
+        },
+        {
+          "id": "ov-language",
+          "label": "语言指令",
+          "type": "input"
+        },
+        {
+          "id": "ov-vision",
+          "label": "DINOv2 + SigLIP",
+          "type": "encoder"
+        },
+        {
+          "id": "ov-projector",
+          "label": "视觉投影器",
+          "type": "fusion"
+        },
+        {
+          "id": "ov-llm",
+          "label": "Llama 2 7B",
+          "type": "transformer"
+        },
+        {
+          "id": "ov-tokenizer",
+          "label": "动作 Token 解码",
+          "type": "decoder"
+        },
+        {
+          "id": "ov-action",
+          "label": "连续机器人动作",
+          "type": "output"
+        }
+      ],
+      "edges": [
+        {
+          "from": "ov-image",
+          "to": "ov-vision",
+          "label": "像素"
+        },
+        {
+          "from": "ov-vision",
+          "to": "ov-projector",
+          "label": "视觉特征"
+        },
+        {
+          "from": "ov-projector",
+          "to": "ov-llm",
+          "label": "视觉 token"
+        },
+        {
+          "from": "ov-language",
+          "to": "ov-llm",
+          "label": "指令 token"
+        },
+        {
+          "from": "ov-llm",
+          "to": "ov-tokenizer",
+          "label": "动作 token"
+        },
+        {
+          "from": "ov-tokenizer",
+          "to": "ov-action",
+          "label": "反归一化"
+        }
+      ],
+      "flow_ms": 3600
+    },
+    "code": {
+      "language": "python",
+      "source_repo": "https://github.com/openvla/openvla",
+      "source_path": "prismatic/models/vlas/openvla.py",
+      "simplified": true,
+      "lines": [
+        {
+          "code": "@torch.inference_mode()",
+          "comment_zh": "推理时关闭梯度，减少显存占用。"
+        },
+        {
+          "code": "def predict_action(self, image, instruction, unnorm_key):",
+          "comment_zh": "接收图像、指令和动作统计量键。"
+        },
+        {
+          "code": "    prompt = f'In: What action should the robot take to {instruction}?'",
+          "comment_zh": "把任务指令组织成模型训练时使用的提示格式。"
+        },
+        {
+          "code": "    input_ids = self.tokenizer(prompt, truncation=True, return_tensors='pt').input_ids",
+          "comment_zh": "把自然语言提示编码为文本 token。"
+        },
+        {
+          "code": "    pixel_values = self.vision_backbone.image_transform(image)",
+          "comment_zh": "用配套图像变换准备视觉输入。"
+        },
+        {
+          "code": "    generated = self.generate(input_ids=input_ids, pixel_values=pixel_values, max_new_tokens=self.action_dim)",
+          "comment_zh": "让 VLM 自回归生成固定维度的动作 token。"
+        },
+        {
+          "code": "    action_token_ids = generated[0, -self.action_dim:]",
+          "comment_zh": "截取序列末尾属于动作的 token。"
+        },
+        {
+          "code": "    normalized = self.action_tokenizer.decode_token_ids_to_actions(action_token_ids.cpu().numpy())",
+          "comment_zh": "将离散 token 还原为归一化动作。"
+        },
+        {
+          "code": "    stats = self.get_action_stats(unnorm_key)",
+          "comment_zh": "读取目标数据集对应的动作分位数。"
+        },
+        {
+          "code": "    low = np.asarray(stats['q01'])",
+          "comment_zh": "取得 1% 分位作为动作下界。"
+        },
+        {
+          "code": "    high = np.asarray(stats['q99'])",
+          "comment_zh": "取得 99% 分位作为动作上界。"
+        },
+        {
+          "code": "    mask = np.asarray(stats.get('mask', np.ones_like(low, dtype=bool)))",
+          "comment_zh": "确定哪些动作维度需要反归一化。"
+        },
+        {
+          "code": "    continuous = 0.5 * (normalized + 1.0) * (high - low) + low",
+          "comment_zh": "把 [-1,1] 的输出映射回真实控制范围。"
+        },
+        {
+          "code": "    action = np.where(mask, continuous, normalized)",
+          "comment_zh": "只转换具有有效统计量的维度。"
+        },
+        {
+          "code": "    return action",
+          "comment_zh": "返回可发送给机器人控制器的连续动作。"
+        }
+      ]
+    }
+  },
+  {
+    "id": "pi0",
+    "name": "π0",
+    "org": "Physical Intelligence",
+    "country": "US",
+    "year": 2024,
+    "paper_url": "https://arxiv.org/abs/2410.24164",
+    "github_url": "https://github.com/Physical-Intelligence/openpi",
+    "category": "vla",
+    "sub_category": "flow-matching-vla",
+    "one_liner_zh": "用流匹配动作专家生成连续动作块的通用 VLA。",
+    "key_idea_zh": "以 PaliGemma 编码视觉语言上下文，独立动作专家学习条件速度场，并通过数值积分从噪声得到连续动作块。",
+    "tags": [
+      "流匹配",
+      "动作块",
+      "PaliGemma"
+    ],
+    "tier": "A",
+    "lineage_parent": "unknown",
+    "architecture": {
+      "description_zh": "π0 将图像与语言交给 PaliGemma 前缀模型，把机器人状态、带噪动作和时间步交给动作专家；动作专家预测速度场，经多步积分得到动作块。",
+      "modules": [
+        {
+          "id": "pi-observation",
+          "label": "图像 + 指令",
+          "type": "input"
+        },
+        {
+          "id": "pi-state",
+          "label": "机器人状态",
+          "type": "input"
+        },
+        {
+          "id": "pi-prefix",
+          "label": "PaliGemma 前缀",
+          "type": "encoder"
+        },
+        {
+          "id": "pi-noise",
+          "label": "噪声动作 + 时间步",
+          "type": "latent"
+        },
+        {
+          "id": "pi-expert",
+          "label": "Gemma 动作专家",
+          "type": "transformer"
+        },
+        {
+          "id": "pi-velocity",
+          "label": "动作速度场",
+          "type": "decoder"
+        },
+        {
+          "id": "pi-integrator",
+          "label": "流匹配积分",
+          "type": "sampler"
+        },
+        {
+          "id": "pi-actions",
+          "label": "连续动作块",
+          "type": "output"
+        }
+      ],
+      "edges": [
+        {
+          "from": "pi-observation",
+          "to": "pi-prefix",
+          "label": "视觉语言 token"
+        },
+        {
+          "from": "pi-prefix",
+          "to": "pi-expert",
+          "label": "条件上下文"
+        },
+        {
+          "from": "pi-state",
+          "to": "pi-expert",
+          "label": "本体状态"
+        },
+        {
+          "from": "pi-noise",
+          "to": "pi-expert",
+          "label": "动作查询"
+        },
+        {
+          "from": "pi-expert",
+          "to": "pi-velocity",
+          "label": "动作隐藏态"
+        },
+        {
+          "from": "pi-velocity",
+          "to": "pi-integrator",
+          "label": "dx/dt"
+        },
+        {
+          "from": "pi-integrator",
+          "to": "pi-actions",
+          "label": "去噪轨迹"
+        }
+      ],
+      "flow_ms": 3900
+    },
+    "code": {
+      "language": "python",
+      "source_repo": "https://github.com/Physical-Intelligence/openpi",
+      "source_path": "src/openpi/models/pi0.py",
+      "simplified": true,
+      "lines": [
+        {
+          "code": "def sample_actions(self, rng, observation, num_steps=10):",
+          "comment_zh": "定义从观测采样连续动作块的过程。"
+        },
+        {
+          "code": "    prefix, prefix_mask, prefix_ar = self.embed_prefix(observation)",
+          "comment_zh": "编码图像和语言，形成可复用的前缀 token。"
+        },
+        {
+          "code": "    batch = prefix.shape[0]",
+          "comment_zh": "读取当前批次大小。"
+        },
+        {
+          "code": "    x = jax.random.normal(rng, (batch, self.action_horizon, self.action_dim))",
+          "comment_zh": "从高斯噪声初始化整段动作。"
+        },
+        {
+          "code": "    dt = -1.0 / num_steps",
+          "comment_zh": "设置从噪声时间 1 积分到数据时间 0 的步长。"
+        },
+        {
+          "code": "    def denoise_step(carry, _):",
+          "comment_zh": "定义一次流匹配去噪更新。"
+        },
+        {
+          "code": "        x_t, t = carry",
+          "comment_zh": "取出当前动作样本与时间。"
+        },
+        {
+          "code": "        suffix, suffix_mask, suffix_ar = self.embed_suffix(observation, x_t, t)",
+          "comment_zh": "把状态、带噪动作和时间编码成动作后缀。"
+        },
+        {
+          "code": "        tokens = jnp.concatenate([prefix, suffix], axis=1)",
+          "comment_zh": "拼接视觉语言前缀与动作后缀。"
+        },
+        {
+          "code": "        mask = make_attn_mask(jnp.concatenate([prefix_mask, suffix_mask], axis=1), jnp.concatenate([prefix_ar, suffix_ar], axis=1))",
+          "comment_zh": "构造前缀可见、动作块受控的注意力掩码。"
+        },
+        {
+          "code": "        hidden = self.PaliGemma.llm(tokens, mask=mask)",
+          "comment_zh": "由主干与动作专家联合处理上下文。"
+        },
+        {
+          "code": "        velocity = self.action_out_proj(hidden[:, -self.action_horizon:])",
+          "comment_zh": "从动作 token 预测当前速度场。"
+        },
+        {
+          "code": "        return (x_t + dt * velocity, t + dt), None",
+          "comment_zh": "沿速度场做一次欧拉积分。"
+        },
+        {
+          "code": "    init = (x, jnp.ones((batch,)))",
+          "comment_zh": "从扩散时间 1 开始积分。"
+        },
+        {
+          "code": "    (actions, _), _ = jax.lax.scan(denoise_step, init, length=num_steps)",
+          "comment_zh": "用 JAX scan 高效执行固定次数去噪。"
+        },
+        {
+          "code": "    return actions",
+          "comment_zh": "输出完整的连续动作块。"
+        }
+      ]
+    }
+  },
+  {
+    "id": "pi0-5",
+    "name": "π0.5",
+    "org": "Physical Intelligence",
+    "country": "US",
+    "year": 2025,
+    "paper_url": "https://arxiv.org/abs/2504.16054",
+    "github_url": "https://github.com/Physical-Intelligence/openpi",
+    "category": "vla",
+    "sub_category": "open-world-vla",
+    "one_liner_zh": "在 π0 基础上强化开放世界泛化和高层语义知识。",
+    "key_idea_zh": "通过异构数据联合训练与 knowledge insulation 保留 VLM 知识，同时继续使用流匹配动作头。",
+    "tags": [
+      "开放世界",
+      "知识隔离",
+      "流匹配"
+    ],
+    "tier": "B",
+    "lineage_parent": "pi0"
+  },
+  {
+    "id": "act",
+    "name": "ACT",
+    "org": "Stanford University",
+    "country": "US",
+    "year": 2023,
+    "paper_url": "https://arxiv.org/abs/2304.13705",
+    "github_url": "https://github.com/tonyzhaozh/act",
+    "category": "vla",
+    "sub_category": "action-chunking",
+    "one_liner_zh": "用条件 VAE 和 Transformer 一次预测一段双臂动作。",
+    "key_idea_zh": "Action Chunking Transformer 通过动作分块降低长序列误差累积，并用时间集成平滑相邻预测。",
+    "tags": [
+      "动作分块",
+      "双臂",
+      "模仿学习"
+    ],
+    "tier": "B",
+    "lineage_parent": "unknown"
+  },
+  {
+    "id": "diffusion-policy",
+    "name": "Diffusion Policy",
+    "org": "Columbia University / Toyota Research Institute",
+    "country": "US",
+    "year": 2023,
+    "paper_url": "https://arxiv.org/abs/2303.04137",
+    "github_url": "https://github.com/real-stanford/diffusion_policy",
+    "category": "vla",
+    "sub_category": "diffusion-policy",
+    "one_liner_zh": "把机器人动作策略建模为条件扩散去噪过程。",
+    "key_idea_zh": "以视觉或状态观测为条件，用一维条件 U-Net 迭代去噪整段动作轨迹，再以滚动时域方式执行。",
+    "tags": [
+      "扩散",
+      "动作序列",
+      "滚动时域"
+    ],
+    "tier": "A",
+    "lineage_parent": "unknown",
+    "architecture": {
+      "description_zh": "Diffusion Policy 先编码当前观测，再把观测条件、扩散时间步和带噪动作序列送入 Conditional U-Net 1D；调度器反复去噪，最后执行动作块前部。",
+      "modules": [
+        {
+          "id": "dp-obs",
+          "label": "图像 / 状态历史",
+          "type": "input"
+        },
+        {
+          "id": "dp-encoder",
+          "label": "观测编码器",
+          "type": "encoder"
+        },
+        {
+          "id": "dp-noise",
+          "label": "带噪动作轨迹",
+          "type": "latent"
+        },
+        {
+          "id": "dp-time",
+          "label": "扩散时间嵌入",
+          "type": "condition"
+        },
+        {
+          "id": "dp-unet",
+          "label": "Conditional U-Net 1D",
+          "type": "denoiser"
+        },
+        {
+          "id": "dp-scheduler",
+          "label": "迭代去噪调度器",
+          "type": "sampler"
+        },
+        {
+          "id": "dp-chunk",
+          "label": "动作块",
+          "type": "output"
+        },
+        {
+          "id": "dp-robot",
+          "label": "滚动时域执行",
+          "type": "controller"
+        }
+      ],
+      "edges": [
+        {
+          "from": "dp-obs",
+          "to": "dp-encoder",
+          "label": "观测"
+        },
+        {
+          "from": "dp-encoder",
+          "to": "dp-unet",
+          "label": "全局条件"
+        },
+        {
+          "from": "dp-noise",
+          "to": "dp-unet",
+          "label": "动作样本"
+        },
+        {
+          "from": "dp-time",
+          "to": "dp-unet",
+          "label": "时间步"
+        },
+        {
+          "from": "dp-unet",
+          "to": "dp-scheduler",
+          "label": "噪声预测"
+        },
+        {
+          "from": "dp-scheduler",
+          "to": "dp-unet",
+          "label": "下一步样本"
+        },
+        {
+          "from": "dp-scheduler",
+          "to": "dp-chunk",
+          "label": "最终轨迹"
+        },
+        {
+          "from": "dp-chunk",
+          "to": "dp-robot",
+          "label": "前若干动作"
+        }
+      ],
+      "flow_ms": 4100
+    },
+    "code": {
+      "language": "python",
+      "source_repo": "https://github.com/real-stanford/diffusion_policy",
+      "source_path": "diffusion_policy/model/diffusion/conditional_unet1d.py",
+      "simplified": true,
+      "lines": [
+        {
+          "code": "def forward(self, sample, timestep, global_cond=None):",
+          "comment_zh": "输入带噪动作序列、扩散时间和观测条件。"
+        },
+        {
+          "code": "    sample = einops.rearrange(sample, 'b h c -> b c h')",
+          "comment_zh": "把动作序列改成一维卷积需要的通道优先格式。"
+        },
+        {
+          "code": "    timesteps = timestep.expand(sample.shape[0])",
+          "comment_zh": "为批次中的每条轨迹广播同一时间步。"
+        },
+        {
+          "code": "    time_feature = self.diffusion_step_encoder(timesteps)",
+          "comment_zh": "将扩散时间编码成条件向量。"
+        },
+        {
+          "code": "    cond = torch.cat([time_feature, global_cond], dim=-1)",
+          "comment_zh": "拼接时间条件与观测条件。"
+        },
+        {
+          "code": "    skips = []",
+          "comment_zh": "保存下采样阶段的跳连特征。"
+        },
+        {
+          "code": "    x = sample",
+          "comment_zh": "从当前带噪动作开始 U-Net 前向传播。"
+        },
+        {
+          "code": "    for block1, block2, downsample in self.down_modules:",
+          "comment_zh": "逐层提取更大时间感受野的特征。"
+        },
+        {
+          "code": "        x = block1(x, cond)",
+          "comment_zh": "用 FiLM 将条件注入第一个残差块。"
+        },
+        {
+          "code": "        x = block2(x, cond)",
+          "comment_zh": "进一步融合条件并细化动作特征。"
+        },
+        {
+          "code": "        skips.append(x)",
+          "comment_zh": "保存当前分辨率供上采样阶段使用。"
+        },
+        {
+          "code": "        x = downsample(x)",
+          "comment_zh": "压缩时间分辨率。"
+        },
+        {
+          "code": "    for mid in self.mid_modules: x = mid(x, cond)",
+          "comment_zh": "在瓶颈层处理整段动作的全局关系。"
+        },
+        {
+          "code": "    for block1, block2, upsample in self.up_modules:",
+          "comment_zh": "逐层恢复动作时间分辨率。"
+        },
+        {
+          "code": "        x = torch.cat((x, skips.pop()), dim=1)",
+          "comment_zh": "通过跳连补回局部细节。"
+        },
+        {
+          "code": "        x = upsample(block2(block1(x, cond), cond))",
+          "comment_zh": "条件残差块处理后执行上采样。"
+        },
+        {
+          "code": "    x = self.final_conv(x)",
+          "comment_zh": "投影成与动作维度相同的去噪预测。"
+        },
+        {
+          "code": "    return einops.rearrange(x, 'b c h -> b h c')",
+          "comment_zh": "恢复批次、时间、动作维度的输出格式。"
+        }
+      ]
+    }
+  },
+  {
+    "id": "octo",
+    "name": "Octo",
+    "org": "Octo Model Team",
+    "country": "US",
+    "year": 2024,
+    "paper_url": "https://arxiv.org/abs/2405.12213",
+    "github_url": "https://github.com/octo-models/octo",
+    "category": "vla",
+    "sub_category": "open-generalist-policy",
+    "one_liner_zh": "基于 Open X-Embodiment 数据训练的可微调开源通用策略。",
+    "key_idea_zh": "使用 Transformer 主干、任务 token 和读出 token 统一不同机器人数据，并通过轻量适配迁移到新本体。",
+    "tags": [
+      "开源",
+      "跨本体",
+      "微调"
+    ],
+    "tier": "B",
+    "lineage_parent": "rt-x"
+  },
+  {
+    "id": "groot-n1",
+    "name": "GR00T N1",
+    "org": "NVIDIA",
+    "country": "US",
+    "year": 2025,
+    "paper_url": "https://arxiv.org/abs/2503.14734",
+    "github_url": "https://github.com/NVIDIA/Isaac-GR00T",
+    "category": "vla",
+    "sub_category": "humanoid-foundation-model",
+    "one_liner_zh": "面向通用人形机器人的开放式双系统基础模型。",
+    "key_idea_zh": "将视觉语言语义推理系统与扩散式连续动作系统结合，并用真实与合成机器人数据共同训练。",
+    "tags": [
+      "人形机器人",
+      "双系统",
+      "扩散"
+    ],
+    "tier": "B",
+    "lineage_parent": "unknown"
+  },
+  {
+    "id": "helix",
+    "name": "Helix",
+    "org": "Figure AI",
+    "country": "US",
+    "year": 2025,
+    "paper_url": "unknown",
+    "github_url": "unknown",
+    "category": "vla",
+    "sub_category": "humanoid-vla",
+    "one_liner_zh": "Figure 面向人形机器人全上身控制发布的视觉语言动作模型。",
+    "key_idea_zh": "公开介绍采用慢速语义系统与高速运动系统协同，但未公开完整论文与训练代码。",
+    "tags": [
+      "人形机器人",
+      "双系统",
+      "闭源"
+    ],
+    "tier": "B",
+    "lineage_parent": "unknown"
+  },
+  {
+    "id": "hpt",
+    "name": "HPT",
+    "org": "MIT CSAIL / Meta AI",
+    "country": "US",
+    "year": 2024,
+    "paper_url": "https://arxiv.org/abs/2409.20537",
+    "github_url": "https://github.com/liruiw/HPT",
+    "category": "vla",
+    "sub_category": "heterogeneous-pretraining",
+    "one_liner_zh": "用异构预训练 Transformer 汇聚不同机器人和传感器数据。",
+    "key_idea_zh": "先通过本体相关 stem 对齐不同视觉与本体感觉输入，再由共享 Transformer 学习可迁移表示。",
+    "tags": [
+      "异构数据",
+      "本体感觉",
+      "预训练"
+    ],
+    "tier": "B",
+    "lineage_parent": "unknown"
+  },
+  {
+    "id": "palm-e",
+    "name": "PaLM-E",
+    "org": "Google Robotics",
+    "country": "US",
+    "year": 2023,
+    "paper_url": "https://arxiv.org/abs/2303.03378",
+    "github_url": "unknown",
+    "category": "vla",
+    "sub_category": "embodied-multimodal-lm",
+    "one_liner_zh": "把连续传感器观测直接注入大型语言模型的具身多模态模型。",
+    "key_idea_zh": "通过输入适配器把图像、状态等连续观测映射为语言模型嵌入，使一个模型同时处理规划、问答与机器人任务。",
+    "tags": [
+      "具身语言模型",
+      "多模态",
+      "规划"
+    ],
+    "tier": "B",
+    "lineage_parent": "unknown"
+  },
+  {
+    "id": "rdt-1b",
+    "name": "RDT-1B",
+    "org": "Tsinghua University",
+    "country": "CN",
+    "year": 2024,
+    "paper_url": "https://arxiv.org/abs/2410.07864",
+    "github_url": "https://github.com/thu-ml/RoboticsDiffusionTransformer",
+    "category": "vla",
+    "sub_category": "diffusion-foundation-model",
+    "one_liner_zh": "面向双臂操作的十亿参数扩散 Transformer 基础模型。",
+    "key_idea_zh": "用 T5 和 SigLIP 编码语言与图像，以 RDT 交替注入多模态条件并对整段机器人动作执行扩散去噪。",
+    "tags": [
+      "国产",
+      "扩散 Transformer",
+      "双臂"
+    ],
+    "tier": "A",
+    "lineage_parent": "diffusion-policy",
+    "architecture": {
+      "description_zh": "RDT-1B 分别用 T5 与 SigLIP 编码语言和多视角图像，把机器人状态、带噪动作及时间步组成动作 token；RDT Block 交替跨注意语言与图像条件，输出动作去噪结果。",
+      "modules": [
+        {
+          "id": "rdt-text",
+          "label": "语言指令",
+          "type": "input"
+        },
+        {
+          "id": "rdt-images",
+          "label": "多视角图像",
+          "type": "input"
+        },
+        {
+          "id": "rdt-t5",
+          "label": "T5 文本编码器",
+          "type": "encoder"
+        },
+        {
+          "id": "rdt-siglip",
+          "label": "SigLIP 视觉编码器",
+          "type": "encoder"
+        },
+        {
+          "id": "rdt-action",
+          "label": "状态 + 带噪动作",
+          "type": "latent"
+        },
+        {
+          "id": "rdt-core",
+          "label": "RDT 交替条件块",
+          "type": "transformer"
+        },
+        {
+          "id": "rdt-denoise",
+          "label": "扩散调度器",
+          "type": "sampler"
+        },
+        {
+          "id": "rdt-output",
+          "label": "双臂动作块",
+          "type": "output"
+        }
+      ],
+      "edges": [
+        {
+          "from": "rdt-text",
+          "to": "rdt-t5",
+          "label": "文本 token"
+        },
+        {
+          "from": "rdt-images",
+          "to": "rdt-siglip",
+          "label": "图像 patch"
+        },
+        {
+          "from": "rdt-t5",
+          "to": "rdt-core",
+          "label": "语言条件"
+        },
+        {
+          "from": "rdt-siglip",
+          "to": "rdt-core",
+          "label": "视觉条件"
+        },
+        {
+          "from": "rdt-action",
+          "to": "rdt-core",
+          "label": "动作 token"
+        },
+        {
+          "from": "rdt-core",
+          "to": "rdt-denoise",
+          "label": "去噪预测"
+        },
+        {
+          "from": "rdt-denoise",
+          "to": "rdt-core",
+          "label": "下一扩散步"
+        },
+        {
+          "from": "rdt-denoise",
+          "to": "rdt-output",
+          "label": "动作序列"
+        }
+      ],
+      "flow_ms": 4200
+    },
+    "code": {
+      "language": "python",
+      "source_repo": "https://github.com/thu-ml/RoboticsDiffusionTransformer",
+      "source_path": "models/rdt/model.py",
+      "simplified": true,
+      "lines": [
+        {
+          "code": "def forward(self, x, freq, t, lang_c, img_c, lang_mask=None, img_mask=None):",
+          "comment_zh": "接收动作 token、控制频率、扩散时间及多模态条件。"
+        },
+        {
+          "code": "    t = self.t_embedder(t)",
+          "comment_zh": "把扩散时间编码成全局条件。"
+        },
+        {
+          "code": "    freq = self.freq_embedder(freq)",
+          "comment_zh": "编码不同机器人的控制频率。"
+        },
+        {
+          "code": "    cond = t + freq",
+          "comment_zh": "合并时间与频率条件。"
+        },
+        {
+          "code": "    x = self.x_embedder(x)",
+          "comment_zh": "将状态和带噪动作投影到 Transformer 隐藏维度。"
+        },
+        {
+          "code": "    x = x + self.x_pos_embed",
+          "comment_zh": "加入动作序列的一维位置编码。"
+        },
+        {
+          "code": "    lang_c = self.lang_cond_proj(lang_c)",
+          "comment_zh": "对齐 T5 语言特征的维度。"
+        },
+        {
+          "code": "    img_c = self.img_cond_proj(img_c)",
+          "comment_zh": "对齐 SigLIP 图像特征的维度。"
+        },
+        {
+          "code": "    for index, block in enumerate(self.blocks):",
+          "comment_zh": "依次经过深层 RDT Block。"
+        },
+        {
+          "code": "        if index % 2 == 0:",
+          "comment_zh": "偶数层选择语言作为跨注意力条件。"
+        },
+        {
+          "code": "            x = block(x, cond, lang_c, lang_mask)",
+          "comment_zh": "让动作 token 读取指令语义。"
+        },
+        {
+          "code": "        else:",
+          "comment_zh": "奇数层切换到视觉条件。"
+        },
+        {
+          "code": "            x = block(x, cond, img_c, img_mask)",
+          "comment_zh": "让动作 token 对齐当前场景。"
+        },
+        {
+          "code": "    x = self.final_layer(x, cond)",
+          "comment_zh": "用自适应归一化和线性层生成去噪结果。"
+        },
+        {
+          "code": "    return x",
+          "comment_zh": "返回整段动作的扩散预测。"
+        }
+      ]
+    }
+  },
+  {
+    "id": "gr-1",
+    "name": "GR-1",
+    "org": "ByteDance Research",
+    "country": "CN",
+    "year": 2023,
+    "paper_url": "https://arxiv.org/abs/2312.13139",
+    "github_url": "https://github.com/bytedance/GR-1",
+    "category": "vla",
+    "sub_category": "video-pretrained-policy",
+    "one_liner_zh": "利用大规模视频生成预训练提升多任务机器人操作。",
+    "key_idea_zh": "GPT 式模型联合预测未来图像与机器人动作，先从视频学习动态，再在机器人轨迹上微调。",
+    "tags": [
+      "国产",
+      "视频预训练",
+      "生成模型"
+    ],
+    "tier": "B",
+    "lineage_parent": "unknown"
+  },
+  {
+    "id": "gr-2",
+    "name": "GR-2",
+    "org": "ByteDance Research",
+    "country": "CN",
+    "year": 2024,
+    "paper_url": "https://arxiv.org/abs/2410.06158",
+    "github_url": "unknown",
+    "category": "vla",
+    "sub_category": "video-language-action",
+    "one_liner_zh": "用网页规模视频知识增强通用机器人操作的生成式 VLA。",
+    "key_idea_zh": "在 3800 万视频片段上进行视频语言预训练，再联合建模视觉、语言、状态、动作与未来图像。",
+    "tags": [
+      "国产",
+      "网页视频",
+      "通用操作"
+    ],
+    "tier": "B",
+    "lineage_parent": "gr-1"
+  },
+  {
+    "id": "roboflamingo",
+    "name": "RoboFlamingo",
+    "org": "ByteDance Research",
+    "country": "CN",
+    "year": 2023,
+    "paper_url": "https://arxiv.org/abs/2311.01378",
+    "github_url": "https://github.com/RoboFlamingo/RoboFlamingo",
+    "category": "vla",
+    "sub_category": "vlm-adaptation",
+    "one_liner_zh": "把 Flamingo 式视觉语言模型适配为机器人模仿学习策略。",
+    "key_idea_zh": "通过交叉注意力融合多帧视觉与语言，并接入 LSTM 或扩散动作解码器，在离线示范上训练。",
+    "tags": [
+      "国产",
+      "VLM 适配",
+      "CALVIN"
+    ],
+    "tier": "B",
+    "lineage_parent": "unknown"
+  },
+  {
+    "id": "cogact",
+    "name": "CogACT",
+    "org": "Microsoft Research Asia / Tsinghua University",
+    "country": "CN",
+    "year": 2024,
+    "paper_url": "https://arxiv.org/abs/2411.19650",
+    "github_url": "https://github.com/microsoft/CogACT",
+    "category": "vla",
+    "sub_category": "componentized-vla",
+    "one_liner_zh": "把 VLM 认知主干与专用扩散动作 Transformer 解耦。",
+    "key_idea_zh": "保留大模型的视觉语言推理能力，同时让独立动作模块对连续动作序列建模并随规模提升性能。",
+    "tags": [
+      "国产",
+      "扩散动作头",
+      "模块化"
+    ],
+    "tier": "B",
+    "lineage_parent": "openvla"
+  },
+  {
+    "id": "tinyvla",
+    "name": "TinyVLA",
+    "org": "Midea Group AI Lab / East China Normal University",
+    "country": "CN",
+    "year": 2024,
+    "paper_url": "https://arxiv.org/abs/2409.12514",
+    "github_url": "unknown",
+    "category": "vla",
+    "sub_category": "efficient-vla",
+    "one_liner_zh": "面向快速推理和小数据训练的轻量 VLA 系列。",
+    "key_idea_zh": "以紧凑视觉语言骨干结合扩散动作解码，重点降低机器人数据量和部署延迟。",
+    "tags": [
+      "国产",
+      "轻量化",
+      "数据效率"
+    ],
+    "tier": "B",
+    "lineage_parent": "unknown"
+  },
+  {
+    "id": "dexvla",
+    "name": "DexVLA",
+    "org": "Midea Group / East China Normal University / Shanghai University",
+    "country": "CN",
+    "year": 2025,
+    "paper_url": "https://arxiv.org/abs/2502.05855",
+    "github_url": "https://github.com/juruobenruo/DexVLA",
+    "category": "vla",
+    "sub_category": "diffusion-expert-vla",
+    "one_liner_zh": "在 VLM 旁插入可扩展扩散专家进行通用机器人控制。",
+    "key_idea_zh": "让 VLM 负责语义理解，ScaleDP 扩散专家负责高维连续动作，并采用分阶段训练降低成本。",
+    "tags": [
+      "国产",
+      "扩散专家",
+      "灵巧操作"
+    ],
+    "tier": "B",
+    "lineage_parent": "diffusion-policy"
+  },
+  {
+    "id": "spatialvla",
+    "name": "SpatialVLA",
+    "org": "Shanghai AI Laboratory",
+    "country": "CN",
+    "year": 2025,
+    "paper_url": "https://arxiv.org/abs/2501.15830",
+    "github_url": "https://github.com/SpatialVLA/SpatialVLA",
+    "category": "vla",
+    "sub_category": "spatially-grounded-vla",
+    "one_liner_zh": "显式引入空间表征的视觉语言动作模型。",
+    "key_idea_zh": "把三维位置与旋转离散为自适应空间 token，使 VLM 更直接地理解机器人动作的几何含义。",
+    "tags": [
+      "国产",
+      "空间表征",
+      "1.1M 轨迹"
+    ],
+    "tier": "B",
+    "lineage_parent": "openvla"
+  },
+  {
+    "id": "univla",
+    "name": "UniVLA",
+    "org": "OpenDriveLab / Shanghai AI Laboratory",
+    "country": "CN",
+    "year": 2025,
+    "paper_url": "https://arxiv.org/abs/2505.06111",
+    "github_url": "https://github.com/OpenDriveLab/UniVLA",
+    "category": "vla",
+    "sub_category": "latent-action-vla",
+    "one_liner_zh": "在跨本体视频中学习任务中心的统一潜动作空间。",
+    "key_idea_zh": "先从无动作标签视频抽取任务中心潜动作，再用机器人数据后训练，将不同本体映射到可共享的动作语义。",
+    "tags": [
+      "国产",
+      "潜动作",
+      "跨本体"
+    ],
+    "tier": "B",
+    "lineage_parent": "rt-x"
+  },
+  {
+    "id": "robomamba",
+    "name": "RoboMamba",
+    "org": "Peking University / BAAI",
+    "country": "CN",
+    "year": 2024,
+    "paper_url": "https://arxiv.org/abs/2406.04339",
+    "github_url": "https://github.com/lmzpai/roboMamba",
+    "category": "vla",
+    "sub_category": "state-space-vla",
+    "one_liner_zh": "用 Mamba 状态空间模型降低机器人推理与操作成本。",
+    "key_idea_zh": "将视觉语言推理和动作回归放入高效状态空间主干，并采用两阶段训练兼顾语义与控制。",
+    "tags": [
+      "国产",
+      "Mamba",
+      "高效推理"
+    ],
+    "tier": "B",
+    "lineage_parent": "unknown"
+  },
+  {
+    "id": "hirt",
+    "name": "HiRT",
+    "org": "unknown",
+    "country": "CN",
+    "year": "unknown",
+    "paper_url": "unknown",
+    "github_url": "unknown",
+    "category": "vla",
+    "sub_category": "hierarchical-robot-transformer",
+    "one_liner_zh": "公开可核验资料不足的分层机器人 Transformer 工作。",
+    "key_idea_zh": "当前未找到足以核对其完整架构、年份与官方链接的一手公开资料，因此保留 unknown。",
+    "tags": [
+      "国产",
+      "分层控制",
+      "资料待补"
+    ],
+    "tier": "B",
+    "lineage_parent": "unknown"
+  },
+  {
+    "id": "agibot-go-1",
+    "name": "GO-1",
+    "org": "AgiBot",
+    "country": "CN",
+    "year": "unknown",
+    "paper_url": "unknown",
+    "github_url": "unknown",
+    "category": "vla",
+    "sub_category": "industrial-vla",
+    "one_liner_zh": "智元机器人对外发布的具身基础模型名称。",
+    "key_idea_zh": "缺少可核验的公开论文与官方源码，模型结构和训练细节暂不展开。",
+    "tags": [
+      "国产",
+      "人形机器人",
+      "资料待补"
+    ],
+    "tier": "B",
+    "lineage_parent": "unknown"
+  },
+  {
+    "id": "era-42",
+    "name": "ERA-42",
+    "org": "Robot Era",
+    "country": "CN",
+    "year": "unknown",
+    "paper_url": "unknown",
+    "github_url": "unknown",
+    "category": "vla",
+    "sub_category": "industrial-vla",
+    "one_liner_zh": "星动纪元公布的具身智能模型名称。",
+    "key_idea_zh": "目前缺少可核验的一手论文与官方代码，年份和技术细节统一标记为 unknown。",
+    "tags": [
+      "国产",
+      "具身模型",
+      "资料待补"
+    ],
+    "tier": "B",
+    "lineage_parent": "unknown"
+  },
+  {
+    "id": "galaxea-g0-5",
+    "name": "Galaxea G0.5",
+    "org": "Galaxea AI",
+    "country": "CN",
+    "year": 2026,
+    "paper_url": "https://opengalaxea.github.io/G05/Galaxea_G0_5.pdf",
+    "github_url": "https://github.com/OpenGalaxea/GalaxeaVLA",
+    "category": "vla",
+    "sub_category": "autoregressive-vla",
+    "one_liner_zh": "统一自回归生成推理 token 与动作 token 的开源 VLA。",
+    "key_idea_zh": "让同一个 VLM 解码器同时承担语义推理与动作生成，并以统一的 next-token 目标训练。",
+    "tags": [
+      "国产",
+      "开源",
+      "自回归"
+    ],
+    "tier": "B",
+    "lineage_parent": "unknown"
+  },
+  {
+    "id": "bc-z",
+    "name": "BC-Z",
+    "org": "Google Robotics",
+    "country": "US",
+    "year": 2022,
+    "paper_url": "https://arxiv.org/abs/2202.02005",
+    "github_url": "unknown",
+    "category": "vla",
+    "sub_category": "zero-shot-imitation",
+    "one_liner_zh": "通过语言和视频目标实现零样本任务泛化的行为克隆方法。",
+    "key_idea_zh": "把任务表示与动作策略分离，并联合使用机器人示范和人类视频学习可组合任务语义。",
+    "tags": [
+      "零样本",
+      "行为克隆",
+      "语言条件"
+    ],
+    "tier": "B",
+    "lineage_parent": "unknown"
+  },
+  {
+    "id": "gato",
+    "name": "Gato",
+    "org": "DeepMind",
+    "country": "UK",
+    "year": 2022,
+    "paper_url": "https://arxiv.org/abs/2205.06175",
+    "github_url": "unknown",
+    "category": "vla",
+    "sub_category": "generalist-agent",
+    "one_liner_zh": "用单一 Transformer 处理文本、图像、游戏与机器人控制。",
+    "key_idea_zh": "把不同模态的观测和动作全部序列化为 token，由同一自回归模型执行多类任务。",
+    "tags": [
+      "通才智能体",
+      "多任务",
+      "自回归"
+    ],
+    "tier": "B",
+    "lineage_parent": "unknown"
+  },
+  {
+    "id": "vima",
+    "name": "VIMA",
+    "org": "Stanford University",
+    "country": "US",
+    "year": 2022,
+    "paper_url": "https://arxiv.org/abs/2210.03094",
+    "github_url": "https://github.com/vimalabs/VIMA",
+    "category": "vla",
+    "sub_category": "multimodal-prompting",
+    "one_liner_zh": "用交错文本与图像的多模态提示驱动机器人操作。",
+    "key_idea_zh": "将提示中的文字、对象图像与历史观测统一编码，通过编码器—解码器 Transformer 预测动作。",
+    "tags": [
+      "多模态提示",
+      "操作",
+      "Transformer"
+    ],
+    "tier": "B",
+    "lineage_parent": "unknown"
+  },
+  {
+    "id": "robocat",
+    "name": "RoboCat",
+    "org": "Google DeepMind",
+    "country": "UK",
+    "year": 2023,
+    "paper_url": "https://arxiv.org/abs/2306.11706",
+    "github_url": "unknown",
+    "category": "vla",
+    "sub_category": "self-improving-agent",
+    "one_liner_zh": "能跨任务和机器人快速适配并用自生成数据继续改进的通才智能体。",
+    "key_idea_zh": "以多模态序列模型统一不同任务，并把新任务微调后的成功轨迹回灌到训练集中形成迭代闭环。",
+    "tags": [
+      "自我改进",
+      "跨本体",
+      "通才智能体"
+    ],
+    "tier": "B",
+    "lineage_parent": "gato"
+  },
+  {
+    "id": "rt-h",
+    "name": "RT-H",
+    "org": "Google DeepMind",
+    "country": "US",
+    "year": 2024,
+    "paper_url": "https://arxiv.org/abs/2403.01823",
+    "github_url": "unknown",
+    "category": "vla",
+    "sub_category": "language-action-hierarchy",
+    "one_liner_zh": "用语言描述的中间动作建立可纠正的控制层级。",
+    "key_idea_zh": "先预测语言形式的 motion command，再由低层策略输出动作，使人能够在语义层实时干预。",
+    "tags": [
+      "层级控制",
+      "语言动作",
+      "可干预"
+    ],
+    "tier": "B",
+    "lineage_parent": "rt-2"
+  },
+  {
+    "id": "3d-vla",
+    "name": "3D-VLA",
+    "org": "unknown",
+    "country": "US",
+    "year": 2024,
+    "paper_url": "https://arxiv.org/abs/2403.09631",
+    "github_url": "https://github.com/UMass-Embodied-AGI/3D-VLA",
+    "category": "vla",
+    "sub_category": "3d-generative-vla",
+    "one_liner_zh": "联合生成三维场景目标与动作的 3D 视觉语言动作世界模型。",
+    "key_idea_zh": "把 3D 场景 token、语言与动作统一建模，并预测未来三维目标作为动作规划的显式中间表征。",
+    "tags": [
+      "3D",
+      "生成式世界模型",
+      "动作规划"
+    ],
+    "tier": "B",
+    "lineage_parent": "unknown"
+  },
+  {
+    "id": "world-models",
+    "name": "World Models",
+    "org": "independent / IDSIA",
+    "country": "EU",
+    "year": 2018,
+    "paper_url": "https://arxiv.org/abs/1803.10122",
+    "github_url": "https://github.com/hardmaru/WorldModelsExperiments",
+    "category": "world",
+    "sub_category": "latent-dynamics",
+    "one_liner_zh": "在压缩潜空间里学习环境动力学，并让控制器在想象中训练。",
+    "key_idea_zh": "VAE 把画面压缩为潜变量，MDN-RNN 预测潜状态与终止信号，小型控制器据此选动作。",
+    "tags": [
+      "VAE",
+      "RNN",
+      "潜空间"
+    ],
+    "tier": "B",
+    "lineage_parent": "unknown"
+  },
+  {
+    "id": "dreamer",
+    "name": "Dreamer",
+    "org": "Google Research",
+    "country": "US",
+    "year": 2019,
+    "paper_url": "https://arxiv.org/abs/1912.01603",
+    "github_url": "https://github.com/danijar/dreamer",
+    "category": "world",
+    "sub_category": "latent-imagination-rl",
+    "one_liner_zh": "直接在学习到的潜在世界模型中反向传播来训练行为。",
+    "key_idea_zh": "RSSM 同时保持确定性与随机潜状态，actor 和 value 在想象轨迹上用解析梯度学习。",
+    "tags": [
+      "RSSM",
+      "强化学习",
+      "潜在想象"
+    ],
+    "tier": "B",
+    "lineage_parent": "world-models"
+  },
+  {
+    "id": "dreamer-v2",
+    "name": "DreamerV2",
+    "org": "Google Research",
+    "country": "US",
+    "year": 2020,
+    "paper_url": "https://arxiv.org/abs/2010.02193",
+    "github_url": "https://github.com/danijar/dreamerv2",
+    "category": "world",
+    "sub_category": "discrete-latent-rl",
+    "one_liner_zh": "以离散潜变量世界模型在 Atari 上实现单一配置的高性能控制。",
+    "key_idea_zh": "将 RSSM 的随机状态改为分类离散变量，并以 actor-critic 在想象轨迹中优化。",
+    "tags": [
+      "离散潜变量",
+      "Atari",
+      "Actor-Critic"
+    ],
+    "tier": "B",
+    "lineage_parent": "dreamer"
+  },
+  {
+    "id": "dreamer-v3",
+    "name": "DreamerV3",
+    "org": "Google DeepMind",
+    "country": "US",
+    "year": 2023,
+    "paper_url": "https://arxiv.org/abs/2301.04104",
+    "github_url": "https://github.com/danijar/dreamerv3",
+    "category": "world",
+    "sub_category": "general-world-model-rl",
+    "one_liner_zh": "用一套稳健超参数跨越 150 多个不同控制任务。",
+    "key_idea_zh": "延续 RSSM 潜在想象，引入 symlog 预测、分布式回归与 free bits 等稳定化设计，使模型可随规模提升。",
+    "tags": [
+      "RSSM",
+      "通用强化学习",
+      "潜在想象"
+    ],
+    "tier": "A",
+    "lineage_parent": "dreamer-v2",
+    "architecture": {
+      "description_zh": "DreamerV3 将真实观测编码进 RSSM，联合预测重建、奖励与继续概率；actor 和 critic 不在像素环境中试错，而是在 RSSM 展开的潜在想象轨迹上学习。",
+      "modules": [
+        {
+          "id": "dv3-obs",
+          "label": "观测 + 动作",
+          "type": "input"
+        },
+        {
+          "id": "dv3-encoder",
+          "label": "多模态编码器",
+          "type": "encoder"
+        },
+        {
+          "id": "dv3-rssm",
+          "label": "RSSM 潜在动力学",
+          "type": "world-model"
+        },
+        {
+          "id": "dv3-heads",
+          "label": "重建 / 奖励 / 继续头",
+          "type": "decoder"
+        },
+        {
+          "id": "dv3-imagine",
+          "label": "潜在想象展开",
+          "type": "simulator"
+        },
+        {
+          "id": "dv3-actor",
+          "label": "Actor",
+          "type": "policy"
+        },
+        {
+          "id": "dv3-critic",
+          "label": "Critic",
+          "type": "value"
+        },
+        {
+          "id": "dv3-action",
+          "label": "环境动作",
+          "type": "output"
+        }
+      ],
+      "edges": [
+        {
+          "from": "dv3-obs",
+          "to": "dv3-encoder",
+          "label": "真实经验"
+        },
+        {
+          "from": "dv3-encoder",
+          "to": "dv3-rssm",
+          "label": "观测嵌入"
+        },
+        {
+          "from": "dv3-rssm",
+          "to": "dv3-heads",
+          "label": "潜状态"
+        },
+        {
+          "from": "dv3-rssm",
+          "to": "dv3-imagine",
+          "label": "动力学"
+        },
+        {
+          "from": "dv3-actor",
+          "to": "dv3-imagine",
+          "label": "想象动作"
+        },
+        {
+          "from": "dv3-imagine",
+          "to": "dv3-critic",
+          "label": "回报轨迹"
+        },
+        {
+          "from": "dv3-critic",
+          "to": "dv3-actor",
+          "label": "价值梯度"
+        },
+        {
+          "from": "dv3-actor",
+          "to": "dv3-action",
+          "label": "策略输出"
+        }
+      ],
+      "flow_ms": 4300
+    },
+    "code": {
+      "language": "python",
+      "source_repo": "https://github.com/danijar/dreamerv3",
+      "source_path": "dreamerv3/agent.py",
+      "simplified": true,
+      "lines": [
+        {
+          "code": "def train(self, data, state=None):",
+          "comment_zh": "用一批真实经验更新世界模型和行为。"
+        },
+        {
+          "code": "    data = self.preprocess(data)",
+          "comment_zh": "规范化图像、动作和终止标记。"
+        },
+        {
+          "code": "    embed = self.encoder(data)",
+          "comment_zh": "把多模态观测编码成紧凑表示。"
+        },
+        {
+          "code": "    post, prior = self.rssm.observe(embed, data['action'], data['is_first'], state)",
+          "comment_zh": "由 RSSM 计算后验与先验潜状态序列。"
+        },
+        {
+          "code": "    feat = self.rssm.get_feat(post)",
+          "comment_zh": "组合确定性状态和随机状态。"
+        },
+        {
+          "code": "    recon = self.decoder(feat)",
+          "comment_zh": "从潜状态预测原始观测。"
+        },
+        {
+          "code": "    reward = self.reward_head(feat)",
+          "comment_zh": "预测每一步的奖励分布。"
+        },
+        {
+          "code": "    cont = self.continue_head(feat)",
+          "comment_zh": "预测轨迹是否会继续。"
+        },
+        {
+          "code": "    model_loss = self.world_model_loss(data, recon, reward, cont, post, prior)",
+          "comment_zh": "汇总重建、奖励、继续和 KL 损失。"
+        },
+        {
+          "code": "    start = jax.tree.map(lambda x: x[:, -1], post)",
+          "comment_zh": "从真实序列末端开始想象。"
+        },
+        {
+          "code": "    imagined = self.imagine(self.actor, start, self.config.imag_horizon)",
+          "comment_zh": "让 actor 在 RSSM 中展开未来轨迹。"
+        },
+        {
+          "code": "    returns = self.lambda_return(imagined)",
+          "comment_zh": "依据预测奖励与价值计算 λ 回报。"
+        },
+        {
+          "code": "    actor_loss = -returns.mean()",
+          "comment_zh": "提高想象轨迹的预期回报。"
+        },
+        {
+          "code": "    critic_loss = self.critic.loss(imagined['feat'], returns)",
+          "comment_zh": "训练 critic 拟合想象回报。"
+        },
+        {
+          "code": "    self.opt.update(model_loss + actor_loss + critic_loss)",
+          "comment_zh": "联合更新世界模型、actor 与 critic。"
+        },
+        {
+          "code": "    return post, self.metrics()",
+          "comment_zh": "返回新的循环状态和训练指标。"
+        }
+      ]
+    }
+  },
+  {
+    "id": "genie-1",
+    "name": "Genie 1",
+    "org": "Google DeepMind",
+    "country": "UK",
+    "year": 2024,
+    "paper_url": "https://arxiv.org/abs/2402.15391",
+    "github_url": "unknown",
+    "category": "world",
+    "sub_category": "interactive-generative-environment",
+    "one_liner_zh": "从无动作标签互联网视频学习可交互二维环境。",
+    "key_idea_zh": "视频 tokenizer 压缩帧，潜动作模型发现可控因素，时空 Transformer 根据潜动作生成下一段环境。",
+    "tags": [
+      "可交互生成",
+      "潜动作",
+      "视频 Transformer"
+    ],
+    "tier": "B",
+    "lineage_parent": "unknown"
+  },
+  {
+    "id": "genie-2",
+    "name": "Genie 2",
+    "org": "Google DeepMind",
+    "country": "UK",
+    "year": 2024,
+    "paper_url": "unknown",
+    "github_url": "unknown",
+    "category": "world",
+    "sub_category": "foundation-world-model",
+    "one_liner_zh": "根据单张提示图生成可由键鼠控制的三维交互世界。",
+    "key_idea_zh": "公开演示覆盖动作响应、物理、视角与长时一致性，但未发布完整论文或代码。",
+    "tags": [
+      "3D 世界",
+      "交互生成",
+      "闭源"
+    ],
+    "tier": "B",
+    "lineage_parent": "genie-1"
+  },
+  {
+    "id": "genie-3",
+    "name": "Genie 3",
+    "org": "Google DeepMind",
+    "country": "UK",
+    "year": 2025,
+    "paper_url": "unknown",
+    "github_url": "unknown",
+    "category": "world",
+    "sub_category": "real-time-world-model",
+    "one_liner_zh": "Google DeepMind 公布的实时可交互通用世界模型。",
+    "key_idea_zh": "公开材料强调实时生成、环境一致性和提示事件，但完整训练方法与代码尚未公开。",
+    "tags": [
+      "实时生成",
+      "交互世界",
+      "闭源"
+    ],
+    "tier": "B",
+    "lineage_parent": "genie-2"
+  },
+  {
+    "id": "sora",
+    "name": "Sora",
+    "org": "OpenAI",
+    "country": "US",
+    "year": 2024,
+    "paper_url": "https://openai.com/index/video-generation-models-as-world-simulators/",
+    "github_url": "unknown",
+    "category": "world",
+    "sub_category": "video-generation-world-simulator",
+    "one_liner_zh": "以时空 patch 统一训练的视频扩散 Transformer。",
+    "key_idea_zh": "将不同时长、分辨率和宽高比的视频压缩为时空 patch，在条件扩散 Transformer 中预测去噪结果。",
+    "tags": [
+      "视频生成",
+      "DiT",
+      "时空 patch"
+    ],
+    "tier": "B",
+    "lineage_parent": "unknown"
+  },
+  {
+    "id": "v-jepa",
+    "name": "V-JEPA",
+    "org": "Meta AI",
+    "country": "US",
+    "year": 2024,
+    "paper_url": "https://arxiv.org/abs/2404.08471",
+    "github_url": "https://github.com/facebookresearch/jepa",
+    "category": "world",
+    "sub_category": "joint-embedding-prediction",
+    "one_liner_zh": "不重建像素，而是在抽象特征空间预测被遮挡视频区域。",
+    "key_idea_zh": "上下文编码器读取可见 tubelet，预测器根据掩码位置预测目标编码器的特征；目标编码器由 EMA 更新。",
+    "tags": [
+      "自监督",
+      "特征预测",
+      "视频表征"
+    ],
+    "tier": "A",
+    "lineage_parent": "unknown",
+    "architecture": {
+      "description_zh": "V-JEPA 对视频做多块时空遮挡；上下文编码器只看可见 tubelet，预测器在掩码位置生成特征，和 EMA 目标编码器在完整目标块上的表示对齐，全程不要求像素重建。",
+      "modules": [
+        {
+          "id": "vj-video",
+          "label": "视频 tubelet",
+          "type": "input"
+        },
+        {
+          "id": "vj-mask",
+          "label": "多块时空掩码",
+          "type": "mask"
+        },
+        {
+          "id": "vj-context",
+          "label": "上下文 ViT",
+          "type": "encoder"
+        },
+        {
+          "id": "vj-target",
+          "label": "EMA 目标 ViT",
+          "type": "encoder"
+        },
+        {
+          "id": "vj-predictor",
+          "label": "窄层预测器",
+          "type": "predictor"
+        },
+        {
+          "id": "vj-loss",
+          "label": "特征空间回归",
+          "type": "loss"
+        },
+        {
+          "id": "vj-repr",
+          "label": "冻结视频表征",
+          "type": "output"
+        }
+      ],
+      "edges": [
+        {
+          "from": "vj-video",
+          "to": "vj-context",
+          "label": "可见 tubelet"
+        },
+        {
+          "from": "vj-mask",
+          "to": "vj-context",
+          "label": "移除目标块"
+        },
+        {
+          "from": "vj-video",
+          "to": "vj-target",
+          "label": "目标 tubelet"
+        },
+        {
+          "from": "vj-context",
+          "to": "vj-predictor",
+          "label": "上下文特征"
+        },
+        {
+          "from": "vj-mask",
+          "to": "vj-predictor",
+          "label": "目标位置"
+        },
+        {
+          "from": "vj-predictor",
+          "to": "vj-loss",
+          "label": "预测特征"
+        },
+        {
+          "from": "vj-target",
+          "to": "vj-loss",
+          "label": "停止梯度目标"
+        },
+        {
+          "from": "vj-context",
+          "to": "vj-repr",
+          "label": "预训练表示"
+        }
+      ],
+      "flow_ms": 4000
+    },
+    "code": {
+      "language": "python",
+      "source_repo": "https://github.com/facebookresearch/jepa",
+      "source_path": "src/models/predictor.py",
+      "simplified": true,
+      "lines": [
+        {
+          "code": "def forward(self, x, masks_x, masks):",
+          "comment_zh": "输入上下文特征、上下文掩码和目标掩码。"
+        },
+        {
+          "code": "    batch = len(x) // len(masks_x)",
+          "comment_zh": "恢复每组掩码对应的批次大小。"
+        },
+        {
+          "code": "    x = self.predictor_embed(x)",
+          "comment_zh": "把上下文编码器特征映射到较窄预测维度。"
+        },
+        {
+          "code": "    x_pos = self.pos_embed.repeat(batch, 1, 1)",
+          "comment_zh": "准备视频 tubelet 的固定位置编码。"
+        },
+        {
+          "code": "    x += apply_masks(x_pos, masks_x)",
+          "comment_zh": "给可见上下文 token 加上对应位置。"
+        },
+        {
+          "code": "    _, num_visible, dim = x.shape",
+          "comment_zh": "记录上下文 token 数和隐藏维度。"
+        },
+        {
+          "code": "    x = x.repeat(len(masks), 1, 1)",
+          "comment_zh": "为每个目标块复制上下文。"
+        },
+        {
+          "code": "    mask_tokens = self.mask_token.repeat(x.shape[0], masks[0].shape[1], 1)",
+          "comment_zh": "创建待预测位置的可学习 mask token。"
+        },
+        {
+          "code": "    target_pos = apply_masks(x_pos, masks)",
+          "comment_zh": "抽取各目标块的位置编码。"
+        },
+        {
+          "code": "    mask_tokens = mask_tokens + target_pos",
+          "comment_zh": "让 mask token 知道要预测哪个时空位置。"
+        },
+        {
+          "code": "    x = torch.cat([x, mask_tokens], dim=1)",
+          "comment_zh": "拼接可见上下文和目标查询。"
+        },
+        {
+          "code": "    for block in self.predictor_blocks: x = block(x)",
+          "comment_zh": "通过预测器 Transformer 传播上下文信息。"
+        },
+        {
+          "code": "    x = self.predictor_norm(x)",
+          "comment_zh": "归一化预测器输出。"
+        },
+        {
+          "code": "    x = x[:, num_visible:]",
+          "comment_zh": "只保留被遮挡目标位置的输出。"
+        },
+        {
+          "code": "    x = self.predictor_proj(x)",
+          "comment_zh": "投影回目标编码器的特征维度。"
+        },
+        {
+          "code": "    return x",
+          "comment_zh": "返回目标块的特征预测。"
+        }
+      ]
+    }
+  },
+  {
+    "id": "v-jepa-2",
+    "name": "V-JEPA 2",
+    "org": "Meta AI",
+    "country": "US",
+    "year": 2025,
+    "paper_url": "https://arxiv.org/abs/2506.09985",
+    "github_url": "https://github.com/facebookresearch/vjepa2",
+    "category": "world",
+    "sub_category": "video-understanding-planning",
+    "one_liner_zh": "把大规模视频自监督表征扩展到理解、预测与机器人规划。",
+    "key_idea_zh": "先在视频与图像上进行特征预测预训练，再以少量机器人视频训练动作条件世界模型用于规划。",
+    "tags": [
+      "自监督",
+      "动作条件",
+      "规划"
+    ],
+    "tier": "B",
+    "lineage_parent": "v-jepa"
+  },
+  {
+    "id": "muzero",
+    "name": "MuZero",
+    "org": "DeepMind",
+    "country": "UK",
+    "year": 2019,
+    "paper_url": "https://arxiv.org/abs/1911.08265",
+    "github_url": "unknown",
+    "category": "world",
+    "sub_category": "planning-world-model",
+    "one_liner_zh": "不预测像素，只学习足以进行搜索的奖励、价值与策略动力学。",
+    "key_idea_zh": "表示网络得到潜状态，动力学网络预测下一潜状态与奖励，预测网络输出策略和价值，再用 MCTS 规划。",
+    "tags": [
+      "MCTS",
+      "潜在动力学",
+      "规划"
+    ],
+    "tier": "B",
+    "lineage_parent": "unknown"
+  },
+  {
+    "id": "gaia-1",
+    "name": "GAIA-1",
+    "org": "Wayve",
+    "country": "UK",
+    "year": 2023,
+    "paper_url": "https://arxiv.org/abs/2309.17080",
+    "github_url": "unknown",
+    "category": "world",
+    "sub_category": "driving-world-model",
+    "one_liner_zh": "以视频、文字和车辆动作共同生成未来驾驶场景。",
+    "key_idea_zh": "将驾驶视频离散化后用自回归世界模型预测潜 token，再由视频扩散解码器生成高分辨率未来。",
+    "tags": [
+      "自动驾驶",
+      "生成式世界模型",
+      "动作条件"
+    ],
+    "tier": "B",
+    "lineage_parent": "unknown"
+  },
+  {
+    "id": "gaia-2",
+    "name": "GAIA-2",
+    "org": "Wayve",
+    "country": "UK",
+    "year": "unknown",
+    "paper_url": "unknown",
+    "github_url": "unknown",
+    "category": "world",
+    "sub_category": "driving-world-model",
+    "one_liner_zh": "Wayve 后续驾驶世界模型名称，公开可核验技术资料有限。",
+    "key_idea_zh": "因未找到足以核对年份、论文与实现的一手公开资料，本条不补写未证实的架构细节。",
+    "tags": [
+      "自动驾驶",
+      "闭源",
+      "资料待补"
+    ],
+    "tier": "B",
+    "lineage_parent": "gaia-1"
+  },
+  {
+    "id": "unisim",
+    "name": "UniSim",
+    "org": "Google Research",
+    "country": "US",
+    "year": 2023,
+    "paper_url": "https://arxiv.org/abs/2310.06114",
+    "github_url": "unknown",
+    "category": "world",
+    "sub_category": "interactive-real-world-simulator",
+    "one_liner_zh": "从真实视频、机器人数据与仿真数据学习可交互的现实模拟器。",
+    "key_idea_zh": "以扩散视频模型结合动作、相机与文本条件，生成对交互控制保持响应的未来视觉。",
+    "tags": [
+      "交互模拟",
+      "扩散视频",
+      "机器人"
+    ],
+    "tier": "B",
+    "lineage_parent": "unknown"
+  },
+  {
+    "id": "cosmos",
+    "name": "Cosmos",
+    "org": "NVIDIA",
+    "country": "US",
+    "year": 2025,
+    "paper_url": "https://arxiv.org/abs/2501.03575",
+    "github_url": "https://github.com/NVIDIA/Cosmos",
+    "category": "world",
+    "sub_category": "physical-ai-foundation-model",
+    "one_liner_zh": "面向 Physical AI 的视频 tokenizer、生成模型与护栏平台。",
+    "key_idea_zh": "提供连续与离散视频 tokenizer、扩散和自回归世界基础模型，用物理视频预训练支持下游生成与理解。",
+    "tags": [
+      "Physical AI",
+      "视频基础模型",
+      "开源"
+    ],
+    "tier": "B",
+    "lineage_parent": "unknown"
+  },
+  {
+    "id": "kling",
+    "name": "Kling 可灵",
+    "org": "Kuaishou",
+    "country": "CN",
+    "year": 2024,
+    "paper_url": "unknown",
+    "github_url": "unknown",
+    "category": "world",
+    "sub_category": "video-generation",
+    "one_liner_zh": "快手发布的商业文本与图像生成视频模型。",
+    "key_idea_zh": "官方未公开完整论文与训练代码，本图鉴不对未披露架构做推断。",
+    "tags": [
+      "国产",
+      "视频生成",
+      "闭源"
+    ],
+    "tier": "B",
+    "lineage_parent": "unknown"
+  },
+  {
+    "id": "vidu",
+    "name": "Vidu",
+    "org": "ShengShu Technology / Tsinghua University",
+    "country": "CN",
+    "year": 2024,
+    "paper_url": "unknown",
+    "github_url": "unknown",
+    "category": "world",
+    "sub_category": "video-generation",
+    "one_liner_zh": "生数科技与清华团队发布的商业视频生成模型。",
+    "key_idea_zh": "公开介绍使用 U-ViT 路线，但没有可核验的完整论文和官方训练代码。",
+    "tags": [
+      "国产",
+      "视频生成",
+      "U-ViT"
+    ],
+    "tier": "B",
+    "lineage_parent": "unknown"
+  },
+  {
+    "id": "wan-2-1",
+    "name": "Wan 2.1 万相",
+    "org": "Alibaba",
+    "country": "CN",
+    "year": 2025,
+    "paper_url": "https://arxiv.org/abs/2503.20314",
+    "github_url": "https://github.com/Wan-Video/Wan2.1",
+    "category": "world",
+    "sub_category": "open-video-foundation-model",
+    "one_liner_zh": "阿里开源的多尺寸文本与图像生成视频基础模型系列。",
+    "key_idea_zh": "使用高压缩 3D 因果 VAE 与 flow-matching 视频 DiT，结合 T5 文本条件和三维旋转位置编码。",
+    "tags": [
+      "国产",
+      "开源",
+      "视频 DiT"
+    ],
+    "tier": "A",
+    "lineage_parent": "unknown",
+    "architecture": {
+      "description_zh": "Wan 2.1 先以 3D 因果 VAE 将视频压缩到时空潜变量，T5 编码文本；Wan DiT 在扩散时间、文本交叉注意力和 3D RoPE 条件下预测 flow，最后由 VAE 解码成视频。",
+      "modules": [
+        {
+          "id": "wan-prompt",
+          "label": "文本提示",
+          "type": "input"
+        },
+        {
+          "id": "wan-t5",
+          "label": "T5 文本编码器",
+          "type": "encoder"
+        },
+        {
+          "id": "wan-noise",
+          "label": "视频潜噪声",
+          "type": "latent"
+        },
+        {
+          "id": "wan-patch",
+          "label": "3D Patch Embedding",
+          "type": "tokenizer"
+        },
+        {
+          "id": "wan-dit",
+          "label": "Wan DiT + 3D RoPE",
+          "type": "transformer"
+        },
+        {
+          "id": "wan-flow",
+          "label": "Flow-Matching 采样",
+          "type": "sampler"
+        },
+        {
+          "id": "wan-vae",
+          "label": "3D 因果 VAE 解码",
+          "type": "decoder"
+        },
+        {
+          "id": "wan-video",
+          "label": "生成视频",
+          "type": "output"
+        }
+      ],
+      "edges": [
+        {
+          "from": "wan-prompt",
+          "to": "wan-t5",
+          "label": "文本 token"
+        },
+        {
+          "from": "wan-t5",
+          "to": "wan-dit",
+          "label": "交叉注意条件"
+        },
+        {
+          "from": "wan-noise",
+          "to": "wan-patch",
+          "label": "潜变量"
+        },
+        {
+          "from": "wan-patch",
+          "to": "wan-dit",
+          "label": "时空 token"
+        },
+        {
+          "from": "wan-dit",
+          "to": "wan-flow",
+          "label": "速度预测"
+        },
+        {
+          "from": "wan-flow",
+          "to": "wan-dit",
+          "label": "下一时间步"
+        },
+        {
+          "from": "wan-flow",
+          "to": "wan-vae",
+          "label": "干净潜变量"
+        },
+        {
+          "from": "wan-vae",
+          "to": "wan-video",
+          "label": "RGB 帧"
+        }
+      ],
+      "flow_ms": 4200
+    },
+    "code": {
+      "language": "python",
+      "source_repo": "https://github.com/Wan-Video/Wan2.1",
+      "source_path": "wan/modules/model.py",
+      "simplified": true,
+      "lines": [
+        {
+          "code": "def forward(self, x, t, context, seq_len, clip_fea=None, y=None):",
+          "comment_zh": "输入视频潜变量、扩散时间和文本上下文。"
+        },
+        {
+          "code": "    device = self.patch_embedding.weight.device",
+          "comment_zh": "确定当前模型所在设备。"
+        },
+        {
+          "code": "    x = [self.patch_embedding(u.unsqueeze(0)) for u in x]",
+          "comment_zh": "将每个视频潜变量切成三维 patch token。"
+        },
+        {
+          "code": "    grid_sizes = torch.stack([torch.tensor(u.shape[2:], dtype=torch.long) for u in x])",
+          "comment_zh": "记录每个样本的时间、高度和宽度网格。"
+        },
+        {
+          "code": "    x = [u.flatten(2).transpose(1, 2) for u in x]",
+          "comment_zh": "把三维网格展平成 token 序列。"
+        },
+        {
+          "code": "    x = torch.cat([torch.cat([u, u.new_zeros(1, seq_len-u.size(1), u.size(2))], dim=1) for u in x])",
+          "comment_zh": "补齐可变长度视频序列。"
+        },
+        {
+          "code": "    e = self.time_embedding(sinusoidal_embedding_1d(self.freq_dim, t))",
+          "comment_zh": "编码 flow-matching 时间步。"
+        },
+        {
+          "code": "    e0 = self.time_projection(e).unflatten(1, (6, self.dim))",
+          "comment_zh": "生成各层自适应调制参数。"
+        },
+        {
+          "code": "    context = self.text_embedding(torch.stack([torch.cat([u, u.new_zeros(self.text_len-u.size(0), u.size(1))]) for u in context]))",
+          "comment_zh": "投影并补齐 T5 文本特征。"
+        },
+        {
+          "code": "    freqs = self.rope_frequency(grid_sizes)",
+          "comment_zh": "为时间与空间轴构造三维旋转位置编码。"
+        },
+        {
+          "code": "    for block in self.blocks:",
+          "comment_zh": "依次通过视频 DiT Block。"
+        },
+        {
+          "code": "        x = block(x, e=e0, seq_lens=None, grid_sizes=grid_sizes, freqs=freqs, context=context)",
+          "comment_zh": "融合时间调制、3D RoPE 和文本交叉注意力。"
+        },
+        {
+          "code": "    x = self.head(x, e)",
+          "comment_zh": "把隐藏 token 投影为潜变量速度。"
+        },
+        {
+          "code": "    x = self.unpatchify(x, grid_sizes)",
+          "comment_zh": "将 token 重排回时空潜变量。"
+        },
+        {
+          "code": "    return [u.float() for u in x]",
+          "comment_zh": "返回每个视频样本的 flow 预测。"
+        }
+      ]
+    }
+  },
+  {
+    "id": "hunyuan-video",
+    "name": "HunyuanVideo 混元视频",
+    "org": "Tencent",
+    "country": "CN",
+    "year": 2024,
+    "paper_url": "https://arxiv.org/abs/2412.03603",
+    "github_url": "https://github.com/Tencent-Hunyuan/HunyuanVideo",
+    "category": "world",
+    "sub_category": "open-video-foundation-model",
+    "one_liner_zh": "腾讯开源的大参数文本生成视频系统。",
+    "key_idea_zh": "以 3D VAE 压缩视频，双流与单流多模态 DiT 融合 MLLM 文本语义，并用 flow matching 生成。",
+    "tags": [
+      "国产",
+      "开源",
+      "多模态 DiT"
+    ],
+    "tier": "A",
+    "lineage_parent": "unknown",
+    "architecture": {
+      "description_zh": "HunyuanVideo 使用 3D VAE 表示视频潜变量，LLM 与 CLIP 提供文本条件；双流块先分别调制文本和视频并做联合注意力，单流块继续融合，flow-matching 调度器迭代后由 VAE 解码。",
+      "modules": [
+        {
+          "id": "hy-prompt",
+          "label": "文本提示",
+          "type": "input"
+        },
+        {
+          "id": "hy-text",
+          "label": "MLLM + CLIP 文本编码",
+          "type": "encoder"
+        },
+        {
+          "id": "hy-noise",
+          "label": "视频潜噪声",
+          "type": "latent"
+        },
+        {
+          "id": "hy-patch",
+          "label": "3D Patch Embedding",
+          "type": "tokenizer"
+        },
+        {
+          "id": "hy-double",
+          "label": "双流 MM-DiT Block",
+          "type": "transformer"
+        },
+        {
+          "id": "hy-single",
+          "label": "单流融合 Block",
+          "type": "transformer"
+        },
+        {
+          "id": "hy-flow",
+          "label": "Flow-Matching 采样",
+          "type": "sampler"
+        },
+        {
+          "id": "hy-vae",
+          "label": "3D VAE 解码",
+          "type": "decoder"
+        },
+        {
+          "id": "hy-video",
+          "label": "生成视频",
+          "type": "output"
+        }
+      ],
+      "edges": [
+        {
+          "from": "hy-prompt",
+          "to": "hy-text",
+          "label": "文本"
+        },
+        {
+          "from": "hy-text",
+          "to": "hy-double",
+          "label": "文本 token"
+        },
+        {
+          "from": "hy-noise",
+          "to": "hy-patch",
+          "label": "潜变量"
+        },
+        {
+          "from": "hy-patch",
+          "to": "hy-double",
+          "label": "视频 token"
+        },
+        {
+          "from": "hy-double",
+          "to": "hy-single",
+          "label": "联合序列"
+        },
+        {
+          "from": "hy-single",
+          "to": "hy-flow",
+          "label": "速度预测"
+        },
+        {
+          "from": "hy-flow",
+          "to": "hy-single",
+          "label": "下一时间步"
+        },
+        {
+          "from": "hy-flow",
+          "to": "hy-vae",
+          "label": "去噪潜变量"
+        },
+        {
+          "from": "hy-vae",
+          "to": "hy-video",
+          "label": "RGB 帧"
+        }
+      ],
+      "flow_ms": 4400
+    },
+    "code": {
+      "language": "python",
+      "source_repo": "https://github.com/Tencent-Hunyuan/HunyuanVideo",
+      "source_path": "hyvideo/modules/models.py",
+      "simplified": true,
+      "lines": [
+        {
+          "code": "def forward(self, x, t, text_states, text_mask, text_states_2=None):",
+          "comment_zh": "输入视频潜变量、时间步和双文本编码条件。"
+        },
+        {
+          "code": "    img = self.img_in(x)",
+          "comment_zh": "把 3D 视频潜变量切分并投影为视频 token。"
+        },
+        {
+          "code": "    vec = self.time_in(t)",
+          "comment_zh": "将 flow-matching 时间步编码为调制向量。"
+        },
+        {
+          "code": "    txt = self.txt_in(text_states, t, text_mask)",
+          "comment_zh": "投影并精炼主文本编码器的 token。"
+        },
+        {
+          "code": "    if text_states_2 is not None:",
+          "comment_zh": "检查是否提供第二个文本编码器的全局语义。"
+        },
+        {
+          "code": "        vec = vec + self.vector_in(text_states_2)",
+          "comment_zh": "把额外文本向量加入全局调制条件。"
+        },
+        {
+          "code": "    freqs_cis = self.pe_embedder(img)",
+          "comment_zh": "为视频 token 生成旋转位置编码。"
+        },
+        {
+          "code": "    for block in self.double_blocks:",
+          "comment_zh": "先经过文本流与视频流分开的多模态块。"
+        },
+        {
+          "code": "        img, txt = block(img=img, txt=txt, vec=vec, cu_seqlens_q=text_mask, freqs_cis=freqs_cis)",
+          "comment_zh": "独立调制两条流并在联合注意力中交换信息。"
+        },
+        {
+          "code": "    x = torch.cat((img, txt), dim=1)",
+          "comment_zh": "把视频与文本 token 合并成单流序列。"
+        },
+        {
+          "code": "    for block in self.single_blocks:",
+          "comment_zh": "继续通过单流融合 Transformer。"
+        },
+        {
+          "code": "        x = block(x, vec=vec, txt_len=txt.shape[1], freqs_cis=freqs_cis)",
+          "comment_zh": "以共享注意力和 MLP 深度融合两种模态。"
+        },
+        {
+          "code": "    img = x[:, :img.shape[1]]",
+          "comment_zh": "取回序列中的视频 token。"
+        },
+        {
+          "code": "    img = self.final_layer(img, vec)",
+          "comment_zh": "用时间条件调制并预测潜变量速度。"
+        },
+        {
+          "code": "    return self.unpatchify(img)",
+          "comment_zh": "重排为 3D 视频潜变量供采样器更新。"
+        }
+      ]
+    }
+  },
+  {
+    "id": "emu3",
+    "name": "Emu3",
+    "org": "BAAI",
+    "country": "CN",
+    "year": 2024,
+    "paper_url": "https://arxiv.org/abs/2409.18869",
+    "github_url": "https://github.com/baaivision/Emu3",
+    "category": "world",
+    "sub_category": "autoregressive-multimodal-model",
+    "one_liner_zh": "用下一 token 预测统一图像、视频与文本生成和理解。",
+    "key_idea_zh": "把视觉离散 token 与文本 token 放进同一自回归序列，不依赖扩散模型或独立视觉编码器。",
+    "tags": [
+      "国产",
+      "自回归",
+      "视觉 tokenizer"
+    ],
+    "tier": "B",
+    "lineage_parent": "unknown"
+  },
+  {
+    "id": "pangu-world-model",
+    "name": "盘古世界模型",
+    "org": "Huawei",
+    "country": "CN",
+    "year": "unknown",
+    "paper_url": "unknown",
+    "github_url": "unknown",
+    "category": "world",
+    "sub_category": "industrial-world-model",
+    "one_liner_zh": "华为盘古体系中对外提及的世界模型方向。",
+    "key_idea_zh": "未找到能同时核验具体模型版本、论文和官方实现的一手资料，因此不补写架构与年份。",
+    "tags": [
+      "国产",
+      "产业模型",
+      "资料待补"
+    ],
+    "tier": "B",
+    "lineage_parent": "unknown"
+  },
+  {
+    "id": "magicdrive",
+    "name": "MagicDrive",
+    "org": "SenseTime Research / Nanyang Technological University",
+    "country": "CN",
+    "year": 2023,
+    "paper_url": "https://arxiv.org/abs/2310.02601",
+    "github_url": "https://github.com/cure-lab/MagicDrive",
+    "category": "world",
+    "sub_category": "controllable-driving-generation",
+    "one_liner_zh": "用道路地图、三维框和相机参数精细控制多视角街景生成。",
+    "key_idea_zh": "在潜扩散模型中分别注入 BEV 地图、3D 目标框、文本与相机姿态，并用跨视角注意力保持一致。",
+    "tags": [
+      "国产",
+      "自动驾驶",
+      "多视角扩散"
+    ],
+    "tier": "B",
+    "lineage_parent": "unknown"
+  },
+  {
+    "id": "drivedreamer",
+    "name": "DriveDreamer",
+    "org": "Shanghai AI Laboratory",
+    "country": "CN",
+    "year": 2023,
+    "paper_url": "https://arxiv.org/abs/2309.09777",
+    "github_url": "https://github.com/JeffWang987/DriveDreamer",
+    "category": "world",
+    "sub_category": "driving-world-model",
+    "one_liner_zh": "从真实驾驶数据学习结构可控的视频生成与驾驶策略。",
+    "key_idea_zh": "第一阶段学习 HD map 与 3D 框等结构约束，第二阶段学习未来视频和动作预测。",
+    "tags": [
+      "国产",
+      "自动驾驶",
+      "真实数据"
+    ],
+    "tier": "B",
+    "lineage_parent": "unknown"
+  },
+  {
+    "id": "vista-world-model",
+    "name": "Vista",
+    "org": "OpenDriveLab / Shanghai AI Laboratory",
+    "country": "CN",
+    "year": 2024,
+    "paper_url": "https://arxiv.org/abs/2405.17398",
+    "github_url": "https://github.com/OpenDriveLab/Vista",
+    "category": "world",
+    "sub_category": "generalizable-driving-world-model",
+    "one_liner_zh": "可接受多种动作条件并长时滚动的高保真驾驶世界模型。",
+    "key_idea_zh": "在大规模 OpenDV 视频上学习潜扩散动力学，并以转角、速度、轨迹、命令或目标点控制未来。",
+    "tags": [
+      "国产",
+      "自动驾驶",
+      "多种控制"
+    ],
+    "tier": "B",
+    "lineage_parent": "drivedreamer"
+  },
+  {
+    "id": "occworld",
+    "name": "OccWorld",
+    "org": "Tsinghua University",
+    "country": "CN",
+    "year": 2023,
+    "paper_url": "https://arxiv.org/abs/2311.16038",
+    "github_url": "https://github.com/wzzheng/OccWorld",
+    "category": "world",
+    "sub_category": "occupancy-world-model",
+    "one_liner_zh": "联合预测三维占用场景演化与自车运动的驾驶世界模型。",
+    "key_idea_zh": "把 3D 语义占用序列 token 化，用时空生成模型同时预测未来场景 token 和 ego token。",
+    "tags": [
+      "国产",
+      "3D 占用",
+      "自动驾驶"
+    ],
+    "tier": "B",
+    "lineage_parent": "unknown"
+  },
+  {
+    "id": "drivedreamer-2",
+    "name": "DriveDreamer-2",
+    "org": "Shanghai AI Laboratory",
+    "country": "CN",
+    "year": 2024,
+    "paper_url": "https://arxiv.org/abs/2403.06845",
+    "github_url": "https://github.com/f1yfisher/DriveDreamer2",
+    "category": "world",
+    "sub_category": "llm-driving-world-model",
+    "one_liner_zh": "用大语言模型把用户查询转成可控的多视角驾驶视频。",
+    "key_idea_zh": "LLM 生成 HD map 与 3D 框条件，多视角视频扩散模型据此合成几何一致的驾驶场景。",
+    "tags": [
+      "国产",
+      "自动驾驶",
+      "LLM 控制"
+    ],
+    "tier": "B",
+    "lineage_parent": "drivedreamer"
+  },
+  {
+    "id": "yolo-v1",
+    "name": "YOLOv1",
+    "org": "University of Washington",
+    "country": "US",
+    "year": 2016,
+    "paper_url": "https://arxiv.org/abs/1506.02640",
+    "github_url": "https://github.com/pjreddie/darknet",
+    "category": "detection",
+    "sub_category": "one-stage",
+    "one_liner_zh": "首次把目标检测统一为单次前向回归，实现端到端实时检测。",
+    "key_idea_zh": "将图像划分网格，每个网格同时回归边界框、置信度和类别概率。",
+    "tags": [
+      "YOLO",
+      "实时检测",
+      "单阶段",
+      "网格回归"
+    ],
+    "tier": "B",
+    "lineage_parent": "unknown"
+  },
+  {
+    "id": "yolo-v2",
+    "name": "YOLOv2 / YOLO9000",
+    "org": "University of Washington",
+    "country": "US",
+    "year": 2017,
+    "paper_url": "https://arxiv.org/abs/1612.08242",
+    "github_url": "https://github.com/pjreddie/darknet",
+    "category": "detection",
+    "sub_category": "one-stage",
+    "one_liner_zh": "以锚框、多尺度训练和联合分类检测提升 YOLO 的精度与类别覆盖。",
+    "key_idea_zh": "引入 anchor boxes、维度聚类与 passthrough 特征，并通过 WordTree 联合训练 YOLO9000。",
+    "tags": [
+      "YOLO",
+      "anchor",
+      "多尺度训练",
+      "YOLO9000"
+    ],
+    "tier": "B",
+    "lineage_parent": "yolo-v1"
+  },
+  {
+    "id": "yolo-v3",
+    "name": "YOLOv3",
+    "org": "University of Washington",
+    "country": "US",
+    "year": 2018,
+    "paper_url": "https://arxiv.org/abs/1804.02767",
+    "github_url": "https://github.com/pjreddie/darknet",
+    "category": "detection",
+    "sub_category": "one-stage",
+    "one_liner_zh": "用 Darknet-53 和三尺度预测显著改善小目标检测。",
+    "key_idea_zh": "在三个特征尺度上预测目标，并以独立逻辑分类器支持多标签类别。",
+    "tags": [
+      "YOLO",
+      "Darknet-53",
+      "FPN",
+      "多尺度"
+    ],
+    "tier": "B",
+    "lineage_parent": "yolo-v2"
+  },
+  {
+    "id": "yolo-v4",
+    "name": "YOLOv4",
+    "org": "unknown",
+    "country": "unknown",
+    "year": 2020,
+    "paper_url": "https://arxiv.org/abs/2004.10934",
+    "github_url": "https://github.com/AlexeyAB/darknet",
+    "category": "detection",
+    "sub_category": "one-stage",
+    "one_liner_zh": "系统组合 CSPDarknet、PANet 与训练技巧，在普通 GPU 上兼顾速度和精度。",
+    "key_idea_zh": "以 CSPDarknet53 为骨干、SPP 与 PANet 为颈部，并整合 Mosaic、CIoU 等可复现技巧。",
+    "tags": [
+      "YOLO",
+      "CSPDarknet",
+      "PANet",
+      "Mosaic"
+    ],
+    "tier": "B",
+    "lineage_parent": "yolo-v3"
+  },
+  {
+    "id": "yolo-v5",
+    "name": "YOLOv5",
+    "org": "Ultralytics",
+    "country": "US",
+    "year": 2020,
+    "paper_url": "unknown",
+    "github_url": "https://github.com/ultralytics/yolov5",
+    "category": "detection",
+    "sub_category": "one-stage",
+    "one_liner_zh": "工程化成熟的 PyTorch YOLO 系列，覆盖训练、导出和多尺寸部署。",
+    "key_idea_zh": "用 CSP 风格骨干、SPPF、PAN-FPN 与多尺度锚框检测头形成易部署流水线。",
+    "tags": [
+      "YOLO",
+      "PyTorch",
+      "CSP",
+      "部署"
+    ],
+    "tier": "A",
+    "lineage_parent": "yolo-v4",
+    "architecture": {
+      "description_zh": "输入经 CSP 风格骨干提取多尺度特征，SPPF 扩大感受野，PAN-FPN 双向融合后由三尺度锚框检测头输出类别、目标性与边界框。",
+      "modules": [
+        {
+          "id": "input",
+          "label": "输入与缩放填充",
+          "type": "input"
+        },
+        {
+          "id": "backbone",
+          "label": "CSPDarknet 骨干",
+          "type": "encoder"
+        },
+        {
+          "id": "sppf",
+          "label": "SPPF",
+          "type": "context"
+        },
+        {
+          "id": "neck",
+          "label": "PAN-FPN",
+          "type": "fusion"
+        },
+        {
+          "id": "head",
+          "label": "三尺度 Detect",
+          "type": "head"
+        },
+        {
+          "id": "output",
+          "label": "NMS 后检测框",
+          "type": "output"
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "backbone",
+          "label": "图像张量"
+        },
+        {
+          "from": "backbone",
+          "to": "sppf",
+          "label": "深层特征"
+        },
+        {
+          "from": "backbone",
+          "to": "neck",
+          "label": "多尺度旁路"
+        },
+        {
+          "from": "sppf",
+          "to": "neck",
+          "label": "上下文特征"
+        },
+        {
+          "from": "neck",
+          "to": "head",
+          "label": "P3/P4/P5"
+        },
+        {
+          "from": "head",
+          "to": "output",
+          "label": "框与分数"
+        }
+      ],
+      "flow_ms": 4200
+    },
+    "code": {
+      "language": "python",
+      "source_repo": "https://github.com/ultralytics/yolov5",
+      "source_path": "models/yolo.py",
+      "simplified": true,
+      "lines": [
+        {
+          "code": "class DetectionModel(BaseModel):",
+          "comment_zh": "定义 YOLOv5 检测模型；片段已简化。"
+        },
+        {
+          "code": "    def __init__(self, cfg, ch=3, nc=None, anchors=None):",
+          "comment_zh": "接收模型配置、输入通道、类别数和锚框。"
+        },
+        {
+          "code": "        self.yaml = cfg",
+          "comment_zh": "保存网络结构配置。"
+        },
+        {
+          "code": "        self.yaml['ch'] = ch",
+          "comment_zh": "记录图像输入通道数。"
+        },
+        {
+          "code": "        if nc is not None:",
+          "comment_zh": "允许调用方覆盖配置中的类别数。"
+        },
+        {
+          "code": "            self.yaml['nc'] = nc",
+          "comment_zh": "写入实际类别数。"
+        },
+        {
+          "code": "        if anchors is not None:",
+          "comment_zh": "允许调用方覆盖预设锚框。"
+        },
+        {
+          "code": "            self.yaml['anchors'] = anchors",
+          "comment_zh": "写入新的多尺度锚框。"
+        },
+        {
+          "code": "        self.model, self.save = parse_model(self.yaml, ch=[ch])",
+          "comment_zh": "按配置搭建骨干、颈部和检测头。"
+        },
+        {
+          "code": "        self.names = [str(i) for i in range(self.yaml['nc'])]",
+          "comment_zh": "建立默认类别名称。"
+        },
+        {
+          "code": "        head = self.model[-1]",
+          "comment_zh": "取出末端 Detect 检测头。"
+        },
+        {
+          "code": "        if isinstance(head, Detect):",
+          "comment_zh": "仅对检测头计算尺度与初始化锚框。"
+        },
+        {
+          "code": "            size = 256",
+          "comment_zh": "使用固定测试尺寸推导各输出步长。"
+        },
+        {
+          "code": "            outputs = self.forward(torch.zeros(1, ch, size, size))",
+          "comment_zh": "做一次空张量前向以获得特征图尺寸。"
+        },
+        {
+          "code": "            head.stride = torch.tensor([size / x.shape[-2] for x in outputs])",
+          "comment_zh": "由输入与输出空间尺寸计算 P3/P4/P5 步长。"
+        },
+        {
+          "code": "            self.stride = head.stride",
+          "comment_zh": "把步长暴露给预处理与解码逻辑。"
+        },
+        {
+          "code": "            check_anchor_order(head)",
+          "comment_zh": "检查锚框排列是否与尺度顺序一致。"
+        },
+        {
+          "code": "            self._initialize_biases()",
+          "comment_zh": "初始化目标性和类别预测偏置。"
+        },
+        {
+          "code": "        initialize_weights(self)",
+          "comment_zh": "完成其余层的权重初始化。"
+        }
+      ]
+    }
+  },
+  {
+    "id": "yolo-v6",
+    "name": "YOLOv6",
+    "org": "Meituan",
+    "country": "CN",
+    "year": 2022,
+    "paper_url": "https://arxiv.org/abs/2209.02976",
+    "github_url": "https://github.com/meituan/YOLOv6",
+    "category": "detection",
+    "sub_category": "one-stage",
+    "one_liner_zh": "美团面向工业部署打造的高效 YOLO，强调硬件友好与量化。",
+    "key_idea_zh": "采用重参数化 EfficientRep 骨干、Rep-PAN 颈部和解耦检测头，并配套蒸馏与量化。",
+    "tags": [
+      "YOLO",
+      "国产",
+      "重参数化",
+      "工业部署"
+    ],
+    "tier": "B",
+    "lineage_parent": "yolo-v5"
+  },
+  {
+    "id": "yolo-v7",
+    "name": "YOLOv7",
+    "org": "Academia Sinica",
+    "country": "TW",
+    "year": 2022,
+    "paper_url": "https://arxiv.org/abs/2207.02696",
+    "github_url": "https://github.com/WongKinYiu/yolov7",
+    "category": "detection",
+    "sub_category": "one-stage",
+    "one_liner_zh": "以可训练的 bag-of-freebies 和 E-ELAN 改善实时检测器的精度速度权衡。",
+    "key_idea_zh": "通过 E-ELAN 控制最短最长梯度路径，并用重参数化、标签分配等训练策略提升性能。",
+    "tags": [
+      "YOLO",
+      "E-ELAN",
+      "重参数化",
+      "实时检测"
+    ],
+    "tier": "B",
+    "lineage_parent": "yolo-v6"
+  },
+  {
+    "id": "yolo-v8",
+    "name": "YOLOv8",
+    "org": "Ultralytics",
+    "country": "US",
+    "year": 2023,
+    "paper_url": "unknown",
+    "github_url": "https://github.com/ultralytics/ultralytics",
+    "category": "detection",
+    "sub_category": "one-stage",
+    "one_liner_zh": "Ultralytics 的统一视觉工程框架，采用无锚解耦头并支持多任务。",
+    "key_idea_zh": "以 C2f 模块和 anchor-free 解耦头简化训练与部署，同时统一检测、分割和姿态接口。",
+    "tags": [
+      "YOLO",
+      "anchor-free",
+      "C2f",
+      "多任务"
+    ],
+    "tier": "B",
+    "lineage_parent": "yolo-v7"
+  },
+  {
+    "id": "yolo-v9",
+    "name": "YOLOv9",
+    "org": "unknown",
+    "country": "unknown",
+    "year": 2024,
+    "paper_url": "https://arxiv.org/abs/2402.13616",
+    "github_url": "https://github.com/WongKinYiu/yolov9",
+    "category": "detection",
+    "sub_category": "one-stage",
+    "one_liner_zh": "以可编程梯度信息和 GELAN 缓解深层网络的信息损失。",
+    "key_idea_zh": "PGI 在训练时为主分支提供可靠梯度，GELAN 则组合高效层聚合结构。",
+    "tags": [
+      "YOLO",
+      "PGI",
+      "GELAN",
+      "实时检测"
+    ],
+    "tier": "B",
+    "lineage_parent": "yolo-v8"
+  },
+  {
+    "id": "yolo-v10",
+    "name": "YOLOv10",
+    "org": "Tsinghua University",
+    "country": "CN",
+    "year": 2024,
+    "paper_url": "https://arxiv.org/abs/2405.14458",
+    "github_url": "https://github.com/THU-MIG/yolov10",
+    "category": "detection",
+    "sub_category": "one-stage",
+    "one_liner_zh": "清华提出的端到端实时 YOLO，通过一致双分配去除 NMS。",
+    "key_idea_zh": "训练时联合一对多与一对一标签分配，推理时直接使用一对一分支输出。",
+    "tags": [
+      "YOLO",
+      "国产",
+      "端到端",
+      "NMS-free"
+    ],
+    "tier": "B",
+    "lineage_parent": "yolo-v9"
+  },
+  {
+    "id": "yolo-v11",
+    "name": "YOLO11",
+    "org": "Ultralytics",
+    "country": "US",
+    "year": 2024,
+    "paper_url": "unknown",
+    "github_url": "https://github.com/ultralytics/ultralytics",
+    "category": "detection",
+    "sub_category": "one-stage",
+    "one_liner_zh": "Ultralytics 新一代统一视觉模型族，继续覆盖检测、分割、姿态等任务。",
+    "key_idea_zh": "在 YOLOv8 工程体系上更新骨干与特征融合模块，以更少参数获得更高效率。",
+    "tags": [
+      "YOLO",
+      "Ultralytics",
+      "实时检测",
+      "多任务"
+    ],
+    "tier": "B",
+    "lineage_parent": "yolo-v10"
+  },
+  {
+    "id": "ssd",
+    "name": "SSD",
+    "org": "UNC Chapel Hill",
+    "country": "US",
+    "year": 2016,
+    "paper_url": "https://arxiv.org/abs/1512.02325",
+    "github_url": "https://github.com/weiliu89/caffe/tree/ssd",
+    "category": "detection",
+    "sub_category": "one-stage",
+    "one_liner_zh": "在多层特征图上直接预测默认框，兼顾速度与尺度覆盖。",
+    "key_idea_zh": "为不同分辨率特征图配置多种长宽比的 default boxes，一次前向完成分类与定位。",
+    "tags": [
+      "SSD",
+      "default boxes",
+      "多尺度",
+      "单阶段"
+    ],
+    "tier": "B",
+    "lineage_parent": "unknown"
+  },
+  {
+    "id": "faster-r-cnn",
+    "name": "Faster R-CNN",
+    "org": "Microsoft Research",
+    "country": "US",
+    "year": 2015,
+    "paper_url": "https://arxiv.org/abs/1506.01497",
+    "github_url": "https://github.com/rbgirshick/py-faster-rcnn",
+    "category": "detection",
+    "sub_category": "two-stage",
+    "one_liner_zh": "用可学习的区域建议网络取代外部候选框算法，奠定现代两阶段检测器。",
+    "key_idea_zh": "RPN 与 Fast R-CNN 共享卷积特征，先产生候选框，再对 RoI 分类和精修。",
+    "tags": [
+      "R-CNN",
+      "RPN",
+      "RoI",
+      "两阶段"
+    ],
+    "tier": "A",
+    "lineage_parent": "fast-r-cnn",
+    "architecture": {
+      "description_zh": "共享骨干特征先进入 RPN 产生候选框，RoIAlign 将每个候选区域变为定长特征，再由全连接框头完成分类与边界框回归。",
+      "modules": [
+        {
+          "id": "input",
+          "label": "输入图像",
+          "type": "input"
+        },
+        {
+          "id": "backbone",
+          "label": "CNN/FPN 骨干",
+          "type": "encoder"
+        },
+        {
+          "id": "rpn",
+          "label": "区域建议网络",
+          "type": "proposal"
+        },
+        {
+          "id": "roi",
+          "label": "RoIAlign",
+          "type": "pooling"
+        },
+        {
+          "id": "boxhead",
+          "label": "分类与框回归头",
+          "type": "head"
+        },
+        {
+          "id": "output",
+          "label": "NMS 后检测结果",
+          "type": "output"
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "backbone",
+          "label": "像素"
+        },
+        {
+          "from": "backbone",
+          "to": "rpn",
+          "label": "共享特征"
+        },
+        {
+          "from": "rpn",
+          "to": "roi",
+          "label": "候选框"
+        },
+        {
+          "from": "backbone",
+          "to": "roi",
+          "label": "特征图"
+        },
+        {
+          "from": "roi",
+          "to": "boxhead",
+          "label": "定长 RoI 特征"
+        },
+        {
+          "from": "boxhead",
+          "to": "output",
+          "label": "类别与精修框"
+        }
+      ],
+      "flow_ms": 4600
+    },
+    "code": {
+      "language": "python",
+      "source_repo": "https://github.com/pytorch/vision",
+      "source_path": "torchvision/models/detection/faster_rcnn.py",
+      "simplified": true,
+      "lines": [
+        {
+          "code": "class FasterRCNN(GeneralizedRCNN):",
+          "comment_zh": "定义两阶段检测器；片段已简化自 torchvision。"
+        },
+        {
+          "code": "    def __init__(self, backbone, num_classes):",
+          "comment_zh": "接收可返回特征图的骨干与类别数。"
+        },
+        {
+          "code": "        out_channels = backbone.out_channels",
+          "comment_zh": "取得共享特征图的通道宽度。"
+        },
+        {
+          "code": "        anchor_generator = AnchorGenerator(",
+          "comment_zh": "为 RPN 创建多尺度锚框生成器。"
+        },
+        {
+          "code": "            sizes=((32, 64, 128, 256, 512),),",
+          "comment_zh": "设置覆盖小到大目标的锚框尺寸。"
+        },
+        {
+          "code": "            aspect_ratios=((0.5, 1.0, 2.0),)",
+          "comment_zh": "设置常见的宽高比。"
+        },
+        {
+          "code": "        )",
+          "comment_zh": "结束锚框生成器配置。"
+        },
+        {
+          "code": "        rpn_head = RPNHead(out_channels, anchor_generator.num_anchors_per_location()[0])",
+          "comment_zh": "RPN 为每个位置预测目标性和框偏移。"
+        },
+        {
+          "code": "        roi_pooler = MultiScaleRoIAlign(",
+          "comment_zh": "创建从 FPN 多层取样的 RoIAlign。"
+        },
+        {
+          "code": "            featmap_names=['0', '1', '2', '3'],",
+          "comment_zh": "指定参与池化的多尺度特征层。"
+        },
+        {
+          "code": "            output_size=7, sampling_ratio=2",
+          "comment_zh": "把每个候选区域变为 7×7 特征。"
+        },
+        {
+          "code": "        )",
+          "comment_zh": "结束 RoIAlign 配置。"
+        },
+        {
+          "code": "        representation_size = 1024",
+          "comment_zh": "设置框头隐藏表示维度。"
+        },
+        {
+          "code": "        box_head = TwoMLPHead(out_channels * 7 * 7, representation_size)",
+          "comment_zh": "用两层 MLP 编码每个候选区域。"
+        },
+        {
+          "code": "        box_predictor = FastRCNNPredictor(representation_size, num_classes)",
+          "comment_zh": "输出类别分数与类别相关框偏移。"
+        },
+        {
+          "code": "        transform = GeneralizedRCNNTransform(800, 1333, image_mean, image_std)",
+          "comment_zh": "统一缩放并标准化输入图像。"
+        },
+        {
+          "code": "        rpn = RegionProposalNetwork(anchor_generator, rpn_head, **rpn_cfg)",
+          "comment_zh": "组装候选框生成阶段。"
+        },
+        {
+          "code": "        roi_heads = RoIHeads(roi_pooler, box_head, box_predictor, **roi_cfg)",
+          "comment_zh": "组装候选框分类与精修阶段。"
+        },
+        {
+          "code": "        super().__init__(backbone, rpn, roi_heads, transform)",
+          "comment_zh": "把预处理、骨干、RPN 与 RoI 头连接成完整模型。"
+        }
+      ]
+    }
+  },
+  {
+    "id": "retinanet",
+    "name": "RetinaNet",
+    "org": "Facebook AI Research",
+    "country": "US",
+    "year": 2017,
+    "paper_url": "https://arxiv.org/abs/1708.02002",
+    "github_url": "https://github.com/facebookresearch/Detectron",
+    "category": "detection",
+    "sub_category": "one-stage",
+    "one_liner_zh": "用 Focal Loss 解决密集检测中前景与背景极不平衡的问题。",
+    "key_idea_zh": "降低容易负样本的损失权重，使单阶段检测器专注于少量困难样本。",
+    "tags": [
+      "Focal Loss",
+      "FPN",
+      "anchor",
+      "单阶段"
+    ],
+    "tier": "B",
+    "lineage_parent": "ssd"
+  },
+  {
+    "id": "detr",
+    "name": "DETR",
+    "org": "Facebook AI Research",
+    "country": "US",
+    "year": 2020,
+    "paper_url": "https://arxiv.org/abs/2005.12872",
+    "github_url": "https://github.com/facebookresearch/detr",
+    "category": "detection",
+    "sub_category": "transformer",
+    "one_liner_zh": "把检测改写为集合预测，用 Transformer 端到端输出无重复目标。",
+    "key_idea_zh": "固定数量 object queries 经编码器解码器生成预测，再用匈牙利匹配进行一对一监督。",
+    "tags": [
+      "Transformer",
+      "集合预测",
+      "匈牙利匹配",
+      "端到端"
+    ],
+    "tier": "A",
+    "lineage_parent": "unknown",
+    "architecture": {
+      "description_zh": "CNN 提取二维特征并加入位置编码，Transformer 编码全局关系；固定数量的 object queries 经解码器形成对象槽，独立头输出类别与归一化边界框。",
+      "modules": [
+        {
+          "id": "input",
+          "label": "输入图像",
+          "type": "input"
+        },
+        {
+          "id": "backbone",
+          "label": "CNN 骨干",
+          "type": "encoder"
+        },
+        {
+          "id": "encoder",
+          "label": "Transformer Encoder",
+          "type": "attention"
+        },
+        {
+          "id": "queries",
+          "label": "Object Queries",
+          "type": "query"
+        },
+        {
+          "id": "decoder",
+          "label": "Transformer Decoder",
+          "type": "attention"
+        },
+        {
+          "id": "heads",
+          "label": "类别头 + 框 MLP",
+          "type": "head"
+        },
+        {
+          "id": "output",
+          "label": "集合预测",
+          "type": "output"
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "backbone",
+          "label": "像素"
+        },
+        {
+          "from": "backbone",
+          "to": "encoder",
+          "label": "展平特征+位置编码"
+        },
+        {
+          "from": "encoder",
+          "to": "decoder",
+          "label": "视觉记忆"
+        },
+        {
+          "from": "queries",
+          "to": "decoder",
+          "label": "对象查询"
+        },
+        {
+          "from": "decoder",
+          "to": "heads",
+          "label": "对象槽"
+        },
+        {
+          "from": "heads",
+          "to": "output",
+          "label": "类别与 cxcywh"
+        }
+      ],
+      "flow_ms": 5000
+    },
+    "code": {
+      "language": "python",
+      "source_repo": "https://github.com/facebookresearch/detr",
+      "source_path": "models/detr.py",
+      "simplified": true,
+      "lines": [
+        {
+          "code": "def forward(self, samples: NestedTensor):",
+          "comment_zh": "执行 DETR 前向传播；片段已简化。"
+        },
+        {
+          "code": "    if isinstance(samples, (list, torch.Tensor)):",
+          "comment_zh": "兼容图像列表或批量张量输入。"
+        },
+        {
+          "code": "        samples = nested_tensor_from_tensor_list(samples)",
+          "comment_zh": "把不同尺寸图像补齐并生成 padding mask。"
+        },
+        {
+          "code": "    features, pos = self.backbone(samples)",
+          "comment_zh": "CNN 骨干提取特征，同时生成位置编码。"
+        },
+        {
+          "code": "    src, mask = features[-1].decompose()",
+          "comment_zh": "取最后一层特征及其有效区域掩码。"
+        },
+        {
+          "code": "    assert mask is not None",
+          "comment_zh": "Transformer 需要 mask 忽略补齐像素。"
+        },
+        {
+          "code": "    hidden = self.transformer(",
+          "comment_zh": "进入编码器—解码器 Transformer。"
+        },
+        {
+          "code": "        self.input_proj(src),",
+          "comment_zh": "先把 CNN 通道投影到 Transformer 维度。"
+        },
+        {
+          "code": "        mask,",
+          "comment_zh": "传入补齐区域掩码。"
+        },
+        {
+          "code": "        self.query_embed.weight,",
+          "comment_zh": "传入固定数量的可学习 object queries。"
+        },
+        {
+          "code": "        pos[-1]",
+          "comment_zh": "传入二维位置编码。"
+        },
+        {
+          "code": "    )[0]",
+          "comment_zh": "取得各解码层的对象表示。"
+        },
+        {
+          "code": "    class_logits = self.class_embed(hidden)",
+          "comment_zh": "每个对象槽预测类别与 no-object。"
+        },
+        {
+          "code": "    boxes = self.bbox_embed(hidden).sigmoid()",
+          "comment_zh": "MLP 回归并归一化中心点与宽高。"
+        },
+        {
+          "code": "    output = {'pred_logits': class_logits[-1], 'pred_boxes': boxes[-1]}",
+          "comment_zh": "最后解码层形成推理结果集合。"
+        },
+        {
+          "code": "    if self.aux_loss:",
+          "comment_zh": "训练时可监督中间解码层以改善收敛。"
+        },
+        {
+          "code": "        output['aux_outputs'] = self._set_aux_loss(class_logits, boxes)",
+          "comment_zh": "打包辅助分类与回归输出。"
+        },
+        {
+          "code": "    return output",
+          "comment_zh": "返回供匈牙利匹配损失或推理使用的结果。"
+        }
+      ]
+    }
+  },
+  {
+    "id": "deformable-detr",
+    "name": "Deformable DETR",
+    "org": "SenseTime Research",
+    "country": "CN",
+    "year": 2021,
+    "paper_url": "https://arxiv.org/abs/2010.04159",
+    "github_url": "https://github.com/fundamentalvision/Deformable-DETR",
+    "category": "detection",
+    "sub_category": "transformer",
+    "one_liner_zh": "让注意力只采样少量关键位置，大幅加快 DETR 收敛并增强小目标能力。",
+    "key_idea_zh": "围绕参考点在多尺度特征图上学习稀疏采样偏移和权重，替代全局密集注意力。",
+    "tags": [
+      "国产",
+      "Transformer",
+      "deformable attention",
+      "多尺度"
+    ],
+    "tier": "B",
+    "lineage_parent": "detr"
+  },
+  {
+    "id": "efficientdet",
+    "name": "EfficientDet",
+    "org": "Google Research",
+    "country": "US",
+    "year": 2020,
+    "paper_url": "https://arxiv.org/abs/1911.09070",
+    "github_url": "https://github.com/google/automl/tree/master/efficientdet",
+    "category": "detection",
+    "sub_category": "one-stage",
+    "one_liner_zh": "用 BiFPN 与复合缩放系统化扩展高效目标检测器。",
+    "key_idea_zh": "对多尺度特征进行可学习加权双向融合，并共同缩放输入、骨干、特征网络和检测头。",
+    "tags": [
+      "EfficientNet",
+      "BiFPN",
+      "复合缩放",
+      "高效"
+    ],
+    "tier": "B",
+    "lineage_parent": "retinanet"
+  },
+  {
+    "id": "yolox",
+    "name": "YOLOX",
+    "org": "Megvii",
+    "country": "CN",
+    "year": 2021,
+    "paper_url": "https://arxiv.org/abs/2107.08430",
+    "github_url": "https://github.com/Megvii-BaseDetection/YOLOX",
+    "category": "detection",
+    "sub_category": "one-stage",
+    "one_liner_zh": "旷视将 YOLO 改造成无锚、解耦头并采用动态标签分配的工程模型。",
+    "key_idea_zh": "anchor-free 解耦分类与回归分支，使用 SimOTA 为每个目标动态选择正样本。",
+    "tags": [
+      "国产",
+      "YOLO",
+      "anchor-free",
+      "SimOTA"
+    ],
+    "tier": "B",
+    "lineage_parent": "yolo-v5"
+  },
+  {
+    "id": "pp-yolo",
+    "name": "PP-YOLO",
+    "org": "Baidu",
+    "country": "CN",
+    "year": 2020,
+    "paper_url": "https://arxiv.org/abs/2007.12099",
+    "github_url": "https://github.com/PaddlePaddle/PaddleDetection",
+    "category": "detection",
+    "sub_category": "one-stage",
+    "one_liner_zh": "百度在 PaddlePaddle 上系统改造 YOLOv3，兼顾准确率与产业落地。",
+    "key_idea_zh": "组合 ResNet、可变形卷积、DropBlock、IoU-aware 等已验证技巧提升检测表现。",
+    "tags": [
+      "国产",
+      "YOLO",
+      "PaddlePaddle",
+      "IoU-aware"
+    ],
+    "tier": "B",
+    "lineage_parent": "yolo-v3"
+  },
+  {
+    "id": "pp-yoloe",
+    "name": "PP-YOLOE",
+    "org": "Baidu",
+    "country": "CN",
+    "year": 2022,
+    "paper_url": "https://arxiv.org/abs/2203.16250",
+    "github_url": "https://github.com/PaddlePaddle/PaddleDetection",
+    "category": "detection",
+    "sub_category": "one-stage",
+    "one_liner_zh": "百度推出的无锚工业检测器，以任务对齐与高效头提升部署表现。",
+    "key_idea_zh": "采用 anchor-free 结构、ET-head 与 Task Alignment Learning 统一分类和定位质量。",
+    "tags": [
+      "国产",
+      "PaddlePaddle",
+      "anchor-free",
+      "任务对齐"
+    ],
+    "tier": "B",
+    "lineage_parent": "pp-yolo"
+  },
+  {
+    "id": "damo-yolo",
+    "name": "DAMO-YOLO",
+    "org": "Alibaba DAMO Academy",
+    "country": "CN",
+    "year": 2022,
+    "paper_url": "https://arxiv.org/abs/2211.15444",
+    "github_url": "https://github.com/tinyvision/DAMO-YOLO",
+    "category": "detection",
+    "sub_category": "one-stage",
+    "one_liner_zh": "阿里达摩院以神经架构搜索、高效特征融合和蒸馏打造实时检测器。",
+    "key_idea_zh": "MAE-NAS 搜索骨干，RepGFPN 融合特征，ZeroHead 与对齐蒸馏提升速度精度比。",
+    "tags": [
+      "国产",
+      "YOLO",
+      "NAS",
+      "RepGFPN"
+    ],
+    "tier": "B",
+    "lineage_parent": "yolox"
+  },
+  {
+    "id": "rt-detr",
+    "name": "RT-DETR",
+    "org": "Baidu",
+    "country": "CN",
+    "year": 2023,
+    "paper_url": "https://arxiv.org/abs/2304.08069",
+    "github_url": "https://github.com/PaddlePaddle/PaddleDetection",
+    "category": "detection",
+    "sub_category": "transformer",
+    "one_liner_zh": "百度首个实时端到端 DETR，通过高效混合编码器实现可调速度。",
+    "key_idea_zh": "AIFI 只在高层特征做尺度内交互，CCFM 跨尺度融合，再用不确定性最小查询初始化解码器。",
+    "tags": [
+      "国产",
+      "DETR",
+      "实时",
+      "NMS-free"
+    ],
+    "tier": "A",
+    "lineage_parent": "detr",
+    "architecture": {
+      "description_zh": "骨干输出多尺度特征；混合编码器先以 AIFI 处理最高层语义，再由 CCFM 跨尺度融合；编码器从候选中选出高质量查询，解码器迭代精修类别与边界框。",
+      "modules": [
+        {
+          "id": "input",
+          "label": "输入图像",
+          "type": "input"
+        },
+        {
+          "id": "backbone",
+          "label": "多尺度骨干",
+          "type": "encoder"
+        },
+        {
+          "id": "aifi",
+          "label": "AIFI 尺度内交互",
+          "type": "attention"
+        },
+        {
+          "id": "ccfm",
+          "label": "CCFM 跨尺度融合",
+          "type": "fusion"
+        },
+        {
+          "id": "select",
+          "label": "IoU 感知查询选择",
+          "type": "query"
+        },
+        {
+          "id": "decoder",
+          "label": "Transformer Decoder",
+          "type": "attention"
+        },
+        {
+          "id": "output",
+          "label": "端到端检测结果",
+          "type": "output"
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "backbone",
+          "label": "像素"
+        },
+        {
+          "from": "backbone",
+          "to": "aifi",
+          "label": "最高层特征"
+        },
+        {
+          "from": "backbone",
+          "to": "ccfm",
+          "label": "浅层特征"
+        },
+        {
+          "from": "aifi",
+          "to": "ccfm",
+          "label": "全局语义"
+        },
+        {
+          "from": "ccfm",
+          "to": "select",
+          "label": "融合特征"
+        },
+        {
+          "from": "select",
+          "to": "decoder",
+          "label": "初始查询与参考框"
+        },
+        {
+          "from": "ccfm",
+          "to": "decoder",
+          "label": "编码记忆"
+        },
+        {
+          "from": "decoder",
+          "to": "output",
+          "label": "类别与精修框"
+        }
+      ],
+      "flow_ms": 5200
+    },
+    "code": {
+      "language": "python",
+      "source_repo": "https://github.com/PaddlePaddle/PaddleDetection",
+      "source_path": "ppdet/modeling/transformers/rtdetr_transformer.py",
+      "simplified": true,
+      "lines": [
+        {
+          "code": "def forward(self, feats, pad_mask=None, gt_meta=None, is_teacher=False):",
+          "comment_zh": "执行 RT-DETR Transformer；片段已简化自 PaddleDetection。"
+        },
+        {
+          "code": "    memory, spatial_shapes, level_start_index = self._get_encoder_input(feats)",
+          "comment_zh": "投影并展平混合编码器输出的多尺度特征。"
+        },
+        {
+          "code": "    if self.training:",
+          "comment_zh": "训练时额外构造对比去噪查询。"
+        },
+        {
+          "code": "        denoise = get_contrastive_denoising_training_group(",
+          "comment_zh": "由真实类别与框生成带标签噪声和框噪声的查询。"
+        },
+        {
+          "code": "            gt_meta, self.num_classes, self.num_queries,",
+          "comment_zh": "传入标注、类别数和正常查询数量。"
+        },
+        {
+          "code": "            self.denoising_class_embed.weight, self.num_denoising,",
+          "comment_zh": "使用专用类别嵌入并控制去噪查询数量。"
+        },
+        {
+          "code": "            self.label_noise_ratio, self.box_noise_scale",
+          "comment_zh": "设置类别翻转比例与边界框扰动幅度。"
+        },
+        {
+          "code": "        )",
+          "comment_zh": "得到去噪类别、框、注意力掩码与元数据。"
+        },
+        {
+          "code": "        denoising_class, denoising_bbox, attn_mask, dn_meta = denoise",
+          "comment_zh": "拆开去噪训练所需的四项结果。"
+        },
+        {
+          "code": "    else:",
+          "comment_zh": "推理阶段无需去噪训练组。"
+        },
+        {
+          "code": "        denoising_class = denoising_bbox = attn_mask = dn_meta = None",
+          "comment_zh": "将所有去噪输入置空。"
+        },
+        {
+          "code": "    target, ref_boxes, enc_boxes, enc_logits = self._get_decoder_input(",
+          "comment_zh": "按编码器置信度选出高质量初始查询。"
+        },
+        {
+          "code": "        memory, spatial_shapes, denoising_class, denoising_bbox, is_teacher",
+          "comment_zh": "同时拼接训练期去噪查询。"
+        },
+        {
+          "code": "    )",
+          "comment_zh": "获得查询内容、参考框和编码器 top-k 预测。"
+        },
+        {
+          "code": "    out_boxes, out_logits = self.decoder(",
+          "comment_zh": "Transformer 解码器逐层精修查询。"
+        },
+        {
+          "code": "        target, ref_boxes, memory, spatial_shapes, level_start_index,",
+          "comment_zh": "提供查询、参考框与多尺度视觉记忆。"
+        },
+        {
+          "code": "        self.dec_bbox_head, self.dec_score_head, self.query_pos_head,",
+          "comment_zh": "注入每层框头、类别头和查询位置头。"
+        },
+        {
+          "code": "        attn_mask=attn_mask, memory_mask=None,",
+          "comment_zh": "去噪查询用注意力掩码避免信息泄漏。"
+        },
+        {
+          "code": "        query_pos_head_inv_sig=self.query_pos_head_inv_sig",
+          "comment_zh": "配置参考框到查询位置的映射方式。"
+        },
+        {
+          "code": "    )",
+          "comment_zh": "完成所有解码层的类别与框预测。"
+        },
+        {
+          "code": "    return out_boxes, out_logits, enc_boxes, enc_logits, dn_meta",
+          "comment_zh": "返回解码结果、编码器候选与去噪元数据。"
+        }
+      ]
+    }
+  },
+  {
+    "id": "rtmdet",
+    "name": "RTMDet",
+    "org": "OpenMMLab",
+    "country": "CN",
+    "year": 2022,
+    "paper_url": "https://arxiv.org/abs/2212.07784",
+    "github_url": "https://github.com/open-mmlab/mmyolo",
+    "category": "detection",
+    "sub_category": "one-stage",
+    "one_liner_zh": "OpenMMLab 的实时检测器家族，用大核深度卷积与动态软标签提升效率。",
+    "key_idea_zh": "CSPNeXt 骨干结合共享卷积解耦头，并以动态标签分配服务不同模型尺寸。",
+    "tags": [
+      "国产",
+      "OpenMMLab",
+      "CSPNeXt",
+      "实时检测"
+    ],
+    "tier": "B",
+    "lineage_parent": "yolox"
+  },
+  {
+    "id": "nanodet",
+    "name": "NanoDet",
+    "org": "RangiLyu",
+    "country": "CN",
+    "year": 2020,
+    "paper_url": "unknown",
+    "github_url": "https://github.com/RangiLyu/nanodet",
+    "category": "detection",
+    "sub_category": "edge",
+    "one_liner_zh": "面向移动端的轻量无锚检测器，可在很小计算量下运行。",
+    "key_idea_zh": "采用 anchor-free 检测头、Generalized Focal Loss 与轻量特征融合，突出端侧速度。",
+    "tags": [
+      "国产",
+      "移动端",
+      "anchor-free",
+      "轻量化"
+    ],
+    "tier": "B",
+    "lineage_parent": "fcos"
+  },
+  {
+    "id": "dino-detr",
+    "name": "DINO-DETR",
+    "org": "IDEA Research",
+    "country": "CN",
+    "year": 2022,
+    "paper_url": "https://arxiv.org/abs/2203.03605",
+    "github_url": "https://github.com/IDEA-Research/DINO",
+    "category": "detection",
+    "sub_category": "transformer",
+    "one_liner_zh": "IDEA 通过对比去噪训练、混合查询选择和逐框细化增强 DETR。",
+    "key_idea_zh": "向训练注入带噪真实框构造正负查询，同时用编码器候选初始化位置查询并逐层精修。",
+    "tags": [
+      "国产",
+      "DETR",
+      "去噪训练",
+      "查询选择"
+    ],
+    "tier": "B",
+    "lineage_parent": "deformable-detr"
+  },
+  {
+    "id": "grounding-dino",
+    "name": "Grounding DINO",
+    "org": "IDEA Research",
+    "country": "CN",
+    "year": 2023,
+    "paper_url": "https://arxiv.org/abs/2303.05499",
+    "github_url": "https://github.com/IDEA-Research/GroundingDINO",
+    "category": "detection",
+    "sub_category": "open-vocabulary",
+    "one_liner_zh": "把 DINO 检测器与语言特征融合，实现文本提示的开放词汇定位。",
+    "key_idea_zh": "在特征增强器、语言引导查询选择和跨模态解码器中逐步融合图像与文本。",
+    "tags": [
+      "国产",
+      "开放词汇",
+      "视觉语言",
+      "grounding"
+    ],
+    "tier": "B",
+    "lineage_parent": "dino-detr"
+  },
+  {
+    "id": "co-detr",
+    "name": "Co-DETR",
+    "org": "SenseTime Research",
+    "country": "CN",
+    "year": 2023,
+    "paper_url": "https://arxiv.org/abs/2211.12860",
+    "github_url": "https://github.com/Sense-X/Co-DETR",
+    "category": "detection",
+    "sub_category": "transformer",
+    "one_liner_zh": "用多个辅助检测头协作训练 DETR 编码器，增强一对一匹配的正样本监督。",
+    "key_idea_zh": "训练时加入一对多标签分配的辅助头，并把其正坐标转成额外查询供解码器学习。",
+    "tags": [
+      "国产",
+      "DETR",
+      "协同训练",
+      "混合分配"
+    ],
+    "tier": "B",
+    "lineage_parent": "detr"
+  },
+  {
+    "id": "r-cnn",
+    "name": "R-CNN",
+    "org": "UC Berkeley",
+    "country": "US",
+    "year": 2014,
+    "paper_url": "https://arxiv.org/abs/1311.2524",
+    "github_url": "https://github.com/rbgirshick/rcnn",
+    "category": "detection",
+    "sub_category": "region-based",
+    "one_liner_zh": "把候选区域逐个送入 CNN 提取特征，开启深度学习目标检测时代。",
+    "key_idea_zh": "Selective Search 生成候选框，CNN 编码每个区域，再由 SVM 分类和回归器精修。",
+    "tags": [
+      "R-CNN",
+      "候选区域",
+      "CNN",
+      "两阶段"
+    ],
+    "tier": "B",
+    "lineage_parent": "unknown"
+  },
+  {
+    "id": "fast-r-cnn",
+    "name": "Fast R-CNN",
+    "org": "Microsoft Research",
+    "country": "US",
+    "year": 2015,
+    "paper_url": "https://arxiv.org/abs/1504.08083",
+    "github_url": "https://github.com/rbgirshick/fast-rcnn",
+    "category": "detection",
+    "sub_category": "two-stage",
+    "one_liner_zh": "整图只做一次卷积，再用 RoI Pooling 共享特征并联合训练分类回归。",
+    "key_idea_zh": "将每个候选框映射到共享特征图，经 RoI Pooling 得到固定尺寸表示。",
+    "tags": [
+      "R-CNN",
+      "RoI Pooling",
+      "共享卷积",
+      "两阶段"
+    ],
+    "tier": "B",
+    "lineage_parent": "r-cnn"
+  },
+  {
+    "id": "cascade-r-cnn",
+    "name": "Cascade R-CNN",
+    "org": "UC San Diego",
+    "country": "US",
+    "year": 2018,
+    "paper_url": "https://arxiv.org/abs/1712.00726",
+    "github_url": "https://github.com/zhaoweicai/cascade-rcnn",
+    "category": "detection",
+    "sub_category": "two-stage",
+    "one_liner_zh": "串联多个逐渐提高 IoU 阈值的检测头，持续精修高质量边界框。",
+    "key_idea_zh": "每一级用上一阶段更高质量的框训练下一检测器，缓解高 IoU 样本稀少问题。",
+    "tags": [
+      "级联",
+      "IoU",
+      "边界框精修",
+      "两阶段"
+    ],
+    "tier": "B",
+    "lineage_parent": "faster-r-cnn"
+  },
+  {
+    "id": "fcos",
+    "name": "FCOS",
+    "org": "University of Adelaide",
+    "country": "AU",
+    "year": 2019,
+    "paper_url": "https://arxiv.org/abs/1904.01355",
+    "github_url": "https://github.com/tianzhi0549/FCOS",
+    "category": "detection",
+    "sub_category": "anchor-free",
+    "one_liner_zh": "把检测改为逐像素回归四边距离，移除锚框及其超参数。",
+    "key_idea_zh": "FPN 每个位置预测类别、到框四边的距离和 centerness，抑制偏离中心的低质量框。",
+    "tags": [
+      "anchor-free",
+      "FCOS",
+      "centerness",
+      "FPN"
+    ],
+    "tier": "B",
+    "lineage_parent": "retinanet"
+  },
+  {
+    "id": "centernet",
+    "name": "CenterNet",
+    "org": "University of Texas at Austin",
+    "country": "US",
+    "year": 2019,
+    "paper_url": "https://arxiv.org/abs/1904.07850",
+    "github_url": "https://github.com/xingyizhou/CenterNet",
+    "category": "detection",
+    "sub_category": "anchor-free",
+    "one_liner_zh": "把目标表示为中心关键点，再从中心回归尺寸与偏移。",
+    "key_idea_zh": "用热力图定位对象中心，配合宽高和亚像素偏移即可解码边界框。",
+    "tags": [
+      "anchor-free",
+      "关键点",
+      "中心点",
+      "实时检测"
+    ],
+    "tier": "B",
+    "lineage_parent": "cornernet"
+  },
+  {
+    "id": "cornernet",
+    "name": "CornerNet",
+    "org": "Princeton University",
+    "country": "US",
+    "year": 2018,
+    "paper_url": "https://arxiv.org/abs/1808.01244",
+    "github_url": "https://github.com/princeton-vl/CornerNet",
+    "category": "detection",
+    "sub_category": "anchor-free",
+    "one_liner_zh": "通过检测并配对左上角和右下角关键点实现无锚框检测。",
+    "key_idea_zh": "Corner Pooling 汇聚边界线索，嵌入向量把属于同一目标的两个角点配成框。",
+    "tags": [
+      "anchor-free",
+      "关键点",
+      "Corner Pooling",
+      "角点配对"
+    ],
+    "tier": "B",
+    "lineage_parent": "unknown"
+  },
+  {
+    "id": "atss",
+    "name": "ATSS",
+    "org": "Huawei Noah's Ark Lab",
+    "country": "CN",
+    "year": 2020,
+    "paper_url": "https://arxiv.org/abs/1912.02424",
+    "github_url": "https://github.com/sfzhang15/ATSS",
+    "category": "detection",
+    "sub_category": "label-assignment",
+    "one_liner_zh": "用样本统计自适应选择正负样本，解释并缩小有锚与无锚检测差距。",
+    "key_idea_zh": "每个目标在各金字塔层选中心最近候选，以 IoU 均值加标准差作为动态正样本阈值。",
+    "tags": [
+      "国产",
+      "标签分配",
+      "anchor",
+      "FPN"
+    ],
+    "tier": "B",
+    "lineage_parent": "retinanet"
+  },
+  {
+    "id": "sparse-r-cnn",
+    "name": "Sparse R-CNN",
+    "org": "The University of Hong Kong",
+    "country": "HK",
+    "year": 2021,
+    "paper_url": "https://arxiv.org/abs/2011.12450",
+    "github_url": "https://github.com/PeizeSun/SparseR-CNN",
+    "category": "detection",
+    "sub_category": "set-prediction",
+    "one_liner_zh": "用少量可学习候选框和候选特征取代密集锚框与 RPN。",
+    "key_idea_zh": "固定数量 proposal boxes 与 proposal features 经过动态实例交互头多轮迭代精修。",
+    "tags": [
+      "稀疏检测",
+      "可学习候选框",
+      "动态头",
+      "集合预测"
+    ],
+    "tier": "B",
+    "lineage_parent": "faster-r-cnn"
+  },
+  {
+    "id": "clip",
+    "name": "CLIP",
+    "org": "OpenAI",
+    "country": "US",
+    "year": 2021,
+    "paper_url": "https://arxiv.org/abs/2103.00020",
+    "github_url": "https://github.com/openai/CLIP",
+    "category": "representation",
+    "sub_category": "vision-language",
+    "one_liner_zh": "从海量图文对学习共享语义空间，开启通用零样本视觉识别范式。",
+    "key_idea_zh": "图像编码器与文本编码器通过批内对比学习对齐，类别名称可直接作为零样本分类器。",
+    "tags": [
+      "图文对比学习",
+      "零样本",
+      "视觉语言",
+      "基础模型"
+    ],
+    "tier": "A",
+    "lineage_parent": "unknown",
+    "architecture": {
+      "description_zh": "图像进入 ResNet 或 ViT，文本进入因果 Transformer；两侧取全局向量并归一化，通过可学习温度缩放的点积构成整批图文相似度矩阵。",
+      "modules": [
+        {
+          "id": "image",
+          "label": "图像输入",
+          "type": "input"
+        },
+        {
+          "id": "vision",
+          "label": "ResNet / ViT",
+          "type": "encoder"
+        },
+        {
+          "id": "text",
+          "label": "文本 Token",
+          "type": "input"
+        },
+        {
+          "id": "textenc",
+          "label": "Text Transformer",
+          "type": "encoder"
+        },
+        {
+          "id": "norm",
+          "label": "L2 归一化与投影",
+          "type": "projection"
+        },
+        {
+          "id": "similarity",
+          "label": "温度缩放余弦相似度",
+          "type": "matching"
+        },
+        {
+          "id": "output",
+          "label": "图文匹配 / 零样本分类",
+          "type": "output"
+        }
+      ],
+      "edges": [
+        {
+          "from": "image",
+          "to": "vision",
+          "label": "像素"
+        },
+        {
+          "from": "text",
+          "to": "textenc",
+          "label": "token ids"
+        },
+        {
+          "from": "vision",
+          "to": "norm",
+          "label": "图像全局向量"
+        },
+        {
+          "from": "textenc",
+          "to": "norm",
+          "label": "EOT 文本向量"
+        },
+        {
+          "from": "norm",
+          "to": "similarity",
+          "label": "单位向量"
+        },
+        {
+          "from": "similarity",
+          "to": "output",
+          "label": "相似度矩阵"
+        }
+      ],
+      "flow_ms": 4800
+    },
+    "code": {
+      "language": "python",
+      "source_repo": "https://github.com/openai/CLIP",
+      "source_path": "clip/model.py",
+      "simplified": true,
+      "lines": [
+        {
+          "code": "def encode_image(self, image):",
+          "comment_zh": "编码图像分支；片段已简化自 OpenAI CLIP。"
+        },
+        {
+          "code": "    return self.visual(image.type(self.dtype))",
+          "comment_zh": "用 ResNet 或 ViT 得到图像全局向量。"
+        },
+        {
+          "code": "def encode_text(self, text):",
+          "comment_zh": "编码文本分支。"
+        },
+        {
+          "code": "    x = self.token_embedding(text).type(self.dtype)",
+          "comment_zh": "把 token id 映射为词向量。"
+        },
+        {
+          "code": "    x = x + self.positional_embedding.type(self.dtype)",
+          "comment_zh": "加入可学习的位置编码。"
+        },
+        {
+          "code": "    x = x.permute(1, 0, 2)",
+          "comment_zh": "转换成 Transformer 所需的序列优先布局。"
+        },
+        {
+          "code": "    x = self.transformer(x)",
+          "comment_zh": "因果 Transformer 建模文本上下文。"
+        },
+        {
+          "code": "    x = x.permute(1, 0, 2)",
+          "comment_zh": "恢复批次优先布局。"
+        },
+        {
+          "code": "    x = self.ln_final(x).type(self.dtype)",
+          "comment_zh": "对文本隐藏状态做最终归一化。"
+        },
+        {
+          "code": "    eot = text.argmax(dim=-1)",
+          "comment_zh": "原实现以最大 token id 定位 EOT 位置。"
+        },
+        {
+          "code": "    return x[torch.arange(x.shape[0]), eot] @ self.text_projection",
+          "comment_zh": "取 EOT 状态并投影到共享嵌入空间。"
+        },
+        {
+          "code": "def forward(self, image, text):",
+          "comment_zh": "联合计算整批图文相似度。"
+        },
+        {
+          "code": "    image_features = self.encode_image(image)",
+          "comment_zh": "得到图像嵌入。"
+        },
+        {
+          "code": "    text_features = self.encode_text(text)",
+          "comment_zh": "得到文本嵌入。"
+        },
+        {
+          "code": "    image_features = image_features / image_features.norm(dim=1, keepdim=True)",
+          "comment_zh": "把图像向量归一化到单位球面。"
+        },
+        {
+          "code": "    text_features = text_features / text_features.norm(dim=1, keepdim=True)",
+          "comment_zh": "把文本向量归一化到单位球面。"
+        },
+        {
+          "code": "    logit_scale = self.logit_scale.exp()",
+          "comment_zh": "把可学习对数温度转换为正缩放系数。"
+        },
+        {
+          "code": "    logits_per_image = logit_scale * image_features @ text_features.t()",
+          "comment_zh": "计算每张图像对每条文本的相似度。"
+        },
+        {
+          "code": "    logits_per_text = logits_per_image.t()",
+          "comment_zh": "转置得到文本到图像的相似度。"
+        },
+        {
+          "code": "    return logits_per_image, logits_per_text",
+          "comment_zh": "两方向交叉熵共同训练图文对齐。"
+        }
+      ]
+    }
+  },
+  {
+    "id": "siglip",
+    "name": "SigLIP",
+    "org": "Google Research",
+    "country": "US",
+    "year": 2023,
+    "paper_url": "https://arxiv.org/abs/2303.15343",
+    "github_url": "https://github.com/google-research/big_vision",
+    "category": "representation",
+    "sub_category": "vision-language",
+    "one_liner_zh": "以逐图文对 sigmoid 损失替代全局 softmax，对大规模分布式训练更友好。",
+    "key_idea_zh": "每个图文组合独立做二分类，不再要求把所有设备上的负样本汇总后归一化。",
+    "tags": [
+      "图文对比学习",
+      "sigmoid loss",
+      "零样本",
+      "ViT"
+    ],
+    "tier": "B",
+    "lineage_parent": "clip"
+  },
+  {
+    "id": "siglip-2",
+    "name": "SigLIP 2",
+    "org": "Google DeepMind",
+    "country": "US",
+    "year": 2025,
+    "paper_url": "https://arxiv.org/abs/2502.14786",
+    "github_url": "https://github.com/google-research/big_vision",
+    "category": "representation",
+    "sub_category": "vision-language",
+    "one_liner_zh": "在 SigLIP 上加入自蒸馏、描述生成式目标和定位目标，增强语义与密集能力。",
+    "key_idea_zh": "同时优化图文对齐、局部到全局自监督与文本解码，并支持原生多分辨率输入。",
+    "tags": [
+      "图文对比学习",
+      "多语言",
+      "定位",
+      "自蒸馏"
+    ],
+    "tier": "B",
+    "lineage_parent": "siglip"
+  },
+  {
+    "id": "dinov2",
+    "name": "DINOv2",
+    "org": "Meta AI",
+    "country": "US",
+    "year": 2023,
+    "paper_url": "https://arxiv.org/abs/2304.07193",
+    "github_url": "https://github.com/facebookresearch/dinov2",
+    "category": "representation",
+    "sub_category": "self-supervised",
+    "one_liner_zh": "以大规模精选图像和自监督蒸馏学习可直接迁移的通用视觉特征。",
+    "key_idea_zh": "学生与教师在全局视图、局部视图和遮挡 patch 上对齐，并用数据治理提升特征稳健性。",
+    "tags": [
+      "自监督",
+      "ViT",
+      "知识蒸馏",
+      "密集特征"
+    ],
+    "tier": "A",
+    "lineage_parent": "unknown",
+    "architecture": {
+      "description_zh": "图像切成 patch 并加入 CLS、可选 register tokens 与位置编码，ViT blocks 产生全局和逐 patch 表征；训练时学生网络对齐动量教师的全局分类与掩码 patch 目标。",
+      "modules": [
+        {
+          "id": "image",
+          "label": "多裁剪图像",
+          "type": "input"
+        },
+        {
+          "id": "patch",
+          "label": "Patch Embed + Tokens",
+          "type": "embedding"
+        },
+        {
+          "id": "student",
+          "label": "Student ViT",
+          "type": "encoder"
+        },
+        {
+          "id": "teacher",
+          "label": "EMA Teacher ViT",
+          "type": "encoder"
+        },
+        {
+          "id": "heads",
+          "label": "DINO / iBOT Heads",
+          "type": "head"
+        },
+        {
+          "id": "loss",
+          "label": "全局与掩码蒸馏",
+          "type": "loss"
+        },
+        {
+          "id": "output",
+          "label": "CLS + Patch 特征",
+          "type": "output"
+        }
+      ],
+      "edges": [
+        {
+          "from": "image",
+          "to": "patch",
+          "label": "全局/局部视图"
+        },
+        {
+          "from": "patch",
+          "to": "student",
+          "label": "含遮挡 tokens"
+        },
+        {
+          "from": "patch",
+          "to": "teacher",
+          "label": "未遮挡全局视图"
+        },
+        {
+          "from": "student",
+          "to": "heads",
+          "label": "学生表征"
+        },
+        {
+          "from": "teacher",
+          "to": "loss",
+          "label": "停止梯度的目标"
+        },
+        {
+          "from": "heads",
+          "to": "loss",
+          "label": "学生预测"
+        },
+        {
+          "from": "student",
+          "to": "output",
+          "label": "预训练后冻结或微调"
+        }
+      ],
+      "flow_ms": 5200
+    },
+    "code": {
+      "language": "python",
+      "source_repo": "https://github.com/facebookresearch/dinov2",
+      "source_path": "dinov2/models/vision_transformer.py",
+      "simplified": true,
+      "lines": [
+        {
+          "code": "def forward_features(self, x, masks=None):",
+          "comment_zh": "提取 DINOv2 特征；片段已简化自官方 ViT。"
+        },
+        {
+          "code": "    if isinstance(x, list):",
+          "comment_zh": "训练时可同时处理不同尺寸的多裁剪视图。"
+        },
+        {
+          "code": "        return self.forward_features_list(x, masks)",
+          "comment_zh": "列表输入走多视图批处理分支。"
+        },
+        {
+          "code": "    x = self.prepare_tokens_with_masks(x, masks)",
+          "comment_zh": "完成 patch embedding，并加入 CLS、register 与 mask tokens。"
+        },
+        {
+          "code": "    for block in self.blocks:",
+          "comment_zh": "依次通过所有 Transformer block。"
+        },
+        {
+          "code": "        x = block(x)",
+          "comment_zh": "自注意力让全局与局部 patch 交换信息。"
+        },
+        {
+          "code": "    x_norm = self.norm(x)",
+          "comment_zh": "对最终 token 序列做 LayerNorm。"
+        },
+        {
+          "code": "    cls = x_norm[:, 0]",
+          "comment_zh": "第一个 token 是整图 CLS 表征。"
+        },
+        {
+          "code": "    reg_end = self.num_register_tokens + 1",
+          "comment_zh": "计算 register tokens 的结束位置。"
+        },
+        {
+          "code": "    registers = x_norm[:, 1:reg_end]",
+          "comment_zh": "取出用于吸收全局信息的 register 表征。"
+        },
+        {
+          "code": "    patches = x_norm[:, reg_end:]",
+          "comment_zh": "其余 token 保留空间对应的密集特征。"
+        },
+        {
+          "code": "    return {",
+          "comment_zh": "按下游任务需要返回多种表征。"
+        },
+        {
+          "code": "        'x_norm_clstoken': cls,",
+          "comment_zh": "全局分类或检索常使用该向量。"
+        },
+        {
+          "code": "        'x_norm_regtokens': registers,",
+          "comment_zh": "返回可选 register tokens。"
+        },
+        {
+          "code": "        'x_norm_patchtokens': patches,",
+          "comment_zh": "分割、深度等密集任务使用 patch tokens。"
+        },
+        {
+          "code": "        'x_prenorm': x,",
+          "comment_zh": "保留归一化前隐藏状态供训练头使用。"
+        },
+        {
+          "code": "        'masks': masks",
+          "comment_zh": "把遮挡位置一并返回以计算 iBOT 目标。"
+        },
+        {
+          "code": "    }",
+          "comment_zh": "结束特征字典。"
+        },
+        {
+          "code": "def forward(self, x, is_training=False, masks=None):",
+          "comment_zh": "统一预训练与下游推理入口。"
+        },
+        {
+          "code": "    features = self.forward_features(x, masks)",
+          "comment_zh": "先获得结构化特征。"
+        },
+        {
+          "code": "    return features if is_training else self.head(features['x_norm_clstoken'])",
+          "comment_zh": "训练返回全部特征，普通推理只走全局头。"
+        }
+      ]
+    }
+  },
+  {
+    "id": "dinov3",
+    "name": "DINOv3",
+    "org": "Meta AI",
+    "country": "US",
+    "year": 2025,
+    "paper_url": "unknown",
+    "github_url": "https://github.com/facebookresearch/dinov3",
+    "category": "representation",
+    "sub_category": "self-supervised",
+    "one_liner_zh": "继续扩展无标注视觉预训练，强调高质量密集特征与跨任务迁移。",
+    "key_idea_zh": "在 DINO 系列自蒸馏框架上扩大数据与模型规模，并针对长训练中的密集特征退化进行稳定化。",
+    "tags": [
+      "自监督",
+      "ViT",
+      "密集特征",
+      "基础模型"
+    ],
+    "tier": "B",
+    "lineage_parent": "dinov2"
+  },
+  {
+    "id": "blip",
+    "name": "BLIP",
+    "org": "Salesforce Research",
+    "country": "US",
+    "year": 2022,
+    "paper_url": "https://arxiv.org/abs/2201.12086",
+    "github_url": "https://github.com/salesforce/BLIP",
+    "category": "representation",
+    "sub_category": "vision-language",
+    "one_liner_zh": "统一图文理解与生成，并通过自动过滤噪声描述改善预训练数据。",
+    "key_idea_zh": "共享部分参数的编码器—解码器同时优化对比、匹配和语言生成，CapFilt 先生成再过滤描述。",
+    "tags": [
+      "视觉语言",
+      "图文生成",
+      "CapFilt",
+      "多任务"
+    ],
+    "tier": "B",
+    "lineage_parent": "clip"
+  },
+  {
+    "id": "blip-2",
+    "name": "BLIP-2",
+    "org": "Salesforce Research",
+    "country": "US",
+    "year": 2023,
+    "paper_url": "https://arxiv.org/abs/2301.12597",
+    "github_url": "https://github.com/salesforce/LAVIS",
+    "category": "representation",
+    "sub_category": "vision-language",
+    "one_liner_zh": "用轻量 Q-Former 桥接冻结视觉编码器与冻结大语言模型。",
+    "key_idea_zh": "可学习查询通过交叉注意力从图像中提取少量视觉 token，分两阶段完成视觉语言对齐与生成对齐。",
+    "tags": [
+      "视觉语言",
+      "Q-Former",
+      "冻结编码器",
+      "大语言模型"
+    ],
+    "tier": "A",
+    "lineage_parent": "blip",
+    "architecture": {
+      "description_zh": "冻结视觉编码器产生 patch 特征；Q-Former 的可学习 query 通过交叉注意力压缩视觉信息，先接受图文对比/匹配/生成训练，再把输出投影为冻结 LLM 可读取的软提示。",
+      "modules": [
+        {
+          "id": "image",
+          "label": "输入图像",
+          "type": "input"
+        },
+        {
+          "id": "vision",
+          "label": "冻结视觉编码器",
+          "type": "encoder"
+        },
+        {
+          "id": "queries",
+          "label": "可学习 Query Tokens",
+          "type": "query"
+        },
+        {
+          "id": "qformer",
+          "label": "Q-Former",
+          "type": "attention"
+        },
+        {
+          "id": "projector",
+          "label": "LLM 投影层",
+          "type": "projection"
+        },
+        {
+          "id": "llm",
+          "label": "冻结大语言模型",
+          "type": "decoder"
+        },
+        {
+          "id": "output",
+          "label": "文本理解与生成",
+          "type": "output"
+        }
+      ],
+      "edges": [
+        {
+          "from": "image",
+          "to": "vision",
+          "label": "像素"
+        },
+        {
+          "from": "vision",
+          "to": "qformer",
+          "label": "图像 patch 特征"
+        },
+        {
+          "from": "queries",
+          "to": "qformer",
+          "label": "固定数量查询"
+        },
+        {
+          "from": "qformer",
+          "to": "projector",
+          "label": "视觉查询表示"
+        },
+        {
+          "from": "projector",
+          "to": "llm",
+          "label": "软提示 tokens"
+        },
+        {
+          "from": "llm",
+          "to": "output",
+          "label": "语言输出"
+        }
+      ],
+      "flow_ms": 5200
+    },
+    "code": {
+      "language": "python",
+      "source_repo": "https://github.com/salesforce/LAVIS",
+      "source_path": "lavis/models/blip2_models/blip2_qformer.py",
+      "simplified": true,
+      "lines": [
+        {
+          "code": "def forward(self, samples):",
+          "comment_zh": "展示 BLIP-2 第一阶段图文对齐；片段已简化。"
+        },
+        {
+          "code": "    image = samples['image']",
+          "comment_zh": "读取预处理后的图像批次。"
+        },
+        {
+          "code": "    with self.maybe_autocast():",
+          "comment_zh": "视觉编码器可使用混合精度以节省显存。"
+        },
+        {
+          "code": "        image_embeds = self.ln_vision(self.visual_encoder(image))",
+          "comment_zh": "冻结视觉编码器输出 patch 特征并归一化。"
+        },
+        {
+          "code": "    image_atts = torch.ones(image_embeds.size()[:-1], dtype=torch.long)",
+          "comment_zh": "为全部有效图像 token 创建注意力掩码。"
+        },
+        {
+          "code": "    query_tokens = self.query_tokens.expand(image_embeds.shape[0], -1, -1)",
+          "comment_zh": "为批内每张图复制同一组可学习查询。"
+        },
+        {
+          "code": "    query_output = self.Qformer.bert(",
+          "comment_zh": "让查询通过 Q-Former 读取视觉特征。"
+        },
+        {
+          "code": "        query_embeds=query_tokens,",
+          "comment_zh": "查询作为 Q-Former 的输入 token。"
+        },
+        {
+          "code": "        encoder_hidden_states=image_embeds,",
+          "comment_zh": "冻结视觉特征作为交叉注意力的键和值。"
+        },
+        {
+          "code": "        encoder_attention_mask=image_atts,",
+          "comment_zh": "告知交叉注意力哪些视觉 token 有效。"
+        },
+        {
+          "code": "        use_cache=True, return_dict=True",
+          "comment_zh": "缓存查询状态并以字典形式返回。"
+        },
+        {
+          "code": "    )",
+          "comment_zh": "完成视觉查询过程。"
+        },
+        {
+          "code": "    image_feats = F.normalize(",
+          "comment_zh": "把查询输出投影到图文对比空间。"
+        },
+        {
+          "code": "        self.vision_proj(query_output.last_hidden_state), dim=-1",
+          "comment_zh": "每个 query 都得到一个归一化视觉向量。"
+        },
+        {
+          "code": "    )",
+          "comment_zh": "结束图像特征归一化。"
+        },
+        {
+          "code": "    text_tokens = self.tokenizer(samples['text_input'], return_tensors='pt', padding=True)",
+          "comment_zh": "对配对文本分词并补齐。"
+        },
+        {
+          "code": "    text_output = self.Qformer.bert(text_tokens.input_ids, attention_mask=text_tokens.attention_mask)",
+          "comment_zh": "Q-Former 的文本路径编码句子。"
+        },
+        {
+          "code": "    text_feat = F.normalize(self.text_proj(text_output.last_hidden_state[:, 0, :]), dim=-1)",
+          "comment_zh": "取文本 CLS 并投影到同一空间。"
+        },
+        {
+          "code": "    sim_q2t = torch.matmul(image_feats, text_feat.unsqueeze(-1)).squeeze(-1)",
+          "comment_zh": "计算每个视觉 query 与配对文本的相似度。"
+        },
+        {
+          "code": "    sim_i2t = sim_q2t.max(dim=-1).values / self.temp",
+          "comment_zh": "选择最匹配 query，并用温度缩放作为图到文分数。"
+        },
+        {
+          "code": "    return sim_i2t",
+          "comment_zh": "该分数参与图文对比目标。"
+        }
+      ]
+    }
+  },
+  {
+    "id": "imagebind",
+    "name": "ImageBind",
+    "org": "Meta AI",
+    "country": "US",
+    "year": 2023,
+    "paper_url": "https://arxiv.org/abs/2305.05665",
+    "github_url": "https://github.com/facebookresearch/ImageBind",
+    "category": "representation",
+    "sub_category": "multimodal",
+    "one_liner_zh": "以图像为枢纽把文本、音频、深度、热成像和 IMU 绑定到同一空间。",
+    "key_idea_zh": "无需所有模态同时配对，只要各模态分别与图像对齐，就能涌现跨非图像模态检索。",
+    "tags": [
+      "多模态",
+      "统一嵌入",
+      "音频",
+      "深度"
+    ],
+    "tier": "B",
+    "lineage_parent": "clip"
+  },
+  {
+    "id": "eva",
+    "name": "EVA",
+    "org": "BAAI",
+    "country": "CN",
+    "year": 2022,
+    "paper_url": "https://arxiv.org/abs/2211.07636",
+    "github_url": "https://github.com/baaivision/EVA",
+    "category": "representation",
+    "sub_category": "masked-image-modeling",
+    "one_liner_zh": "智源用遮挡图像建模预训练十亿参数视觉 Transformer。",
+    "key_idea_zh": "遮挡图像 patch 后预测冻结 CLIP 教师的视觉特征，以语义目标扩展纯视觉预训练。",
+    "tags": [
+      "国产",
+      "ViT",
+      "遮挡建模",
+      "CLIP teacher"
+    ],
+    "tier": "B",
+    "lineage_parent": "mae"
+  },
+  {
+    "id": "eva-clip",
+    "name": "EVA-CLIP",
+    "org": "BAAI",
+    "country": "CN",
+    "year": 2023,
+    "paper_url": "https://arxiv.org/abs/2303.15389",
+    "github_url": "https://github.com/baaivision/EVA/tree/master/EVA-CLIP",
+    "category": "representation",
+    "sub_category": "vision-language",
+    "one_liner_zh": "以 EVA 视觉初始化和一系列稳定训练技巧扩大中文团队的 CLIP 模型。",
+    "key_idea_zh": "复用遮挡图像预训练视觉编码器，并优化初始化、增强和训练配方以提升图文对齐效率。",
+    "tags": [
+      "国产",
+      "CLIP",
+      "EVA",
+      "图文对齐"
+    ],
+    "tier": "B",
+    "lineage_parent": "eva"
+  },
+  {
+    "id": "chinese-clip",
+    "name": "Chinese-CLIP",
+    "org": "Alibaba DAMO Academy",
+    "country": "CN",
+    "year": 2022,
+    "paper_url": "https://arxiv.org/abs/2211.01335",
+    "github_url": "https://github.com/OFA-Sys/Chinese-CLIP",
+    "category": "representation",
+    "sub_category": "vision-language",
+    "one_liner_zh": "面向中文场景的大规模图文对比预训练模型族。",
+    "key_idea_zh": "以约两亿中文图文对训练多尺寸视觉与中文文本编码器，覆盖检索和零样本分类。",
+    "tags": [
+      "国产",
+      "中文",
+      "CLIP",
+      "图像检索"
+    ],
+    "tier": "B",
+    "lineage_parent": "clip"
+  },
+  {
+    "id": "internimage",
+    "name": "InternImage",
+    "org": "Shanghai AI Laboratory",
+    "country": "CN",
+    "year": 2023,
+    "paper_url": "https://arxiv.org/abs/2211.05778",
+    "github_url": "https://github.com/OpenGVLab/InternImage",
+    "category": "representation",
+    "sub_category": "vision-backbone",
+    "one_liner_zh": "上海 AI Lab 以可变形卷积构建可扩展大规模视觉基础骨干。",
+    "key_idea_zh": "核心 DCNv3 兼具卷积归纳偏置与动态空间聚合，并按层级网络扩展到十亿参数。",
+    "tags": [
+      "国产",
+      "DCNv3",
+      "视觉骨干",
+      "大模型"
+    ],
+    "tier": "B",
+    "lineage_parent": "unknown"
+  },
+  {
+    "id": "internvl",
+    "name": "InternVL",
+    "org": "Shanghai AI Laboratory",
+    "country": "CN",
+    "year": 2024,
+    "paper_url": "https://arxiv.org/abs/2312.14238",
+    "github_url": "https://github.com/OpenGVLab/InternVL",
+    "category": "representation",
+    "sub_category": "vision-language",
+    "one_liner_zh": "上海 AI Lab 扩展视觉编码器并与大语言模型对齐，形成开源多模态模型族。",
+    "key_idea_zh": "大规模 InternViT 经对比对齐后，用像素重排和 MLP 把高分辨率视觉 token 接入语言模型。",
+    "tags": [
+      "国产",
+      "多模态",
+      "InternViT",
+      "高分辨率"
+    ],
+    "tier": "A",
+    "lineage_parent": "clip",
+    "architecture": {
+      "description_zh": "动态图像切片保留高分辨率细节；InternViT 编码每个 tile，pixel shuffle 在空间压缩 token，MLP 投影到语言维度后替换提示中的图像占位 token，再由因果 LLM 生成答案。",
+      "modules": [
+        {
+          "id": "image",
+          "label": "动态图像切片",
+          "type": "input"
+        },
+        {
+          "id": "vit",
+          "label": "InternViT",
+          "type": "encoder"
+        },
+        {
+          "id": "shuffle",
+          "label": "Pixel Shuffle 压缩",
+          "type": "reshape"
+        },
+        {
+          "id": "mlp",
+          "label": "MLP Projector",
+          "type": "projection"
+        },
+        {
+          "id": "prompt",
+          "label": "图像上下文 Tokens",
+          "type": "fusion"
+        },
+        {
+          "id": "llm",
+          "label": "因果语言模型",
+          "type": "decoder"
+        },
+        {
+          "id": "output",
+          "label": "多模态文本输出",
+          "type": "output"
+        }
+      ],
+      "edges": [
+        {
+          "from": "image",
+          "to": "vit",
+          "label": "全图与局部 tiles"
+        },
+        {
+          "from": "vit",
+          "to": "shuffle",
+          "label": "patch tokens"
+        },
+        {
+          "from": "shuffle",
+          "to": "mlp",
+          "label": "压缩视觉序列"
+        },
+        {
+          "from": "mlp",
+          "to": "prompt",
+          "label": "语言维视觉 tokens"
+        },
+        {
+          "from": "prompt",
+          "to": "llm",
+          "label": "替换 IMG_CONTEXT"
+        },
+        {
+          "from": "llm",
+          "to": "output",
+          "label": "自回归生成"
+        }
+      ],
+      "flow_ms": 5200
+    },
+    "code": {
+      "language": "python",
+      "source_repo": "https://github.com/OpenGVLab/InternVL",
+      "source_path": "internvl_chat/internvl/model/internvl_chat/modeling_internvl_chat.py",
+      "simplified": true,
+      "lines": [
+        {
+          "code": "def extract_feature(self, pixel_values):",
+          "comment_zh": "把图像转为 LLM 可用的视觉 token；片段已简化。"
+        },
+        {
+          "code": "    vit_embeds = self.vision_model(",
+          "comment_zh": "调用 InternViT 视觉编码器。"
+        },
+        {
+          "code": "        pixel_values=pixel_values,",
+          "comment_zh": "输入已归一化的全图或局部 tile。"
+        },
+        {
+          "code": "        output_hidden_states=False, return_dict=True",
+          "comment_zh": "只取最终隐藏状态以减少开销。"
+        },
+        {
+          "code": "    ).last_hidden_state",
+          "comment_zh": "获得 CLS 加 patch token 序列。"
+        },
+        {
+          "code": "    vit_embeds = vit_embeds[:, 1:, :]",
+          "comment_zh": "移除不带空间位置的 CLS token。"
+        },
+        {
+          "code": "    height = width = int(vit_embeds.shape[1] ** 0.5)",
+          "comment_zh": "由 token 数恢复方形特征网格边长。"
+        },
+        {
+          "code": "    vit_embeds = vit_embeds.reshape(vit_embeds.size(0), height, width, -1)",
+          "comment_zh": "把一维 patch 序列还原为二维网格。"
+        },
+        {
+          "code": "    vit_embeds = self.pixel_shuffle(vit_embeds, scale_factor=self.downsample_ratio)",
+          "comment_zh": "用像素重排减少 token 数并合并邻域通道。"
+        },
+        {
+          "code": "    vit_embeds = vit_embeds.reshape(vit_embeds.size(0), -1, vit_embeds.size(-1))",
+          "comment_zh": "再展平为语言模型需要的 token 序列。"
+        },
+        {
+          "code": "    return self.mlp1(vit_embeds)",
+          "comment_zh": "MLP 把视觉通道投影到 LLM 隐藏维度。"
+        },
+        {
+          "code": "def inject_visual_tokens(self, input_ids, inputs_embeds, pixel_values):",
+          "comment_zh": "把视觉特征嵌入文本提示。"
+        },
+        {
+          "code": "    visual_features = self.extract_feature(pixel_values)",
+          "comment_zh": "编码批内所有图像切片。"
+        },
+        {
+          "code": "    flat_embeds = inputs_embeds.reshape(-1, inputs_embeds.size(-1))",
+          "comment_zh": "展平批次和序列维便于按掩码赋值。"
+        },
+        {
+          "code": "    flat_ids = input_ids.reshape(-1)",
+          "comment_zh": "同样展平文本 token id。"
+        },
+        {
+          "code": "    selected = flat_ids == self.img_context_token_id",
+          "comment_zh": "找到提示中的 IMG_CONTEXT 占位位置。"
+        },
+        {
+          "code": "    flat_embeds[selected] = visual_features.reshape(-1, visual_features.size(-1))",
+          "comment_zh": "用实际视觉 token 替换占位 embedding。"
+        },
+        {
+          "code": "    return flat_embeds.reshape_as(inputs_embeds)",
+          "comment_zh": "恢复批次布局，随后送入因果语言模型。"
+        }
+      ]
+    }
+  },
+  {
+    "id": "align",
+    "name": "ALIGN",
+    "org": "Google Research",
+    "country": "US",
+    "year": 2021,
+    "paper_url": "https://arxiv.org/abs/2102.05918",
+    "github_url": "unknown",
+    "category": "representation",
+    "sub_category": "vision-language",
+    "one_liner_zh": "以十亿级网页噪声图文对验证简单双编码器的规模效应。",
+    "key_idea_zh": "不做昂贵人工清洗，直接用 EfficientNet 与 BERT 双塔在大规模弱监督数据上对比训练。",
+    "tags": [
+      "图文对比学习",
+      "双编码器",
+      "弱监督",
+      "规模化"
+    ],
+    "tier": "B",
+    "lineage_parent": "unknown"
+  },
+  {
+    "id": "moco",
+    "name": "MoCo",
+    "org": "Facebook AI Research",
+    "country": "US",
+    "year": 2020,
+    "paper_url": "https://arxiv.org/abs/1911.05722",
+    "github_url": "https://github.com/facebookresearch/moco",
+    "category": "representation",
+    "sub_category": "self-supervised",
+    "one_liner_zh": "用动量编码器与队列维护大量一致的负样本表示。",
+    "key_idea_zh": "查询编码器反向更新，键编码器做动量更新；先进先出队列把负样本规模与批大小解耦。",
+    "tags": [
+      "自监督",
+      "对比学习",
+      "动量编码器",
+      "队列"
+    ],
+    "tier": "B",
+    "lineage_parent": "unknown"
+  },
+  {
+    "id": "simclr",
+    "name": "SimCLR",
+    "org": "Google Research",
+    "country": "US",
+    "year": 2020,
+    "paper_url": "https://arxiv.org/abs/2002.05709",
+    "github_url": "https://github.com/google-research/simclr",
+    "category": "representation",
+    "sub_category": "self-supervised",
+    "one_liner_zh": "用强数据增强、投影头和大批量对比损失建立简洁自监督基线。",
+    "key_idea_zh": "同图两次增强视为正对，批内其他图为负对；非线性投影头只在预训练损失中使用。",
+    "tags": [
+      "自监督",
+      "对比学习",
+      "数据增强",
+      "NT-Xent"
+    ],
+    "tier": "B",
+    "lineage_parent": "unknown"
+  },
+  {
+    "id": "mae",
+    "name": "Masked Autoencoders (MAE)",
+    "org": "Meta AI",
+    "country": "US",
+    "year": 2022,
+    "paper_url": "https://arxiv.org/abs/2111.06377",
+    "github_url": "https://github.com/facebookresearch/mae",
+    "category": "representation",
+    "sub_category": "masked-image-modeling",
+    "one_liner_zh": "随机遮住大部分 patch，只编码可见部分并重建像素。",
+    "key_idea_zh": "非对称编码器—轻量解码器避免处理遮挡 token，使 75% 高遮挡率训练既高效又有效。",
+    "tags": [
+      "自监督",
+      "遮挡建模",
+      "ViT",
+      "重建"
+    ],
+    "tier": "B",
+    "lineage_parent": "unknown"
+  },
+  {
+    "id": "ibot",
+    "name": "iBOT",
+    "org": "ByteDance",
+    "country": "CN",
+    "year": 2022,
+    "paper_url": "https://arxiv.org/abs/2111.07832",
+    "github_url": "https://github.com/bytedance/ibot",
+    "category": "representation",
+    "sub_category": "self-supervised",
+    "one_liner_zh": "字节提出的在线 tokenizer 遮挡图像建模，同时学习全局与局部语义。",
+    "key_idea_zh": "教师网络在线产生 patch 语义目标，学生从遮挡视图预测这些目标并对齐全局 CLS。",
+    "tags": [
+      "国产",
+      "自监督",
+      "遮挡建模",
+      "在线 tokenizer"
+    ],
+    "tier": "B",
+    "lineage_parent": "unknown"
+  },
+  {
+    "id": "sam",
+    "name": "Segment Anything (SAM)",
+    "org": "Meta AI",
+    "country": "US",
+    "year": 2023,
+    "paper_url": "https://arxiv.org/abs/2304.02643",
+    "github_url": "https://github.com/facebookresearch/segment-anything",
+    "category": "segmentation",
+    "sub_category": "promptable",
+    "one_liner_zh": "以点、框或粗掩码为提示，对陌生图像中的任意对象进行零样本分割。",
+    "key_idea_zh": "重型 ViT 图像编码器只运行一次，轻量提示编码器与双向 Transformer 解码器快速生成多个候选掩码。",
+    "tags": [
+      "基础模型",
+      "提示分割",
+      "零样本",
+      "ViT"
+    ],
+    "tier": "A",
+    "lineage_parent": "unknown",
+    "architecture": {
+      "description_zh": "ViT 图像编码器生成稠密图像嵌入；点和框变为稀疏提示 token，掩码变为稠密提示；双向 Transformer mask decoder 融合两类信息并输出候选掩码与预测 IoU。",
+      "modules": [
+        {
+          "id": "image",
+          "label": "输入图像",
+          "type": "input"
+        },
+        {
+          "id": "imageenc",
+          "label": "ViT Image Encoder",
+          "type": "encoder"
+        },
+        {
+          "id": "prompt",
+          "label": "点 / 框 / 掩码提示",
+          "type": "input"
+        },
+        {
+          "id": "promptenc",
+          "label": "Prompt Encoder",
+          "type": "encoder"
+        },
+        {
+          "id": "decoder",
+          "label": "Two-Way Mask Decoder",
+          "type": "attention"
+        },
+        {
+          "id": "iou",
+          "label": "Mask + IoU Heads",
+          "type": "head"
+        },
+        {
+          "id": "output",
+          "label": "候选对象掩码",
+          "type": "output"
+        }
+      ],
+      "edges": [
+        {
+          "from": "image",
+          "to": "imageenc",
+          "label": "像素"
+        },
+        {
+          "from": "prompt",
+          "to": "promptenc",
+          "label": "坐标或低分辨率 mask"
+        },
+        {
+          "from": "imageenc",
+          "to": "decoder",
+          "label": "稠密图像嵌入"
+        },
+        {
+          "from": "promptenc",
+          "to": "decoder",
+          "label": "稀疏与稠密提示"
+        },
+        {
+          "from": "decoder",
+          "to": "iou",
+          "label": "mask tokens"
+        },
+        {
+          "from": "iou",
+          "to": "output",
+          "label": "掩码与质量分数"
+        }
+      ],
+      "flow_ms": 5000
+    },
+    "code": {
+      "language": "python",
+      "source_repo": "https://github.com/facebookresearch/segment-anything",
+      "source_path": "segment_anything/modeling/sam.py",
+      "simplified": true,
+      "lines": [
+        {
+          "code": "def forward(self, batched_input, multimask_output):",
+          "comment_zh": "执行 SAM 提示分割；片段已简化自官方实现。"
+        },
+        {
+          "code": "    input_images = torch.stack([self.preprocess(x['image']) for x in batched_input])",
+          "comment_zh": "标准化并补齐批内输入图像。"
+        },
+        {
+          "code": "    image_embeddings = self.image_encoder(input_images)",
+          "comment_zh": "重型 ViT 一次性生成稠密图像嵌入。"
+        },
+        {
+          "code": "    outputs = []",
+          "comment_zh": "准备收集每张图的分割结果。"
+        },
+        {
+          "code": "    for record, image_embedding in zip(batched_input, image_embeddings):",
+          "comment_zh": "逐图处理尺寸不同的提示集合。"
+        },
+        {
+          "code": "        points = (record['point_coords'], record['point_labels']) if 'point_coords' in record else None",
+          "comment_zh": "组合正负点坐标与标签。"
+        },
+        {
+          "code": "        sparse, dense = self.prompt_encoder(",
+          "comment_zh": "把提示编码为稀疏 token 和稠密特征。"
+        },
+        {
+          "code": "            points=points,",
+          "comment_zh": "传入可选点击提示。"
+        },
+        {
+          "code": "            boxes=record.get('boxes', None),",
+          "comment_zh": "传入可选边界框提示。"
+        },
+        {
+          "code": "            masks=record.get('mask_inputs', None)",
+          "comment_zh": "传入可选上轮低分辨率掩码。"
+        },
+        {
+          "code": "        )",
+          "comment_zh": "完成提示编码。"
+        },
+        {
+          "code": "        low_res_masks, iou_predictions = self.mask_decoder(",
+          "comment_zh": "双向 Transformer 融合图像与提示。"
+        },
+        {
+          "code": "            image_embeddings=image_embedding.unsqueeze(0),",
+          "comment_zh": "为当前图像恢复批次维。"
+        },
+        {
+          "code": "            image_pe=self.prompt_encoder.get_dense_pe(),",
+          "comment_zh": "加入图像网格位置编码。"
+        },
+        {
+          "code": "            sparse_prompt_embeddings=sparse,",
+          "comment_zh": "传入点和框的稀疏提示 token。"
+        },
+        {
+          "code": "            dense_prompt_embeddings=dense,",
+          "comment_zh": "传入掩码提示或默认稠密嵌入。"
+        },
+        {
+          "code": "            multimask_output=multimask_output",
+          "comment_zh": "歧义提示时可输出三个候选掩码。"
+        },
+        {
+          "code": "        )",
+          "comment_zh": "得到低分辨率 mask logits 与质量分数。"
+        },
+        {
+          "code": "        masks = self.postprocess_masks(low_res_masks, record['input_size'], record['original_size'])",
+          "comment_zh": "裁掉 padding 并上采样回原图尺寸。"
+        },
+        {
+          "code": "        outputs.append({'masks': masks > self.mask_threshold, 'iou_predictions': iou_predictions, 'low_res_logits': low_res_masks})",
+          "comment_zh": "阈值化掩码并保留可迭代提示的 logits。"
+        },
+        {
+          "code": "    return outputs",
+          "comment_zh": "返回每张图的候选掩码与质量预测。"
+        }
+      ]
+    }
+  },
+  {
+    "id": "sam-2",
+    "name": "SAM 2",
+    "org": "Meta AI",
+    "country": "US",
+    "year": 2024,
+    "paper_url": "https://arxiv.org/abs/2408.00714",
+    "github_url": "https://github.com/facebookresearch/sam2",
+    "category": "segmentation",
+    "sub_category": "promptable-video",
+    "one_liner_zh": "把提示式任意对象分割统一扩展到图像与视频，并用流式记忆持续跟踪。",
+    "key_idea_zh": "当前帧特征通过 memory attention 读取历史掩码记忆，SAM 式解码器预测后再把结果编码回记忆库。",
+    "tags": [
+      "基础模型",
+      "视频分割",
+      "记忆注意力",
+      "提示分割"
+    ],
+    "tier": "A",
+    "lineage_parent": "sam",
+    "architecture": {
+      "description_zh": "每帧先经层级图像编码器；memory attention 将当前视觉 token 与过去帧的对象指针和掩码记忆融合，提示编码器接收点/框/掩码，SAM 解码头输出当前对象，memory encoder 再把该结果写回固定长度记忆库。",
+      "modules": [
+        {
+          "id": "frame",
+          "label": "当前视频帧",
+          "type": "input"
+        },
+        {
+          "id": "imageenc",
+          "label": "Hiera Image Encoder",
+          "type": "encoder"
+        },
+        {
+          "id": "memory",
+          "label": "历史记忆库",
+          "type": "memory"
+        },
+        {
+          "id": "memattn",
+          "label": "Memory Attention",
+          "type": "attention"
+        },
+        {
+          "id": "prompt",
+          "label": "提示编码器",
+          "type": "encoder"
+        },
+        {
+          "id": "samhead",
+          "label": "SAM Mask Decoder",
+          "type": "head"
+        },
+        {
+          "id": "memenc",
+          "label": "Memory Encoder",
+          "type": "encoder"
+        },
+        {
+          "id": "output",
+          "label": "当前帧对象掩码",
+          "type": "output"
+        }
+      ],
+      "edges": [
+        {
+          "from": "frame",
+          "to": "imageenc",
+          "label": "像素"
+        },
+        {
+          "from": "imageenc",
+          "to": "memattn",
+          "label": "当前视觉特征"
+        },
+        {
+          "from": "memory",
+          "to": "memattn",
+          "label": "掩码记忆与对象指针"
+        },
+        {
+          "from": "memattn",
+          "to": "samhead",
+          "label": "记忆条件特征"
+        },
+        {
+          "from": "prompt",
+          "to": "samhead",
+          "label": "点/框/mask 提示"
+        },
+        {
+          "from": "samhead",
+          "to": "output",
+          "label": "当前预测"
+        },
+        {
+          "from": "samhead",
+          "to": "memenc",
+          "label": "mask logits"
+        },
+        {
+          "from": "imageenc",
+          "to": "memenc",
+          "label": "像素特征"
+        },
+        {
+          "from": "memenc",
+          "to": "memory",
+          "label": "写入新记忆"
+        }
+      ],
+      "flow_ms": 6000
+    },
+    "code": {
+      "language": "python",
+      "source_repo": "https://github.com/facebookresearch/sam2",
+      "source_path": "sam2/modeling/sam2_base.py",
+      "simplified": true,
+      "lines": [
+        {
+          "code": "def track_step(self, frame_idx, is_init_cond_frame, current_vision_feats, current_vision_pos_embeds, feat_sizes, point_inputs, mask_inputs, output_dict, num_frames):",
+          "comment_zh": "执行单帧跟踪步骤；片段已简化自 SAM 2 基类。"
+        },
+        {
+          "code": "    current_out = {'point_inputs': point_inputs, 'mask_inputs': mask_inputs}",
+          "comment_zh": "记录当前交互提示，便于后续修正。"
+        },
+        {
+          "code": "    if len(output_dict['cond_frame_outputs']) == 0:",
+          "comment_zh": "检查是否还没有条件帧记忆。"
+        },
+        {
+          "code": "        is_init_cond_frame = True",
+          "comment_zh": "第一帧自动作为初始化条件帧。"
+        },
+        {
+          "code": "    pix_feat = self._prepare_memory_conditioned_features(",
+          "comment_zh": "把当前视觉特征与历史记忆融合。"
+        },
+        {
+          "code": "        frame_idx=frame_idx,",
+          "comment_zh": "传入时间位置以选择邻近记忆。"
+        },
+        {
+          "code": "        is_init_cond_frame=is_init_cond_frame,",
+          "comment_zh": "初始化帧可跳过历史记忆读取。"
+        },
+        {
+          "code": "        current_vision_feats=current_vision_feats,",
+          "comment_zh": "提供图像编码器的多尺度特征。"
+        },
+        {
+          "code": "        current_vision_pos_embeds=current_vision_pos_embeds,",
+          "comment_zh": "提供当前帧空间位置编码。"
+        },
+        {
+          "code": "        feat_sizes=feat_sizes, output_dict=output_dict, num_frames=num_frames",
+          "comment_zh": "提供特征尺寸和已保存的条件/非条件帧结果。"
+        },
+        {
+          "code": "    )",
+          "comment_zh": "memory attention 输出条件化像素特征。"
+        },
+        {
+          "code": "    sam_outputs = self._forward_sam_heads(",
+          "comment_zh": "使用 SAM 风格提示解码头预测当前对象。"
+        },
+        {
+          "code": "        backbone_features=pix_feat,",
+          "comment_zh": "输入已读取历史记忆的视觉特征。"
+        },
+        {
+          "code": "        point_inputs=point_inputs,",
+          "comment_zh": "传入用户点击或框提示。"
+        },
+        {
+          "code": "        mask_inputs=mask_inputs,",
+          "comment_zh": "传入可选掩码修正提示。"
+        },
+        {
+          "code": "        multimask_output=self._use_multimask(is_init_cond_frame, point_inputs)",
+          "comment_zh": "初始化且提示歧义时保留多个候选。"
+        },
+        {
+          "code": "    )",
+          "comment_zh": "得到低分辨率/高分辨率掩码、IoU 与对象指针。"
+        },
+        {
+          "code": "    current_out['pred_masks'] = sam_outputs[3]",
+          "comment_zh": "保存高分辨率当前帧 mask logits。"
+        },
+        {
+          "code": "    current_out['obj_ptr'] = sam_outputs[5]",
+          "comment_zh": "保存用于跨帧识别对象的指针 token。"
+        },
+        {
+          "code": "    memory, pos = self._encode_new_memory(current_vision_feats, feat_sizes, sam_outputs[3], False)",
+          "comment_zh": "把当前视觉特征与预测掩码编码成新记忆。"
+        },
+        {
+          "code": "    current_out['maskmem_features'], current_out['maskmem_pos_enc'] = memory, pos",
+          "comment_zh": "把新记忆及位置编码写入输出字典。"
+        },
+        {
+          "code": "    return current_out",
+          "comment_zh": "调用方将其加入记忆库并继续下一帧。"
+        }
+      ]
+    }
+  },
+  {
+    "id": "mask-r-cnn",
+    "name": "Mask R-CNN",
+    "org": "Facebook AI Research",
+    "country": "US",
+    "year": 2017,
+    "paper_url": "https://arxiv.org/abs/1703.06870",
+    "github_url": "https://github.com/facebookresearch/Detectron",
+    "category": "segmentation",
+    "sub_category": "instance-segmentation",
+    "one_liner_zh": "在 Faster R-CNN 上增加并行像素掩码分支，成为实例分割经典基线。",
+    "key_idea_zh": "RoIAlign 避免量化造成的空间错位，分类、边界框与每类二值掩码分支共同训练。",
+    "tags": [
+      "实例分割",
+      "R-CNN",
+      "RoIAlign",
+      "两阶段"
+    ],
+    "tier": "A",
+    "lineage_parent": "faster-r-cnn",
+    "architecture": {
+      "description_zh": "CNN/FPN 共享特征供 RPN 产生候选框；一个 RoIAlign 分支完成分类与框精修，另一个更高分辨率 RoIAlign 分支经卷积和反卷积为每个类别预测二值掩码。",
+      "modules": [
+        {
+          "id": "image",
+          "label": "输入图像",
+          "type": "input"
+        },
+        {
+          "id": "backbone",
+          "label": "CNN + FPN",
+          "type": "encoder"
+        },
+        {
+          "id": "rpn",
+          "label": "RPN",
+          "type": "proposal"
+        },
+        {
+          "id": "boxroi",
+          "label": "Box RoIAlign",
+          "type": "pooling"
+        },
+        {
+          "id": "boxhead",
+          "label": "类别与框头",
+          "type": "head"
+        },
+        {
+          "id": "maskroi",
+          "label": "Mask RoIAlign",
+          "type": "pooling"
+        },
+        {
+          "id": "maskhead",
+          "label": "全卷积 Mask Head",
+          "type": "head"
+        },
+        {
+          "id": "output",
+          "label": "实例框、类别与掩码",
+          "type": "output"
+        }
+      ],
+      "edges": [
+        {
+          "from": "image",
+          "to": "backbone",
+          "label": "像素"
+        },
+        {
+          "from": "backbone",
+          "to": "rpn",
+          "label": "多尺度特征"
+        },
+        {
+          "from": "rpn",
+          "to": "boxroi",
+          "label": "候选框"
+        },
+        {
+          "from": "backbone",
+          "to": "boxroi",
+          "label": "FPN 特征"
+        },
+        {
+          "from": "boxroi",
+          "to": "boxhead",
+          "label": "7×7 RoI 特征"
+        },
+        {
+          "from": "boxhead",
+          "to": "maskroi",
+          "label": "正样本精修框"
+        },
+        {
+          "from": "backbone",
+          "to": "maskroi",
+          "label": "FPN 特征"
+        },
+        {
+          "from": "maskroi",
+          "to": "maskhead",
+          "label": "14×14 RoI 特征"
+        },
+        {
+          "from": "boxhead",
+          "to": "output",
+          "label": "框与类别"
+        },
+        {
+          "from": "maskhead",
+          "to": "output",
+          "label": "类别专属掩码"
+        }
+      ],
+      "flow_ms": 5600
+    },
+    "code": {
+      "language": "python",
+      "source_repo": "https://github.com/pytorch/vision",
+      "source_path": "torchvision/models/detection/mask_rcnn.py",
+      "simplified": true,
+      "lines": [
+        {
+          "code": "class MaskRCNN(FasterRCNN):",
+          "comment_zh": "在 Faster R-CNN 上扩展掩码分支；片段已简化。"
+        },
+        {
+          "code": "    def __init__(self, backbone, num_classes):",
+          "comment_zh": "接收共享骨干和含背景的类别数。"
+        },
+        {
+          "code": "        out_channels = backbone.out_channels",
+          "comment_zh": "读取 FPN 输出通道数。"
+        },
+        {
+          "code": "        mask_roi_pool = MultiScaleRoIAlign(",
+          "comment_zh": "创建实例掩码专用的多尺度 RoIAlign。"
+        },
+        {
+          "code": "            featmap_names=['0', '1', '2', '3'],",
+          "comment_zh": "从四层 FPN 特征按候选框尺度取样。"
+        },
+        {
+          "code": "            output_size=14,",
+          "comment_zh": "保留比框分支更高的 14×14 空间细节。"
+        },
+        {
+          "code": "            sampling_ratio=2",
+          "comment_zh": "每个池化位置做规则双线性采样。"
+        },
+        {
+          "code": "        )",
+          "comment_zh": "结束掩码 RoI 池化配置。"
+        },
+        {
+          "code": "        mask_layers = (256, 256, 256, 256)",
+          "comment_zh": "设置四个卷积块的输出通道。"
+        },
+        {
+          "code": "        mask_dilation = 1",
+          "comment_zh": "使用普通 3×3 卷积感受野。"
+        },
+        {
+          "code": "        mask_head = MaskRCNNHeads(",
+          "comment_zh": "建立保持空间布局的全卷积掩码头。"
+        },
+        {
+          "code": "            out_channels, mask_layers, mask_dilation",
+          "comment_zh": "输入共享通道并逐层变换。"
+        },
+        {
+          "code": "        )",
+          "comment_zh": "完成掩码特征头。"
+        },
+        {
+          "code": "        mask_predictor = MaskRCNNPredictor(",
+          "comment_zh": "建立上采样与类别掩码输出层。"
+        },
+        {
+          "code": "            mask_layers[-1], 256, num_classes",
+          "comment_zh": "每个类别独立输出一个二值 mask logit。"
+        },
+        {
+          "code": "        )",
+          "comment_zh": "完成掩码预测器。"
+        },
+        {
+          "code": "        super().__init__(",
+          "comment_zh": "先由父类搭建变换、骨干、RPN 和框分支。"
+        },
+        {
+          "code": "            backbone, num_classes,",
+          "comment_zh": "复用同一骨干与类别定义。"
+        },
+        {
+          "code": "            box_roi_pool=None, box_head=None, box_predictor=None,",
+          "comment_zh": "让父类创建默认 Faster R-CNN 框组件。"
+        },
+        {
+          "code": "            mask_roi_pool=mask_roi_pool, mask_head=mask_head, mask_predictor=mask_predictor",
+          "comment_zh": "把三个实例掩码组件注入 RoIHeads。"
+        },
+        {
+          "code": "        )",
+          "comment_zh": "得到共享特征、并行框与掩码预测的完整网络。"
+        }
+      ]
+    }
+  },
+  {
+    "id": "segformer",
+    "name": "SegFormer",
+    "org": "NVIDIA Research",
+    "country": "US",
+    "year": 2021,
+    "paper_url": "https://arxiv.org/abs/2105.15203",
+    "github_url": "https://github.com/NVlabs/SegFormer",
+    "category": "segmentation",
+    "sub_category": "semantic-segmentation",
+    "one_liner_zh": "用无位置编码的层级 Transformer 骨干和轻量全 MLP 解码器实现高效语义分割。",
+    "key_idea_zh": "MiT 通过重叠 patch、空间缩减注意力和 Mix-FFN 生成多尺度特征，MLP 解码器直接融合各层。",
+    "tags": [
+      "语义分割",
+      "Transformer",
+      "MiT",
+      "轻量解码器"
+    ],
+    "tier": "A",
+    "lineage_parent": "unknown",
+    "architecture": {
+      "description_zh": "四阶段 Mix Transformer 逐步降低分辨率、提高通道；重叠 patch embedding 保留局部连续性，空间缩减注意力控制计算量，四级特征分别经 MLP 统一通道并上采样拼接预测语义图。",
+      "modules": [
+        {
+          "id": "image",
+          "label": "输入图像",
+          "type": "input"
+        },
+        {
+          "id": "stage1",
+          "label": "MiT Stage 1",
+          "type": "encoder"
+        },
+        {
+          "id": "stage2",
+          "label": "MiT Stage 2",
+          "type": "encoder"
+        },
+        {
+          "id": "stage3",
+          "label": "MiT Stage 3",
+          "type": "encoder"
+        },
+        {
+          "id": "stage4",
+          "label": "MiT Stage 4",
+          "type": "encoder"
+        },
+        {
+          "id": "mlp",
+          "label": "四路 MLP Projection",
+          "type": "projection"
+        },
+        {
+          "id": "fuse",
+          "label": "上采样 + 拼接融合",
+          "type": "fusion"
+        },
+        {
+          "id": "output",
+          "label": "语义分割图",
+          "type": "output"
+        }
+      ],
+      "edges": [
+        {
+          "from": "image",
+          "to": "stage1",
+          "label": "重叠 7×7 patch"
+        },
+        {
+          "from": "stage1",
+          "to": "stage2",
+          "label": "1/4 特征"
+        },
+        {
+          "from": "stage2",
+          "to": "stage3",
+          "label": "1/8 特征"
+        },
+        {
+          "from": "stage3",
+          "to": "stage4",
+          "label": "1/16 特征"
+        },
+        {
+          "from": "stage1",
+          "to": "mlp",
+          "label": "浅层细节"
+        },
+        {
+          "from": "stage2",
+          "to": "mlp",
+          "label": "多尺度特征"
+        },
+        {
+          "from": "stage3",
+          "to": "mlp",
+          "label": "多尺度特征"
+        },
+        {
+          "from": "stage4",
+          "to": "mlp",
+          "label": "深层语义"
+        },
+        {
+          "from": "mlp",
+          "to": "fuse",
+          "label": "统一通道特征"
+        },
+        {
+          "from": "fuse",
+          "to": "output",
+          "label": "像素分类 logits"
+        }
+      ],
+      "flow_ms": 5600
+    },
+    "code": {
+      "language": "python",
+      "source_repo": "https://github.com/NVlabs/SegFormer",
+      "source_path": "mmseg/models/backbones/mix_transformer.py",
+      "simplified": true,
+      "lines": [
+        {
+          "code": "def forward_features(self, x):",
+          "comment_zh": "提取 SegFormer 四尺度 MiT 特征；片段已简化。"
+        },
+        {
+          "code": "    outputs = []",
+          "comment_zh": "准备保存每个阶段的二维特征图。"
+        },
+        {
+          "code": "    batch = x.shape[0]",
+          "comment_zh": "记录批大小供 token 还原为空间网格。"
+        },
+        {
+          "code": "    x, height, width = self.patch_embed1(x)",
+          "comment_zh": "重叠 7×7 patch embedding 产生 1/4 尺度 token。"
+        },
+        {
+          "code": "    for block in self.block1:",
+          "comment_zh": "进入第一阶段空间缩减注意力块。"
+        },
+        {
+          "code": "        x = block(x, height, width)",
+          "comment_zh": "结合 Mix-FFN 编码浅层纹理。"
+        },
+        {
+          "code": "    x = self.norm1(x)",
+          "comment_zh": "归一化第一阶段 token。"
+        },
+        {
+          "code": "    x = x.reshape(batch, height, width, -1).permute(0, 3, 1, 2)",
+          "comment_zh": "还原为 B×C×H×W 特征图。"
+        },
+        {
+          "code": "    outputs.append(x)",
+          "comment_zh": "保存高分辨率浅层特征给解码器。"
+        },
+        {
+          "code": "    x, height, width = self.patch_embed2(x)",
+          "comment_zh": "第二次重叠 patch embedding 降至 1/8 尺度。"
+        },
+        {
+          "code": "    for block in self.block2:",
+          "comment_zh": "第二阶段继续聚合上下文。"
+        },
+        {
+          "code": "        x = block(x, height, width)",
+          "comment_zh": "注意力使用空间缩减后的键和值。"
+        },
+        {
+          "code": "    x = self.norm2(x)",
+          "comment_zh": "归一化第二阶段输出。"
+        },
+        {
+          "code": "    x = x.reshape(batch, height, width, -1).permute(0, 3, 1, 2)",
+          "comment_zh": "恢复 1/8 二维特征图。"
+        },
+        {
+          "code": "    outputs.append(x)",
+          "comment_zh": "保存第二尺度特征。"
+        },
+        {
+          "code": "    x, height, width = self.patch_embed3(x)",
+          "comment_zh": "第三次重叠 patch embedding 降至 1/16 尺度。"
+        },
+        {
+          "code": "    for block in self.block3:",
+          "comment_zh": "第三阶段在更强语义层继续建模。"
+        },
+        {
+          "code": "        x = block(x, height, width)",
+          "comment_zh": "运行该阶段的空间缩减注意力与 Mix-FFN。"
+        },
+        {
+          "code": "    x = self.norm3(x)",
+          "comment_zh": "归一化第三阶段 token。"
+        },
+        {
+          "code": "    x = x.reshape(batch, height, width, -1).permute(0, 3, 1, 2)",
+          "comment_zh": "恢复 1/16 二维特征图。"
+        },
+        {
+          "code": "    outputs.append(x)",
+          "comment_zh": "保存中高层语义特征。"
+        },
+        {
+          "code": "    x, height, width = self.patch_embed4(x)",
+          "comment_zh": "第四次嵌入降至 1/32 尺度。"
+        },
+        {
+          "code": "    for block in self.block4:",
+          "comment_zh": "第四阶段聚合最深层全局语义。"
+        },
+        {
+          "code": "        x = block(x, height, width)",
+          "comment_zh": "运行最终一组 MiT blocks。"
+        },
+        {
+          "code": "    x = self.norm4(x)",
+          "comment_zh": "归一化最终 token 序列。"
+        },
+        {
+          "code": "    x = x.reshape(batch, height, width, -1).permute(0, 3, 1, 2)",
+          "comment_zh": "恢复 1/32 二维特征图。"
+        },
+        {
+          "code": "    outputs.append(x)",
+          "comment_zh": "保存最强全局语义特征。"
+        },
+        {
+          "code": "    return outputs",
+          "comment_zh": "全 MLP 解码器随后投影、上采样并拼接四级特征。"
+        }
+      ]
+    }
+  },
+  {
+    "id": "mask2former",
+    "name": "Mask2Former",
+    "org": "Meta AI",
+    "country": "US",
+    "year": 2022,
+    "paper_url": "https://arxiv.org/abs/2112.01527",
+    "github_url": "https://github.com/facebookresearch/Mask2Former",
+    "category": "segmentation",
+    "sub_category": "universal-segmentation",
+    "one_liner_zh": "以掩码注意力统一语义、实例和全景分割三种任务。",
+    "key_idea_zh": "查询只关注上一层预测掩码内的像素，多尺度高分辨率特征逐层参与 Transformer 解码。",
+    "tags": [
+      "通用分割",
+      "Transformer",
+      "masked attention",
+      "集合预测"
+    ],
+    "tier": "B",
+    "lineage_parent": "mask-r-cnn"
+  },
+  {
+    "id": "fastsam",
+    "name": "FastSAM",
+    "org": "Chinese Academy of Sciences",
+    "country": "CN",
+    "year": 2023,
+    "paper_url": "https://arxiv.org/abs/2306.12156",
+    "github_url": "https://github.com/CASIA-IVA-Lab/FastSAM",
+    "category": "segmentation",
+    "sub_category": "promptable",
+    "one_liner_zh": "中科院把 Segment Anything 拆成全实例分割与提示筛选，实现实时近似能力。",
+    "key_idea_zh": "先用 YOLOv8-seg 产生图中全部实例掩码，再依据点、框或文本提示选择目标。",
+    "tags": [
+      "国产",
+      "提示分割",
+      "YOLOv8-seg",
+      "实时"
+    ],
+    "tier": "B",
+    "lineage_parent": "sam"
+  },
+  {
+    "id": "mobilesam",
+    "name": "MobileSAM",
+    "org": "Kyung Hee University",
+    "country": "KR",
+    "year": 2023,
+    "paper_url": "https://arxiv.org/abs/2306.14289",
+    "github_url": "https://github.com/ChaoningZhang/MobileSAM",
+    "category": "segmentation",
+    "sub_category": "promptable-efficient",
+    "one_liner_zh": "用解耦蒸馏把 SAM 的巨大 ViT-H 图像编码器替换成轻量 TinyViT。",
+    "key_idea_zh": "冻结 SAM 的提示编码器与掩码解码器，仅训练轻量图像编码器对齐原始图像嵌入。",
+    "tags": [
+      "提示分割",
+      "轻量化",
+      "TinyViT",
+      "蒸馏"
+    ],
+    "tier": "B",
+    "lineage_parent": "sam"
+  },
+  {
+    "id": "sam-hq",
+    "name": "SAM-HQ",
+    "org": "ETH Zurich",
+    "country": "CH",
+    "year": 2023,
+    "paper_url": "https://arxiv.org/abs/2306.01567",
+    "github_url": "https://github.com/SysCV/sam-hq",
+    "category": "segmentation",
+    "sub_category": "promptable-high-quality",
+    "one_liner_zh": "在冻结 SAM 上增加少量 HQ 参数，改善复杂边界和细粒度结构。",
+    "key_idea_zh": "复用早期与最终 ViT 特征，以新的 HQ output token 和小型融合模块预测高质量掩码。",
+    "tags": [
+      "提示分割",
+      "高质量边界",
+      "参数高效",
+      "SAM"
+    ],
+    "tier": "B",
+    "lineage_parent": "sam"
+  },
+  {
+    "id": "fcn",
+    "name": "Fully Convolutional Networks (FCN)",
+    "org": "UC Berkeley",
+    "country": "US",
+    "year": 2015,
+    "paper_url": "https://arxiv.org/abs/1411.4038",
+    "github_url": "https://github.com/shelhamer/fcn.berkeleyvision.org",
+    "category": "segmentation",
+    "sub_category": "semantic-segmentation",
+    "one_liner_zh": "把分类 CNN 改为全卷积网络，首次端到端输出任意尺寸像素标签图。",
+    "key_idea_zh": "用卷积替代全连接层，并通过反卷积上采样与浅层 skip connections 恢复空间细节。",
+    "tags": [
+      "语义分割",
+      "全卷积",
+      "skip connection",
+      "像素分类"
+    ],
+    "tier": "B",
+    "lineage_parent": "unknown"
+  },
+  {
+    "id": "u-net",
+    "name": "U-Net",
+    "org": "University of Freiburg",
+    "country": "DE",
+    "year": 2015,
+    "paper_url": "https://arxiv.org/abs/1505.04597",
+    "github_url": "unknown",
+    "category": "segmentation",
+    "sub_category": "encoder-decoder",
+    "one_liner_zh": "以对称收缩—扩张路径和跳跃连接成为医学图像分割经典结构。",
+    "key_idea_zh": "编码器逐层提取上下文，解码器上采样，并拼接同尺度浅层特征精确定位边界。",
+    "tags": [
+      "医学图像",
+      "编码器解码器",
+      "skip connection",
+      "语义分割"
+    ],
+    "tier": "B",
+    "lineage_parent": "fcn"
+  },
+  {
+    "id": "deeplab-v3",
+    "name": "DeepLabv3",
+    "org": "Google Research",
+    "country": "US",
+    "year": 2017,
+    "paper_url": "https://arxiv.org/abs/1706.05587",
+    "github_url": "https://github.com/tensorflow/models/tree/master/research/deeplab",
+    "category": "segmentation",
+    "sub_category": "semantic-segmentation",
+    "one_liner_zh": "用多尺度空洞卷积与改进 ASPP 捕获不同尺度上下文。",
+    "key_idea_zh": "并行不同 dilation rate 的空洞卷积和图像级池化，在不继续降采样时扩大感受野。",
+    "tags": [
+      "语义分割",
+      "空洞卷积",
+      "ASPP",
+      "多尺度"
+    ],
+    "tier": "B",
+    "lineage_parent": "fcn"
+  },
+  {
+    "id": "pspnet",
+    "name": "PSPNet",
+    "org": "The Chinese University of Hong Kong",
+    "country": "HK",
+    "year": 2017,
+    "paper_url": "https://arxiv.org/abs/1612.01105",
+    "github_url": "https://github.com/hszhao/PSPNet",
+    "category": "segmentation",
+    "sub_category": "semantic-segmentation",
+    "one_liner_zh": "以金字塔池化聚合从局部区域到全局场景的上下文。",
+    "key_idea_zh": "在多个网格尺度做池化、投影和上采样，再与原特征拼接以消除局部歧义。",
+    "tags": [
+      "语义分割",
+      "金字塔池化",
+      "上下文",
+      "场景解析"
+    ],
+    "tier": "B",
+    "lineage_parent": "fcn"
+  },
+  {
+    "id": "hrnet-seg",
+    "name": "HRNet Segmentation",
+    "org": "Microsoft Research Asia",
+    "country": "CN",
+    "year": 2019,
+    "paper_url": "https://arxiv.org/abs/1908.07919",
+    "github_url": "https://github.com/HRNet/HRNet-Semantic-Segmentation",
+    "category": "segmentation",
+    "sub_category": "semantic-segmentation",
+    "one_liner_zh": "全程保持高分辨率分支，并与并行低分辨率分支反复交换信息。",
+    "key_idea_zh": "不依赖先降采样再恢复，而是并行维护多尺度特征并多次融合，保留精确空间结构。",
+    "tags": [
+      "国产",
+      "语义分割",
+      "高分辨率",
+      "多尺度融合"
+    ],
+    "tier": "B",
+    "lineage_parent": "unknown"
+  },
+  {
+    "id": "upernet",
+    "name": "UPerNet",
+    "org": "The Chinese University of Hong Kong",
+    "country": "HK",
+    "year": 2018,
+    "paper_url": "https://arxiv.org/abs/1807.10221",
+    "github_url": "https://github.com/CSAILVision/unifiedparsing",
+    "category": "segmentation",
+    "sub_category": "unified-perceptual-parsing",
+    "one_liner_zh": "用统一网络同时解析场景、对象、材质、纹理等多层视觉概念。",
+    "key_idea_zh": "金字塔池化处理顶层语义，FPN 融合多尺度特征，不同任务头共享统一视觉骨干。",
+    "tags": [
+      "统一解析",
+      "FPN",
+      "金字塔池化",
+      "多任务"
+    ],
+    "tier": "B",
+    "lineage_parent": "pspnet"
+  },
+  {
+    "id": "oneformer",
+    "name": "OneFormer",
+    "org": "SHI Labs",
+    "country": "US",
+    "year": 2023,
+    "paper_url": "https://arxiv.org/abs/2211.06220",
+    "github_url": "https://github.com/SHI-Labs/OneFormer",
+    "category": "segmentation",
+    "sub_category": "universal-segmentation",
+    "one_liner_zh": "单个模型通过任务文本提示统一完成语义、实例和全景分割。",
+    "key_idea_zh": "把任务写成文本 token 条件化对象查询，并用统一的二部匹配损失训练三类标注。",
+    "tags": [
+      "通用分割",
+      "任务提示",
+      "Transformer",
+      "多任务"
+    ],
+    "tier": "B",
+    "lineage_parent": "mask2former"
+  },
+  {
+    "id": "gpt-4v",
+    "name": "GPT-4 with Vision (GPT-4V)",
+    "org": "OpenAI",
+    "country": "US",
+    "year": 2023,
+    "paper_url": "https://cdn.openai.com/papers/GPTV_System_Card.pdf",
+    "github_url": "unknown",
+    "category": "multimodal",
+    "sub_category": "general_vlm",
+    "one_liner_zh": "把图像作为输入扩展到 GPT-4 的闭源多模态模型。",
+    "key_idea_zh": "在语言模型能力之上加入视觉理解，可围绕照片、图表和文档进行多轮问答；公开资料未披露完整网络与训练配方。",
+    "tags": [
+      "闭源",
+      "图像问答",
+      "文档理解",
+      "多模态对话"
+    ],
+    "tier": "B",
+    "lineage_parent": "unknown"
+  },
+  {
+    "id": "gemini-robotics",
+    "name": "Gemini Robotics",
+    "org": "Google DeepMind",
+    "country": "US",
+    "year": 2025,
+    "paper_url": "https://arxiv.org/abs/2503.20020",
+    "github_url": "unknown",
+    "category": "multimodal",
+    "sub_category": "robotics_vlm",
+    "one_liner_zh": "面向机器人具身推理与动作生成的 Gemini 2.0 衍生模型。",
+    "key_idea_zh": "强调通用性、交互性与灵巧性，把多模态推理迁移到真实机器人控制；模型权重和完整训练代码未公开。",
+    "tags": [
+      "机器人",
+      "具身推理",
+      "动作生成",
+      "闭源"
+    ],
+    "tier": "B",
+    "lineage_parent": "unknown"
+  },
+  {
+    "id": "qwen-vl",
+    "name": "Qwen-VL",
+    "org": "Alibaba Cloud",
+    "country": "CN",
+    "year": 2023,
+    "paper_url": "https://arxiv.org/abs/2308.12966",
+    "github_url": "https://github.com/QwenLM/Qwen-VL",
+    "category": "multimodal",
+    "sub_category": "general_vlm",
+    "one_liner_zh": "通义千问首代开源视觉语言模型，可处理中文图文问答与视觉定位。",
+    "key_idea_zh": "用视觉接收器把图像特征压缩为固定数量的视觉 token，再交给 Qwen 语言模型统一生成。",
+    "tags": [
+      "开源",
+      "中文",
+      "视觉定位",
+      "图文对话"
+    ],
+    "tier": "B",
+    "lineage_parent": "unknown"
+  },
+  {
+    "id": "qwen2-vl",
+    "name": "Qwen2-VL",
+    "org": "Alibaba Cloud",
+    "country": "CN",
+    "year": 2024,
+    "paper_url": "https://arxiv.org/abs/2409.12191",
+    "github_url": "https://github.com/QwenLM/Qwen2-VL",
+    "category": "multimodal",
+    "sub_category": "general_vlm",
+    "one_liner_zh": "用原生动态分辨率和多模态位置编码统一理解图像与视频。",
+    "key_idea_zh": "Naive Dynamic Resolution 保留不同宽高比，M-RoPE 分别建模文本、二维图像与三维视频位置。",
+    "tags": [
+      "开源",
+      "动态分辨率",
+      "M-RoPE",
+      "图像",
+      "视频",
+      "中文"
+    ],
+    "tier": "A",
+    "lineage_parent": "qwen-vl",
+    "architecture": {
+      "description_zh": "输入图像或视频先按视觉 patch 因子做动态缩放，再由视觉 Transformer 编码；视觉 token 经合并与投影后插入文本序列，Qwen2 语言模型使用多模态旋转位置编码完成生成。",
+      "modules": [
+        {
+          "id": "visual_input",
+          "label": "图像 / 视频",
+          "type": "input"
+        },
+        {
+          "id": "dynamic_resolution",
+          "label": "原生动态分辨率",
+          "type": "preprocess"
+        },
+        {
+          "id": "vision_transformer",
+          "label": "视觉 Transformer",
+          "type": "encoder"
+        },
+        {
+          "id": "token_merger",
+          "label": "Patch 合并与投影",
+          "type": "projector"
+        },
+        {
+          "id": "mrope",
+          "label": "M-RoPE 位置编码",
+          "type": "position"
+        },
+        {
+          "id": "qwen2_llm",
+          "label": "Qwen2 语言模型",
+          "type": "decoder"
+        },
+        {
+          "id": "text_output",
+          "label": "文本回答",
+          "type": "output"
+        }
+      ],
+      "edges": [
+        {
+          "from": "visual_input",
+          "to": "dynamic_resolution",
+          "label": "保留宽高比"
+        },
+        {
+          "from": "dynamic_resolution",
+          "to": "vision_transformer",
+          "label": "可变数量 patch"
+        },
+        {
+          "from": "vision_transformer",
+          "to": "token_merger",
+          "label": "视觉特征"
+        },
+        {
+          "from": "token_merger",
+          "to": "mrope",
+          "label": "视觉 token"
+        },
+        {
+          "from": "mrope",
+          "to": "qwen2_llm",
+          "label": "图文时空位置"
+        },
+        {
+          "from": "qwen2_llm",
+          "to": "text_output",
+          "label": "自回归生成"
+        }
+      ],
+      "flow_ms": 7200
+    },
+    "code": {
+      "language": "python",
+      "source_repo": "https://github.com/QwenLM/Qwen2-VL",
+      "source_path": "qwen-vl-utils/src/qwen_vl_utils/vision_process.py",
+      "simplified": true,
+      "lines": [
+        {
+          "code": "def smart_resize(height, width, factor, min_pixels=None, max_pixels=None):",
+          "comment_zh": "按官方实现简化：计算既适合视觉 patch、又尽量保留比例的尺寸。"
+        },
+        {
+          "code": "    max_pixels = max_pixels or IMAGE_MAX_TOKEN_NUM * factor ** 2",
+          "comment_zh": "把最大视觉 token 数换算成最大像素面积。"
+        },
+        {
+          "code": "    min_pixels = min_pixels or IMAGE_MIN_TOKEN_NUM * factor ** 2",
+          "comment_zh": "同理确定最小面积，避免图像被压得过小。"
+        },
+        {
+          "code": "    assert max_pixels >= min_pixels",
+          "comment_zh": "先保证面积上下限有效。"
+        },
+        {
+          "code": "    if max(height, width) / min(height, width) > MAX_RATIO:",
+          "comment_zh": "异常狭长的图像会制造过多无效 patch。"
+        },
+        {
+          "code": "        raise ValueError(\"aspect ratio is too large\")",
+          "comment_zh": "宽高比超过官方阈值时直接拒绝。"
+        },
+        {
+          "code": "    h_bar = max(factor, round_by_factor(height, factor))",
+          "comment_zh": "把高度舍入到 patch 合并因子的整数倍。"
+        },
+        {
+          "code": "    w_bar = max(factor, round_by_factor(width, factor))",
+          "comment_zh": "宽度也按同一规则舍入。"
+        },
+        {
+          "code": "    if h_bar * w_bar > max_pixels:",
+          "comment_zh": "若舍入后的总面积超出 token 预算，就整体缩小。"
+        },
+        {
+          "code": "        beta = math.sqrt((height * width) / max_pixels)",
+          "comment_zh": "平方根缩放系数可同时保持宽高比例。"
+        },
+        {
+          "code": "        h_bar = floor_by_factor(height / beta, factor)",
+          "comment_zh": "向下取整高度，确保不越过最大预算。"
+        },
+        {
+          "code": "        w_bar = floor_by_factor(width / beta, factor)",
+          "comment_zh": "宽度同步缩小。"
+        },
+        {
+          "code": "    elif h_bar * w_bar < min_pixels:",
+          "comment_zh": "面积太小时则放大，保留足够视觉细节。"
+        },
+        {
+          "code": "        beta = math.sqrt(min_pixels / (height * width))",
+          "comment_zh": "计算满足最小面积所需的放大倍数。"
+        },
+        {
+          "code": "        h_bar = ceil_by_factor(height * beta, factor)",
+          "comment_zh": "高度向上对齐到因子整数倍。"
+        },
+        {
+          "code": "        w_bar = ceil_by_factor(width * beta, factor)",
+          "comment_zh": "宽度同步向上对齐。"
+        },
+        {
+          "code": "    return h_bar, w_bar",
+          "comment_zh": "输出动态分辨率，后续图像会据此缩放并切成 patch。"
+        }
+      ]
+    }
+  },
+  {
+    "id": "qwen2-5-vl",
+    "name": "Qwen2.5-VL",
+    "org": "Alibaba Cloud",
+    "country": "CN",
+    "year": 2025,
+    "paper_url": "https://arxiv.org/abs/2502.13923",
+    "github_url": "https://github.com/QwenLM/Qwen2.5-VL",
+    "category": "multimodal",
+    "sub_category": "general_vlm",
+    "one_liner_zh": "强化文档、视频、视觉定位与结构化输出能力的 Qwen2-VL 后继版本。",
+    "key_idea_zh": "延续动态分辨率与 M-RoPE，并在视觉编码器中引入窗口注意力和绝对时间编码以提升长视频理解。",
+    "tags": [
+      "开源",
+      "文档理解",
+      "视频理解",
+      "视觉定位",
+      "结构化输出"
+    ],
+    "tier": "B",
+    "lineage_parent": "qwen2-vl"
+  },
+  {
+    "id": "internvl-chat",
+    "name": "InternVL-Chat",
+    "org": "Shanghai AI Laboratory",
+    "country": "CN",
+    "year": 2023,
+    "paper_url": "https://arxiv.org/abs/2312.14238",
+    "github_url": "https://github.com/OpenGVLab/InternVL",
+    "category": "multimodal",
+    "sub_category": "general_vlm",
+    "one_liner_zh": "上海 AI 实验室推出的开源图文对话模型系列起点。",
+    "key_idea_zh": "先把大规模视觉编码器与语言侧表征对齐，再将视觉特征连接到语言模型完成对话。",
+    "tags": [
+      "开源",
+      "InternViT",
+      "图文对话",
+      "视觉语言对齐"
+    ],
+    "tier": "B",
+    "lineage_parent": "unknown"
+  },
+  {
+    "id": "internvl2-chat",
+    "name": "InternVL2",
+    "org": "Shanghai AI Laboratory",
+    "country": "CN",
+    "year": 2024,
+    "paper_url": "unknown",
+    "github_url": "https://github.com/OpenGVLab/InternVL",
+    "category": "multimodal",
+    "sub_category": "general_vlm",
+    "one_liner_zh": "通过动态切图适配高分辨率和多图输入的开源多模态模型系列。",
+    "key_idea_zh": "把大图切成多个局部 tile 并附加缩略图，经 InternViT、Pixel Shuffle 与 MLP 投影为语言模型可接收的视觉 token。",
+    "tags": [
+      "开源",
+      "动态切图",
+      "高分辨率",
+      "多图",
+      "视频"
+    ],
+    "tier": "A",
+    "lineage_parent": "internvl-chat",
+    "architecture": {
+      "description_zh": "高分辨率图像经动态切图得到局部块和全局缩略图；InternViT 提取 patch 特征，Pixel Shuffle 在空间降采样的同时扩展通道，MLP 将其映射到语言模型维度后插入对话模板。",
+      "modules": [
+        {
+          "id": "image_input",
+          "label": "高分辨率图像",
+          "type": "input"
+        },
+        {
+          "id": "dynamic_tiles",
+          "label": "动态切图 + 缩略图",
+          "type": "preprocess"
+        },
+        {
+          "id": "internvit",
+          "label": "InternViT",
+          "type": "encoder"
+        },
+        {
+          "id": "pixel_shuffle",
+          "label": "Pixel Shuffle 降采样",
+          "type": "compressor"
+        },
+        {
+          "id": "mlp_projector",
+          "label": "MLP 投影器",
+          "type": "projector"
+        },
+        {
+          "id": "language_model",
+          "label": "语言模型",
+          "type": "decoder"
+        },
+        {
+          "id": "answer",
+          "label": "文本回答",
+          "type": "output"
+        }
+      ],
+      "edges": [
+        {
+          "from": "image_input",
+          "to": "dynamic_tiles",
+          "label": "按宽高比分块"
+        },
+        {
+          "from": "dynamic_tiles",
+          "to": "internvit",
+          "label": "局部块批次"
+        },
+        {
+          "from": "internvit",
+          "to": "pixel_shuffle",
+          "label": "patch 特征"
+        },
+        {
+          "from": "pixel_shuffle",
+          "to": "mlp_projector",
+          "label": "压缩视觉序列"
+        },
+        {
+          "from": "mlp_projector",
+          "to": "language_model",
+          "label": "视觉 token"
+        },
+        {
+          "from": "language_model",
+          "to": "answer",
+          "label": "自回归生成"
+        }
+      ],
+      "flow_ms": 7000
+    },
+    "code": {
+      "language": "python",
+      "source_repo": "https://github.com/OpenGVLab/InternVL",
+      "source_path": "internvl_chat/internvl/model/internvl_chat/modeling_internvl_chat.py",
+      "simplified": true,
+      "lines": [
+        {
+          "code": "def extract_feature(self, pixel_values):",
+          "comment_zh": "按官方实现简化：把切好的图像块转成语言侧视觉 token。"
+        },
+        {
+          "code": "    if self.select_layer == -1:",
+          "comment_zh": "默认使用视觉编码器最后一层。"
+        },
+        {
+          "code": "        outputs = self.vision_model(",
+          "comment_zh": "将图像块送入 InternViT。"
+        },
+        {
+          "code": "            pixel_values=pixel_values,",
+          "comment_zh": "输入张量包含批量动态切图。"
+        },
+        {
+          "code": "            output_hidden_states=False, return_dict=True)",
+          "comment_zh": "只请求最终特征以节省内存。"
+        },
+        {
+          "code": "        vit_embeds = outputs.last_hidden_state",
+          "comment_zh": "取得最后一层 patch 序列。"
+        },
+        {
+          "code": "    else:",
+          "comment_zh": "也可按配置选择中间层特征。"
+        },
+        {
+          "code": "        outputs = self.vision_model(",
+          "comment_zh": "再次调用同一视觉编码器。"
+        },
+        {
+          "code": "            pixel_values=pixel_values,",
+          "comment_zh": "输入仍是图像块批次。"
+        },
+        {
+          "code": "            output_hidden_states=True, return_dict=True)",
+          "comment_zh": "此时要求返回所有隐藏层。"
+        },
+        {
+          "code": "        vit_embeds = outputs.hidden_states[self.select_layer]",
+          "comment_zh": "取配置指定的视觉层。"
+        },
+        {
+          "code": "    vit_embeds = vit_embeds[:, 1:, :]",
+          "comment_zh": "移除视觉编码器的 CLS token。"
+        },
+        {
+          "code": "    h = w = int(vit_embeds.shape[1] ** 0.5)",
+          "comment_zh": "由 patch 数恢复二维特征边长。"
+        },
+        {
+          "code": "    vit_embeds = vit_embeds.reshape(vit_embeds.shape[0], h, w, -1)",
+          "comment_zh": "把一维 patch 序列还原为二维网格。"
+        },
+        {
+          "code": "    vit_embeds = self.pixel_shuffle(vit_embeds, scale_factor=self.downsample_ratio)",
+          "comment_zh": "Pixel Shuffle 按配置比例做空间降采样，减少视觉 token 数。"
+        },
+        {
+          "code": "    vit_embeds = vit_embeds.reshape(vit_embeds.shape[0], -1, vit_embeds.shape[-1])",
+          "comment_zh": "再展平为语言模型需要的序列。"
+        },
+        {
+          "code": "    vit_embeds = self.mlp1(vit_embeds)",
+          "comment_zh": "MLP 将视觉通道映射到语言模型隐藏维度。"
+        },
+        {
+          "code": "    return vit_embeds",
+          "comment_zh": "返回可插入图文提示词的视觉 token。"
+        }
+      ]
+    }
+  },
+  {
+    "id": "llava",
+    "name": "LLaVA",
+    "org": "University of Wisconsin–Madison & Microsoft Research",
+    "country": "US",
+    "year": 2023,
+    "paper_url": "https://arxiv.org/abs/2304.08485",
+    "github_url": "https://github.com/haotian-liu/LLaVA",
+    "category": "multimodal",
+    "sub_category": "general_vlm",
+    "one_liner_zh": "用简单视觉投影器连接 CLIP 与大语言模型的代表性开源方案。",
+    "key_idea_zh": "将 CLIP 视觉特征线性投影到语言模型词向量空间，再用 GPT-4 生成的视觉指令数据进行两阶段训练。",
+    "tags": [
+      "开源",
+      "CLIP",
+      "视觉指令微调",
+      "线性投影器"
+    ],
+    "tier": "A",
+    "lineage_parent": "unknown",
+    "architecture": {
+      "description_zh": "CLIP ViT 提取图像 patch 特征，轻量投影器把视觉维度映射到语言模型隐藏维度；视觉 token 与用户文本 token 拼接后，由 Vicuna 类自回归语言模型生成回答。",
+      "modules": [
+        {
+          "id": "image",
+          "label": "图像",
+          "type": "input"
+        },
+        {
+          "id": "clip_vit",
+          "label": "CLIP ViT-L/14",
+          "type": "encoder"
+        },
+        {
+          "id": "mm_projector",
+          "label": "视觉投影器",
+          "type": "projector"
+        },
+        {
+          "id": "prompt",
+          "label": "用户文本",
+          "type": "input"
+        },
+        {
+          "id": "token_sequence",
+          "label": "图文 token 序列",
+          "type": "fusion"
+        },
+        {
+          "id": "vicuna",
+          "label": "Vicuna 语言模型",
+          "type": "decoder"
+        },
+        {
+          "id": "response",
+          "label": "文本回答",
+          "type": "output"
+        }
+      ],
+      "edges": [
+        {
+          "from": "image",
+          "to": "clip_vit",
+          "label": "视觉 patch"
+        },
+        {
+          "from": "clip_vit",
+          "to": "mm_projector",
+          "label": "图像特征"
+        },
+        {
+          "from": "mm_projector",
+          "to": "token_sequence",
+          "label": "视觉 token"
+        },
+        {
+          "from": "prompt",
+          "to": "token_sequence",
+          "label": "文本 token"
+        },
+        {
+          "from": "token_sequence",
+          "to": "vicuna",
+          "label": "统一序列"
+        },
+        {
+          "from": "vicuna",
+          "to": "response",
+          "label": "自回归生成"
+        }
+      ],
+      "flow_ms": 6600
+    },
+    "code": {
+      "language": "python",
+      "source_repo": "https://github.com/haotian-liu/LLaVA",
+      "source_path": "llava/model/llava_arch.py",
+      "simplified": true,
+      "lines": [
+        {
+          "code": "def encode_images(self, images):",
+          "comment_zh": "按官方实现简化：先定义独立的图像编码步骤。"
+        },
+        {
+          "code": "    image_features = self.get_model().get_vision_tower()(images)",
+          "comment_zh": "CLIP 视觉塔把像素转为 patch 特征。"
+        },
+        {
+          "code": "    image_features = self.get_model().mm_projector(image_features)",
+          "comment_zh": "投影器把视觉通道对齐到语言模型隐藏维度。"
+        },
+        {
+          "code": "    return image_features",
+          "comment_zh": "输出已经能与文本词向量拼接的视觉 token。"
+        },
+        {
+          "code": "def prepare_multimodal(self, input_ids, images):",
+          "comment_zh": "简化展示官方多模态输入准备逻辑。"
+        },
+        {
+          "code": "    vision_tower = self.get_vision_tower()",
+          "comment_zh": "取得视觉编码器，判断当前模型是否支持图像。"
+        },
+        {
+          "code": "    if vision_tower is None or images is None:",
+          "comment_zh": "没有视觉塔或图像时退化为纯文本路径。"
+        },
+        {
+          "code": "        return input_ids, None",
+          "comment_zh": "纯文本输入无需视觉特征。"
+        },
+        {
+          "code": "    if isinstance(images, list) or images.ndim == 5:",
+          "comment_zh": "多图或多分块输入需要先合并批次。"
+        },
+        {
+          "code": "        concat_images = torch.cat(images, dim=0)",
+          "comment_zh": "把不同图像块拼成一次视觉前向的批次。"
+        },
+        {
+          "code": "        image_features = self.encode_images(concat_images)",
+          "comment_zh": "统一经过 CLIP 与多模态投影器。"
+        },
+        {
+          "code": "        split_sizes = [image.shape[0] for image in images]",
+          "comment_zh": "记录每张图原本包含多少块。"
+        },
+        {
+          "code": "        image_features = torch.split(image_features, split_sizes, dim=0)",
+          "comment_zh": "编码后再按原图拆回。"
+        },
+        {
+          "code": "    else:",
+          "comment_zh": "普通单图批次可直接编码。"
+        },
+        {
+          "code": "        image_features = [self.encode_images(images)]",
+          "comment_zh": "得到单图视觉 token，并统一包装为列表供后续合并。"
+        },
+        {
+          "code": "    if self.config.mm_patch_merge_type == \"flat\":",
+          "comment_zh": "基础版本采用直接展平的 patch 合并方式。"
+        },
+        {
+          "code": "        image_features = [x.flatten(0, 1) for x in image_features]",
+          "comment_zh": "把图块维和 patch 维合成连续视觉序列。"
+        },
+        {
+          "code": "    return input_ids, image_features",
+          "comment_zh": "返回文本 ID 与视觉 token，随后替换图像占位符并送入 LLM。"
+        }
+      ]
+    }
+  },
+  {
+    "id": "llava-next",
+    "name": "LLaVA-NeXT",
+    "org": "University of Wisconsin–Madison & Microsoft Research",
+    "country": "US",
+    "year": 2024,
+    "paper_url": "unknown",
+    "github_url": "https://github.com/LLaVA-VL/LLaVA-NeXT",
+    "category": "multimodal",
+    "sub_category": "general_vlm",
+    "one_liner_zh": "支持更高分辨率、更多宽高比和更强 OCR 的 LLaVA 后继系列。",
+    "key_idea_zh": "AnyRes 将图像切成多块并保留全局视图，以较低训练成本提升高分辨率细节理解。",
+    "tags": [
+      "开源",
+      "AnyRes",
+      "OCR",
+      "高分辨率",
+      "多图"
+    ],
+    "tier": "B",
+    "lineage_parent": "llava"
+  },
+  {
+    "id": "minigpt-4",
+    "name": "MiniGPT-4",
+    "org": "King Abdullah University of Science and Technology",
+    "country": "SA",
+    "year": 2023,
+    "paper_url": "https://arxiv.org/abs/2304.10592",
+    "github_url": "https://github.com/Vision-CAIR/MiniGPT-4",
+    "category": "multimodal",
+    "sub_category": "general_vlm",
+    "one_liner_zh": "仅用轻量线性层把冻结视觉编码器接到冻结语言模型的早期开源 VLM。",
+    "key_idea_zh": "复用 BLIP-2 的视觉编码器与 Q-Former，再以线性投影连接 Vicuna，并用少量高质量图文对话数据校准。",
+    "tags": [
+      "开源",
+      "BLIP-2",
+      "Q-Former",
+      "参数高效",
+      "图文对话"
+    ],
+    "tier": "B",
+    "lineage_parent": "unknown"
+  },
+  {
+    "id": "cogvlm",
+    "name": "CogVLM",
+    "org": "Tsinghua University & Zhipu AI",
+    "country": "CN",
+    "year": 2023,
+    "paper_url": "https://arxiv.org/abs/2311.03079",
+    "github_url": "https://github.com/THUDM/CogVLM",
+    "category": "multimodal",
+    "sub_category": "general_vlm",
+    "one_liner_zh": "在语言模型各层加入视觉专家模块，减少图文特征混用冲突。",
+    "key_idea_zh": "图像由 EVA2-CLIP 与 GLU 适配器编码；注意力和前馈层为视觉 token 配置专门专家参数，同时保留原有语言能力。",
+    "tags": [
+      "开源",
+      "视觉专家",
+      "EVA2-CLIP",
+      "双语",
+      "视觉定位"
+    ],
+    "tier": "A",
+    "lineage_parent": "unknown",
+    "architecture": {
+      "description_zh": "EVA2-CLIP 提取视觉序列，GLU 适配器映射到语言隐藏维度，并在序列两端加入可学习的图像边界 token；进入 CogVLM 后，视觉 token 在每层走专属注意力与前馈专家，文本 token 保留语言路径。",
+      "modules": [
+        {
+          "id": "image",
+          "label": "图像",
+          "type": "input"
+        },
+        {
+          "id": "eva2_clip",
+          "label": "EVA2-CLIP",
+          "type": "encoder"
+        },
+        {
+          "id": "glu_adapter",
+          "label": "GLU 适配器",
+          "type": "projector"
+        },
+        {
+          "id": "text_tokens",
+          "label": "文本 token",
+          "type": "input"
+        },
+        {
+          "id": "mixed_sequence",
+          "label": "图文混合序列",
+          "type": "fusion"
+        },
+        {
+          "id": "vision_experts",
+          "label": "视觉注意力 / FFN 专家",
+          "type": "expert"
+        },
+        {
+          "id": "language_path",
+          "label": "语言模型路径",
+          "type": "decoder"
+        },
+        {
+          "id": "answer",
+          "label": "文本回答",
+          "type": "output"
+        }
+      ],
+      "edges": [
+        {
+          "from": "image",
+          "to": "eva2_clip",
+          "label": "视觉 patch"
+        },
+        {
+          "from": "eva2_clip",
+          "to": "glu_adapter",
+          "label": "视觉特征"
+        },
+        {
+          "from": "glu_adapter",
+          "to": "mixed_sequence",
+          "label": "图像 token"
+        },
+        {
+          "from": "text_tokens",
+          "to": "mixed_sequence",
+          "label": "文本 token"
+        },
+        {
+          "from": "mixed_sequence",
+          "to": "vision_experts",
+          "label": "视觉位置掩码"
+        },
+        {
+          "from": "mixed_sequence",
+          "to": "language_path",
+          "label": "文本位置掩码"
+        },
+        {
+          "from": "vision_experts",
+          "to": "language_path",
+          "label": "融合隐藏状态"
+        },
+        {
+          "from": "language_path",
+          "to": "answer",
+          "label": "自回归生成"
+        }
+      ],
+      "flow_ms": 7600
+    },
+    "code": {
+      "language": "python",
+      "source_repo": "https://github.com/THUDM/CogVLM",
+      "source_path": "utils/models/cogvlm_model.py",
+      "simplified": true,
+      "lines": [
+        {
+          "code": "class ImageMixin(BaseMixin):",
+          "comment_zh": "按官方实现简化：图像分支以 mixin 形式接入语言模型。"
+        },
+        {
+          "code": "    def __init__(self, args):",
+          "comment_zh": "初始化视觉编码与视觉到语言的映射。"
+        },
+        {
+          "code": "        super().__init__()",
+          "comment_zh": "先初始化基础 mixin。"
+        },
+        {
+          "code": "        vit_args = override_dist_dtype_device_args(args, args.eva_args)",
+          "comment_zh": "让 EVA 视觉塔继承当前精度和设备配置。"
+        },
+        {
+          "code": "        self.vit_model = EVA2CLIPModel(EVA2CLIPModel.get_args(**vars(vit_args)))",
+          "comment_zh": "构建 EVA2-CLIP 视觉编码器。"
+        },
+        {
+          "code": "        self.in_features = 1792",
+          "comment_zh": "官方实现中视觉特征宽度为 1792。"
+        },
+        {
+          "code": "        self.linear_proj = GLU(args, self.in_features)",
+          "comment_zh": "GLU 将视觉特征投影到语言隐藏维度。"
+        },
+        {
+          "code": "        self.image_length = args.image_length",
+          "comment_zh": "记录每张图占用的视觉 token 长度。"
+        },
+        {
+          "code": "        self.boi = nn.Parameter(torch.zeros(1, 1, args.hidden_size))",
+          "comment_zh": "创建可学习的图像开始 token。"
+        },
+        {
+          "code": "        self.eoi = nn.Parameter(torch.zeros(1, 1, args.hidden_size))",
+          "comment_zh": "创建可学习的图像结束 token。"
+        },
+        {
+          "code": "    def word_embedding_forward(self, input_ids, output_cross_layer, **kwargs):",
+          "comment_zh": "在词嵌入阶段把指定位置替换成图像特征。"
+        },
+        {
+          "code": "        vision_inputs = {k[7:]: v for k, v in kwargs.items()",
+          "comment_zh": "收集以 vision_ 开头的视觉输入。"
+        },
+        {
+          "code": "                         if k.startswith(\"vision_\") and k != \"vision_expert_mask\"}",
+          "comment_zh": "专家掩码不属于视觉塔输入，因此排除。"
+        },
+        {
+          "code": "        if input_ids.shape[1] == 1 or not vision_inputs:",
+          "comment_zh": "单步解码或无图时无需重复编码图像。"
+        },
+        {
+          "code": "            return self.transformer.word_embeddings(input_ids)",
+          "comment_zh": "直接走普通文本词嵌入路径。"
+        },
+        {
+          "code": "        image_emb = self.vit_model(**vision_inputs)[0]",
+          "comment_zh": "EVA2-CLIP 输出视觉 patch 特征。"
+        },
+        {
+          "code": "        image_emb = self.linear_proj(image_emb)",
+          "comment_zh": "GLU 将视觉特征对齐到语言空间。"
+        },
+        {
+          "code": "        image_tokens = torch.cat([self.boi.repeat(len(image_emb), 1, 1), image_emb, self.eoi.repeat(len(image_emb), 1, 1)], dim=1)",
+          "comment_zh": "为批次中的每幅图复制开始与结束 token，并包住视觉序列。"
+        },
+        {
+          "code": "        word_embedding = self.transformer.word_embeddings(input_ids).clone()",
+          "comment_zh": "先取得完整文本词嵌入并复制，避免原地影响其他计算。"
+        },
+        {
+          "code": "        word_embedding[kwargs[\"image_embed_mask\"].bool()] = image_tokens.reshape(-1, image_emb.shape[-1])",
+          "comment_zh": "只在图像掩码位置写入视觉 token。"
+        },
+        {
+          "code": "        return word_embedding.contiguous()",
+          "comment_zh": "返回连续内存的图文混合嵌入，供视觉专家层处理。"
+        }
+      ]
+    }
+  },
+  {
+    "id": "deepseek-vl",
+    "name": "DeepSeek-VL",
+    "org": "DeepSeek-AI",
+    "country": "CN",
+    "year": 2024,
+    "paper_url": "https://arxiv.org/abs/2403.05525",
+    "github_url": "https://github.com/deepseek-ai/DeepSeek-VL",
+    "category": "multimodal",
+    "sub_category": "general_vlm",
+    "one_liner_zh": "兼顾真实场景视觉理解与语言能力的开源中英双语 VLM。",
+    "key_idea_zh": "混合使用 SigLIP 与 SAM-B 视觉编码器提取语义和细节特征，再经适配器接入 DeepSeek LLM。",
+    "tags": [
+      "开源",
+      "SigLIP",
+      "SAM-B",
+      "双视觉编码器",
+      "中英双语"
+    ],
+    "tier": "B",
+    "lineage_parent": "unknown"
+  },
+  {
+    "id": "deepseek-vl2",
+    "name": "DeepSeek-VL2",
+    "org": "DeepSeek-AI",
+    "country": "CN",
+    "year": 2024,
+    "paper_url": "https://arxiv.org/abs/2412.10302",
+    "github_url": "https://github.com/deepseek-ai/DeepSeek-VL2",
+    "category": "multimodal",
+    "sub_category": "moe_vlm",
+    "one_liner_zh": "采用专家混合语言骨干和动态切图策略的 DeepSeek-VL 后继模型。",
+    "key_idea_zh": "动态平铺高分辨率图像，视觉 token 经投影后交给 DeepSeekMoE；每个 token 只激活部分专家以控制计算量。",
+    "tags": [
+      "开源",
+      "MoE",
+      "动态切图",
+      "高分辨率",
+      "视觉定位"
+    ],
+    "tier": "B",
+    "lineage_parent": "deepseek-vl"
+  }
+]

@@ -1,0 +1,48 @@
+{
+ "id": "ssd",
+ "name": "SSD",
+ "org": "UNC Chapel Hill",
+ "country": "US",
+ "year": 2016,
+ "paper_url": "https://arxiv.org/abs/1512.02325",
+ "github_url": "https://github.com/weiliu89/caffe/tree/ssd",
+ "category": "detection",
+ "sub_category": "one-stage",
+ "one_liner_zh": "在多层特征图上直接预测默认框，兼顾速度与尺度覆盖。",
+ "key_idea_zh": "为不同分辨率特征图配置多种长宽比的 default boxes，一次前向完成分类与定位。",
+ "tags": [
+  "SSD",
+  "default boxes",
+  "多尺度",
+  "单阶段"
+ ],
+ "tier": "B",
+ "lineage_parent": "unknown",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "2015 年检测领域出现路线分化:两阶段的 Faster R-CNN 精度高但流程复杂,YOLOv1 一次前向搞定但小目标差、定位粗。SSD(Single Shot MultiBox Detector)想证明:单阶段检测器也可以精度对标两阶段,关键在于把「多尺度」做对。"
+  },
+  {
+   "title": "方法详解",
+   "body": "SSD 在骨干网络(VGG16)之后接续多个逐渐缩小的卷积特征图,在每一层特征图的每个位置铺设一组不同长宽比的默认框(default boxes,思想同锚框)。浅层大分辨率特征图负责小物体,深层小分辨率特征图负责大物体——尺度分工由网络结构天然完成。每个默认框直接用小卷积核预测类别得分与框偏移,一次前向输出全部检测,训练时用困难负样本挖掘对抗正负失衡。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "在 VOC、COCO、ILSVRC 上训练评测,配合大量数据增广(随机裁剪、光学扰动)提升对小目标的鲁棒性——论文证明增广对单阶段检测器收益巨大。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "SSD300 在 VOC2007 上达到 72.1% mAP 且跑出 58 FPS,SSD512 达到 75.1%,精度超过同期 Faster R-CNN、速度快一个数量级。「多层特征图 + 默认框」成为单阶段检测的教科书设计,直接影响 YOLOv2 之后的所有 YOLO 与 RetinaNet,引用超过 3.5 万次。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "浅层特征语义弱,小目标精度仍不理想;默认框配置依赖手工设计。FPN 后来用自顶向下路径给浅层注入语义,RetinaNet 则用 Focal Loss 解决了 SSD 靠挖掘负样本缓解的类别失衡问题。"
+  }
+ ],
+ "citations": {
+  "count": 35354,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

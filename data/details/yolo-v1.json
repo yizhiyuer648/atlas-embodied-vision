@@ -1,0 +1,48 @@
+{
+ "id": "yolo-v1",
+ "name": "YOLOv1",
+ "org": "University of Washington",
+ "country": "US",
+ "year": 2016,
+ "paper_url": "https://arxiv.org/abs/1506.02640",
+ "github_url": "https://github.com/pjreddie/darknet",
+ "category": "detection",
+ "sub_category": "one-stage",
+ "one_liner_zh": "首次把目标检测统一为单次前向回归，实现端到端实时检测。",
+ "key_idea_zh": "将图像划分网格，每个网格同时回归边界框、置信度和类别概率。",
+ "tags": [
+  "YOLO",
+  "实时检测",
+  "单阶段",
+  "网格回归"
+ ],
+ "tier": "B",
+ "lineage_parent": "unknown",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "2015 年之前的检测器本质上都是「把分类器改装来做检测」:滑窗也好、候选区域也好,都要对图像局部反复评估。Joseph Redmon 的 YOLO(You Only Look Once)提出一个激进的重构:检测就是一个回归问题,一张图看一眼,一次前向,直接输出所有框和类别。"
+  },
+  {
+   "title": "方法详解",
+   "body": "YOLOv1 把输入图像划分为 7×7 网格,每个网格单元负责预测中心落在其中的物体:输出 2 个边界框(坐标+置信度)和一组类别概率。整个网络是 24 层卷积加 2 层全连接,端到端用检测损失直接优化。因为每次预测都能看到全图上下文,YOLO 的背景误检率只有 Fast R-CNN 的一半左右;也因为流水线只有一个网络,速度达到前所未有的水平。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "骨干在 ImageNet 上预训练后转检测微调,在 PASCAL VOC 上训练评测。损失函数用平方误差统一处理定位与分类,并用权重系数平衡有物体/无物体单元。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "基础版 45 FPS、精简版 155 FPS,在实时档位 mAP 是其他实时检测器的两倍;跨域到艺术画作时泛化也远超 R-CNN 系。YOLO 开创了「单阶段实时检测」这一整条产品线,是工业界部署量最大的检测家族的起点,论文引用超过 4.6 万次。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "每个网格只能预测有限数量的物体,群聚小目标(如鸟群)容易漏检;粗网格也导致定位误差偏大。YOLOv2 引入锚框与更细特征图,YOLOv3 引入多尺度预测,逐步补齐这些短板。"
+  }
+ ],
+ "citations": {
+  "count": 46562,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

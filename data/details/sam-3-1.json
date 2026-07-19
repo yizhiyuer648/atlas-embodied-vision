@@ -1,0 +1,38 @@
+{
+  "id": "sam-3-1",
+  "name": "SAM 3.1",
+  "org": "Meta AI",
+  "country": "US",
+  "year": 2026,
+  "paper_url": "https://arxiv.org/abs/2511.16719",
+  "github_url": "https://github.com/facebookresearch/sam3",
+  "category": "segmentation",
+  "sub_category": "multi-object-video-segmentation",
+  "one_liner_zh": "SAM 3 的多对象视频效率更新，用共享记忆的 Object Multiplex 联合跟踪多个目标。",
+  "key_idea_zh": "把对象装入固定容量 bucket，共享记忆与批处理计算，避免逐对象重复运行视频管线。",
+  "tags": ["SAM", "Object Multiplex", "多目标跟踪", "视频分割", "Hugging Face 权重"],
+  "tier": "B",
+  "lineage_parent": "sam-3",
+  "sections": [
+    {
+      "title": "版本定位",
+      "body": "Meta 于 2026 年 3 月 27 日在 SAM 3 官方仓库发布 SAM 3.1 与新权重。这是同一模型族的工程和视频跟踪更新，核心技术写入 SAM 3 论文 v2 的 Appendix H，而不是另一篇独立论文。"
+    },
+    {
+      "title": "Object Multiplex",
+      "body": "原 SAM 3 视频管线逐对象处理，目标数增加时计算近似线性增长。Object Multiplex 将多个对象放入固定容量 bucket，在共享记忆上联合处理；配合减少 CPU—GPU 同步、改进 torch.compile 融合、批量后处理与批量视觉编码，提高 GPU 利用率。"
+    },
+    {
+      "title": "结果与权重",
+      "body": "官方发布说明在单张 H100、128 个对象时相对 2025 年 11 月版约加速 7 倍，并在 7 个 VOS 基准中的 6 个提升；不同 PCS 视频基准结果有升有降。facebook/sam3.1 Hugging Face 权重卡创建于 2026 年 3 月。"
+    },
+    {
+      "title": "适用场景",
+      "body": "SAM 3.1 更适合拥挤视频、多目标编辑、体育分析和机器人多物体持续感知；单图或少量对象场景的收益可能有限。"
+    },
+    {
+      "title": "局限与学习提醒",
+      "body": "7 倍数字对应特定 H100、128 对象与官方实现，不应写成所有设备上的固定加速。Object Multiplex 主要解决重复计算，不会自动修复文本概念歧义、遮挡串号或长视频漂移。"
+    }
+  ]
+}

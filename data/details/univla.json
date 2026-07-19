@@ -1,0 +1,47 @@
+{
+ "id": "univla",
+ "name": "UniVLA",
+ "org": "OpenDriveLab / Shanghai AI Laboratory",
+ "country": "CN",
+ "year": 2025,
+ "paper_url": "https://arxiv.org/abs/2505.06111",
+ "github_url": "https://github.com/OpenDriveLab/UniVLA",
+ "category": "vla",
+ "sub_category": "latent-action-vla",
+ "one_liner_zh": "在跨本体视频中学习任务中心的统一潜动作空间。",
+ "key_idea_zh": "先从无动作标签视频抽取任务中心潜动作，再用机器人数据后训练，将不同本体映射到可共享的动作语义。",
+ "tags": [
+  "国产",
+  "潜动作",
+  "跨本体"
+ ],
+ "tier": "B",
+ "lineage_parent": "genie-1",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "跨本体训练的根本障碍是动作标签:每种机器人的动作定义都不同,人类视频更是完全没有动作标注。OpenDriveLab 与上海 AI 实验室的 UniVLA 提出:与其统一物理动作,不如让模型自己从视频中学出一个「任务中心的潜动作空间」,让所有本体、甚至人类视频都能翻译成同一种内部语言。"
+  },
+  {
+   "title": "方法详解",
+   "body": "UniVLA 分三步:先用潜动作模型(latent action model)在 DINO 特征空间上,从无动作标签的跨本体视频中无监督地抽取离散潜动作——语言指令参与建模,以过滤与任务无关的画面动态(如镜头晃动);然后以潜动作为监督训练通才策略,把 VLM 输出对齐到潜动作序列;部署时只需为具体机器人训练一个轻量解码器,把潜动作解码成该本体的真实控制量。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "预训练语料横跨操作、导航等多领域视频(含人类视频),总计算量不到 OpenVLA 预训练的 1/20;下游适配数据也只需十分之一。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "UniVLA 在 LIBERO、Room2Room 等多个操作与导航基准以及真机部署中刷新纪录,且随着异构数据(包括人类视频)加入持续变强,拿下 RSS 2025 最佳论文奖提名级别的关注(获 IROS/RSS 社区广泛引用,引用 340+)。它证明了「潜动作」是打通异构数据的有效通货。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "离散潜动作的粒度限制了高频精细控制;潜动作的可解释性弱,调试困难。团队后续把潜动作与世界模型结合(如 WorldVLA 方向),并探索连续潜动作空间。"
+  }
+ ],
+ "citations": {
+  "count": 341,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

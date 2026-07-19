@@ -1,0 +1,34 @@
+{
+ "id": "agibot-go-1",
+ "name": "GO-1",
+ "org": "AgiBot",
+ "country": "CN",
+ "year": "unknown",
+ "paper_url": "unknown",
+ "github_url": "unknown",
+ "category": "vla",
+ "sub_category": "industrial-vla",
+ "one_liner_zh": "智元机器人对外发布的具身基础模型名称。",
+ "key_idea_zh": "缺少可核验的公开论文与官方源码，模型结构和训练细节暂不展开。",
+ "tags": [
+  "国产",
+  "人形机器人",
+  "资料待补"
+ ],
+ "tier": "B",
+ "lineage_parent": "unknown",
+ "sections": [
+  {
+   "title": "背景与定位",
+   "body": "GO-1 是智元机器人(AgiBot)对外发布的具身基础模型名称,面向其远征、灵犀等人形与轮式机器人产品线。智元同时开源了百万级真机轨迹的 AgiBot World 数据集,GO-1 被官方描述为在该数据基础上训练的通用具身策略,采用 ViLLA(视觉-语言-潜动作)架构思路。"
+  },
+  {
+   "title": "已公开的技术信息",
+   "body": "官方材料称 GO-1 引入潜动作规划器与混合专家式的动作生成,支持跨本体部署与快速技能扩展,并在其发布会与技术报告中展示了分拣、家务等演示。AgiBot World 数据集与部分配套代码已开源,是国内规模最大的公开真机数据集之一。"
+  },
+  {
+   "title": "资料状态与提醒",
+   "body": "GO-1 模型本体的权重、完整训练细节与可复现评测在本图鉴整理时尚不完全公开,年份字段保持 unknown。建议以 AgiBot World 论文与官方后续披露为准,谨慎对待演示视频中的能力宣称。"
+  }
+ ]
+}

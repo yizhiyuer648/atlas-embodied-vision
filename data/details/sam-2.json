@@ -1,0 +1,237 @@
+{
+ "id": "sam-2",
+ "name": "SAM 2",
+ "org": "Meta AI",
+ "country": "US",
+ "year": 2024,
+ "paper_url": "https://arxiv.org/abs/2408.00714",
+ "github_url": "https://github.com/facebookresearch/sam2",
+ "category": "segmentation",
+ "sub_category": "promptable-video",
+ "one_liner_zh": "把提示式任意对象分割统一扩展到图像与视频，并用流式记忆持续跟踪。",
+ "key_idea_zh": "当前帧特征通过 memory attention 读取历史掩码记忆，SAM 式解码器预测后再把结果编码回记忆库。",
+ "tags": [
+  "基础模型",
+  "视频分割",
+  "记忆注意力",
+  "提示分割"
+ ],
+ "tier": "A",
+ "lineage_parent": "sam",
+ "architecture": {
+  "description_zh": "每帧先经层级图像编码器；memory attention 将当前视觉 token 与过去帧的对象指针和掩码记忆融合，提示编码器接收点/框/掩码，SAM 解码头输出当前对象，memory encoder 再把该结果写回固定长度记忆库。",
+  "modules": [
+   {
+    "id": "frame",
+    "label": "当前视频帧",
+    "type": "input"
+   },
+   {
+    "id": "imageenc",
+    "label": "Hiera Image Encoder",
+    "type": "encoder"
+   },
+   {
+    "id": "memory",
+    "label": "历史记忆库",
+    "type": "memory"
+   },
+   {
+    "id": "memattn",
+    "label": "Memory Attention",
+    "type": "attention"
+   },
+   {
+    "id": "prompt",
+    "label": "提示编码器",
+    "type": "encoder"
+   },
+   {
+    "id": "samhead",
+    "label": "SAM Mask Decoder",
+    "type": "head"
+   },
+   {
+    "id": "memenc",
+    "label": "Memory Encoder",
+    "type": "encoder"
+   },
+   {
+    "id": "output",
+    "label": "当前帧对象掩码",
+    "type": "output"
+   }
+  ],
+  "edges": [
+   {
+    "from": "frame",
+    "to": "imageenc",
+    "label": "像素"
+   },
+   {
+    "from": "imageenc",
+    "to": "memattn",
+    "label": "当前视觉特征"
+   },
+   {
+    "from": "memory",
+    "to": "memattn",
+    "label": "掩码记忆与对象指针"
+   },
+   {
+    "from": "memattn",
+    "to": "samhead",
+    "label": "记忆条件特征"
+   },
+   {
+    "from": "prompt",
+    "to": "samhead",
+    "label": "点/框/mask 提示"
+   },
+   {
+    "from": "samhead",
+    "to": "output",
+    "label": "当前预测"
+   },
+   {
+    "from": "samhead",
+    "to": "memenc",
+    "label": "mask logits"
+   },
+   {
+    "from": "imageenc",
+    "to": "memenc",
+    "label": "像素特征"
+   },
+   {
+    "from": "memenc",
+    "to": "memory",
+    "label": "写入新记忆"
+   }
+  ],
+  "flow_ms": 6000
+ },
+ "code": {
+  "language": "python",
+  "source_repo": "https://github.com/facebookresearch/sam2",
+  "source_path": "sam2/modeling/sam2_base.py",
+  "simplified": true,
+  "lines": [
+   {
+    "code": "def track_step(self, frame_idx, is_init_cond_frame, current_vision_feats, current_vision_pos_embeds, feat_sizes, point_inputs, mask_inputs, output_dict, num_frames):",
+    "comment_zh": "执行单帧跟踪步骤；片段已简化自 SAM 2 基类。"
+   },
+   {
+    "code": "    current_out = {'point_inputs': point_inputs, 'mask_inputs': mask_inputs}",
+    "comment_zh": "记录当前交互提示，便于后续修正。"
+   },
+   {
+    "code": "    if len(output_dict['cond_frame_outputs']) == 0:",
+    "comment_zh": "检查是否还没有条件帧记忆。"
+   },
+   {
+    "code": "        is_init_cond_frame = True",
+    "comment_zh": "第一帧自动作为初始化条件帧。"
+   },
+   {
+    "code": "    pix_feat = self._prepare_memory_conditioned_features(",
+    "comment_zh": "把当前视觉特征与历史记忆融合。"
+   },
+   {
+    "code": "        frame_idx=frame_idx,",
+    "comment_zh": "传入时间位置以选择邻近记忆。"
+   },
+   {
+    "code": "        is_init_cond_frame=is_init_cond_frame,",
+    "comment_zh": "初始化帧可跳过历史记忆读取。"
+   },
+   {
+    "code": "        current_vision_feats=current_vision_feats,",
+    "comment_zh": "提供图像编码器的多尺度特征。"
+   },
+   {
+    "code": "        current_vision_pos_embeds=current_vision_pos_embeds,",
+    "comment_zh": "提供当前帧空间位置编码。"
+   },
+   {
+    "code": "        feat_sizes=feat_sizes, output_dict=output_dict, num_frames=num_frames",
+    "comment_zh": "提供特征尺寸和已保存的条件/非条件帧结果。"
+   },
+   {
+    "code": "    )",
+    "comment_zh": "memory attention 输出条件化像素特征。"
+   },
+   {
+    "code": "    sam_outputs = self._forward_sam_heads(",
+    "comment_zh": "使用 SAM 风格提示解码头预测当前对象。"
+   },
+   {
+    "code": "        backbone_features=pix_feat,",
+    "comment_zh": "输入已读取历史记忆的视觉特征。"
+   },
+   {
+    "code": "        point_inputs=point_inputs,",
+    "comment_zh": "传入用户点击或框提示。"
+   },
+   {
+    "code": "        mask_inputs=mask_inputs,",
+    "comment_zh": "传入可选掩码修正提示。"
+   },
+   {
+    "code": "        multimask_output=self._use_multimask(is_init_cond_frame, point_inputs)",
+    "comment_zh": "初始化且提示歧义时保留多个候选。"
+   },
+   {
+    "code": "    )",
+    "comment_zh": "得到低分辨率/高分辨率掩码、IoU 与对象指针。"
+   },
+   {
+    "code": "    current_out['pred_masks'] = sam_outputs[3]",
+    "comment_zh": "保存高分辨率当前帧 mask logits。"
+   },
+   {
+    "code": "    current_out['obj_ptr'] = sam_outputs[5]",
+    "comment_zh": "保存用于跨帧识别对象的指针 token。"
+   },
+   {
+    "code": "    memory, pos = self._encode_new_memory(current_vision_feats, feat_sizes, sam_outputs[3], False)",
+    "comment_zh": "把当前视觉特征与预测掩码编码成新记忆。"
+   },
+   {
+    "code": "    current_out['maskmem_features'], current_out['maskmem_pos_enc'] = memory, pos",
+    "comment_zh": "把新记忆及位置编码写入输出字典。"
+   },
+   {
+    "code": "    return current_out",
+    "comment_zh": "调用方将其加入记忆库并继续下一帧。"
+   }
+  ]
+ },
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "视频才是真实世界的形态:物体会移动、变形、被遮挡、离开又回来。SAM 只会看单帧,而视频对象分割(VOS)领域的专门模型又不具备 SAM 式的提示灵活性。Meta 的 SAM 2 要把「任意分割」升级为时空能力:在任何视频的任何一帧点一下,就持续追踪并分割那个目标。"
+  },
+  {
+   "title": "方法详解",
+   "body": "SAM 2 是带流式记忆的统一架构:图像编码器换成层级式 Hiera(更快更强);新增记忆机制——每处理一帧,把预测掩码与特征经记忆编码器写入记忆库;处理新帧时,当前特征先通过 memory attention 与记忆库(近期帧 + 被提示帧 + 目标指针)交叉注意,再由 SAM 式解码器输出掩码。图像被视为单帧视频,同一模型统一处理图像与视频;遮挡由「对象指针 + 出现头」处理,目标消失时不强行输出。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "配套数据引擎产出 SA-V:5 万余段视频、64 万个时空掩码(masklet),规模远超既有 VOS 数据集;模型、数据、代码全部开放。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "视频分割精度超过既有方法且交互次数少 3 倍;图像分割比 SAM 更准还快 6 倍。SAM 2 立即成为视频编辑、机器人感知(持续跟踪操作目标)、医学影像时序分析的基础组件,引用一年内超 3700 次,完成了「分割基础模型」从图像到时空的进化。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "长视频中记忆漂移仍会累积,拥挤同类目标易串号;实时性在高分辨率下依然吃紧。后续 SAM 2.1 与社区变体(高质量版、轻量版)持续修补,与检测/文本模型的组合(Grounded-SAM-2)扩展了语义能力。"
+  }
+ ],
+ "citations": {
+  "count": 3706,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

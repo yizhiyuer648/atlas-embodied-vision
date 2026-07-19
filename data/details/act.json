@@ -1,0 +1,47 @@
+{
+ "id": "act",
+ "name": "ACT",
+ "org": "Stanford University",
+ "country": "US",
+ "year": 2023,
+ "paper_url": "https://arxiv.org/abs/2304.13705",
+ "github_url": "https://github.com/tonyzhaozh/act",
+ "category": "vla",
+ "sub_category": "action-chunking",
+ "one_liner_zh": "用条件 VAE 和 Transformer 一次预测一段双臂动作。",
+ "key_idea_zh": "Action Chunking Transformer 通过动作分块降低长序列误差累积，并用时间集成平滑相邻预测。",
+ "tags": [
+  "动作分块",
+  "双臂",
+  "模仿学习"
+ ],
+ "tier": "B",
+ "lineage_parent": "unknown",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "穿线缆、扣电池这类精细双臂操作通常被认为需要昂贵的高精度机器人和传感器。斯坦福 ALOHA 项目反其道而行：用约两万美元的低成本双臂硬件加遥操作接口采集示范，然后追问——学习算法能否补偿硬件的不精确？ACT（Action Chunking with Transformers）就是为此设计的模仿学习算法。"
+  },
+  {
+   "title": "方法详解",
+   "body": "ACT 的核心是「动作分块」（action chunking）：策略不再一步预测一个动作，而是一次预测未来约 100 步的整段动作序列，把有效决策频率降低两个数量级，从根本上缓解误差累积。为了处理人类示范的非平稳性与多样性，ACT 用条件变分自编码器（CVAE）建模动作序列分布：编码器在训练时把示范压缩成风格隐变量，推理时置零；解码器是一个 Transformer，输入多视角相机特征与关节状态，输出整段动作。执行时相邻分块用指数加权的时间集成（temporal ensembling）平滑衔接，避免切换抖动。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "每个任务只需约 10 分钟、50 条人类遥操作示范。数据来自 ALOHA 双臂平台的四路相机与关节编码器，以 50Hz 高频记录，保证精细接触阶段的细节被完整保留。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "在开半透明调料杯、装电池等 6 个真实精细任务上，ACT 达到 80–90% 成功率，而此前方法几乎无法完成。ACT + ALOHA 把「低成本硬件 + 少量示范 + 模仿学习」变成社区标配，直接催生了 Mobile ALOHA 以及大量双臂数据采集项目，引用超过 2000 次。动作分块这一设计已成为几乎所有现代 VLA（π0、RDT-1B 等）的默认组件。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "ACT 是单任务模仿：每个任务单独训练，不具备语言条件和跨任务泛化；CVAE 的分布表达能力也弱于扩散模型。后续 Diffusion Policy 用扩散过程增强了动作分布建模，RDT-1B 等则把动作分块与大规模预训练结合，走向通用双臂基础模型。"
+  }
+ ],
+ "citations": {
+  "count": 2027,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

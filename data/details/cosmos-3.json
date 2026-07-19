@@ -1,0 +1,46 @@
+{
+  "id": "cosmos-3",
+  "name": "Cosmos 3",
+  "org": "NVIDIA",
+  "country": "US",
+  "year": 2026,
+  "paper_url": "https://arxiv.org/abs/2606.02800",
+  "github_url": "https://github.com/NVIDIA/cosmos",
+  "category": "world",
+  "sub_category": "omnimodal-world-foundation-model",
+  "one_liner_zh": "把语言、图像、视频、音频和动作放进同一套 MoT 世界模型，统一理解、生成、模拟与策略能力。",
+  "key_idea_zh": "用 Mixture-of-Transformers 在共享模型中路由不同模态，并结合自回归与扩散建模，让多种输入输出组合复用同一物理世界表征。",
+  "tags": [
+    "Cosmos 3",
+    "世界模型",
+    "Omnimodal",
+    "Mixture-of-Transformers",
+    "Physical AI",
+    "动作建模",
+    "公开权重"
+  ],
+  "tier": "B",
+  "lineage_parent": "unknown",
+  "sections": [
+    {
+      "title": "历史漏项与官方证据",
+      "body": "Cosmos 3 于 2026 年公开，但不在本轮 30 天自动候选窗口中，是通过 NVIDIA Cosmos Lab 官方项目页与版本线人工抽查发现的历史漏项。arXiv 技术报告、官方项目页、NVIDIA/cosmos 仓库和 Hugging Face 模型集合在名称、年份、模型家族与能力描述上相互印证。"
+    },
+    {
+      "title": "统一的全模态世界模型",
+      "body": "Cosmos 3 不只做文生视频。官方材料把语言、图像、视频、音频与动作放入统一的 Mixture-of-Transformers 架构，并同时支持自回归与扩散式生成。这样一个模型可以在视觉语言推理、图像/音视频生成、前向动力学、逆向动力学和机器人策略等任务之间复用世界表征。"
+    },
+    {
+      "title": "Nano 与 Super",
+      "body": "官方 Hugging Face 集合公开 Cosmos3-Nano 与 Cosmos3-Super 等检查点；模型卡分别给出约 16B 与 64B 参数规模，并提供图像到视频、文本到图像和机器人策略等派生模型。参数更大不等于任何任务都更好，部署还要同时考虑显存、并行切分、上下文模态与目标任务。"
+    },
+    {
+      "title": "开放状态与许可证",
+      "body": "NVIDIA/cosmos 仓库公开推理与训练相关代码、模型说明和配套材料，Cosmos3-Nano/Super 权重可从官方 Hugging Face 集合访问。仓库与模型卡使用 OpenMDW 1.1，而不是通用 Apache-2.0；使用者必须按实际代码、权重和数据各自的许可证条款核对允许范围。"
+    },
+    {
+      "title": "谱系为何保守写 unknown",
+      "body": "官方把 Cosmos 3 称为面向 Physical AI 的下一代平台，并与 Cosmos-Predict2.5 比较，但公开材料不足以证明它直接继承某个旧检查点或单一分支。编号和产品迁移提示不能代替方法上游证据，因此这里保留 lineage_parent=unknown，只用名称与标签表达同属 Cosmos 家族。"
+    }
+  ]
+}

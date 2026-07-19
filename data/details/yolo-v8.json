@@ -1,0 +1,43 @@
+{
+ "id": "yolo-v8",
+ "name": "YOLOv8",
+ "org": "Ultralytics",
+ "country": "US",
+ "year": 2023,
+ "paper_url": "unknown",
+ "github_url": "https://github.com/ultralytics/ultralytics",
+ "category": "detection",
+ "sub_category": "one-stage",
+ "one_liner_zh": "Ultralytics 的统一视觉工程框架，采用无锚解耦头并支持多任务。",
+ "key_idea_zh": "以 C2f 模块和 anchor-free 解耦头简化训练与部署，同时统一检测、分割和姿态接口。",
+ "tags": [
+  "YOLO",
+  "anchor-free",
+  "C2f",
+  "多任务"
+ ],
+ "tier": "B",
+ "lineage_parent": "yolo-v5",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "YOLOv8 是 Ultralytics 继 v5 之后的第二代旗舰,2023 年初发布。背景有二:学术侧 anchor-free 与解耦头已成共识,工程侧用户期待「一个框架解决所有视觉任务」。YOLOv8 因此既是架构升级,更是产品升级——从单一检测器进化为统一视觉平台。"
+  },
+  {
+   "title": "方法详解",
+   "body": "架构上:骨干与颈部换用 C2f 模块(继承 v5 的 C3 并吸收 YOLOv7 ELAN 的多分支梯度思想),检测头改为 anchor-free 解耦头,分类用 BCE、回归用 DFL(分布焦点损失)+ CIoU,标签分配采用 TAL 任务对齐;去除了锚框聚类等历史包袱。工程上:全新的 ultralytics 包提供统一 Python API 与 CLI,同一套接口覆盖检测、实例分割、姿态估计、旋转框与分类五种任务,并保留 v5 级别的导出与部署便利。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "官方权重在 COCO(检测/分割/姿态)与 ImageNet(分类)上训练,n/s/m/l/x 五档;自定义训练继续沿用 YAML 数据规范。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "同档位精度较 v5 提升明显(如 v8-n 37.3 vs v5-n 28.0 AP),并保持部署友好。凭借 Ultralytics 生态,YOLOv8 迅速成为 2023–2024 年工业界与教学场景的默认检测器,也是大量下游魔改(小目标、旋转框、跟踪)的基座。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "仍需 NMS 后处理,端到端性欠缺;许可证为 AGPL-3.0,商用需注意合规。后续 YOLOv10 实现 NMS-free,Ultralytics 自家则以 YOLO11 继续迭代。"
+  }
+ ]
+}

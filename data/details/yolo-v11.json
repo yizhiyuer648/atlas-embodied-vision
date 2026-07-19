@@ -1,0 +1,43 @@
+{
+ "id": "yolo-v11",
+ "name": "YOLO11",
+ "org": "Ultralytics",
+ "country": "US",
+ "year": 2024,
+ "paper_url": "unknown",
+ "github_url": "https://github.com/ultralytics/ultralytics",
+ "category": "detection",
+ "sub_category": "one-stage",
+ "one_liner_zh": "Ultralytics 新一代统一视觉模型族，继续覆盖检测、分割、姿态等任务。",
+ "key_idea_zh": "在 YOLOv8 工程体系上更新骨干与特征融合模块，以更少参数获得更高效率。",
+ "tags": [
+  "YOLO",
+  "Ultralytics",
+  "实时检测",
+  "多任务"
+ ],
+ "tier": "B",
+ "lineage_parent": "yolo-v8",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "YOLO11 是 Ultralytics 于 2024 年 9 月发布的新一代模型族(官方命名去掉字母 v)。作为 v8 的直接继任者,它的目标是常规的代际优化:在保持统一多任务接口与部署便利的前提下,用更少参数拿到更高精度与更快速度。"
+  },
+  {
+   "title": "方法详解",
+   "body": "根据官方文档与开源实现,主要结构更新包括:C3k2 模块替换 C2f(更细粒度的卷积核配置与更优的梯度流)、保留 SPPF 并新增 C2PSA 模块(在空间维引入部分自注意力,增强对遮挡与小目标的感知),检测头延续 anchor-free 解耦 + DFL 设计。任务覆盖检测、实例分割、姿态、旋转框、分类与跟踪,训练、验证、导出接口与 v8 完全兼容。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "官方权重在 COCO 等标准数据集上训练,提供 n/s/m/l/x 五档,支持一键导出 ONNX/TensorRT/CoreML/OpenVINO 等格式。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "官方基准显示,YOLO11-m 在 COCO 上以比 v8-m 少约 22% 的参数达到更高 mAP,各档位推理速度亦有提升。依托 Ultralytics 的文档、社区与部署生态,YOLO11 延续了「工程默认选项」的地位,广泛用于产业原型与教学。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "无正式论文,技术细节以代码与文档为准,学术比较需谨慎;仍依赖 NMS,AGPL 许可证对商用集成有约束。Ultralytics 后续版本与 NMS-free 路线(YOLOv10、RT-DETR)的竞合仍在继续。"
+  }
+ ]
+}

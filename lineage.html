@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#faf9f5">
+  <meta name="description" content="交互式模型演化谱系图。">
+  <title>演化谱系 · Atlas</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/main.css?v=20260719.7">
+</head>
+<body data-page="lineage">
+  <div class="noise" aria-hidden="true"></div>
+  <header id="site-header"></header>
+  <main id="main-content" class="page-main" tabindex="-1">
+    <div class="container lineage-container">
+      <nav id="breadcrumbs" class="breadcrumbs" aria-label="面包屑"></nav>
+      <section class="page-hero compact-hero lineage-title">
+        <div>
+          <p class="eyebrow">LINEAGE</p>
+          <h1>演化谱系</h1>
+          <p>先看有据可查的方法继承，再单独查看尚未确认直接上游的模型。</p>
+        </div>
+        <div class="lineage-legend">
+          <span><i class="legend-dot cn"></i>国产</span>
+          <span><i class="legend-dot global"></i>国际</span>
+          <span><i class="legend-dot a-tier"></i>A 级详解</span>
+          <span><i class="legend-dot cross"></i>跨类别上游</span>
+          <span><i class="legend-dot unresolved"></i>上游待确认</span>
+        </div>
+      </section>
+      <section class="lineage-toolbar glass-panel">
+        <div class="lineage-toolbar-main">
+          <label>技术主线<select id="lineage-category"></select></label>
+          <p id="lineage-summary" aria-live="polite"></p>
+        </div>
+        <div class="zoom-actions" aria-label="谱系图视图控制">
+          <button id="zoom-out" class="icon-button" aria-label="缩小">−</button>
+          <button id="zoom-home" class="lineage-view-button" aria-label="回到可读起点">回到起点</button>
+          <button id="zoom-reset" class="lineage-view-button" aria-label="适应全部画布">适应画布</button>
+          <button id="zoom-in" class="icon-button" aria-label="放大">＋</button>
+        </div>
+      </section>
+      <div id="lineage-stage" class="lineage-stage">
+        <svg id="lineage-svg" role="img" aria-label="模型演化谱系图">
+          <defs>
+            <filter id="nodeGlow"><feGaussianBlur stdDeviation="4" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+            <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#c3bca8"/></marker>
+            <marker id="arrow-cross" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#b98317"/></marker>
+          </defs>
+          <g id="lineage-viewport"><g id="lineage-edges"></g><g id="lineage-nodes"></g></g>
+        </svg>
+        <div class="lineage-help">拖拽移动 · 滚轮 / 双指缩放 · 点击节点查看详情</div>
+      </div>
+    </div>
+  </main>
+  <footer id="site-footer"></footer>
+  <script type="module" src="assets/js/app.js?v=20260719.7"></script>
+</body>
+</html>

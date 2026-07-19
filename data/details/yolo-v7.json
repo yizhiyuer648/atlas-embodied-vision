@@ -1,0 +1,48 @@
+{
+ "id": "yolo-v7",
+ "name": "YOLOv7",
+ "org": "Academia Sinica",
+ "country": "TW",
+ "year": 2022,
+ "paper_url": "https://arxiv.org/abs/2207.02696",
+ "github_url": "https://github.com/WongKinYiu/yolov7",
+ "category": "detection",
+ "sub_category": "one-stage",
+ "one_liner_zh": "以可训练的 bag-of-freebies 和 E-ELAN 改善实时检测器的精度速度权衡。",
+ "key_idea_zh": "通过 E-ELAN 控制最短最长梯度路径，并用重参数化、标签分配等训练策略提升性能。",
+ "tags": [
+  "YOLO",
+  "E-ELAN",
+  "重参数化",
+  "实时检测"
+ ],
+ "tier": "B",
+ "lineage_parent": "yolo-v4",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "YOLOv4 团队(Wang Chien-Yao 与 Alexey)的续作。2022 年的问题是:重参数化、动态标签分配这些新武器彼此之间存在兼容性冲突(比如 RepConv 的恒等分支会破坏残差聚合),需要在架构与训练两个层面系统性重新设计,而不是简单堆叠。"
+  },
+  {
+   "title": "方法详解",
+   "body": "架构核心是 E-ELAN(扩展高效层聚合网络):通过控制最短与最长梯度路径,让深层网络的每个模块都能学到多样化特征,并用分组卷积+洗牌+合并基数的方式在不破坏梯度路径的前提下扩展容量。训练侧提出「可训练的 bag-of-freebies」:规划式重参数化(分析哪些位置可以安全放 RepConv)、由粗到细的引导式标签分配(辅助头用粗分配、主头用细分配)、批归一化融合等,全部只增加训练成本、不增加推理成本。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "仅用 COCO 从头训练,不依赖任何外部数据或预训练权重,保证结果纯净可比。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "YOLOv7 在 5–160 FPS 全区间刷新速度-精度纪录,56.8% AP 是当时 30+ FPS 实时档的最高精度:比 SWIN-L Cascade-Mask R-CNN 快 509% 且更准。它是 Transformer 时代卷积实时检测器的有力回击,引用超过 1 万次。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "训练配置复杂,辅助头与规划式重参数化的调优门槛高。同作者的 YOLOv9 继续沿「梯度信息」路线演进,提出 PGI 与 GELAN。"
+  }
+ ],
+ "citations": {
+  "count": 10651,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

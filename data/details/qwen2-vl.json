@@ -1,0 +1,209 @@
+{
+ "id": "qwen2-vl",
+ "name": "Qwen2-VL",
+ "org": "Alibaba Cloud",
+ "country": "CN",
+ "year": 2024,
+ "paper_url": "https://arxiv.org/abs/2409.12191",
+ "github_url": "https://github.com/QwenLM/Qwen2-VL",
+ "category": "multimodal",
+ "sub_category": "general_vlm",
+ "one_liner_zh": "用原生动态分辨率和多模态位置编码统一理解图像与视频。",
+ "key_idea_zh": "Naive Dynamic Resolution 保留不同宽高比，M-RoPE 分别建模文本、二维图像与三维视频位置。",
+ "tags": [
+  "开源",
+  "动态分辨率",
+  "M-RoPE",
+  "图像",
+  "视频",
+  "中文"
+ ],
+ "tier": "A",
+ "lineage_parent": "qwen-vl",
+ "architecture": {
+  "description_zh": "图像或视频按视觉 patch 因子动态缩放并由视觉 Transformer 编码；合并后的视觉 token 与用户文本组成统一序列，再送入使用 M-RoPE（时间/高/宽三维旋转位置）的 Qwen2 语言模型。M-RoPE 是序列内部的位置编码机制，不是独立串行网络层。",
+  "modules": [
+   {
+    "id": "visual_input",
+    "label": "图像 / 视频",
+    "type": "input"
+   },
+   {
+    "id": "dynamic_resolution",
+    "label": "原生动态分辨率",
+    "type": "preprocess"
+   },
+   {
+    "id": "vision_transformer",
+    "label": "视觉 Transformer",
+    "type": "encoder"
+   },
+   {
+    "id": "token_merger",
+    "label": "Patch 合并与投影",
+    "type": "projector"
+   },
+   {
+    "id": "text_input",
+    "label": "用户文本指令",
+    "type": "input"
+   },
+   {
+    "id": "multimodal_sequence",
+    "label": "图文统一序列",
+    "type": "fusion"
+   },
+   {
+    "id": "qwen2_llm",
+    "label": "Qwen2 语言模型",
+    "type": "decoder"
+   },
+   {
+    "id": "text_output",
+    "label": "文本回答",
+    "type": "output"
+   }
+  ],
+  "edges": [
+   {
+    "from": "visual_input",
+    "to": "dynamic_resolution",
+    "label": "保留宽高比"
+   },
+   {
+    "from": "dynamic_resolution",
+    "to": "vision_transformer",
+    "label": "可变数量 patch"
+   },
+   {
+    "from": "vision_transformer",
+    "to": "token_merger",
+    "label": "视觉特征"
+   },
+   {
+    "from": "token_merger",
+    "to": "multimodal_sequence",
+    "label": "视觉 token"
+   },
+   {
+    "from": "text_input",
+    "to": "multimodal_sequence",
+    "label": "文本 token"
+   },
+   {
+    "from": "multimodal_sequence",
+    "to": "qwen2_llm",
+    "label": "M-RoPE T/H/W"
+   },
+   {
+    "from": "qwen2_llm",
+    "to": "text_output",
+    "label": "自回归生成"
+   }
+  ],
+  "flow_ms": 7200
+ },
+ "code": {
+  "language": "python",
+  "source_repo": "https://github.com/QwenLM/Qwen2-VL",
+  "source_path": "qwen-vl-utils/src/qwen_vl_utils/vision_process.py",
+  "simplified": true,
+  "lines": [
+   {
+    "code": "def smart_resize(height, width, factor, min_pixels=None, max_pixels=None):",
+    "comment_zh": "按官方实现简化：计算既适合视觉 patch、又尽量保留比例的尺寸。"
+   },
+   {
+    "code": "    max_pixels = max_pixels or IMAGE_MAX_TOKEN_NUM * factor ** 2",
+    "comment_zh": "把最大视觉 token 数换算成最大像素面积。"
+   },
+   {
+    "code": "    min_pixels = min_pixels or IMAGE_MIN_TOKEN_NUM * factor ** 2",
+    "comment_zh": "同理确定最小面积，避免图像被压得过小。"
+   },
+   {
+    "code": "    assert max_pixels >= min_pixels",
+    "comment_zh": "先保证面积上下限有效。"
+   },
+   {
+    "code": "    if max(height, width) / min(height, width) > MAX_RATIO:",
+    "comment_zh": "异常狭长的图像会制造过多无效 patch。"
+   },
+   {
+    "code": "        raise ValueError(\"aspect ratio is too large\")",
+    "comment_zh": "宽高比超过官方阈值时直接拒绝。"
+   },
+   {
+    "code": "    h_bar = max(factor, round_by_factor(height, factor))",
+    "comment_zh": "把高度舍入到 patch 合并因子的整数倍。"
+   },
+   {
+    "code": "    w_bar = max(factor, round_by_factor(width, factor))",
+    "comment_zh": "宽度也按同一规则舍入。"
+   },
+   {
+    "code": "    if h_bar * w_bar > max_pixels:",
+    "comment_zh": "若舍入后的总面积超出 token 预算，就整体缩小。"
+   },
+   {
+    "code": "        beta = math.sqrt((height * width) / max_pixels)",
+    "comment_zh": "平方根缩放系数可同时保持宽高比例。"
+   },
+   {
+    "code": "        h_bar = floor_by_factor(height / beta, factor)",
+    "comment_zh": "向下取整高度，确保不越过最大预算。"
+   },
+   {
+    "code": "        w_bar = floor_by_factor(width / beta, factor)",
+    "comment_zh": "宽度同步缩小。"
+   },
+   {
+    "code": "    elif h_bar * w_bar < min_pixels:",
+    "comment_zh": "面积太小时则放大，保留足够视觉细节。"
+   },
+   {
+    "code": "        beta = math.sqrt(min_pixels / (height * width))",
+    "comment_zh": "计算满足最小面积所需的放大倍数。"
+   },
+   {
+    "code": "        h_bar = ceil_by_factor(height * beta, factor)",
+    "comment_zh": "高度向上对齐到因子整数倍。"
+   },
+   {
+    "code": "        w_bar = ceil_by_factor(width * beta, factor)",
+    "comment_zh": "宽度同步向上对齐。"
+   },
+   {
+    "code": "    return h_bar, w_bar",
+    "comment_zh": "输出动态分辨率，后续图像会据此缩放并切成 patch。"
+   }
+  ]
+ },
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "所有「切图」方案都是在给固定分辨率的 ViT 打补丁,而人眼从不把世界重采样成 336×336。阿里通义的 Qwen2-VL 决定拆掉补丁,做原生方案:让视觉编码器直接吃任意分辨率、任意宽高比的图像,视频也用同一套机制处理。"
+  },
+  {
+   "title": "方法详解",
+   "body": "两项核心设计。原生动态分辨率(Naive Dynamic Resolution):ViT 去掉固定位置编码、改用 2D-RoPE,任意尺寸图像直接切 patch 变成数量可变的视觉 token,4 个相邻 token 经 MLP 合并压缩——小图少花 token,大图多花 token,细节与成本按需分配。M-RoPE(多模态旋转位置编码):把位置编码分解为时间、高、宽三个分量——文本三者相同退化为 1D,图像用二维网格,视频再加时间维,一套编码统一三种模态的位置结构。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "训练覆盖图文、OCR、视频、agent 操作等多任务语料,并系统研究了 LVLM 的规模化规律;发布 2B/8B/72B 三档开源权重。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "Qwen2-VL-72B 在 MathVista、DocVQA、RealWorldQA 等基准上与 GPT-4o、Claude 3.5 Sonnet 打平,文档与视频理解尤为突出;还能操作手机与机械臂,展现 agent 潜质。原生动态分辨率被公认为高分辨率处理的「正解」,后续新模型纷纷跟进;开源生态中它长期是最强多模态底座之一,引用超过 4500 次,也是机器人方向(如 RoboBrain 类工作)最常用的 VLM 底座之一。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "长视频 token 量仍巨大,秒级事件定位有限;72B 部署门槛高。Qwen2.5-VL 引入窗口注意力与绝对时间编码,把视频理解推到小时级,并强化结构化输出与电脑操作能力。"
+  }
+ ],
+ "citations": {
+  "count": 4514,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

@@ -1,0 +1,201 @@
+{
+ "id": "internvl",
+ "name": "InternVL",
+ "org": "Shanghai AI Laboratory",
+ "country": "CN",
+ "year": 2023,
+ "paper_url": "https://arxiv.org/abs/2312.14238",
+ "github_url": "https://github.com/OpenGVLab/InternVL",
+ "category": "representation",
+ "sub_category": "vision-language",
+ "one_liner_zh": "上海 AI Lab 扩展视觉编码器并与大语言模型对齐，形成开源多模态模型族。",
+ "key_idea_zh": "把视觉编码器扩展到 6B 参数，并用 QLLaMA 中间件分阶段完成对比、生成与语言对齐。",
+ "tags": [
+  "国产",
+  "多模态",
+  "InternViT",
+  "高分辨率"
+ ],
+ "tier": "A",
+ "lineage_parent": "clip",
+ "architecture": {
+  "description_zh": "本图对应初代 InternVL 论文：InternViT-6B 提取视觉表征，QLLaMA 作为语言中间件先做对比对齐、再做生成对齐，最后把视觉条件接入因果语言模型。动态切图与 Pixel Shuffle 属于后续 InternVL 1.5/2 系列，不混入本图。",
+  "modules": [
+   {
+    "id": "image",
+    "label": "输入图像",
+    "type": "input"
+   },
+   {
+    "id": "vit",
+    "label": "InternViT-6B",
+    "type": "encoder"
+   },
+   {
+    "id": "qlamma",
+    "label": "QLLaMA 中间件",
+    "type": "alignment"
+   },
+   {
+    "id": "text",
+    "label": "文本指令",
+    "type": "input"
+   },
+   {
+    "id": "fusion",
+    "label": "图文条件序列",
+    "type": "fusion"
+   },
+   {
+    "id": "llm",
+    "label": "因果语言模型",
+    "type": "decoder"
+   },
+   {
+    "id": "output",
+    "label": "多模态文本输出",
+    "type": "output"
+   }
+  ],
+  "edges": [
+   {
+    "from": "image",
+    "to": "vit",
+    "label": "像素"
+   },
+   {
+    "from": "vit",
+    "to": "qlamma",
+    "label": "视觉表征"
+   },
+   {
+    "from": "qlamma",
+    "to": "fusion",
+    "label": "对齐视觉 tokens"
+   },
+   {
+    "from": "text",
+    "to": "fusion",
+    "label": "文本 tokens"
+   },
+   {
+    "from": "fusion",
+    "to": "llm",
+    "label": "生成式对齐"
+   },
+   {
+    "from": "llm",
+    "to": "output",
+    "label": "自回归生成"
+   }
+  ],
+  "flow_ms": 5200
+ },
+ "code": {
+  "language": "python",
+  "source_repo": "https://github.com/OpenGVLab/InternVL",
+  "source_path": "internvl_chat/internvl/model/internvl_chat/modeling_internvl_chat.py",
+  "simplified": true,
+  "lines": [
+   {
+    "code": "def extract_feature(self, pixel_values):",
+    "comment_zh": "后续开源 InternVL Chat 实现中的视觉 token 提取路径；用于展示模型族的工程演进，片段已简化。"
+   },
+   {
+    "code": "    vit_embeds = self.vision_model(",
+    "comment_zh": "调用 InternViT 视觉编码器。"
+   },
+   {
+    "code": "        pixel_values=pixel_values,",
+    "comment_zh": "输入已归一化的全图或局部 tile。"
+   },
+   {
+    "code": "        output_hidden_states=False, return_dict=True",
+    "comment_zh": "只取最终隐藏状态以减少开销。"
+   },
+   {
+    "code": "    ).last_hidden_state",
+    "comment_zh": "获得 CLS 加 patch token 序列。"
+   },
+   {
+    "code": "    vit_embeds = vit_embeds[:, 1:, :]",
+    "comment_zh": "移除不带空间位置的 CLS token。"
+   },
+   {
+    "code": "    height = width = int(vit_embeds.shape[1] ** 0.5)",
+    "comment_zh": "由 token 数恢复方形特征网格边长。"
+   },
+   {
+    "code": "    vit_embeds = vit_embeds.reshape(vit_embeds.size(0), height, width, -1)",
+    "comment_zh": "把一维 patch 序列还原为二维网格。"
+   },
+   {
+    "code": "    vit_embeds = self.pixel_shuffle(vit_embeds, scale_factor=self.downsample_ratio)",
+    "comment_zh": "用像素重排减少 token 数并合并邻域通道。"
+   },
+   {
+    "code": "    vit_embeds = vit_embeds.reshape(vit_embeds.size(0), -1, vit_embeds.size(-1))",
+    "comment_zh": "再展平为语言模型需要的 token 序列。"
+   },
+   {
+    "code": "    return self.mlp1(vit_embeds)",
+    "comment_zh": "MLP 把视觉通道投影到 LLM 隐藏维度。"
+   },
+   {
+    "code": "def inject_visual_tokens(self, input_ids, inputs_embeds, pixel_values):",
+    "comment_zh": "把视觉特征嵌入文本提示。"
+   },
+   {
+    "code": "    visual_features = self.extract_feature(pixel_values)",
+    "comment_zh": "编码批内所有图像切片。"
+   },
+   {
+    "code": "    flat_embeds = inputs_embeds.reshape(-1, inputs_embeds.size(-1))",
+    "comment_zh": "展平批次和序列维便于按掩码赋值。"
+   },
+   {
+    "code": "    flat_ids = input_ids.reshape(-1)",
+    "comment_zh": "同样展平文本 token id。"
+   },
+   {
+    "code": "    selected = flat_ids == self.img_context_token_id",
+    "comment_zh": "找到提示中的 IMG_CONTEXT 占位位置。"
+   },
+   {
+    "code": "    flat_embeds[selected] = visual_features.reshape(-1, visual_features.size(-1))",
+    "comment_zh": "用实际视觉 token 替换占位 embedding。"
+   },
+   {
+    "code": "    return flat_embeds.reshape_as(inputs_embeds)",
+    "comment_zh": "恢复批次布局，随后送入因果语言模型。"
+   }
+  ]
+ },
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "多模态大模型的两个部件严重失衡:语言侧动辄百亿参数,视觉侧却长期停留在 3 亿级的 CLIP ViT-L。上海 AI 实验室的 InternVL 主张把视觉塔也当基础模型来造:把视觉编码器放大到 60 亿参数,并让它逐级对齐语言世界,成为能单独使用、也能接入 LLM 的「视觉六边形战士」。"
+  },
+  {
+   "title": "方法详解",
+   "body": "InternVL 训练 60 亿参数的 InternViT-6B,配合一个 80 亿参数的语言中间件 QLLaMA 做渐进对齐:第一阶段用海量网页图文做对比预训练(CLIP 式),第二阶段冻结主干、用生成目标把视觉特征进一步对齐到语言空间,第三阶段接入 LLM 做指令微调。这种渐进式对齐让同一个视觉塔既能当零样本分类/检索器,又能当 MLLM 的眼睛。后续 InternVL 1.5/2 系列引入像素重排(pixel shuffle)压缩视觉 token 与动态高分辨率切块,大幅增强文档、图表等细粒度理解。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "数十亿级网页图文对(LAION、悟空等多源)用于对比与生成对齐;下游在 32 个视觉与视觉语言基准上系统评测。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "InternVL 在分类、检索、多模态对话等 32 项基准达到当时开源最优,证明「放大视觉塔」与「放大 LLM」同样重要。它奠定了 InternVL 系列(1.5/2/2.5/3)持续领跑开源 MLLM 的基础,是国产多模态最具国际影响力的开源体系之一,引用超过 3100 次。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "6B 视觉塔推理成本高,小型部署需蒸馏;初代对高分辨率文档的支持有限。后续版本以动态分辨率、更强语言底座和更精的对齐数据持续迭代,与 Qwen-VL 系列构成开源 MLLM 双强。"
+  }
+ ],
+ "citations": {
+  "count": 3127,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

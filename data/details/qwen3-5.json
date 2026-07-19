@@ -1,0 +1,38 @@
+{
+  "id": "qwen3-5",
+  "name": "Qwen3.5",
+  "org": "Alibaba Cloud",
+  "country": "CN",
+  "year": 2026,
+  "paper_url": "https://qwen.ai/blog?id=qwen3.5",
+  "github_url": "unknown",
+  "category": "multimodal",
+  "sub_category": "general_vlm",
+  "one_liner_zh": "不再使用 VL 后缀的原生统一视觉语言基础模型，把图像、视频、文本与智能体能力放进同一代模型。",
+  "key_idea_zh": "以多模态 token 早期融合统一视觉语言训练，并把 Gated DeltaNet 与门控注意力交错组成高效混合骨干；大模型版本再结合稀疏 MoE。",
+  "tags": ["国产", "开放权重", "原生多模态", "早期融合", "Gated DeltaNet", "MoE", "图像与视频", "Agent"],
+  "tier": "B",
+  "lineage_parent": "qwen3-vl",
+  "sections": [
+    {
+      "title": "命名与版本定位",
+      "body": "官方正式名称是 Qwen3.5，而不是 Qwen3.5-VL。官方模型卡将其任务类型标为 image-text-to-text，并明确写为 Unified Vision-Language Foundation 和 Causal Language Model with Vision Encoder。旗舰 Qwen3.5-397B-A17B 的官方 Hugging Face 模型卡创建于 2026 年 2 月 16 日，其他 MoE 与小型稠密版本随后在 2 月陆续公开，因此图鉴年份记为 2026。"
+    },
+    {
+      "title": "统一多模态架构",
+      "body": "Qwen3.5 通过多模态 token 的早期融合进行统一视觉语言训练，不再把视觉能力作为带 VL 后缀的旁支。语言骨干交错使用 Gated DeltaNet 和门控全注意力：线性注意力路径承担高吞吐长序列建模，全注意力层周期性补充全局交互；大尺寸版本把前馈层替换为稀疏 MoE，小尺寸版本则提供稠密模型。"
+    },
+    {
+      "title": "开放状态与链接原则",
+      "body": "官方 Hugging Face 提供 0.8B、2B、4B、9B、27B、35B-A3B、122B-A10B、397B-A17B 等公开模型卡和权重，模型卡与 LICENSE 文件标注 Apache-2.0。当前没有独立的 Qwen3.5 官方 GitHub 仓库，因此 github_url 按事实写为 unknown；也未找到 Qwen3.5 通用版的独立 arXiv 技术报告，paper_url 使用官方技术博客/项目页，而不虚构论文链接。"
+    },
+    {
+      "title": "能力与家族关系",
+      "body": "官方模型卡支持文字、图像和视频输入，并将视觉理解、推理、编码与智能体使用统一在同一模型家族中。它在产品命名上接续 Qwen3-VL 的视觉语言能力，同时引入新的混合注意力骨干，因此图鉴把 Qwen3-VL 作为主要多模态上游，而不把二者当成同一模型的尺寸变体。"
+    },
+    {
+      "title": "学习与使用提醒",
+      "body": "Qwen3.5 是跨多个参数规模和稠密/MoE 结构的家族，模型卡中的上下文、吞吐和评测表不能无条件互换。开放权重不代表所有托管 API 功能、数据或训练流程都开放；实际部署还要逐个确认模型尺寸、量化格式、Transformers 版本和显存要求。"
+    }
+  ]
+}

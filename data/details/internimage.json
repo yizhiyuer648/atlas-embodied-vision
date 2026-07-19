@@ -1,0 +1,48 @@
+{
+ "id": "internimage",
+ "name": "InternImage",
+ "org": "Shanghai AI Laboratory",
+ "country": "CN",
+ "year": 2023,
+ "paper_url": "https://arxiv.org/abs/2211.05778",
+ "github_url": "https://github.com/OpenGVLab/InternImage",
+ "category": "representation",
+ "sub_category": "vision-backbone",
+ "one_liner_zh": "上海 AI Lab 以可变形卷积构建可扩展大规模视觉基础骨干。",
+ "key_idea_zh": "核心 DCNv3 兼具卷积归纳偏置与动态空间聚合，并按层级网络扩展到十亿参数。",
+ "tags": [
+  "国产",
+  "DCNv3",
+  "视觉骨干",
+  "大模型"
+ ],
+ "tier": "B",
+ "lineage_parent": "unknown",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "ViT 横扫视觉后,一个流行论断是「CNN 无法随数据和参数规模化」。上海 AI 实验室的 InternImage 要为卷积正名:问题不在卷积本身,而在算子——只要算子同时具备大感受野与输入自适应能力,CNN 一样可以当十亿参数的基础模型。"
+  },
+  {
+   "title": "方法详解",
+   "body": "核心算子是 DCNv3(第三代可变形卷积):在 3×3 稀疏采样的基础上,采样偏移与调制权重都由输入动态预测(自适应空间聚合,类似注意力的动态性),配合分组机制(类似多头)与归一化改造,使其在大模型训练中稳定。以 DCNv3 堆叠出层级式骨干,并按规则缩放到 10 亿参数(InternImage-H)。相比密集大核卷积,稀疏采样让感受野「既大又便宜」。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "在 ImageNet-22K 及更大规模私有混合数据上预训练,下游在 COCO 检测与 ADE20K 分割上验证。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "InternImage-H 曾以 65.4 mAP 刷新 COCO test-dev 纪录、62.9 mIoU 刷新 ADE20K——证明 CNN 路线在基础模型时代依然能登顶。它是「书生」体系的视觉底座之一,广泛用于国内检测分割竞赛与工业方案,引用超过 1100 次。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "可变形算子的部署优化不如标准卷积/注意力成熟,边缘硬件支持有限;随着多模态大模型兴起,纯视觉骨干的关注度整体下移。团队后续把重心转向 InternVL 等视觉-语言一体的基础模型。"
+  }
+ ],
+ "citations": {
+  "count": 1138,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

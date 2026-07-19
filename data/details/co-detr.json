@@ -1,0 +1,48 @@
+{
+ "id": "co-detr",
+ "name": "Co-DETR",
+ "org": "SenseTime Research",
+ "country": "CN",
+ "year": 2023,
+ "paper_url": "https://arxiv.org/abs/2211.12860",
+ "github_url": "https://github.com/Sense-X/Co-DETR",
+ "category": "detection",
+ "sub_category": "transformer",
+ "one_liner_zh": "用多个辅助检测头协作训练 DETR 编码器，增强一对一匹配的正样本监督。",
+ "key_idea_zh": "训练时加入一对多标签分配的辅助头，并把其正坐标转成额外查询供解码器学习。",
+ "tags": [
+  "国产",
+  "DETR",
+  "协同训练",
+  "混合分配"
+ ],
+ "tier": "B",
+ "lineage_parent": "dino-detr",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "DETR 系的一对一匹配虽然消灭了 NMS,却带来监督稀疏问题:每张图只有个位数 query 被标为正样本,编码器特征学习的信号远弱于 Faster R-CNN 式的一对多分配。商汤的 Co-DETR 问:能否鱼与熊掌兼得——训练时享受一对多的密集监督,推理时保留一对一的端到端简洁?"
+  },
+  {
+   "title": "方法详解",
+   "body": "Co-DETR 在训练阶段给 DETR 挂上多个并行辅助头(如 ATSS、Faster R-CNN 头),它们用各自的一对多标签分配直接监督编码器输出,大幅增强特征判别力;同时从辅助头的正样本坐标生成额外的「定制正查询」,喂给解码器训练,缓解正 query 稀少的问题。推理时所有辅助头全部丢弃——模型结构、参数量、速度与原 DETR 完全一致,也无需 NMS。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "方案可套用于 DAB-DETR、Deformable-DETR、DINO 等任意变体;最大规模实验用 ViT-L 骨干在 Objects365 预训练后于 COCO/LVIS 微调。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "Co-DETR 把 DINO-Deformable-DETR(Swin-L)从 58.5 提到 59.5 AP;ViT-L 版本在 COCO test-dev 达到 66.0 AP,曾长期占据 COCO 榜单第一,LVIS 也大幅领先。它证明「训练时混合分配」是免费的性能杠杆,被后续高精度检测方案普遍采用。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "训练显存与时间因辅助头明显增加;多头超参需要协调。混合分配思想(one-to-many 辅助 one-to-one)被 YOLOv10 等实时模型吸收,成为端到端检测的通用配方。"
+  }
+ ],
+ "citations": {
+  "count": 642,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

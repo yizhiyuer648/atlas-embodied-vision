@@ -1,0 +1,48 @@
+{
+ "id": "mask2former",
+ "name": "Mask2Former",
+ "org": "Meta AI",
+ "country": "US",
+ "year": 2022,
+ "paper_url": "https://arxiv.org/abs/2112.01527",
+ "github_url": "https://github.com/facebookresearch/Mask2Former",
+ "category": "segmentation",
+ "sub_category": "universal-segmentation",
+ "one_liner_zh": "以掩码注意力统一语义、实例和全景分割三种任务。",
+ "key_idea_zh": "查询只关注上一层预测掩码内的像素，多尺度高分辨率特征逐层参与 Transformer 解码。",
+ "tags": [
+  "通用分割",
+  "Transformer",
+  "masked attention",
+  "集合预测"
+ ],
+ "tier": "B",
+ "lineage_parent": "detr",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "语义、实例、全景三种分割长期各养一套专门架构,研究与工程成本三倍化。MaskFormer 已证明「一切分割皆可视为掩码分类」(预测 N 个掩码 + 各自类别),但性能与训练效率还打不过专门模型。Meta 的 Mask2Former 补上关键一击,让统一架构第一次全面反超专门架构。"
+  },
+  {
+   "title": "方法详解",
+   "body": "框架是 DETR 式的查询范式:一组对象查询经 Transformer 解码器输出 N 个(掩码,类别)对,匈牙利匹配做集合监督——语义/实例/全景只是标注形式不同,架构完全同一。核心创新是掩码注意力(masked attention):每个查询的交叉注意力被限制在它上一层预测的掩码区域内,而不是全图——注意力从「大海捞针」变成「循迹深挖」,收敛速度与精度同时大涨。配合多尺度特征轮换喂入解码器、在采样点上算掩码损失省显存等工程改进,训练成本也大幅下降。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "在 COCO(全景/实例)与 ADE20K(语义)上分别训练;同一架构不改一行,只换数据。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "Mask2Former 同时刷新三项纪录:COCO 全景 57.8 PQ、实例 50.1 AP、ADE20K 语义 57.7 mIoU——一个架构击败所有专门架构。它终结了分割任务的架构分裂,成为高精度分割的默认框架,查询式分割范式也由此定型,引用超过 4100 次。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "训练仍需为每个任务单独跑;推理速度不及实时模型。OneFormer 用任务提示实现「训练一次通吃三任务」,SAM 则把分割推向提示驱动的开放世界。"
+  }
+ ],
+ "citations": {
+  "count": 4158,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

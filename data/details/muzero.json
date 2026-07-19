@@ -1,0 +1,47 @@
+{
+ "id": "muzero",
+ "name": "MuZero",
+ "org": "DeepMind",
+ "country": "UK",
+ "year": 2019,
+ "paper_url": "https://arxiv.org/abs/1911.08265",
+ "github_url": "unknown",
+ "category": "world",
+ "sub_category": "planning-world-model",
+ "one_liner_zh": "不预测像素，只学习足以进行搜索的奖励、价值与策略动力学。",
+ "key_idea_zh": "表示网络得到潜状态，动力学网络预测下一潜状态与奖励，预测网络输出策略和价值，再用 MCTS 规划。",
+ "tags": [
+  "MCTS",
+  "潜在动力学",
+  "规划"
+ ],
+ "tier": "B",
+ "lineage_parent": "unknown",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "AlphaGo/AlphaZero 的超人表现依赖一个完美模拟器——规则已知,可以随意推演。但现实世界没有规则手册。DeepMind 的 MuZero 问:能否让智能体自己学出一个「够用就好」的模型来支撑树搜索?它的答案重新定义了「模型」应该预测什么。"
+  },
+  {
+   "title": "方法详解",
+   "body": "MuZero 的模型刻意不预测观测本身,只预测与规划直接相关的三样东西:表示网络把历史观测编码成潜状态;动力学网络输入潜状态与假想动作,输出下一潜状态与即时奖励;预测网络从潜状态输出策略先验与价值。三者串起来就能在潜空间展开蒙特卡洛树搜索(MCTS)——潜状态无需对应任何真实画面,只要搜索出的策略和价值准确即可。训练时沿真实轨迹展开模型 K 步,让预测的策略、价值、奖励分别对齐搜索结果、回报与真实奖励。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "在围棋、国际象棋、将棋(与 AlphaZero 同规模自我对弈)以及 57 个 Atari 游戏上训练,后者是历史上模型型方法长期失守的领域。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "不知道规则的 MuZero 在棋类上追平被喂了规则的 AlphaZero,在 Atari 上创下新纪录。「价值等价模型」——模型只需在决策意义上等价于环境——成为世界模型理论的重要思想,影响了 EfficientZero、Stochastic MuZero 及一系列基于搜索的决策系统,引用超过 2600 次;DeepMind 还将其用于视频编码等真实工程问题。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "确定性潜动力学难以表达随机环境;MCTS 在连续动作空间代价高;训练管线复杂。EfficientZero 大幅提升其样本效率,Sampled/Stochastic MuZero 扩展到连续与随机场景。"
+  }
+ ],
+ "citations": {
+  "count": 2601,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

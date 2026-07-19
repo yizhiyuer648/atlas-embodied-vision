@@ -1,0 +1,203 @@
+{
+ "id": "wan-2-1",
+ "name": "Wan 2.1 万相",
+ "org": "Alibaba",
+ "country": "CN",
+ "year": 2025,
+ "paper_url": "https://arxiv.org/abs/2503.20314",
+ "github_url": "https://github.com/Wan-Video/Wan2.1",
+ "category": "world",
+ "sub_category": "open-video-foundation-model",
+ "one_liner_zh": "阿里开源的多尺寸文本与图像生成视频基础模型系列。",
+ "key_idea_zh": "使用高压缩 3D 因果 VAE 与 flow-matching 视频 DiT，结合 T5 文本条件和三维旋转位置编码。",
+ "tags": [
+  "国产",
+  "开源",
+  "视频 DiT"
+ ],
+ "tier": "A",
+ "lineage_parent": "unknown",
+ "architecture": {
+  "description_zh": "Wan 2.1 先以 3D 因果 VAE 将视频压缩到时空潜变量，T5 编码文本；Wan DiT 在扩散时间、文本交叉注意力和 3D RoPE 条件下预测 flow，最后由 VAE 解码成视频。",
+  "modules": [
+   {
+    "id": "wan-prompt",
+    "label": "文本提示",
+    "type": "input"
+   },
+   {
+    "id": "wan-t5",
+    "label": "T5 文本编码器",
+    "type": "encoder"
+   },
+   {
+    "id": "wan-noise",
+    "label": "视频潜噪声",
+    "type": "latent"
+   },
+   {
+    "id": "wan-patch",
+    "label": "3D Patch Embedding",
+    "type": "tokenizer"
+   },
+   {
+    "id": "wan-dit",
+    "label": "Wan DiT + 3D RoPE",
+    "type": "transformer"
+   },
+   {
+    "id": "wan-flow",
+    "label": "Flow-Matching 采样",
+    "type": "sampler"
+   },
+   {
+    "id": "wan-vae",
+    "label": "3D 因果 VAE 解码",
+    "type": "decoder"
+   },
+   {
+    "id": "wan-video",
+    "label": "生成视频",
+    "type": "output"
+   }
+  ],
+  "edges": [
+   {
+    "from": "wan-prompt",
+    "to": "wan-t5",
+    "label": "文本 token"
+   },
+   {
+    "from": "wan-t5",
+    "to": "wan-dit",
+    "label": "交叉注意条件"
+   },
+   {
+    "from": "wan-noise",
+    "to": "wan-patch",
+    "label": "潜变量"
+   },
+   {
+    "from": "wan-patch",
+    "to": "wan-dit",
+    "label": "时空 token"
+   },
+   {
+    "from": "wan-dit",
+    "to": "wan-flow",
+    "label": "速度预测"
+   },
+   {
+    "from": "wan-flow",
+    "to": "wan-dit",
+    "label": "下一时间步"
+   },
+   {
+    "from": "wan-flow",
+    "to": "wan-vae",
+    "label": "干净潜变量"
+   },
+   {
+    "from": "wan-vae",
+    "to": "wan-video",
+    "label": "RGB 帧"
+   }
+  ],
+  "flow_ms": 4200
+ },
+ "code": {
+  "language": "python",
+  "source_repo": "https://github.com/Wan-Video/Wan2.1",
+  "source_path": "wan/modules/model.py",
+  "simplified": true,
+  "lines": [
+   {
+    "code": "def forward(self, x, t, context, seq_len, clip_fea=None, y=None):",
+    "comment_zh": "输入视频潜变量、扩散时间和文本上下文。"
+   },
+   {
+    "code": "    device = self.patch_embedding.weight.device",
+    "comment_zh": "确定当前模型所在设备。"
+   },
+   {
+    "code": "    x = [self.patch_embedding(u.unsqueeze(0)) for u in x]",
+    "comment_zh": "将每个视频潜变量切成三维 patch token。"
+   },
+   {
+    "code": "    grid_sizes = torch.stack([torch.tensor(u.shape[2:], dtype=torch.long) for u in x])",
+    "comment_zh": "记录每个样本的时间、高度和宽度网格。"
+   },
+   {
+    "code": "    x = [u.flatten(2).transpose(1, 2) for u in x]",
+    "comment_zh": "把三维网格展平成 token 序列。"
+   },
+   {
+    "code": "    x = torch.cat([torch.cat([u, u.new_zeros(1, seq_len-u.size(1), u.size(2))], dim=1) for u in x])",
+    "comment_zh": "补齐可变长度视频序列。"
+   },
+   {
+    "code": "    e = self.time_embedding(sinusoidal_embedding_1d(self.freq_dim, t))",
+    "comment_zh": "编码 flow-matching 时间步。"
+   },
+   {
+    "code": "    e0 = self.time_projection(e).unflatten(1, (6, self.dim))",
+    "comment_zh": "生成各层自适应调制参数。"
+   },
+   {
+    "code": "    context = self.text_embedding(torch.stack([torch.cat([u, u.new_zeros(self.text_len-u.size(0), u.size(1))]) for u in context]))",
+    "comment_zh": "投影并补齐 T5 文本特征。"
+   },
+   {
+    "code": "    freqs = self.rope_frequency(grid_sizes)",
+    "comment_zh": "为时间与空间轴构造三维旋转位置编码。"
+   },
+   {
+    "code": "    for block in self.blocks:",
+    "comment_zh": "依次通过视频 DiT Block。"
+   },
+   {
+    "code": "        x = block(x, e=e0, seq_lens=None, grid_sizes=grid_sizes, freqs=freqs, context=context)",
+    "comment_zh": "融合时间调制、3D RoPE 和文本交叉注意力。"
+   },
+   {
+    "code": "    x = self.head(x, e)",
+    "comment_zh": "把隐藏 token 投影为潜变量速度。"
+   },
+   {
+    "code": "    x = self.unpatchify(x, grid_sizes)",
+    "comment_zh": "将 token 重排回时空潜变量。"
+   },
+   {
+    "code": "    return [u.float() for u in x]",
+    "comment_zh": "返回每个视频样本的 flow 预测。"
+   }
+  ]
+ },
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "Sora 证明了视频 DiT 的天花板,但闭源;开源社区需要一个性能过硬、许可宽松、消费级显卡能跑的视频基础模型。阿里通义的 Wan 2.1(万相)给出了完整答案:从 1.3B 到 14B 的全系列开源,覆盖文生视频、图生视频、视频编辑等八类任务。"
+  },
+  {
+   "title": "方法详解",
+   "body": "架构是主流视频 DiT 的精炼实现:自研 3D 因果 VAE(Wan-VAE)实现高压缩比且支持任意长度 1080p 编解码,时间维因果性保证首帧可作图生视频条件;主干为 flow matching 训练的视频扩散 Transformer,文本条件用 umT5 编码、经交叉注意力注入,时间步调制采用共享 MLP + 可学习偏移以省参数;三维旋转位置编码(3D RoPE)处理时空位置。论文还系统披露了数据清洗、渐进训练与并行基础设施方案。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "在数十亿级图像与视频上多阶段训练;14B 版本验证了视频生成的数据/模型规模化定律,1.3B 版本只需 8.19GB 显存,普通消费卡即可推理。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "Wan 14B 在内外多项基准上超过现有开源模型与部分顶级商业方案;全系列代码权重开放后,与混元视频一起构成开源视频生成的两大基座,衍生出庞大的社区微调与插件生态(首尾帧、ControlNet 类条件等),论文引用超过 2100 次。对世界模型方向,Wan 是可自由取用的「视频动力学先验」。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "与顶级闭源相比,复杂物理交互与长视频一致性仍有差距;14B 推理成本高。通义后续发布 Wan 2.2(引入 MoE 与更高压缩 VAE)持续迭代,开源视频模型的更新节奏已接近语言模型。"
+  }
+ ],
+ "citations": {
+  "count": 2112,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#faf9f5">
+  <meta name="description" content="具身智能、视觉模型与社区交流术语表。">
+  <title>术语表 · Atlas</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/main.css?v=20260719.7">
+</head>
+<body data-page="glossary">
+  <div class="noise" aria-hidden="true"></div>
+  <header id="site-header"></header>
+  <main id="main-content" class="page-main" tabindex="-1">
+    <div class="container">
+      <nav id="breadcrumbs" class="breadcrumbs" aria-label="面包屑"></nav>
+      <section class="page-hero compact-hero">
+        <p class="eyebrow">GLOSSARY</p>
+        <h1>把黑话，翻译成人话。</h1>
+        <p>既收论文里的正式概念，也解释 Hugging Face、GitHub 等公开交流中常见的缩写、行话与歧义说法；每条都给出中文语境和来源。</p>
+        <div class="glossary-search search-field">
+          <span class="search-icon" aria-hidden="true"></span>
+          <label class="sr-only" for="glossary-search">搜索术语、别名、解释或使用语境</label>
+          <input id="glossary-search" type="search" placeholder="搜索术语、别名、解释或使用语境…" autocomplete="off" inputmode="search">
+        </div>
+      </section>
+      <div class="glossary-overview">
+        <div id="glossary-stats" class="glossary-stats" aria-live="polite"></div>
+        <button class="glossary-reset" type="button" data-glossary-reset>重置筛选</button>
+      </div>
+      <section class="glossary-controls" aria-label="术语筛选">
+        <div class="glossary-filter-group">
+          <div class="glossary-filter-head"><strong>主题分类</strong><span>按知识领域缩小范围</span></div>
+          <div id="glossary-category-filters" class="glossary-filter-scroll"></div>
+        </div>
+        <div class="glossary-filter-group">
+          <div class="glossary-filter-head"><strong>表达类型</strong><span>区分正式概念与社区用语</span></div>
+          <div id="glossary-kind-filters" class="glossary-filter-scroll"></div>
+        </div>
+      </section>
+      <div id="glossary-index" class="alphabet-index" aria-label="按英文字母筛选"></div>
+      <section id="glossary-list" class="glossary-list"></section>
+      <div id="glossary-empty" class="empty-state" hidden>
+        <h2>没有匹配的术语</h2><p>换个关键词，或清除当前筛选条件。</p>
+        <button class="button button-ghost" type="button" data-glossary-reset>清除筛选</button>
+      </div>
+    </div>
+  </main>
+  <footer id="site-footer"></footer>
+  <script type="module" src="assets/js/app.js?v=20260719.7"></script>
+</body>
+</html>

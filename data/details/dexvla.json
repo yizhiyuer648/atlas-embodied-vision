@@ -1,0 +1,47 @@
+{
+ "id": "dexvla",
+ "name": "DexVLA",
+ "org": "Midea Group / East China Normal University / Shanghai University",
+ "country": "CN",
+ "year": 2025,
+ "paper_url": "https://arxiv.org/abs/2502.05855",
+ "github_url": "https://github.com/juruobenruo/DexVLA",
+ "category": "vla",
+ "sub_category": "diffusion-expert-vla",
+ "one_liner_zh": "在 VLM 旁插入可扩展扩散专家进行通用机器人控制。",
+ "key_idea_zh": "让 VLM 负责语义理解，ScaleDP 扩散专家负责高维连续动作，并采用分阶段训练降低成本。",
+ "tags": [
+  "国产",
+  "扩散专家",
+  "灵巧操作"
+ ],
+ "tier": "B",
+ "lineage_parent": "tinyvla",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "VLA 社区长期把注意力放在放大 VLM 主干上,但动作表示这一端才是任务成功率的瓶颈,特别是灵巧手、双臂等复杂本体的长时程任务。美的团队的 DexVLA 主张给 VLM 插上一个「可扩展的扩散动作专家」,并用课程化训练降低跨本体学习成本。"
+  },
+  {
+   "title": "方法详解",
+   "body": "DexVLA 由 VLM 主干与十亿参数级的扩散动作专家(基于 ScaleDP,可扩展扩散 Transformer)组成:VLM 负责语义理解与任务分解,扩散专家对高维连续动作序列去噪。训练采用「本体课程学习」三阶段:先在跨本体数据上单独预训练扩散专家(与 VLA 解耦,便宜);再把 VLA 与特定本体对齐;最后针对新任务快速后训练。这种分阶段设计避免了每换一个机器人都要从头联合训练。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "训练数据覆盖单臂、双臂与灵巧手多种本体。评测既有常规桌面任务,也包括只用语言提示完成的叠衣服等长时程灵巧任务。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "在多本体实验中,DexVLA 无需任务专门适配即可完成复杂任务,少量数据即能在新本体上学会灵巧技能,整体优于 Octo、OpenVLA 与 Diffusion Policy。它把「动作专家规模化 + 课程化训练」组合成了一套可复制的工程配方。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "三阶段流程增加了训练管线复杂度;扩散专家的推理延迟依然存在。团队与社区后续在流匹配加速、统一动作空间与更大规模灵巧手数据上继续推进。"
+  }
+ ],
+ "citations": {
+  "count": 203,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

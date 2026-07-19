@@ -1,0 +1,234 @@
+{
+ "id": "dinov2",
+ "name": "DINOv2",
+ "org": "Meta AI",
+ "country": "US",
+ "year": 2023,
+ "paper_url": "https://arxiv.org/abs/2304.07193",
+ "github_url": "https://github.com/facebookresearch/dinov2",
+ "category": "representation",
+ "sub_category": "self-supervised",
+ "one_liner_zh": "以大规模精选图像和自监督蒸馏学习可直接迁移的通用视觉特征。",
+ "key_idea_zh": "学生与教师在全局视图、局部视图和遮挡 patch 上对齐，并用数据治理提升特征稳健性。",
+ "tags": [
+  "自监督",
+  "ViT",
+  "知识蒸馏",
+  "密集特征"
+ ],
+ "tier": "A",
+ "lineage_parent": "ibot",
+ "architecture": {
+  "description_zh": "图像切成 patch 并加入 CLS、可选 register tokens 与位置编码，ViT blocks 产生全局和逐 patch 表征；训练时学生网络对齐动量教师的全局分类与掩码 patch 目标。",
+  "modules": [
+   {
+    "id": "image",
+    "label": "多裁剪图像",
+    "type": "input"
+   },
+   {
+    "id": "patch",
+    "label": "Patch Embed + Tokens",
+    "type": "embedding"
+   },
+   {
+    "id": "student",
+    "label": "Student ViT",
+    "type": "encoder"
+   },
+   {
+    "id": "teacher",
+    "label": "EMA Teacher ViT",
+    "type": "encoder"
+   },
+   {
+    "id": "student_heads",
+    "label": "Student Heads",
+    "type": "head"
+   },
+   {
+    "id": "teacher_heads",
+    "label": "Teacher Heads",
+    "type": "head"
+   },
+   {
+    "id": "loss",
+    "label": "全局与掩码蒸馏",
+    "type": "loss"
+   },
+   {
+    "id": "output",
+    "label": "CLS + Patch 特征",
+    "type": "output"
+   }
+  ],
+  "edges": [
+   {
+    "from": "image",
+    "to": "patch",
+    "label": "全局/局部视图"
+   },
+   {
+    "from": "patch",
+    "to": "student",
+    "label": "含遮挡 tokens"
+   },
+   {
+    "from": "patch",
+    "to": "teacher",
+    "label": "未遮挡全局视图"
+   },
+   {
+    "from": "student",
+    "to": "student_heads",
+    "label": "学生表征"
+   },
+   {
+    "from": "teacher",
+    "to": "teacher_heads",
+    "label": "教师表征"
+   },
+   {
+    "from": "student_heads",
+    "to": "loss",
+    "label": "学生预测"
+   },
+   {
+    "from": "teacher_heads",
+    "to": "loss",
+    "label": "停止梯度的目标"
+   },
+   {
+    "from": "student",
+    "to": "teacher",
+    "label": "参数 EMA 更新",
+    "kind": "feedback"
+   },
+   {
+    "from": "student",
+    "to": "output",
+    "label": "预训练后冻结或微调"
+   }
+  ],
+  "flow_ms": 5200
+ },
+ "code": {
+  "language": "python",
+  "source_repo": "https://github.com/facebookresearch/dinov2",
+  "source_path": "dinov2/models/vision_transformer.py",
+  "simplified": true,
+  "lines": [
+   {
+    "code": "def forward_features(self, x, masks=None):",
+    "comment_zh": "提取 DINOv2 特征；片段已简化自官方 ViT。"
+   },
+   {
+    "code": "    if isinstance(x, list):",
+    "comment_zh": "训练时可同时处理不同尺寸的多裁剪视图。"
+   },
+   {
+    "code": "        return self.forward_features_list(x, masks)",
+    "comment_zh": "列表输入走多视图批处理分支。"
+   },
+   {
+    "code": "    x = self.prepare_tokens_with_masks(x, masks)",
+    "comment_zh": "完成 patch embedding，并加入 CLS、register 与 mask tokens。"
+   },
+   {
+    "code": "    for block in self.blocks:",
+    "comment_zh": "依次通过所有 Transformer block。"
+   },
+   {
+    "code": "        x = block(x)",
+    "comment_zh": "自注意力让全局与局部 patch 交换信息。"
+   },
+   {
+    "code": "    x_norm = self.norm(x)",
+    "comment_zh": "对最终 token 序列做 LayerNorm。"
+   },
+   {
+    "code": "    cls = x_norm[:, 0]",
+    "comment_zh": "第一个 token 是整图 CLS 表征。"
+   },
+   {
+    "code": "    reg_end = self.num_register_tokens + 1",
+    "comment_zh": "计算 register tokens 的结束位置。"
+   },
+   {
+    "code": "    registers = x_norm[:, 1:reg_end]",
+    "comment_zh": "取出用于吸收全局信息的 register 表征。"
+   },
+   {
+    "code": "    patches = x_norm[:, reg_end:]",
+    "comment_zh": "其余 token 保留空间对应的密集特征。"
+   },
+   {
+    "code": "    return {",
+    "comment_zh": "按下游任务需要返回多种表征。"
+   },
+   {
+    "code": "        'x_norm_clstoken': cls,",
+    "comment_zh": "全局分类或检索常使用该向量。"
+   },
+   {
+    "code": "        'x_norm_regtokens': registers,",
+    "comment_zh": "返回可选 register tokens。"
+   },
+   {
+    "code": "        'x_norm_patchtokens': patches,",
+    "comment_zh": "分割、深度等密集任务使用 patch tokens。"
+   },
+   {
+    "code": "        'x_prenorm': x,",
+    "comment_zh": "保留归一化前隐藏状态供训练头使用。"
+   },
+   {
+    "code": "        'masks': masks",
+    "comment_zh": "把遮挡位置一并返回以计算 iBOT 目标。"
+   },
+   {
+    "code": "    }",
+    "comment_zh": "结束特征字典。"
+   },
+   {
+    "code": "def forward(self, x, is_training=False, masks=None):",
+    "comment_zh": "统一预训练与下游推理入口。"
+   },
+   {
+    "code": "    features = self.forward_features(x, masks)",
+    "comment_zh": "先获得结构化特征。"
+   },
+   {
+    "code": "    return features if is_training else self.head(features['x_norm_clstoken'])",
+    "comment_zh": "训练返回全部特征，普通推理只走全局头。"
+   }
+  ]
+ },
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "CLIP 系模型靠文本监督统治了语义任务,但文字天然描述不了一切视觉信息——精确几何、纹理、部件关系。Meta 的 DINOv2 主张:纯自监督(不用一个字的文本)也能训练出「万用视觉特征」,而且在像素级任务上更强。它的野心是做视觉界的「无监督基础模型」:特征拿来即用,永不微调。"
+  },
+  {
+   "title": "方法详解",
+   "body": "方法上,DINOv2 集成并稳定化了 DINO + iBOT 配方:图像级自蒸馏(学生对齐 EMA 教师的全局输出)与 patch 级遮挡预测(学生在被遮位置预测教师 patch 特征)联合训练,辅以 Sinkhorn 居中、KoLeo 正则、高分辨率末段训练等一系列大规模稳定化技巧。数据是另一半贡献:自动化管线从 12 亿网络图像中去重、检索、均衡,蒸馏出 1.42 亿张高质量精选图(LVD-142M)——「精选数据 + 自监督」被证明远胜「生数据 + 自监督」。最后把 11 亿参数的 ViT-g 蒸馏成 S/B/L 全系列。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "LVD-142M 精选图像;评测全部采用冻结特征:线性探针分类、深度估计、语义分割、实例检索等 30 余项。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "冻结特征全面超过 OpenCLIP,尤其在深度、分割等密集任务上优势显著;「不微调也能用」让它成为学界工业界的默认视觉特征库。在机器人领域,DINOv2 的几何敏感特征成为 OpenVLA(与 SigLIP 并联)、UniVLA(潜动作空间)等模型的标准组件——本图鉴多条 VLA 谱系都汇于此。引用超过 9200 次。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "无文本对齐,不能直接做零样本分类或跨模态检索,需要外接对齐层;超高分辨率下计算昂贵。DINOv3(2025)继续放大并修复长训练中的密集特征退化,自监督路线与 CLIP 路线的互补格局仍在延续。"
+  }
+ ],
+ "citations": {
+  "count": 9260,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

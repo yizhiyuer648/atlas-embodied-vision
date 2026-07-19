@@ -1,0 +1,48 @@
+{
+ "id": "mobilesam",
+ "name": "MobileSAM",
+ "org": "Kyung Hee University",
+ "country": "KR",
+ "year": 2023,
+ "paper_url": "https://arxiv.org/abs/2306.14289",
+ "github_url": "https://github.com/ChaoningZhang/MobileSAM",
+ "category": "segmentation",
+ "sub_category": "promptable-efficient",
+ "one_liner_zh": "用解耦蒸馏把 SAM 的巨大 ViT-H 图像编码器替换成轻量 TinyViT。",
+ "key_idea_zh": "冻结 SAM 的提示编码器与掩码解码器，仅训练轻量图像编码器对齐原始图像嵌入。",
+ "tags": [
+  "提示分割",
+  "轻量化",
+  "TinyViT",
+  "蒸馏"
+ ],
+ "tier": "B",
+ "lineage_parent": "sam",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "把 SAM 装进手机的最大障碍是那个 632M 参数的 ViT-H 图像编码器(占全模型 95% 以上计算)。庆熙大学团队的 MobileSAM 问:能否只换引擎、不动车身——用一个 5M 级的轻量编码器,让 SAM 的提示交互体系原封不动地跑在移动端?"
+  },
+  {
+   "title": "方法详解",
+   "body": "直接带着掩码监督从头训练小模型效果很差,因为图像编码器与掩码解码器耦合优化、互相拖累。MobileSAM 的解法是解耦蒸馏:抛开掩码任务,只做特征对齐——让 TinyViT 学生直接回归 ViT-H 教师输出的图像嵌入。嵌入空间对齐后,原版的提示编码器与掩码解码器无需任何改动即可直接对接。整个蒸馏单卡一天完成。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "蒸馏仅用 SA-1B 的 1% 图像(无需掩码标注参与对齐);推理在单 GPU 上约 10ms/图(编码 8ms + 解码 4ms),CPU 上也可流畅运行。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "MobileSAM 比原版 SAM 小 60 多倍、性能几乎持平,比并行的 FastSAM 快 5 倍、小 7 倍。「解耦蒸馏 + 复用解码器」成为压缩提示式模型的模板做法,大量端侧应用(移动标注、AR 抠像)直接采用,引用超过 640 次。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "学生容量限制了复杂场景与细边界的上限;蒸馏只对齐编码器,教师解码器的缺点也一并继承。EfficientSAM、SAM 2 的轻量档等后续工作沿同一权衡曲线继续推进。"
+  }
+ ],
+ "citations": {
+  "count": 647,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

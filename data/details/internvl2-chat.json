@@ -1,0 +1,217 @@
+{
+ "id": "internvl2-chat",
+ "name": "InternVL2",
+ "org": "Shanghai AI Laboratory",
+ "country": "CN",
+ "year": 2024,
+ "paper_url": "unknown",
+ "github_url": "https://github.com/OpenGVLab/InternVL",
+ "category": "multimodal",
+ "sub_category": "general_vlm",
+ "one_liner_zh": "通过动态切图适配高分辨率和多图输入的开源多模态模型系列。",
+ "key_idea_zh": "把大图切成多个局部 tile 并附加缩略图，经 InternViT、Pixel Shuffle 与 MLP 投影为语言模型可接收的视觉 token。",
+ "tags": [
+  "开源",
+  "动态切图",
+  "高分辨率",
+  "多图",
+  "视频"
+ ],
+ "tier": "A",
+ "lineage_parent": "internvl-chat",
+ "architecture": {
+  "description_zh": "高分辨率图像经动态切图得到局部块和全局缩略图；InternViT、Pixel Shuffle 与 MLP 生成视觉 token，再与用户文本共同填入对话模板，最后由语言模型自回归回答。",
+  "modules": [
+   {
+    "id": "image_input",
+    "label": "高分辨率图像",
+    "type": "input"
+   },
+   {
+    "id": "dynamic_tiles",
+    "label": "动态切图 + 缩略图",
+    "type": "preprocess"
+   },
+   {
+    "id": "internvit",
+    "label": "InternViT",
+    "type": "encoder"
+   },
+   {
+    "id": "pixel_shuffle",
+    "label": "Pixel Shuffle 降采样",
+    "type": "compressor"
+   },
+   {
+    "id": "mlp_projector",
+    "label": "MLP 投影器",
+    "type": "projector"
+   },
+   {
+    "id": "text_prompt",
+    "label": "用户文本指令",
+    "type": "input"
+   },
+   {
+    "id": "multimodal_prompt",
+    "label": "图文对话模板",
+    "type": "fusion"
+   },
+   {
+    "id": "language_model",
+    "label": "语言模型",
+    "type": "decoder"
+   },
+   {
+    "id": "answer",
+    "label": "文本回答",
+    "type": "output"
+   }
+  ],
+  "edges": [
+   {
+    "from": "image_input",
+    "to": "dynamic_tiles",
+    "label": "按宽高比分块"
+   },
+   {
+    "from": "dynamic_tiles",
+    "to": "internvit",
+    "label": "局部块批次"
+   },
+   {
+    "from": "internvit",
+    "to": "pixel_shuffle",
+    "label": "patch 特征"
+   },
+   {
+    "from": "pixel_shuffle",
+    "to": "mlp_projector",
+    "label": "压缩视觉序列"
+   },
+   {
+    "from": "mlp_projector",
+    "to": "multimodal_prompt",
+    "label": "视觉 token"
+   },
+   {
+    "from": "text_prompt",
+    "to": "multimodal_prompt",
+    "label": "文本 token"
+   },
+   {
+    "from": "multimodal_prompt",
+    "to": "language_model",
+    "label": "替换图像占位符"
+   },
+   {
+    "from": "language_model",
+    "to": "answer",
+    "label": "自回归生成"
+   }
+  ],
+  "flow_ms": 7000
+ },
+ "code": {
+  "language": "python",
+  "source_repo": "https://github.com/OpenGVLab/InternVL",
+  "source_path": "internvl_chat/internvl/model/internvl_chat/modeling_internvl_chat.py",
+  "simplified": true,
+  "lines": [
+   {
+    "code": "def extract_feature(self, pixel_values):",
+    "comment_zh": "按官方实现简化：把切好的图像块转成语言侧视觉 token。"
+   },
+   {
+    "code": "    if self.select_layer == -1:",
+    "comment_zh": "默认使用视觉编码器最后一层。"
+   },
+   {
+    "code": "        outputs = self.vision_model(",
+    "comment_zh": "将图像块送入 InternViT。"
+   },
+   {
+    "code": "            pixel_values=pixel_values,",
+    "comment_zh": "输入张量包含批量动态切图。"
+   },
+   {
+    "code": "            output_hidden_states=False, return_dict=True)",
+    "comment_zh": "只请求最终特征以节省内存。"
+   },
+   {
+    "code": "        vit_embeds = outputs.last_hidden_state",
+    "comment_zh": "取得最后一层 patch 序列。"
+   },
+   {
+    "code": "    else:",
+    "comment_zh": "也可按配置选择中间层特征。"
+   },
+   {
+    "code": "        outputs = self.vision_model(",
+    "comment_zh": "再次调用同一视觉编码器。"
+   },
+   {
+    "code": "            pixel_values=pixel_values,",
+    "comment_zh": "输入仍是图像块批次。"
+   },
+   {
+    "code": "            output_hidden_states=True, return_dict=True)",
+    "comment_zh": "此时要求返回所有隐藏层。"
+   },
+   {
+    "code": "        vit_embeds = outputs.hidden_states[self.select_layer]",
+    "comment_zh": "取配置指定的视觉层。"
+   },
+   {
+    "code": "    vit_embeds = vit_embeds[:, 1:, :]",
+    "comment_zh": "移除视觉编码器的 CLS token。"
+   },
+   {
+    "code": "    h = w = int(vit_embeds.shape[1] ** 0.5)",
+    "comment_zh": "由 patch 数恢复二维特征边长。"
+   },
+   {
+    "code": "    vit_embeds = vit_embeds.reshape(vit_embeds.shape[0], h, w, -1)",
+    "comment_zh": "把一维 patch 序列还原为二维网格。"
+   },
+   {
+    "code": "    vit_embeds = self.pixel_shuffle(vit_embeds, scale_factor=self.downsample_ratio)",
+    "comment_zh": "Pixel Shuffle 按配置比例做空间降采样，减少视觉 token 数。"
+   },
+   {
+    "code": "    vit_embeds = vit_embeds.reshape(vit_embeds.shape[0], -1, vit_embeds.shape[-1])",
+    "comment_zh": "再展平为语言模型需要的序列。"
+   },
+   {
+    "code": "    vit_embeds = self.mlp1(vit_embeds)",
+    "comment_zh": "MLP 将视觉通道映射到语言模型隐藏维度。"
+   },
+   {
+    "code": "    return vit_embeds",
+    "comment_zh": "返回可插入图文提示词的视觉 token。"
+   }
+  ]
+ },
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "InternVL2(2024 年 7 月)是 OpenGVLab 开源体系的成熟收获期版本:目标从「单项对标 GPT-4V」升级为「全谱系覆盖」——从 1B 的端侧模型到 108B 的旗舰,统一架构、统一训练法,并把文档、多图、视频全部纳入能力版图。"
+  },
+  {
+   "title": "方法详解",
+   "body": "架构延续「ViT-MLP-LLM」黄金组合:InternViT(300M 或 6B)做视觉塔;动态高分辨率切图——按宽高比切至多 12 个(高配 40 个)448×448 tile 加缩略图;像素重排把每 tile 的 1024 个 token 压到 256;MLP 投影接入不同档位的语言底座(Qwen2、InternLM2 等)。训练采用渐进式策略:先在小语言模型上对齐视觉塔,再迁移到大模型,显著节省算力。视频以帧序列形式复用同一接口。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "多阶段训练覆盖图文对齐、多任务预训练与指令微调,语料强化中英双语、文档图表与推理数据;1B 到 108B 全系权重开源。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "InternVL2-76B/108B 在 MMMU、DocVQA、MathVista 等基准上进入全球第一梯队,部分项目首次让开源模型逼平 GPT-4o 级商用模型;全尺寸开源使其成为学术研究与产业私有化部署的高频选择,也是国产开源多模态的旗帜性成果。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "多 tile 高分辨率输入推理成本高;长视频理解仍靠稀疏采样。后续 InternVL2.5/3 继续强化推理(混合偏好优化)与原生多模态预训练,与 Qwen-VL 系的竞争持续拉高开源水位。"
+  }
+ ]
+}

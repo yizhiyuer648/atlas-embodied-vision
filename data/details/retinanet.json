@@ -1,0 +1,48 @@
+{
+ "id": "retinanet",
+ "name": "RetinaNet",
+ "org": "Facebook AI Research",
+ "country": "US",
+ "year": 2017,
+ "paper_url": "https://arxiv.org/abs/1708.02002",
+ "github_url": "https://github.com/facebookresearch/Detectron",
+ "category": "detection",
+ "sub_category": "one-stage",
+ "one_liner_zh": "用 Focal Loss 解决密集检测中前景与背景极不平衡的问题。",
+ "key_idea_zh": "降低容易负样本的损失权重，使单阶段检测器专注于少量困难样本。",
+ "tags": [
+  "Focal Loss",
+  "FPN",
+  "anchor",
+  "单阶段"
+ ],
+ "tier": "B",
+ "lineage_parent": "unknown",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "到 2017 年,单阶段检测器速度占优但精度始终落后两阶段,原因却没人说清。FAIR 的这篇论文给出了诊断:罪魁是极端的前景-背景类别失衡——密集检测器每张图要评估约 10 万个候选位置,其中绝大多数是容易分类的背景,海量「简单负样本」的损失淹没了少数有价值样本的梯度。"
+  },
+  {
+   "title": "方法详解",
+   "body": "解决方案是重塑交叉熵:Focal Loss 给标准交叉熵乘上调制因子 (1−p)^γ,预测越有把握的样本损失被压得越低,训练自动聚焦在少量困难样本上,γ 取 2 时效果最佳。为验证损失函数本身的威力,作者刻意设计了一个「毫无花哨」的单阶段检测器 RetinaNet:ResNet+FPN 主干,每层特征图上铺锚框,两条并联子网分别做分类与回归。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "在 COCO 上训练评测。由于 Focal Loss 天然抗失衡,训练不再需要 SSD 式的困难负样本挖掘或 OHEM,流程反而更简洁。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "RetinaNet 以单阶段的速度首次全面超过当时所有两阶段检测器的精度,证明单阶段的差距根本不在结构而在训练信号。Focal Loss 从此成为密集预测任务(检测、分割、长尾分类)的通用工具,RetinaNet 也长期充当 anchor-based 单阶段的标准基线。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "锚框超参数依旧繁琐,检测头在所有位置密集计算也有冗余。FCOS 等 anchor-free 方法随后证明:配合好的样本分配策略(ATSS),去掉锚框同样能达到甚至超过 RetinaNet 的水平。"
+  }
+ ],
+ "citations": {
+  "count": 3399,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#faf9f5">
+  <meta name="description" content="本地 arXiv 中文论文库与 OpenAlex、Semantic Scholar、Hugging Face Papers 多来源实时发现。">
+  <title>论文雷达 · Atlas</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="assets/css/main.css?v=20260719.7">
+</head>
+<body data-page="radar">
+  <div class="noise" aria-hidden="true"></div>
+  <header id="site-header"></header>
+  <main id="main-content" class="page-main" tabindex="-1">
+    <div class="container">
+      <nav id="breadcrumbs" class="breadcrumbs" aria-label="面包屑"></nav>
+      <section class="page-hero compact-hero radar-hero">
+        <div>
+          <p class="eyebrow"><span class="live-dot"></span> PAPER RADAR</p>
+          <h1>论文雷达</h1>
+          <p>本地 arXiv 中文导读库稳定兜底，OpenAlex、Semantic Scholar 与 Hugging Face Papers 并行补充近期公开论文。任一实时来源失败，都不影响其余结果。</p>
+        </div>
+        <div class="radar-sweep" aria-hidden="true"><i></i><span></span></div>
+      </section>
+
+      <section class="radar-controls glass-panel">
+        <div class="library-filter-row">
+          <div class="search-field">
+            <span class="search-icon" aria-hidden="true"></span>
+            <label class="sr-only" for="lib-search">在论文库中搜索</label>
+            <input id="lib-search" type="search" placeholder="搜索标题、摘要或中文导读…" autocomplete="off">
+          </div>
+          <label class="sort-control">时间
+            <select id="lib-range">
+              <option value="all">全部</option>
+              <option value="30">近一个月</option>
+              <option value="90">近三个月</option>
+              <option value="180">近半年</option>
+            </select>
+          </label>
+          <label class="sort-control">排序
+            <select id="lib-sort">
+              <option value="date">最新发布</option>
+              <option value="cites">引用最多</option>
+            </select>
+          </label>
+          <label class="sort-control">来源
+            <select id="lib-source">
+              <option value="all">全部来源</option>
+              <option value="arxiv-local">arXiv 本地库</option>
+              <option value="openalex">OpenAlex</option>
+              <option value="semantic-scholar">Semantic Scholar</option>
+              <option value="hf-papers">HF Papers</option>
+            </select>
+          </label>
+        </div>
+        <div id="lib-tabs" class="radar-tabs" role="tablist" aria-label="论文方向"></div>
+        <p class="radar-api-note">页面打开时按当前方向查询公开来源；输入过程只在已有结果中本地筛选，按 Enter 或“检索实时来源”才会把新关键词发送给三个公开论文 API。</p>
+      </section>
+
+      <div class="radar-status-row">
+        <div class="radar-status-copy">
+          <p id="lib-status" aria-live="polite"></p>
+          <div id="source-statuses" class="source-statuses" aria-label="论文来源状态"></div>
+        </div>
+        <button id="live-refresh" class="button button-ghost" type="button">检索实时来源</button>
+      </div>
+      <section id="lib-results" class="paper-grid" aria-label="论文列表"></section>
+      <div class="library-more-row"><button id="lib-more" class="button button-ghost" type="button" hidden>加载更多</button></div>
+      <section id="lib-empty" class="radar-state" hidden>
+        <div class="radar-state-icon">⌁</div>
+        <h2>没有匹配的论文</h2>
+        <p>试着放宽时间范围、换一个方向,或减少关键词。</p>
+      </section>
+    </div>
+  </main>
+  <footer id="site-footer"></footer>
+  <script type="module" src="assets/js/app.js?v=20260719.7"></script>
+</body>
+</html>

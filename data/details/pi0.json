@@ -1,0 +1,202 @@
+{
+ "id": "pi0",
+ "name": "π0",
+ "org": "Physical Intelligence",
+ "country": "US",
+ "year": 2024,
+ "paper_url": "https://arxiv.org/abs/2410.24164",
+ "github_url": "https://github.com/Physical-Intelligence/openpi",
+ "category": "vla",
+ "sub_category": "flow-matching-vla",
+ "one_liner_zh": "用流匹配动作专家生成连续动作块的通用 VLA。",
+ "key_idea_zh": "以 PaliGemma 编码视觉语言上下文，独立动作专家学习条件速度场，并通过数值积分从噪声得到连续动作块。",
+ "tags": [
+  "流匹配",
+  "动作块",
+  "PaliGemma"
+ ],
+ "tier": "A",
+ "lineage_parent": "unknown",
+ "architecture": {
+  "description_zh": "π0 将图像与语言交给 PaliGemma 前缀模型，把机器人状态、带噪动作和时间步交给动作专家；动作专家预测速度场，经多步积分得到动作块。",
+  "modules": [
+   {
+    "id": "pi-observation",
+    "label": "图像 + 指令",
+    "type": "input"
+   },
+   {
+    "id": "pi-state",
+    "label": "机器人状态",
+    "type": "input"
+   },
+   {
+    "id": "pi-prefix",
+    "label": "PaliGemma 前缀",
+    "type": "encoder"
+   },
+   {
+    "id": "pi-noise",
+    "label": "噪声动作 + 时间步",
+    "type": "latent"
+   },
+   {
+    "id": "pi-expert",
+    "label": "Gemma 动作专家",
+    "type": "transformer"
+   },
+   {
+    "id": "pi-velocity",
+    "label": "动作速度场",
+    "type": "decoder"
+   },
+   {
+    "id": "pi-integrator",
+    "label": "流匹配积分",
+    "type": "sampler"
+   },
+   {
+    "id": "pi-actions",
+    "label": "连续动作块",
+    "type": "output"
+   }
+  ],
+  "edges": [
+   {
+    "from": "pi-observation",
+    "to": "pi-prefix",
+    "label": "视觉语言 token"
+   },
+   {
+    "from": "pi-prefix",
+    "to": "pi-expert",
+    "label": "条件上下文"
+   },
+   {
+    "from": "pi-state",
+    "to": "pi-expert",
+    "label": "本体状态"
+   },
+   {
+    "from": "pi-noise",
+    "to": "pi-expert",
+    "label": "动作查询"
+   },
+   {
+    "from": "pi-expert",
+    "to": "pi-velocity",
+    "label": "动作隐藏态"
+   },
+   {
+    "from": "pi-velocity",
+    "to": "pi-integrator",
+    "label": "dx/dt"
+   },
+   {
+    "from": "pi-integrator",
+    "to": "pi-actions",
+    "label": "去噪轨迹"
+   }
+  ],
+  "flow_ms": 3900
+ },
+ "code": {
+  "language": "python",
+  "source_repo": "https://github.com/Physical-Intelligence/openpi",
+  "source_path": "src/openpi/models/pi0.py",
+  "simplified": true,
+  "lines": [
+   {
+    "code": "def sample_actions(self, rng, observation, num_steps=10):",
+    "comment_zh": "定义从观测采样连续动作块的过程。"
+   },
+   {
+    "code": "    prefix, prefix_mask, prefix_ar = self.embed_prefix(observation)",
+    "comment_zh": "编码图像和语言，形成可复用的前缀 token。"
+   },
+   {
+    "code": "    batch = prefix.shape[0]",
+    "comment_zh": "读取当前批次大小。"
+   },
+   {
+    "code": "    x = jax.random.normal(rng, (batch, self.action_horizon, self.action_dim))",
+    "comment_zh": "从高斯噪声初始化整段动作。"
+   },
+   {
+    "code": "    dt = -1.0 / num_steps",
+    "comment_zh": "设置从噪声时间 1 积分到数据时间 0 的步长。"
+   },
+   {
+    "code": "    def denoise_step(carry, _):",
+    "comment_zh": "定义一次流匹配去噪更新。"
+   },
+   {
+    "code": "        x_t, t = carry",
+    "comment_zh": "取出当前动作样本与时间。"
+   },
+   {
+    "code": "        suffix, suffix_mask, suffix_ar = self.embed_suffix(observation, x_t, t)",
+    "comment_zh": "把状态、带噪动作和时间编码成动作后缀。"
+   },
+   {
+    "code": "        tokens = jnp.concatenate([prefix, suffix], axis=1)",
+    "comment_zh": "拼接视觉语言前缀与动作后缀。"
+   },
+   {
+    "code": "        mask = make_attn_mask(jnp.concatenate([prefix_mask, suffix_mask], axis=1), jnp.concatenate([prefix_ar, suffix_ar], axis=1))",
+    "comment_zh": "构造前缀可见、动作块受控的注意力掩码。"
+   },
+   {
+    "code": "        hidden = self.PaliGemma.llm(tokens, mask=mask)",
+    "comment_zh": "由主干与动作专家联合处理上下文。"
+   },
+   {
+    "code": "        velocity = self.action_out_proj(hidden[:, -self.action_horizon:])",
+    "comment_zh": "从动作 token 预测当前速度场。"
+   },
+   {
+    "code": "        return (x_t + dt * velocity, t + dt), None",
+    "comment_zh": "沿速度场做一次欧拉积分。"
+   },
+   {
+    "code": "    init = (x, jnp.ones((batch,)))",
+    "comment_zh": "从扩散时间 1 开始积分。"
+   },
+   {
+    "code": "    (actions, _), _ = jax.lax.scan(denoise_step, init, length=num_steps)",
+    "comment_zh": "用 JAX scan 高效执行固定次数去噪。"
+   },
+   {
+    "code": "    return actions",
+    "comment_zh": "输出完整的连续动作块。"
+   }
+  ]
+ },
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "Physical Intelligence 成立时的判断是:通用机器人策略(机器人基础模型)是解决数据、泛化与鲁棒性难题的唯一出路,但此前 VLA 的离散动作输出撑不起叠衣服这类高频灵巧任务。π0 因此要造一个既继承互联网语义知识、又能输出 50Hz 连续动作块的基础模型。"
+  },
+  {
+   "title": "方法详解",
+   "body": "π0 = 预训练 VLM + 流匹配动作专家。PaliGemma(3B)负责编码图像与语言上下文;一个独立参数的动作专家(action expert)以此为条件,用流匹配(flow matching)学习从噪声到动作块的条件速度场——推理时从高斯噪声出发,沿速度场做约 10 步数值积分,即可得到一段 50 步的连续动作。相比扩散的几十上百步去噪,流匹配把迭代次数压到个位数,满足实时控制;相比离散 token,连续输出天然适配高频灵巧操作。两个模块联合训练,注意力上动作专家可以看到 VLM 的全部上下文。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "预训练数据是 Physical Intelligence 自采的超大规模多本体数据(单臂、双臂、移动操作平台共 7 类构型、68 类任务)加上开源数据集;之后针对复杂任务做高质量后训练。这种「先广后精」的两阶段配方被论文类比为 LLM 的预训练+对齐。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "π0 能零样本执行预训练覆盖的任务,遵循人类或高层 VLM 给出的语言指令,并通过微调掌握叠衣服、清理餐桌、组装纸箱等长时程灵巧任务——叠衣服 demo 一度成为具身智能出圈的标志性画面。π0 确立了「VLM + 流匹配动作专家」的架构范式,权重后来开源,引用超过 2100 次,是当前商业化通用操作路线的风向标。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "对完全陌生的环境与物体,零样本能力仍有限,复杂任务依赖高质量后训练数据;开放世界的语义泛化也未完全解决。后续 π0.5 通过异构任务联合训练与知识隔离显著增强开放世界泛化,并演示了在陌生家庭中长时程整理任务。"
+  }
+ ],
+ "citations": {
+  "count": 2194,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

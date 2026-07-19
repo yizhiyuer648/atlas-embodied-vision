@@ -1,0 +1,48 @@
+{
+ "id": "qwen-vl",
+ "name": "Qwen-VL",
+ "org": "Alibaba Cloud",
+ "country": "CN",
+ "year": 2023,
+ "paper_url": "https://arxiv.org/abs/2308.12966",
+ "github_url": "https://github.com/QwenLM/Qwen-VL",
+ "category": "multimodal",
+ "sub_category": "general_vlm",
+ "one_liner_zh": "通义千问首代开源视觉语言模型，可处理中文图文问答与视觉定位。",
+ "key_idea_zh": "用视觉接收器把图像特征压缩为固定数量的视觉 token，再交给 Qwen 语言模型统一生成。",
+ "tags": [
+  "开源",
+  "中文",
+  "视觉定位",
+  "图文对话"
+ ],
+ "tier": "B",
+ "lineage_parent": "unknown",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "2023 年中的开源 VLM 大多只会英文看图聊天,既读不了中文场景文字,也给不出目标框。阿里通义的 Qwen-VL 要做「全能型」第一代:中英双语、能定位(grounding)、能读文字(OCR),而且全部开源可商用。"
+  },
+  {
+   "title": "方法详解",
+   "body": "架构三件套:ViT-bigG 视觉编码器;单层交叉注意力「视觉接收器」——用 256 个可学习查询把每张图的特征压缩成固定 256 个视觉 token(在信息保留与序列长度间取平衡);Qwen-7B 语言模型统一生成。输入输出接口为定位而设计:边界框写成文本化坐标并用特殊标记包裹,使「框」成为可读可写的一等公民。训练三阶段:图文对预训练 → 多任务预训练(VQA/OCR/grounding 七类任务混合)→ 指令微调出 Qwen-VL-Chat。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "清洗后的多语言多模态语料(含大规模中文图文),grounding 数据以图文-框三元组形式对齐;权重开源并提供量化版本。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "Qwen-VL 在同规模通才模型中于描述、VQA、定位、文字阅读等基准全面领先,Qwen-VL-Chat 在真实对话评测中同样占优。它确立了通义多模态路线的起点,也把「中文 + 定位 + OCR」设为国产开源 VLM 的标配能力,引用超过 2200 次。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "固定 256 token 的压缩在高分辨率细节上有损;7B 底座限制复杂推理。Qwen2-VL 以原生动态分辨率与 M-RoPE 完成架构换代,Qwen 系列自此稳居开源 MLLM 第一梯队。"
+  }
+ ],
+ "citations": {
+  "count": 2222,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

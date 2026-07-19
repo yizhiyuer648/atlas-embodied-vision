@@ -1,0 +1,34 @@
+{
+ "id": "pangu-world-model",
+ "name": "盘古世界模型",
+ "org": "Huawei",
+ "country": "CN",
+ "year": "unknown",
+ "paper_url": "unknown",
+ "github_url": "unknown",
+ "category": "world",
+ "sub_category": "industrial-world-model",
+ "one_liner_zh": "华为盘古体系中对外提及的世界模型方向。",
+ "key_idea_zh": "未找到能同时核验具体模型版本、论文和官方实现的一手资料，因此不补写架构与年份。",
+ "tags": [
+  "国产",
+  "产业模型",
+  "资料待补"
+ ],
+ "tier": "B",
+ "lineage_parent": "unknown",
+ "sections": [
+  {
+   "title": "背景与定位",
+   "body": "华为盘古(Pangu)大模型体系在其行业发布中多次提及「世界模型」方向,主要面向自动驾驶与工业场景:利用生成式模型构建可控的驾驶场景重建与合成能力,为华为智驾(ADS)训练体系提供数据支撑。"
+  },
+  {
+   "title": "已公开的技术信息",
+   "body": "公开渠道信息显示,华为在自动驾驶数据闭环中使用场景重建与生成技术(与盘古多模态能力结合),学术侧有华为诺亚方舟实验室参与的驾驶世界模型论文散见于会议;但「盘古世界模型」作为单一模型的完整论文、版本号与评测并未系统公开。"
+  },
+  {
+   "title": "资料状态与提醒",
+   "body": "本条目属于「产业动向跟踪」性质:缺少可核验的一手论文与官方实现,年份、架构细节均保持 unknown,不做推断。若需研究驾驶世界模型,建议优先阅读本图鉴中资料完整的 DriveDreamer、Vista、OccWorld 等条目。"
+  }
+ ]
+}

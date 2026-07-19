@@ -1,0 +1,48 @@
+{
+ "id": "yolo-v9",
+ "name": "YOLOv9",
+ "org": "Academia Sinica-led collaboration",
+ "country": "TW",
+ "year": 2024,
+ "paper_url": "https://arxiv.org/abs/2402.13616",
+ "github_url": "https://github.com/WongKinYiu/yolov9",
+ "category": "detection",
+ "sub_category": "one-stage",
+ "one_liner_zh": "以可编程梯度信息和 GELAN 缓解深层网络的信息损失。",
+ "key_idea_zh": "PGI 在训练时为主分支提供可靠梯度，GELAN 则组合高效层聚合结构。",
+ "tags": [
+  "YOLO",
+  "PGI",
+  "GELAN",
+  "实时检测"
+ ],
+ "tier": "B",
+ "lineage_parent": "yolo-v7",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "YOLOv7 作者的下一问是理论层面的:深网络逐层变换会丢失与目标相关的输入信息(信息瓶颈),导致梯度不可靠——这才是深层模型难训的根源之一。YOLOv9 从「信息流」视角重新设计训练与架构。"
+  },
+  {
+   "title": "方法详解",
+   "body": "两大组件:PGI(可编程梯度信息)——训练时增加一条可逆的辅助分支,为主分支提供保留完整输入信息的可靠梯度,并通过多级辅助信息控制不同层的学习目标,推理时辅助分支完全移除,零开销;GELAN(广义高效层聚合网络)——把 CSPNet 的跨阶段划分与 ELAN 的梯度路径规划泛化成可以任意组合计算块的通用架构,只用普通卷积就达到超过深度可分离卷积方案的参数效率。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "仅用 COCO 从头训练。实验覆盖轻量到大型各档,验证 PGI 对小模型同样有效——这是以往深监督做不到的。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "YOLOv9-C 以更少参数与计算量超过 YOLOv7 与 v8 同档模型,从头训练的结果甚至优于大数据预训练的对手。「信息瓶颈 + 可逆分支」的分析给实时检测注入了少见的理论深度,引用迅速破 4000。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "训练时的辅助分支显著增加显存;论文署名机构信息在预印本阶段不完整(本条目机构标 unknown 即因此)。同期清华的 YOLOv10 从 NMS-free 角度切入,两者思路互补。"
+  }
+ ],
+ "citations": {
+  "count": 4017,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

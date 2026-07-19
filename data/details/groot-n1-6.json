@@ -1,0 +1,45 @@
+{
+  "id": "groot-n1-6",
+  "name": "GR00T N1.6",
+  "org": "NVIDIA",
+  "country": "US",
+  "year": 2025,
+  "paper_url": "unknown",
+  "github_url": "https://github.com/NVIDIA/Isaac-GR00T/tree/n1.6-release",
+  "category": "vla",
+  "sub_category": "humanoid-foundation-model",
+  "one_liner_zh": "NVIDIA 对 N1.5 的公开模型更新，以 Cosmos-2B VLM、加深的动作 DiT 和相对动作块提升跨本体机器人控制。",
+  "key_idea_zh": "保留 VLM 加 flow-matching 动作头的主干，同时把 DiT 从 16 层增至 32 层、解冻 VLM 顶部层，并对多数本体预测状态相对动作块。",
+  "tags": [
+    "VLA",
+    "人形机器人",
+    "跨本体",
+    "Cosmos-2B",
+    "相对动作",
+    "模型版本更新"
+  ],
+  "tier": "B",
+  "lineage_parent": "groot-n1-5",
+  "sections": [
+    {
+      "title": "版本定位",
+      "body": "GR00T N1.6 是 NVIDIA 对 GR00T N1.5 的模型与数据更新。NVIDIA Research 页面标注首次公开日期为 2025 年 12 月 15 日，Hugging Face 的 nvidia/GR00T-N1.6-3B 模型卡创建于同年 12 月；GitHub 的 n1.6-release 发布记录则在 2026 年补建。当前没有找到专门描述 N1.6 的独立论文，因此 paper_url 按规则写为 unknown，不能把 N1 白皮书冒充为 N1.6 论文。"
+    },
+    {
+      "title": "架构更新",
+      "body": "官方版本说明称 N1.6 使用内部 NVIDIA Cosmos-2B VLM 变体，可按图像原始宽高比做灵活分辨率编码；动作 DiT 从 N1.5 的 16 层增至 32 层。它移除 N1.5 在 VLM 后的四层 Transformer 适配器，改为在预训练时解冻 VLM 顶部四层，并让多数机器人本体预测相对当前状态的动作块。"
+    },
+    {
+      "title": "数据与训练",
+      "body": "在 N1.5 数据混合之外，官方披露 N1.6 又加入数千小时遥操作数据，覆盖双臂 YAM、AgiBot Genie-1、BEHAVIOR 中的 Galaxea R1 Pro 仿真和 Unitree G1 全身移动操作。官方研究页还写明预训练使用 30 万步和 16384 的全局批量；这些数字是版本发布说明，不是经过独立同行评审的论文结论。"
+    },
+    {
+      "title": "公开资源与结果",
+      "body": "NVIDIA 公布了 3B 基础权重、n1.6-release 代码、数据处理和微调示例，并提供面向 Bridge、Fractal、BEHAVIOR、DROID 等设置的后训练检查点。官方报告 N1.6 在仿真操作以及 YAM、AgiBot Genie-1、Unitree G1 实机任务上优于 N1.5；阅读时应把它视为发布方评测，而不是第三方复现。"
+    },
+    {
+      "title": "局限与学习提醒",
+      "body": "相对动作通常更平滑，但官方也指出小数据下可能积累误差；新本体仍需对齐相机、状态和动作定义并做后训练。N1.6 是版本化模型发布而非独立论文方法，后续比较必须写明具体检查点、代码分支和评测设置。"
+    }
+  ]
+}

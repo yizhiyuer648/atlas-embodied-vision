@@ -1,0 +1,203 @@
+{
+ "id": "rdt-1b",
+ "name": "RDT-1B",
+ "org": "Tsinghua University",
+ "country": "CN",
+ "year": 2024,
+ "paper_url": "https://arxiv.org/abs/2410.07864",
+ "github_url": "https://github.com/thu-ml/RoboticsDiffusionTransformer",
+ "category": "vla",
+ "sub_category": "diffusion-foundation-model",
+ "one_liner_zh": "面向双臂操作的十亿参数扩散 Transformer 基础模型。",
+ "key_idea_zh": "用 T5 和 SigLIP 编码语言与图像，以 RDT 交替注入多模态条件并对整段机器人动作执行扩散去噪。",
+ "tags": [
+  "国产",
+  "扩散 Transformer",
+  "双臂"
+ ],
+ "tier": "A",
+ "lineage_parent": "diffusion-policy",
+ "architecture": {
+  "description_zh": "RDT-1B 分别用 T5 与 SigLIP 编码语言和多视角图像，把机器人状态、带噪动作及时间步组成动作 token；RDT Block 交替跨注意语言与图像条件，输出动作去噪结果。",
+  "modules": [
+   {
+    "id": "rdt-text",
+    "label": "语言指令",
+    "type": "input"
+   },
+   {
+    "id": "rdt-images",
+    "label": "多视角图像",
+    "type": "input"
+   },
+   {
+    "id": "rdt-t5",
+    "label": "T5 文本编码器",
+    "type": "encoder"
+   },
+   {
+    "id": "rdt-siglip",
+    "label": "SigLIP 视觉编码器",
+    "type": "encoder"
+   },
+   {
+    "id": "rdt-action",
+    "label": "状态 + 带噪动作",
+    "type": "latent"
+   },
+   {
+    "id": "rdt-core",
+    "label": "RDT 交替条件块",
+    "type": "transformer"
+   },
+   {
+    "id": "rdt-denoise",
+    "label": "扩散调度器",
+    "type": "sampler"
+   },
+   {
+    "id": "rdt-output",
+    "label": "双臂动作块",
+    "type": "output"
+   }
+  ],
+  "edges": [
+   {
+    "from": "rdt-text",
+    "to": "rdt-t5",
+    "label": "文本 token"
+   },
+   {
+    "from": "rdt-images",
+    "to": "rdt-siglip",
+    "label": "图像 patch"
+   },
+   {
+    "from": "rdt-t5",
+    "to": "rdt-core",
+    "label": "语言条件"
+   },
+   {
+    "from": "rdt-siglip",
+    "to": "rdt-core",
+    "label": "视觉条件"
+   },
+   {
+    "from": "rdt-action",
+    "to": "rdt-core",
+    "label": "动作 token"
+   },
+   {
+    "from": "rdt-core",
+    "to": "rdt-denoise",
+    "label": "去噪预测"
+   },
+   {
+    "from": "rdt-denoise",
+    "to": "rdt-core",
+    "label": "下一扩散步"
+   },
+   {
+    "from": "rdt-denoise",
+    "to": "rdt-output",
+    "label": "动作序列"
+   }
+  ],
+  "flow_ms": 4200
+ },
+ "code": {
+  "language": "python",
+  "source_repo": "https://github.com/thu-ml/RoboticsDiffusionTransformer",
+  "source_path": "models/rdt/model.py",
+  "simplified": true,
+  "lines": [
+   {
+    "code": "def forward(self, x, freq, t, lang_c, img_c, lang_mask=None, img_mask=None):",
+    "comment_zh": "接收动作 token、控制频率、扩散时间及多模态条件。"
+   },
+   {
+    "code": "    t = self.t_embedder(t)",
+    "comment_zh": "把扩散时间编码成全局条件。"
+   },
+   {
+    "code": "    freq = self.freq_embedder(freq)",
+    "comment_zh": "编码不同机器人的控制频率。"
+   },
+   {
+    "code": "    cond = t + freq",
+    "comment_zh": "合并时间与频率条件。"
+   },
+   {
+    "code": "    x = self.x_embedder(x)",
+    "comment_zh": "将状态和带噪动作投影到 Transformer 隐藏维度。"
+   },
+   {
+    "code": "    x = x + self.x_pos_embed",
+    "comment_zh": "加入动作序列的一维位置编码。"
+   },
+   {
+    "code": "    lang_c = self.lang_cond_proj(lang_c)",
+    "comment_zh": "对齐 T5 语言特征的维度。"
+   },
+   {
+    "code": "    img_c = self.img_cond_proj(img_c)",
+    "comment_zh": "对齐 SigLIP 图像特征的维度。"
+   },
+   {
+    "code": "    for index, block in enumerate(self.blocks):",
+    "comment_zh": "依次经过深层 RDT Block。"
+   },
+   {
+    "code": "        if index % 2 == 0:",
+    "comment_zh": "偶数层选择语言作为跨注意力条件。"
+   },
+   {
+    "code": "            x = block(x, cond, lang_c, lang_mask)",
+    "comment_zh": "让动作 token 读取指令语义。"
+   },
+   {
+    "code": "        else:",
+    "comment_zh": "奇数层切换到视觉条件。"
+   },
+   {
+    "code": "            x = block(x, cond, img_c, img_mask)",
+    "comment_zh": "让动作 token 对齐当前场景。"
+   },
+   {
+    "code": "    x = self.final_layer(x, cond)",
+    "comment_zh": "用自适应归一化和线性层生成去噪结果。"
+   },
+   {
+    "code": "    return x",
+    "comment_zh": "返回整段动作的扩散预测。"
+   }
+  ]
+ },
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "双臂协同是机器人操作中最难的设定之一:动作空间翻倍、双臂耦合导致动作分布高度多峰,而双臂示范数据又极其稀缺。清华团队的 RDT-1B 目标是为双臂操作打造第一个十亿参数级的扩散基础模型,把「预训练+微调」范式完整搬到双臂领域。"
+  },
+  {
+   "title": "方法详解",
+   "body": "RDT(Robotics Diffusion Transformer)以扩散模型为核心表达多峰动作分布:T5-XXL 编码语言指令,SigLIP 编码多路图像,两种条件在专门设计的可扩展 Transformer 中交替注入(alternating condition injection),对整段双臂动作序列去噪。针对「不同机器人动作定义不一致」的老大难问题,论文提出物理可解释统一动作空间(Physically Interpretable Unified Action Space):把各种机器人的动作都映射到一套保留物理语义的统一坐标,让跨本体预训练学到可迁移的物理知识。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "先在迄今最大的多机器人数据集合上预训练(百万级轨迹),再在自建的 6000+ 条双臂多任务数据集上微调,模型规模 1.2B,是当时最大的扩散式操作基础模型。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "真机实验中 RDT-1B 显著超过既有方法:零样本泛化到新物体新场景、听懂语言指令、1~5 条示范学会新技能,并能完成灵巧的双臂协同任务。模型与代码开源,成为国产具身基础模型的代表作之一,也是双臂方向的标准基线,引用约 750 次。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "扩散推理的延迟在高频控制下仍显吃力;统一动作空间对形态差异极大的本体(如灵巧手)覆盖有限。团队与社区后续在 RDT 基础上探索更快的生成头与更大规模的双臂数据采集。"
+  }
+ ],
+ "citations": {
+  "count": 750,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

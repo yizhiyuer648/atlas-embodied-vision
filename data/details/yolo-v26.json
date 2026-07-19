@@ -1,0 +1,38 @@
+{
+  "id": "yolo-v26",
+  "name": "YOLO26",
+  "org": "Ultralytics",
+  "country": "US",
+  "year": 2026,
+  "paper_url": "https://arxiv.org/abs/2606.03748",
+  "github_url": "https://github.com/ultralytics/ultralytics",
+  "category": "detection",
+  "sub_category": "end-to-end-multitask",
+  "one_liner_zh": "Ultralytics 以年份命名的新一代统一实时视觉模型，原生支持无 NMS 的端到端推理。",
+  "key_idea_zh": "双头训练配合 Progressive Loss，移除 DFL，并用 STAL 保证小目标获得正样本。",
+  "tags": ["YOLO", "Ultralytics", "端到端", "NMS-free", "多任务", "Hugging Face 权重"],
+  "tier": "B",
+  "lineage_parent": "yolo-v11",
+  "sections": [
+    {
+      "title": "背景与命名",
+      "body": "YOLO26 是 Ultralytics 在 2026 年发布的官方模型族。名称中的 26 指发布年份，而不是从 YOLO11 之后逐个发布了 12、13……26；因此公开谱系会从 YOLO11 直接连到 YOLO26，并与社区的 YOLO12/YOLOv13 分支并列。官方 Hugging Face 权重卡创建于 2026 年 1 月，论文于 2026 年 6 月公开。"
+    },
+    {
+      "title": "方法详解",
+      "body": "YOLO26 采用双检测头：训练时保留更密集监督与端到端输出路径，推理时使用原生 NMS-free 头。它完全移除 Distribution Focal Loss，使回归头更轻且不再受固定离散范围约束；Progressive Loss 随训练推进把监督重心移向推理头，STAL 标签分配则确保小目标至少获得正样本。训练还引入结合 Muon 与 SGD 思路的 MuSGD。"
+    },
+    {
+      "title": "模型族与任务",
+      "body": "官方提供 n/s/m/l/x 五档，统一覆盖目标检测、实例分割、姿态估计、分类与旋转框；论文还包含开放词汇扩展 YOLOE-26。代码位于 Ultralytics 主仓库，官方权重同时发布在 Hugging Face 与 GitHub Assets。"
+    },
+    {
+      "title": "结果与影响",
+      "body": "论文报告五档检测模型在 COCO 上达到 40.9–57.5 mAP，T4 TensorRT 延迟为 1.7–11.8 ms，并在多个任务上改善精度—延迟折中。它代表 Ultralytics 正式从依赖 NMS 的工程路线转向原生端到端输出。"
+    },
+    {
+      "title": "局限与学习提醒",
+      "body": "YOLO26 的官方基准依赖特定训练配方、TensorRT 版本与硬件；部署时仍需在自己的输入尺寸、批量和后端复测。不要把 YOLO12/YOLOv13 的论文创新倒推成 Ultralytics YOLO26 的直接前代，它们属于并行团队。"
+    }
+  ]
+}

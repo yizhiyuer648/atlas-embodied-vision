@@ -1,0 +1,209 @@
+{
+ "id": "clip",
+ "name": "CLIP",
+ "org": "OpenAI",
+ "country": "US",
+ "year": 2021,
+ "paper_url": "https://arxiv.org/abs/2103.00020",
+ "github_url": "https://github.com/openai/CLIP",
+ "category": "representation",
+ "sub_category": "vision-language",
+ "one_liner_zh": "从海量图文对学习共享语义空间，开启通用零样本视觉识别范式。",
+ "key_idea_zh": "图像编码器与文本编码器通过批内对比学习对齐，类别名称可直接作为零样本分类器。",
+ "tags": [
+  "图文对比学习",
+  "零样本",
+  "视觉语言",
+  "基础模型"
+ ],
+ "tier": "A",
+ "lineage_parent": "unknown",
+ "architecture": {
+  "description_zh": "图像进入 ResNet 或 ViT，文本进入因果 Transformer；两侧取全局向量并归一化，通过可学习温度缩放的点积构成整批图文相似度矩阵。",
+  "modules": [
+   {
+    "id": "image",
+    "label": "图像输入",
+    "type": "input"
+   },
+   {
+    "id": "vision",
+    "label": "ResNet / ViT",
+    "type": "encoder"
+   },
+   {
+    "id": "text",
+    "label": "文本 Token",
+    "type": "input"
+   },
+   {
+    "id": "textenc",
+    "label": "Text Transformer",
+    "type": "encoder"
+   },
+   {
+    "id": "norm",
+    "label": "L2 归一化与投影",
+    "type": "projection"
+   },
+   {
+    "id": "similarity",
+    "label": "温度缩放余弦相似度",
+    "type": "matching"
+   },
+   {
+    "id": "output",
+    "label": "匹配 / 零样本分类",
+    "type": "output"
+   }
+  ],
+  "edges": [
+   {
+    "from": "image",
+    "to": "vision",
+    "label": "像素"
+   },
+   {
+    "from": "text",
+    "to": "textenc",
+    "label": "token ids"
+   },
+   {
+    "from": "vision",
+    "to": "norm",
+    "label": "图像全局向量"
+   },
+   {
+    "from": "textenc",
+    "to": "norm",
+    "label": "EOT 文本向量"
+   },
+   {
+    "from": "norm",
+    "to": "similarity",
+    "label": "单位向量"
+   },
+   {
+    "from": "similarity",
+    "to": "output",
+    "label": "相似度矩阵"
+   }
+  ],
+  "flow_ms": 4800
+ },
+ "code": {
+  "language": "python",
+  "source_repo": "https://github.com/openai/CLIP",
+  "source_path": "clip/model.py",
+  "simplified": true,
+  "lines": [
+   {
+    "code": "def encode_image(self, image):",
+    "comment_zh": "编码图像分支；片段已简化自 OpenAI CLIP。"
+   },
+   {
+    "code": "    return self.visual(image.type(self.dtype))",
+    "comment_zh": "用 ResNet 或 ViT 得到图像全局向量。"
+   },
+   {
+    "code": "def encode_text(self, text):",
+    "comment_zh": "编码文本分支。"
+   },
+   {
+    "code": "    x = self.token_embedding(text).type(self.dtype)",
+    "comment_zh": "把 token id 映射为词向量。"
+   },
+   {
+    "code": "    x = x + self.positional_embedding.type(self.dtype)",
+    "comment_zh": "加入可学习的位置编码。"
+   },
+   {
+    "code": "    x = x.permute(1, 0, 2)",
+    "comment_zh": "转换成 Transformer 所需的序列优先布局。"
+   },
+   {
+    "code": "    x = self.transformer(x)",
+    "comment_zh": "因果 Transformer 建模文本上下文。"
+   },
+   {
+    "code": "    x = x.permute(1, 0, 2)",
+    "comment_zh": "恢复批次优先布局。"
+   },
+   {
+    "code": "    x = self.ln_final(x).type(self.dtype)",
+    "comment_zh": "对文本隐藏状态做最终归一化。"
+   },
+   {
+    "code": "    eot = text.argmax(dim=-1)",
+    "comment_zh": "原实现以最大 token id 定位 EOT 位置。"
+   },
+   {
+    "code": "    return x[torch.arange(x.shape[0]), eot] @ self.text_projection",
+    "comment_zh": "取 EOT 状态并投影到共享嵌入空间。"
+   },
+   {
+    "code": "def forward(self, image, text):",
+    "comment_zh": "联合计算整批图文相似度。"
+   },
+   {
+    "code": "    image_features = self.encode_image(image)",
+    "comment_zh": "得到图像嵌入。"
+   },
+   {
+    "code": "    text_features = self.encode_text(text)",
+    "comment_zh": "得到文本嵌入。"
+   },
+   {
+    "code": "    image_features = image_features / image_features.norm(dim=1, keepdim=True)",
+    "comment_zh": "把图像向量归一化到单位球面。"
+   },
+   {
+    "code": "    text_features = text_features / text_features.norm(dim=1, keepdim=True)",
+    "comment_zh": "把文本向量归一化到单位球面。"
+   },
+   {
+    "code": "    logit_scale = self.logit_scale.exp()",
+    "comment_zh": "把可学习对数温度转换为正缩放系数。"
+   },
+   {
+    "code": "    logits_per_image = logit_scale * image_features @ text_features.t()",
+    "comment_zh": "计算每张图像对每条文本的相似度。"
+   },
+   {
+    "code": "    logits_per_text = logits_per_image.t()",
+    "comment_zh": "转置得到文本到图像的相似度。"
+   },
+   {
+    "code": "    return logits_per_image, logits_per_text",
+    "comment_zh": "两方向交叉熵共同训练图文对齐。"
+   }
+  ]
+ },
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "2021 年前的视觉模型都被「固定类别表」锁死:ImageNet 训练的模型只认识那 1000 类,换任务就要重新标注、重新训练。OpenAI 的 CLIP 问了一个改变领域的问题:互联网上有无穷的图片和描述它们的文字,能不能直接从这种自然语言监督里学出通用视觉模型——让「类别」由一句话临时定义?"
+  },
+  {
+   "title": "方法详解",
+   "body": "CLIP 同时训练一个图像编码器(ResNet 或 ViT)和一个文本编码器(Transformer):一个 batch 内 N 对图文,模型要在 N×N 的相似度矩阵里把 N 个正确配对挑出来(对称交叉熵),这迫使两个编码器把语义相同的图与文映射到同一方向。零样本分类由此变成检索:把「a photo of a {类别名}」逐个编码,与图像特征比余弦相似度,最高者即预测——分类器在推理时由文字现场构造,不需要任何训练样本。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "自建 4 亿图文对数据集(WIT),用 32768 的大 batch 对比训练。论文在超过 30 个数据集上系统评测零样本迁移,覆盖 OCR、动作识别、细粒度分类、地理定位等。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "零样本 CLIP 在 ImageNet 上追平监督训练的 ResNet-50,且对分布偏移的鲁棒性远超监督模型。它的真正影响在生态:CLIP 的文本编码器驱动了 Stable Diffusion 等文生图模型,视觉编码器成为 LLaVA、OpenVLA 等多模态/机器人模型的眼睛,开放词汇检测与分割(Grounding DINO、SAM 生态)也构建其上——引用超过 5 万次,是本图鉴所有条目中被复用最广的单一模型。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "CLIP 特征偏全局语义,弱于计数、空间关系与细粒度定位;对提示词措辞敏感。后续 SigLIP 改良损失,EVA-CLIP 优化训练配方,DINOv2 补上密集几何特征——现代 VLA 常把 CLIP 系与 DINO 系特征并联使用,正是为了互补这两类短板。"
+  }
+ ],
+ "citations": {
+  "count": 52153,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

@@ -1,0 +1,48 @@
+{
+ "id": "pp-yolo",
+ "name": "PP-YOLO",
+ "org": "Baidu",
+ "country": "CN",
+ "year": 2020,
+ "paper_url": "https://arxiv.org/abs/2007.12099",
+ "github_url": "https://github.com/PaddlePaddle/PaddleDetection",
+ "category": "detection",
+ "sub_category": "one-stage",
+ "one_liner_zh": "百度在 PaddlePaddle 上系统改造 YOLOv3，兼顾准确率与产业落地。",
+ "key_idea_zh": "组合 ResNet、可变形卷积、DropBlock、IoU-aware 等已验证技巧提升检测表现。",
+ "tags": [
+  "国产",
+  "YOLO",
+  "PaddlePaddle",
+  "IoU-aware"
+ ],
+ "tier": "B",
+ "lineage_parent": "yolo-v3",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "2020 年的百度面临的问题很实际:业务里大量 YOLOv3 存量部署,如何在几乎不增加参数和延迟的前提下把精度再抬一截?PP-YOLO 的定位因此与学术论文不同——它不追求新颖性,而是一次严谨的「已验证技巧组合实验」。"
+  },
+  {
+   "title": "方法详解",
+   "body": "以 YOLOv3 为底,骨干换成 ResNet50-vd 并在部分层引入可变形卷积;训练侧叠加更大 batch、EMA 权重滑动平均、DropBlock 正则、IoU 损失与 IoU-aware 置信度分支、Grid Sensitive 解码、Matrix NMS、CoordConv 与 SPP 等十余项技巧。论文逐项做消融,给出每个技巧的真实收益表,像一份可复现的「调参食谱」。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "全部实验基于 PaddlePaddle 在 COCO 上完成,模型与训练配置随 PaddleDetection 开源。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "PP-YOLO 达到 45.2% mAP 与 72.9 FPS,同时超过 EfficientDet 与 YOLOv4 的速度-精度平衡。它验证了「工程组合优化」的价值,也确立了百度 PP-YOLO → PP-YOLOv2 → PP-YOLOE 的产业检测器路线,在国内工业界部署广泛。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "本质仍是 anchor-based YOLOv3 架构,上限受限;技巧组合对数据分布敏感,迁移需重新消融。两年后的 PP-YOLOE 转向 anchor-free 与任务对齐学习,完成架构级换代。"
+  }
+ ],
+ "citations": {
+  "count": 344,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

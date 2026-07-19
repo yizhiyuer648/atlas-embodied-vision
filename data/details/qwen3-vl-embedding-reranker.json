@@ -1,0 +1,38 @@
+{
+  "id": "qwen3-vl-embedding-reranker",
+  "name": "Qwen3-VL-Embedding / Reranker",
+  "org": "Alibaba Cloud",
+  "country": "CN",
+  "year": 2026,
+  "paper_url": "https://arxiv.org/abs/2601.04720",
+  "github_url": "https://github.com/QwenLM/Qwen3-VL-Embedding",
+  "category": "representation",
+  "sub_category": "vision-language",
+  "one_liner_zh": "基于 Qwen3-VL 的多模态向量召回与精排家族，统一检索文本、图像、文档截图和视频。",
+  "key_idea_zh": "双塔 Embedding 独立编码候选以支持大规模召回，单塔 Reranker 让查询与文档交叉注意并以 yes/no 概率输出相关性。",
+  "tags": ["国产", "开源", "多模态检索", "Embedding", "Reranker", "双塔", "Cross-Attention", "MRL"],
+  "tier": "B",
+  "lineage_parent": "qwen3-vl",
+  "sections": [
+    {
+      "title": "家族定位与发布",
+      "body": "Qwen Team 于 2026 年 1 月 8 日提交 arXiv:2601.04720，并发布官方代码仓库和 Hugging Face 模型。论文与仓库把 Embedding 和 Reranker 定义为协同工作的一个多模态检索家族，因此图鉴合并为一个条目，而不是把同一训练与评测体系拆成两个几乎重复的卡片。"
+    },
+    {
+      "title": "召回与精排两阶段",
+      "body": "Qwen3-VL-Embedding 是双塔结构：文本、图像、截图、视频或混合输入可以独立编码，最终取基座最后一层 EOS 隐状态形成语义向量，适合提前建立大规模向量索引。Qwen3-VL-Reranker 是单塔交叉编码器，把 Query 与 Document 成对输入，通过跨模态交互后比较特殊 token yes/no 的生成概率得到相关性分数。"
+    },
+    {
+      "title": "模型规格与训练",
+      "body": "官方提供 Embedding 与 Reranker 的 2B、8B 两种规模，最长输入为 32K。Embedding 支持 Matryoshka Representation Learning，可在部署时选择较短向量维度；论文描述其训练从大规模对比预训练推进到由精排模型蒸馏，Reranker 则针对细粒度查询文档相关性优化。"
+    },
+    {
+      "title": "开放生态",
+      "body": "官方 GitHub 仓库包含推理、训练和 MMEB v2 评测脚本并采用 Apache-2.0。四个官方 Hugging Face 主模型卡均为公开、非 gated，标注 Apache-2.0；Embedding 模型卡任务为 sentence-similarity，Reranker 为 text-ranking。"
+    },
+    {
+      "title": "使用边界",
+      "body": "Embedding 适合高吞吐召回，但独立编码限制了查询与候选之间的细粒度交互；Reranker 精度更高，却必须逐对计算，成本随候选数增长。实际系统通常先用向量召回较小候选集，再精排，而不是只选其中一个模型。"
+    }
+  ]
+}

@@ -1,0 +1,239 @@
+{
+ "id": "cogvlm",
+ "name": "CogVLM",
+ "org": "Tsinghua University & Zhipu AI",
+ "country": "CN",
+ "year": 2023,
+ "paper_url": "https://arxiv.org/abs/2311.03079",
+ "github_url": "https://github.com/THUDM/CogVLM",
+ "category": "multimodal",
+ "sub_category": "general_vlm",
+ "one_liner_zh": "在语言模型各层加入视觉专家模块，减少图文特征混用冲突。",
+ "key_idea_zh": "图像由 EVA2-CLIP 与 GLU 适配器编码；注意力和前馈层为视觉 token 配置专门专家参数，同时保留原有语言能力。",
+ "tags": [
+  "开源",
+  "视觉专家",
+  "EVA2-CLIP",
+  "双语",
+  "视觉定位"
+ ],
+ "tier": "A",
+ "lineage_parent": "unknown",
+ "architecture": {
+  "description_zh": "EVA2-CLIP 提取视觉序列，GLU 适配器映射到语言隐藏维度，并在序列两端加入可学习的图像边界 token；进入 CogVLM 后，视觉 token 在每层走专属注意力与前馈专家，文本 token 保留语言路径。",
+  "modules": [
+   {
+    "id": "image",
+    "label": "图像",
+    "type": "input"
+   },
+   {
+    "id": "eva2_clip",
+    "label": "EVA2-CLIP",
+    "type": "encoder"
+   },
+   {
+    "id": "glu_adapter",
+    "label": "GLU 适配器",
+    "type": "projector"
+   },
+   {
+    "id": "text_tokens",
+    "label": "文本 token",
+    "type": "input"
+   },
+   {
+    "id": "mixed_sequence",
+    "label": "图文混合序列",
+    "type": "fusion"
+   },
+   {
+    "id": "vision_experts",
+    "label": "视觉 Attention / FFN",
+    "type": "expert"
+   },
+   {
+    "id": "language_path",
+    "label": "语言模型路径",
+    "type": "decoder"
+   },
+   {
+    "id": "fused_hidden",
+    "label": "共享输出 + 残差融合",
+    "type": "fusion"
+   },
+   {
+    "id": "answer",
+    "label": "文本回答",
+    "type": "output"
+   }
+  ],
+  "edges": [
+   {
+    "from": "image",
+    "to": "eva2_clip",
+    "label": "视觉 patch"
+   },
+   {
+    "from": "eva2_clip",
+    "to": "glu_adapter",
+    "label": "视觉特征"
+   },
+   {
+    "from": "glu_adapter",
+    "to": "mixed_sequence",
+    "label": "图像 token"
+   },
+   {
+    "from": "text_tokens",
+    "to": "mixed_sequence",
+    "label": "文本 token"
+   },
+   {
+    "from": "mixed_sequence",
+    "to": "vision_experts",
+    "label": "视觉位置掩码"
+   },
+   {
+    "from": "mixed_sequence",
+    "to": "language_path",
+    "label": "文本位置掩码"
+   },
+   {
+    "from": "vision_experts",
+    "to": "fused_hidden",
+    "label": "视觉位置更新"
+   },
+   {
+    "from": "language_path",
+    "to": "fused_hidden",
+    "label": "文本位置更新"
+   },
+   {
+    "from": "fused_hidden",
+    "to": "answer",
+    "label": "逐层交互后生成"
+   }
+  ],
+  "flow_ms": 7600
+ },
+ "code": {
+  "language": "python",
+  "source_repo": "https://github.com/THUDM/CogVLM",
+  "source_path": "utils/models/cogvlm_model.py",
+  "simplified": true,
+  "lines": [
+   {
+    "code": "class ImageMixin(BaseMixin):",
+    "comment_zh": "按官方实现简化：图像分支以 mixin 形式接入语言模型。"
+   },
+   {
+    "code": "    def __init__(self, args):",
+    "comment_zh": "初始化视觉编码与视觉到语言的映射。"
+   },
+   {
+    "code": "        super().__init__()",
+    "comment_zh": "先初始化基础 mixin。"
+   },
+   {
+    "code": "        vit_args = override_dist_dtype_device_args(args, args.eva_args)",
+    "comment_zh": "让 EVA 视觉塔继承当前精度和设备配置。"
+   },
+   {
+    "code": "        self.vit_model = EVA2CLIPModel(EVA2CLIPModel.get_args(**vars(vit_args)))",
+    "comment_zh": "构建 EVA2-CLIP 视觉编码器。"
+   },
+   {
+    "code": "        self.in_features = 1792",
+    "comment_zh": "官方实现中视觉特征宽度为 1792。"
+   },
+   {
+    "code": "        self.linear_proj = GLU(args, self.in_features)",
+    "comment_zh": "GLU 将视觉特征投影到语言隐藏维度。"
+   },
+   {
+    "code": "        self.image_length = args.image_length",
+    "comment_zh": "记录每张图占用的视觉 token 长度。"
+   },
+   {
+    "code": "        self.boi = nn.Parameter(torch.zeros(1, 1, args.hidden_size))",
+    "comment_zh": "创建可学习的图像开始 token。"
+   },
+   {
+    "code": "        self.eoi = nn.Parameter(torch.zeros(1, 1, args.hidden_size))",
+    "comment_zh": "创建可学习的图像结束 token。"
+   },
+   {
+    "code": "    def word_embedding_forward(self, input_ids, output_cross_layer, **kwargs):",
+    "comment_zh": "在词嵌入阶段把指定位置替换成图像特征。"
+   },
+   {
+    "code": "        vision_inputs = {k[7:]: v for k, v in kwargs.items()",
+    "comment_zh": "收集以 vision_ 开头的视觉输入。"
+   },
+   {
+    "code": "                         if k.startswith(\"vision_\") and k != \"vision_expert_mask\"}",
+    "comment_zh": "专家掩码不属于视觉塔输入，因此排除。"
+   },
+   {
+    "code": "        if input_ids.shape[1] == 1 or not vision_inputs:",
+    "comment_zh": "单步解码或无图时无需重复编码图像。"
+   },
+   {
+    "code": "            return self.transformer.word_embeddings(input_ids)",
+    "comment_zh": "直接走普通文本词嵌入路径。"
+   },
+   {
+    "code": "        image_emb = self.vit_model(**vision_inputs)[0]",
+    "comment_zh": "EVA2-CLIP 输出视觉 patch 特征。"
+   },
+   {
+    "code": "        image_emb = self.linear_proj(image_emb)",
+    "comment_zh": "GLU 将视觉特征对齐到语言空间。"
+   },
+   {
+    "code": "        image_tokens = torch.cat([self.boi.repeat(len(image_emb), 1, 1), image_emb, self.eoi.repeat(len(image_emb), 1, 1)], dim=1)",
+    "comment_zh": "为批次中的每幅图复制开始与结束 token，并包住视觉序列。"
+   },
+   {
+    "code": "        word_embedding = self.transformer.word_embeddings(input_ids).clone()",
+    "comment_zh": "先取得完整文本词嵌入并复制，避免原地影响其他计算。"
+   },
+   {
+    "code": "        word_embedding[kwargs[\"image_embed_mask\"].bool()] = image_tokens.reshape(-1, image_emb.shape[-1])",
+    "comment_zh": "只在图像掩码位置写入视觉 token。"
+   },
+   {
+    "code": "        return word_embedding.contiguous()",
+    "comment_zh": "返回连续内存的图文混合嵌入，供视觉专家层处理。"
+   }
+  ]
+ },
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "主流开源 VLM 走「浅对齐」路线:把视觉特征投影到语言模型输入端就完事(LLaVA 式)。清华与智谱的 CogVLM 认为这不够——视觉信息只在入口打了个招呼,语言模型内部的每一层仍在用「纯文本参数」处理图文混合序列,两种模态互相牵制:训视觉伤语言,保语言限视觉。"
+  },
+  {
+   "title": "方法详解",
+   "body": "CogVLM 的方案是视觉专家(visual expert):在语言模型的每一层,给视觉 token 配置独立的注意力投影矩阵(QKV)与前馈网络参数——文本 token 走原有参数(冻结,语言能力零损失),视觉 token 走新增专家参数,两者在同一注意力中交互。这实现了「深度融合」:视觉信息在全部层深度参与计算,却不覆写任何语言权重。图像侧用 EVA2-CLIP 编码,经 GLU 适配器进入序列。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "在大规模图文对上预训练视觉专家,再用视觉定位、VQA、对话等数据多任务微调;17B 版本(10B 视觉专家 + 7B 语言)开源,并有中英双语与 grounding 特化版。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "CogVLM-17B 在 NoCaps、RefCOCO 系列、GQA、ScienceQA 等 10 项跨模态基准登顶,多项追平或超过 55B 的 PaLI-X。「深融合 vs 浅对齐」的路线之争由它正式挑起,视觉专家思想影响了后续 GLM-4V 系列与多家 MLLM 设计,引用超过 800 次。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "视觉专家几乎让参数翻倍,训练与显存成本高;高分辨率支持有限。后续 CogVLM2 与 GLM-4V 引入更高分辨率与视频能力,而社区主流在数据充足时仍偏向更简单的浅对齐 + 大规模指令微调。"
+  }
+ ],
+ "citations": {
+  "count": 826,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

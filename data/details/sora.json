@@ -1,0 +1,42 @@
+{
+ "id": "sora",
+ "name": "Sora",
+ "org": "OpenAI",
+ "country": "US",
+ "year": 2024,
+ "paper_url": "https://openai.com/index/video-generation-models-as-world-simulators/",
+ "github_url": "unknown",
+ "category": "world",
+ "sub_category": "video-generation-world-simulator",
+ "one_liner_zh": "以时空 patch 统一训练的视频扩散 Transformer。",
+ "key_idea_zh": "将不同时长、分辨率和宽高比的视频压缩为时空 patch，在条件扩散 Transformer 中预测去噪结果。",
+ "tags": [
+  "视频生成",
+  "DiT",
+  "时空 patch"
+ ],
+ "tier": "B",
+ "lineage_parent": "unknown",
+ "sections": [
+  {
+   "title": "背景与定位",
+   "body": "Sora 是 OpenAI 于 2024 年 2 月公布的视频生成模型,能生成最长一分钟、高保真、多镜头的视频。OpenAI 把它定位为「世界模拟器」的早期形态——技术报告标题即为 Video generation models as world simulators,主张视频生成的规模化是通向通用物理世界模拟的路径。"
+  },
+  {
+   "title": "方法详解",
+   "body": "根据官方技术报告:视频先被视觉编码器压缩到时空潜空间,切成统一的时空 patch(spacetime patches)——这一步是关键抽象,使不同时长、分辨率、宽高比的视频与图像都能变成同一种「token」;主干是扩散 Transformer(DiT),在文本条件下从噪声 patch 去噪出视频;训练用 DALL·E 3 式的重字幕技术(re-captioning)给视频配详细描述,提升文本跟随能力。报告展示了三维一致性、物体持久性、简单物理交互等涌现能力,也坦承其物理模拟仍会失真。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "训练数据构成未公开,官方仅表述为互联网规模的视频与图像混合语料。模型未开源,2024 年 12 月以产品形式(Sora/Sora Turbo)向订阅用户开放。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "Sora 发布即引爆行业:它证明视频生成可以随算力平滑扩展,把「视频 DiT + 时空 patch」定为全行业标准配方——其后的可灵、Vidu、混元视频、Wan 无一例外沿这条路线。它也把「视频生成 = 世界模型」的争论推向中心舞台,深刻影响具身智能与自动驾驶社区的技术叙事。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "物理因果仍常出错(物体穿模、数量不守恒),长视频一致性有限;无论文、无权重,学术界只能通过技术报告与产品行为间接研究。后续 Sora 2(2025)增强了物理一致性与音视频同步,开源社区则以 Open-Sora 等项目追赶。"
+  }
+ ]
+}

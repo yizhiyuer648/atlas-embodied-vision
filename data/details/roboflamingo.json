@@ -1,0 +1,47 @@
+{
+ "id": "roboflamingo",
+ "name": "RoboFlamingo",
+ "org": "ByteDance Research",
+ "country": "CN",
+ "year": 2023,
+ "paper_url": "https://arxiv.org/abs/2311.01378",
+ "github_url": "https://github.com/RoboFlamingo/RoboFlamingo",
+ "category": "vla",
+ "sub_category": "vlm-adaptation",
+ "one_liner_zh": "把 Flamingo 式视觉语言模型适配为机器人模仿学习策略。",
+ "key_idea_zh": "通过交叉注意力融合多帧视觉与语言，并接入 LSTM 或扩散动作解码器，在离线示范上训练。",
+ "tags": [
+  "国产",
+  "VLM 适配",
+  "CALVIN"
+ ],
+ "tier": "B",
+ "lineage_parent": "rt-2",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "RT-2 证明了 VLM 可以直接变成机器人策略，但它依赖谷歌内部的巨型模型和算力，普通实验室无法复现。字节跳动的 RoboFlamingo 提出一条平民路线：拿开源的 OpenFlamingo 视觉语言模型，只在语言条件的操作示范上做轻量微调，看看开源 VLM 能否成为称职的「机器人模仿者」。"
+  },
+  {
+   "title": "方法详解",
+   "body": "RoboFlamingo 把职责拆开：预训练 VLM 负责单步的视觉语言理解——每一帧图像与指令经 Flamingo 式交叉注意力融合成语义特征；时序信息则交给一个显式的策略头（LSTM 或扩散头）来建模历史并输出连续动作。这种解耦意味着 VLM 主体可以冻结或仅少量微调，训练成本低，还支持开环控制模式，便于部署在算力有限的平台上。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "仅在 CALVIN 等语言条件操作数据集上做模仿学习微调，不需要互联网级联合训练。论文还系统比较了不同开源 VLM 作为底座的表现差异，给社区提供了选型参考。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "在 CALVIN 基准上，RoboFlamingo 以明显优势刷新了当时最优成绩，证明「开源 VLM + 轻量策略头 + 少量微调」是 RT-2 之外一条高性价比路线。它是最早的开源 VLA 实践之一，为后来 OpenVLA 等完全开放的模型探明了方向。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "评测集中在 CALVIN 仿真，真机与跨本体验证有限；LSTM 策略头的动作表达能力弱于扩散/流匹配动作专家。后续开源 VLA（OpenVLA、CogACT）转向更大规模真机数据预训练与更强的动作模块。"
+  }
+ ],
+ "citations": {
+  "count": 416,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

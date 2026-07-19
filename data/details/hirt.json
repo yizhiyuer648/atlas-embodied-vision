@@ -1,0 +1,34 @@
+{
+ "id": "hirt",
+ "name": "HiRT",
+ "org": "unknown",
+ "country": "CN",
+ "year": "unknown",
+ "paper_url": "unknown",
+ "github_url": "unknown",
+ "category": "vla",
+ "sub_category": "hierarchical-robot-transformer",
+ "one_liner_zh": "公开可核验资料不足的分层机器人 Transformer 工作。",
+ "key_idea_zh": "当前未找到足以核对其完整架构、年份与官方链接的一手公开资料，因此保留 unknown。",
+ "tags": [
+  "国产",
+  "分层控制",
+  "资料待补"
+ ],
+ "tier": "B",
+ "lineage_parent": "unknown",
+ "sections": [
+  {
+   "title": "背景与定位",
+   "body": "HiRT(Hierarchical Robot Transformer)方向的核心想法是分层:让大而慢的 VLM 低频负责理解与规划,小而快的策略网络高频执行控制,以缓解大模型推理延迟与机器人实时性之间的矛盾。这一思路在多篇 2024 年前后的工作中出现,清华与地平线等团队发表过同名/近名的分层 VLA 论文。"
+  },
+  {
+   "title": "已公开的技术信息",
+   "body": "此类分层框架的共同配方:VLM 以约 1Hz 输出语义潜变量或子目标,轻量执行器(CNN/小 Transformer)以数十 Hz 消费这些条件并输出动作,两层异步运行。公开报告显示该结构能在保持指令泛化的同时把控制频率提高一个数量级。"
+  },
+  {
+   "title": "资料状态与提醒",
+   "body": "本条目对应的具体工作缺少可稳定核验的唯一官方链接(同名工作多、开源状态不一),故年份、机构与链接保留 unknown。若需深入,建议检索 Hierarchical VLA / HiRT 关键词获取最新论文。"
+  }
+ ]
+}

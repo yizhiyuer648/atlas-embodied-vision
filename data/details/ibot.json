@@ -1,0 +1,48 @@
+{
+ "id": "ibot",
+ "name": "iBOT",
+ "org": "ByteDance",
+ "country": "CN",
+ "year": 2022,
+ "paper_url": "https://arxiv.org/abs/2111.07832",
+ "github_url": "https://github.com/bytedance/ibot",
+ "category": "representation",
+ "sub_category": "self-supervised",
+ "one_liner_zh": "字节提出的在线 tokenizer 遮挡图像建模，同时学习全局与局部语义。",
+ "key_idea_zh": "教师网络在线产生 patch 语义目标，学生从遮挡视图预测这些目标并对齐全局 CLS。",
+ "tags": [
+  "国产",
+  "自监督",
+  "遮挡建模",
+  "在线 tokenizer"
+ ],
+ "tier": "B",
+ "lineage_parent": "unknown",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "BERT 的成功依赖一个好的 tokenizer 把文本切成语义单元;图像的 MIM 却缺少天然的「视觉词」。BEiT 用离线训练的 dVAE 当 tokenizer,但那个 tokenizer 本身语义有限。字节跳动与约翰霍普金斯的 iBOT 提出:tokenizer 不必离线——让教师网络在线充当 tokenizer,与 MIM 目标一起进化。"
+  },
+  {
+   "title": "方法详解",
+   "body": "iBOT 在 DINO 的自蒸馏框架上扩展:学生网络看到遮挡视图,教师网络(学生的 EMA)看到完整视图;学生要在被遮的 patch 位置上预测教师输出的 patch 语义分布(在线 tokenizer 目标),同时在 CLS token 上继续做 DINO 式全局自蒸馏。两个目标共同作用:patch 级目标学出局部语义,CLS 级目标保持全局判别力。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "在 ImageNet-1K(及 22K 扩展)上预训练 ViT 系列,评测线性探针、微调与密集下游任务。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "iBOT 取得 82.3% 线性探针与 87.8% 微调精度(当时自监督最优),且涌现出清晰的局部语义模式——对遮挡、扰动鲁棒,检测分割等密集任务全面受益。它证明了「自蒸馏 + 在线 MIM」的组合威力,直接成为 DINOv2 的方法底座(DINOv2 的核心损失正是 DINO+iBOT),引用超过 1100 次。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "在线 tokenizer 的语义仍受制于自身训练动态,超大规模下需要额外稳定化(KoLeo 正则等)——这些正是 DINOv2 后来解决的问题。"
+  }
+ ],
+ "citations": {
+  "count": 1136,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

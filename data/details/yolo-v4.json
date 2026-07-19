@@ -1,0 +1,48 @@
+{
+ "id": "yolo-v4",
+ "name": "YOLOv4",
+ "org": "unknown",
+ "country": "unknown",
+ "year": 2020,
+ "paper_url": "https://arxiv.org/abs/2004.10934",
+ "github_url": "https://github.com/AlexeyAB/darknet",
+ "category": "detection",
+ "sub_category": "one-stage",
+ "one_liner_zh": "系统组合 CSPDarknet、PANet 与训练技巧，在普通 GPU 上兼顾速度和精度。",
+ "key_idea_zh": "以 CSPDarknet53 为骨干、SPP 与 PANet 为颈部，并整合 Mosaic、CIoU 等可复现技巧。",
+ "tags": [
+  "YOLO",
+  "CSPDarknet",
+  "PANet",
+  "Mosaic"
+ ],
+ "tier": "B",
+ "lineage_parent": "yolo-v3",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "Redmon 退出后,YOLO 的接力棒到了 Alexey Bochkovskiy 手中。当时社区积累了海量号称有效的训练技巧,但缺乏系统验证。YOLOv4 的问题意识是:在一块普通消费级 GPU(如 1080Ti)上,把这些「免费午餐」(bag of freebies)与「小代价增强」(bag of specials)科学地组合起来,速度精度能推到哪?"
+  },
+  {
+   "title": "方法详解",
+   "body": "架构上:CSPDarknet53 骨干(跨阶段部分连接减少重复梯度)、SPP 扩大感受野、PANet 路径聚合颈部、YOLOv3 检测头。训练技巧上:Mosaic 增广(四图拼接,变相扩大 batch 与小目标数量)、自对抗训练 SAT、CmBN、DropBlock、Mish 激活、CIoU 损失等。论文对数十种组合做了地毯式消融,把「玄学调参」变成有据可查的工程学。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "全部在单张消费级 GPU 上用 COCO 从头训练,刻意保证结论对普通研究者可复现——这在动辄 TPU 集群的年代是明确的立场。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "COCO 上 43.5% AP、Tesla V100 上约 65 FPS,速度与精度同时超过 EfficientDet 同档位。Mosaic、CSP、CIoU 从此成为整个 YOLO 生态的标配,YOLOv4 也是学界公认的「官方」YOLO 血脉延续,引用 1.5 万余次。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "仍是 anchor-based 设计,标签分配静态;Darknet 框架的开发体验也落后于 PyTorch 生态。几个月后 Ultralytics 的 YOLOv5 以 PyTorch 工程化接棒,YOLOX 则完成 anchor-free 改造。"
+  }
+ ],
+ "citations": {
+  "count": 15777,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

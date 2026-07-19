@@ -1,0 +1,12 @@
+# Local maintenance runtime artifacts
+.codex/daily-maintenance.lock
+.codex/maintenance-logs/
+
+# Python caches
+__pycache__/
+*.py[cod]
+
+# Local editor and OS files
+.DS_Store
+.vscode/
+.idea/

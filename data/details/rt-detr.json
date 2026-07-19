@@ -1,0 +1,223 @@
+{
+ "id": "rt-detr",
+ "name": "RT-DETR",
+ "org": "Baidu",
+ "country": "CN",
+ "year": 2023,
+ "paper_url": "https://arxiv.org/abs/2304.08069",
+ "github_url": "https://github.com/PaddlePaddle/PaddleDetection",
+ "category": "detection",
+ "sub_category": "transformer",
+ "one_liner_zh": "百度首个实时端到端 DETR，通过高效混合编码器实现可调速度。",
+ "key_idea_zh": "AIFI 只在高层特征做尺度内交互，CCFM 跨尺度融合，再用不确定性最小查询初始化解码器。",
+ "tags": [
+  "国产",
+  "DETR",
+  "实时",
+  "NMS-free"
+ ],
+ "tier": "A",
+ "lineage_parent": "dino-detr",
+ "architecture": {
+  "description_zh": "骨干输出多尺度特征；混合编码器先以 AIFI 处理最高层语义，再由 CCFM 跨尺度融合；编码器从候选中选出高质量查询，解码器迭代精修类别与边界框。",
+  "modules": [
+   {
+    "id": "input",
+    "label": "输入图像",
+    "type": "input"
+   },
+   {
+    "id": "backbone",
+    "label": "多尺度骨干",
+    "type": "encoder"
+   },
+   {
+    "id": "aifi",
+    "label": "AIFI 尺度内交互",
+    "type": "attention"
+   },
+   {
+    "id": "ccfm",
+    "label": "CCFM 跨尺度融合",
+    "type": "fusion"
+   },
+   {
+    "id": "select",
+    "label": "IoU 感知查询选择",
+    "type": "query"
+   },
+   {
+    "id": "decoder",
+    "label": "Transformer Decoder",
+    "type": "attention"
+   },
+   {
+    "id": "output",
+    "label": "端到端检测结果",
+    "type": "output"
+   }
+  ],
+  "edges": [
+   {
+    "from": "input",
+    "to": "backbone",
+    "label": "像素"
+   },
+   {
+    "from": "backbone",
+    "to": "aifi",
+    "label": "最高层特征"
+   },
+   {
+    "from": "backbone",
+    "to": "ccfm",
+    "label": "浅层特征"
+   },
+   {
+    "from": "aifi",
+    "to": "ccfm",
+    "label": "全局语义"
+   },
+   {
+    "from": "ccfm",
+    "to": "select",
+    "label": "融合特征"
+   },
+   {
+    "from": "select",
+    "to": "decoder",
+    "label": "初始查询与参考框"
+   },
+   {
+    "from": "ccfm",
+    "to": "decoder",
+    "label": "编码记忆"
+   },
+   {
+    "from": "decoder",
+    "to": "output",
+    "label": "类别与精修框"
+   }
+  ],
+  "flow_ms": 5200
+ },
+ "code": {
+  "language": "python",
+  "source_repo": "https://github.com/PaddlePaddle/PaddleDetection",
+  "source_path": "ppdet/modeling/transformers/rtdetr_transformer.py",
+  "simplified": true,
+  "lines": [
+   {
+    "code": "def forward(self, feats, pad_mask=None, gt_meta=None, is_teacher=False):",
+    "comment_zh": "执行 RT-DETR Transformer；片段已简化自 PaddleDetection。"
+   },
+   {
+    "code": "    memory, spatial_shapes, level_start_index = self._get_encoder_input(feats)",
+    "comment_zh": "投影并展平混合编码器输出的多尺度特征。"
+   },
+   {
+    "code": "    if self.training:",
+    "comment_zh": "训练时额外构造对比去噪查询。"
+   },
+   {
+    "code": "        denoise = get_contrastive_denoising_training_group(",
+    "comment_zh": "由真实类别与框生成带标签噪声和框噪声的查询。"
+   },
+   {
+    "code": "            gt_meta, self.num_classes, self.num_queries,",
+    "comment_zh": "传入标注、类别数和正常查询数量。"
+   },
+   {
+    "code": "            self.denoising_class_embed.weight, self.num_denoising,",
+    "comment_zh": "使用专用类别嵌入并控制去噪查询数量。"
+   },
+   {
+    "code": "            self.label_noise_ratio, self.box_noise_scale",
+    "comment_zh": "设置类别翻转比例与边界框扰动幅度。"
+   },
+   {
+    "code": "        )",
+    "comment_zh": "得到去噪类别、框、注意力掩码与元数据。"
+   },
+   {
+    "code": "        denoising_class, denoising_bbox, attn_mask, dn_meta = denoise",
+    "comment_zh": "拆开去噪训练所需的四项结果。"
+   },
+   {
+    "code": "    else:",
+    "comment_zh": "推理阶段无需去噪训练组。"
+   },
+   {
+    "code": "        denoising_class = denoising_bbox = attn_mask = dn_meta = None",
+    "comment_zh": "将所有去噪输入置空。"
+   },
+   {
+    "code": "    target, ref_boxes, enc_boxes, enc_logits = self._get_decoder_input(",
+    "comment_zh": "按编码器置信度选出高质量初始查询。"
+   },
+   {
+    "code": "        memory, spatial_shapes, denoising_class, denoising_bbox, is_teacher",
+    "comment_zh": "同时拼接训练期去噪查询。"
+   },
+   {
+    "code": "    )",
+    "comment_zh": "获得查询内容、参考框和编码器 top-k 预测。"
+   },
+   {
+    "code": "    out_boxes, out_logits = self.decoder(",
+    "comment_zh": "Transformer 解码器逐层精修查询。"
+   },
+   {
+    "code": "        target, ref_boxes, memory, spatial_shapes, level_start_index,",
+    "comment_zh": "提供查询、参考框与多尺度视觉记忆。"
+   },
+   {
+    "code": "        self.dec_bbox_head, self.dec_score_head, self.query_pos_head,",
+    "comment_zh": "注入每层框头、类别头和查询位置头。"
+   },
+   {
+    "code": "        attn_mask=attn_mask, memory_mask=None,",
+    "comment_zh": "去噪查询用注意力掩码避免信息泄漏。"
+   },
+   {
+    "code": "        query_pos_head_inv_sig=self.query_pos_head_inv_sig",
+    "comment_zh": "配置参考框到查询位置的映射方式。"
+   },
+   {
+    "code": "    )",
+    "comment_zh": "完成所有解码层的类别与框预测。"
+   },
+   {
+    "code": "    return out_boxes, out_logits, enc_boxes, enc_logits, dn_meta",
+    "comment_zh": "返回解码结果、编码器候选与去噪元数据。"
+   }
+  ]
+ },
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "YOLO 家族统治实时检测多年,但其速度与精度都被 NMS 拖累:后处理延迟不稳定,置信度阈值还要按场景调。DETR 天生无 NMS,却因计算太贵进不了实时档。百度的 RT-DETR(Real-Time DETR)目标明确:造出第一个真正实时的端到端 DETR,在速度与精度上同时击败 YOLO。"
+  },
+  {
+   "title": "方法详解",
+   "body": "计算瓶颈在编码器对多尺度特征的密集交互。RT-DETR 的高效混合编码器把它解耦为两步:AIFI——只对语义最丰富的最高层特征(S5)做尺度内自注意力,避免在低层大分辨率特征上烧算力;CCFM——用轻量卷积模块完成跨尺度融合。查询初始化用「不确定性最小选择」:同时考虑分类与定位的不确定性,挑出质量最高的编码器特征作为初始 query。推理时还可以直接调整解码器层数来灵活换挡速度,无需重训。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "COCO 训练,R50/R101 骨干;亦可用 Objects365 预训练进一步拉升。全链路对 TensorRT 部署友好。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "RT-DETR-R50 达 53.1% AP / 108 FPS,R101 达 54.3% / 74 FPS,速度精度双超同期 YOLO 全家族,比 DINO-R50 准 2.2 AP 且快约 21 倍。它宣告端到端检测正式进入实时时代,Ultralytics 也将其集成进自家框架;后续 RT-DETRv2/v3 与 D-FINE 等延续这条国产实时 DETR 路线,引用超过 3600 次。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "小模型档位(对标 YOLO-n/s)的极限轻量化仍是短板;Transformer 结构在低端边缘设备上的部署生态不如纯卷积成熟。社区正通过蒸馏、稀疏化与专用算子逐步补齐。"
+  }
+ ],
+ "citations": {
+  "count": 3698,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

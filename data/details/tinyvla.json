@@ -1,0 +1,47 @@
+{
+ "id": "tinyvla",
+ "name": "TinyVLA",
+ "org": "Midea Group AI Lab / East China Normal University",
+ "country": "CN",
+ "year": 2024,
+ "paper_url": "https://arxiv.org/abs/2409.12514",
+ "github_url": "unknown",
+ "category": "vla",
+ "sub_category": "efficient-vla",
+ "one_liner_zh": "面向快速推理和小数据训练的轻量 VLA 系列。",
+ "key_idea_zh": "以紧凑视觉语言骨干结合扩散动作解码，重点降低机器人数据量和部署延迟。",
+ "tags": [
+  "国产",
+  "轻量化",
+  "数据效率"
+ ],
+ "tier": "B",
+ "lineage_parent": "diffusion-policy",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "主流 VLA 又大又慢:数十亿参数、离散 token 逐个生成,推理延迟高;还要先在海量机器人数据上预训练,门槛极高。美的 AI 实验室与华东师大的 TinyVLA 反其道而行:能不能做一族小而快、且不需要机器人数据预训练阶段的 VLA?"
+  },
+  {
+   "title": "方法详解",
+   "body": "TinyVLA 的配方有两个要点:一是用现成的高速紧凑多模态模型(亚 10 亿级参数)直接初始化策略主干,跳过昂贵的机器人预训练;二是在微调阶段接上扩散策略解码器输出连续动作,弥补小模型在精细控制上的表达力。整体保持端到端训练,但计算预算只有 OpenVLA 级模型的零头。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "只在目标场景的示范数据上做微调,不依赖 Open X-Embodiment 级别的大规模预训练。评测覆盖仿真与真实机械臂的多任务设定。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "TinyVLA 在速度与数据效率上显著优于 OpenVLA,任务成功率持平或更好,并在指令、新物体、位置变化、外观变化、背景与环境切换等多个维度表现出稳健泛化。它证明了「小模型 + 扩散头」在实用场景的性价比,为边缘部署提供了现实选项。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "小主干的语义推理上限有限,面对需要世界知识的复杂指令仍不如大 VLM;跨本体泛化也未系统验证。同团队后续的 DexVLA 转向「VLM + 十亿级扩散专家」的组合,兼顾语义与动作表达力。"
+  }
+ ],
+ "citations": {
+  "count": 385,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

@@ -1,0 +1,48 @@
+{
+ "id": "fastsam",
+ "name": "FastSAM",
+ "org": "Chinese Academy of Sciences",
+ "country": "CN",
+ "year": 2023,
+ "paper_url": "https://arxiv.org/abs/2306.12156",
+ "github_url": "https://github.com/CASIA-IVA-Lab/FastSAM",
+ "category": "segmentation",
+ "sub_category": "promptable",
+ "one_liner_zh": "中科院把 Segment Anything 拆成全实例分割与提示筛选，实现实时近似能力。",
+ "key_idea_zh": "先用 YOLOv8-seg 产生图中全部实例掩码，再依据点、框或文本提示选择目标。",
+ "tags": [
+  "国产",
+  "提示分割",
+  "YOLOv8-seg",
+  "实时"
+ ],
+ "tier": "B",
+ "lineage_parent": "sam",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "SAM 强大但昂贵:ViT-H 编码器在高分辨率下的计算量让工业实时场景望而却步。中科院自动化所的 FastSAM 提出一个「降维打击」式的重构:Segment Anything 本质上就是「全实例分割 + 按提示挑选」,而全实例分割是 CNN 早已做熟的任务——何必用 Transformer 硬扛?"
+  },
+  {
+   "title": "方法详解",
+   "body": "FastSAM 把任务拆成两段:第一段用 YOLOv8-seg(YOLACT 式实例分割分支)一次性分出图中所有物体的掩码,完全是成熟的 CNN 实时管线;第二段按提示筛选——点提示选中包含该点的掩码,框提示选 IoU 最大者,文本提示用 CLIP 算图文相似度挑选。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "只用 SA-1B 数据集的 2%(1/50)训练 YOLOv8-seg,不需要 SAM 式的巨型预训练。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "FastSAM 以约 50 倍于 SAM 的运行速度取得可比的分割效果,证明「任意分割」的日常需求可以用轻量 CNN 满足。它与 MobileSAM 一起把提示分割推进到实时与边缘场景,在工业质检、视频处理中被广泛采用,引用超过 500 次。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "掩码质量与提示理解的上限低于 SAM:小物体、罕见类与复杂歧义场景差距明显;文本提示依赖外挂 CLIP,速度打折。后续 SAM 2 官方提速与各类蒸馏方案继续压缩这一权衡空间。"
+  }
+ ],
+ "citations": {
+  "count": 542,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

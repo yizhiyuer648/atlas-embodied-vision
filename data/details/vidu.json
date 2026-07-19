@@ -1,0 +1,34 @@
+{
+ "id": "vidu",
+ "name": "Vidu",
+ "org": "ShengShu Technology / Tsinghua University",
+ "country": "CN",
+ "year": 2024,
+ "paper_url": "unknown",
+ "github_url": "unknown",
+ "category": "world",
+ "sub_category": "video-generation",
+ "one_liner_zh": "生数科技与清华团队发布的商业视频生成模型。",
+ "key_idea_zh": "公开介绍使用 U-ViT 路线，但没有可核验的完整论文和官方训练代码。",
+ "tags": [
+  "国产",
+  "视频生成",
+  "U-ViT"
+ ],
+ "tier": "B",
+ "lineage_parent": "unknown",
+ "sections": [
+  {
+   "title": "背景与定位",
+   "body": "Vidu 是生数科技(ShengShu Technology)与清华大学团队 2024 年 4 月发布的视频生成模型,是国内最早对标 Sora 的产品之一,首发即支持 1080p、16 秒的一键生成,后续迭代支持更长时长、参考生视频(角色一致性)等能力。"
+  },
+  {
+   "title": "已公开的技术信息",
+   "body": "Vidu 的技术根基是团队 2022 年提出的 U-ViT 架构——比 DiT 更早把 Transformer 用作扩散主干的工作之一(U-ViT 论文发表于 CVPR 2023,作者来自清华朱军团队,即生数科技创始团队)。官方介绍 Vidu 采用 U-ViT 融合扩散与 Transformer,一次生成而非拼接,强调动态镜头与时空一致性。"
+  },
+  {
+   "title": "资料状态与提醒",
+   "body": "Vidu 产品本身未发布论文与权重,训练数据、参数规模等无法核验;其架构渊源(U-ViT)有公开论文可查,但产品实现细节以官方披露为准。图鉴按 B 级收录。"
+  }
+ ]
+}

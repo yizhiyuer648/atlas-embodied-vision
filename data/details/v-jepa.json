@@ -1,0 +1,202 @@
+{
+ "id": "v-jepa",
+ "name": "V-JEPA",
+ "org": "Meta AI",
+ "country": "US",
+ "year": 2024,
+ "paper_url": "https://arxiv.org/abs/2404.08471",
+ "github_url": "https://github.com/facebookresearch/jepa",
+ "category": "world",
+ "sub_category": "joint-embedding-prediction",
+ "one_liner_zh": "不重建像素，而是在抽象特征空间预测被遮挡视频区域。",
+ "key_idea_zh": "上下文编码器读取可见 tubelet，预测器根据掩码位置预测目标编码器的特征；目标编码器由 EMA 更新。",
+ "tags": [
+  "自监督",
+  "特征预测",
+  "视频表征"
+ ],
+ "tier": "A",
+ "lineage_parent": "unknown",
+ "architecture": {
+  "description_zh": "V-JEPA 对视频做多块时空遮挡；上下文编码器只看可见 tubelet，预测器在掩码位置生成特征，和 EMA 目标编码器在完整目标块上的表示对齐，全程不要求像素重建。",
+  "modules": [
+   {
+    "id": "vj-video",
+    "label": "视频 tubelet",
+    "type": "input"
+   },
+   {
+    "id": "vj-mask",
+    "label": "多块时空掩码",
+    "type": "mask"
+   },
+   {
+    "id": "vj-context",
+    "label": "上下文 ViT",
+    "type": "encoder"
+   },
+   {
+    "id": "vj-target",
+    "label": "EMA 目标 ViT",
+    "type": "encoder"
+   },
+   {
+    "id": "vj-predictor",
+    "label": "窄层预测器",
+    "type": "predictor"
+   },
+   {
+    "id": "vj-loss",
+    "label": "特征空间回归",
+    "type": "loss"
+   },
+   {
+    "id": "vj-repr",
+    "label": "冻结视频表征",
+    "type": "output"
+   }
+  ],
+  "edges": [
+   {
+    "from": "vj-video",
+    "to": "vj-context",
+    "label": "可见 tubelet"
+   },
+   {
+    "from": "vj-mask",
+    "to": "vj-context",
+    "label": "移除目标块"
+   },
+   {
+    "from": "vj-video",
+    "to": "vj-target",
+    "label": "目标 tubelet"
+   },
+   {
+    "from": "vj-context",
+    "to": "vj-predictor",
+    "label": "上下文特征"
+   },
+   {
+    "from": "vj-mask",
+    "to": "vj-predictor",
+    "label": "目标位置"
+   },
+   {
+    "from": "vj-predictor",
+    "to": "vj-loss",
+    "label": "预测特征"
+   },
+   {
+    "from": "vj-target",
+    "to": "vj-loss",
+    "label": "停止梯度目标"
+   },
+   {
+    "from": "vj-context",
+    "to": "vj-repr",
+    "label": "预训练表示"
+   }
+  ],
+  "flow_ms": 4000
+ },
+ "code": {
+  "language": "python",
+  "source_repo": "https://github.com/facebookresearch/jepa",
+  "source_path": "src/models/predictor.py",
+  "simplified": true,
+  "lines": [
+   {
+    "code": "def forward(self, x, masks_x, masks):",
+    "comment_zh": "输入上下文特征、上下文掩码和目标掩码。"
+   },
+   {
+    "code": "    batch = len(x) // len(masks_x)",
+    "comment_zh": "恢复每组掩码对应的批次大小。"
+   },
+   {
+    "code": "    x = self.predictor_embed(x)",
+    "comment_zh": "把上下文编码器特征映射到较窄预测维度。"
+   },
+   {
+    "code": "    x_pos = self.pos_embed.repeat(batch, 1, 1)",
+    "comment_zh": "准备视频 tubelet 的固定位置编码。"
+   },
+   {
+    "code": "    x += apply_masks(x_pos, masks_x)",
+    "comment_zh": "给可见上下文 token 加上对应位置。"
+   },
+   {
+    "code": "    _, num_visible, dim = x.shape",
+    "comment_zh": "记录上下文 token 数和隐藏维度。"
+   },
+   {
+    "code": "    x = x.repeat(len(masks), 1, 1)",
+    "comment_zh": "为每个目标块复制上下文。"
+   },
+   {
+    "code": "    mask_tokens = self.mask_token.repeat(x.shape[0], masks[0].shape[1], 1)",
+    "comment_zh": "创建待预测位置的可学习 mask token。"
+   },
+   {
+    "code": "    target_pos = apply_masks(x_pos, masks)",
+    "comment_zh": "抽取各目标块的位置编码。"
+   },
+   {
+    "code": "    mask_tokens = mask_tokens + target_pos",
+    "comment_zh": "让 mask token 知道要预测哪个时空位置。"
+   },
+   {
+    "code": "    x = torch.cat([x, mask_tokens], dim=1)",
+    "comment_zh": "拼接可见上下文和目标查询。"
+   },
+   {
+    "code": "    for block in self.predictor_blocks: x = block(x)",
+    "comment_zh": "通过预测器 Transformer 传播上下文信息。"
+   },
+   {
+    "code": "    x = self.predictor_norm(x)",
+    "comment_zh": "归一化预测器输出。"
+   },
+   {
+    "code": "    x = x[:, num_visible:]",
+    "comment_zh": "只保留被遮挡目标位置的输出。"
+   },
+   {
+    "code": "    x = self.predictor_proj(x)",
+    "comment_zh": "投影回目标编码器的特征维度。"
+   },
+   {
+    "code": "    return x",
+    "comment_zh": "返回目标块的特征预测。"
+   }
+  ]
+ },
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "视频自监督学习的主流是像素重建(MAE 式)或对比学习,但 Yann LeCun 的 JEPA(联合嵌入预测架构)主张:预测应该发生在表征空间——像素里充满不可预测的噪声细节(树叶怎么抖、水波怎么闪),强迫模型重建它们是浪费容量。V-JEPA 是这一理念在视频上的首次大规模落地:完全不用文本、不用负样本、不用重建,只靠特征预测学视频表征。"
+  },
+  {
+   "title": "方法详解",
+   "body": "V-JEPA 把视频切成时空块(tubelet),随机遮掩大片区域:上下文编码器只看可见部分;预测器拿着遮掩位置的坐标,去预测目标编码器在那些位置输出的特征;目标编码器是上下文编码器的 EMA(指数滑动平均)副本,防止表征塌缩。损失只在特征空间计算——模型被迫理解「那里大概发生了什么运动」,而不是「那里每个像素长什么样」。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "在约 200 万段公开视频上预训练,评测时冻结主干,只训练轻量探针——这是对表征质量最苛刻的测法。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "冻结评测下,ViT-H 版本在 Kinetics-400 达 81.9%、Something-Something-v2 达 72.2%(后者重运动理解,V-JEPA 大幅领先像素重建方法)、ImageNet 也有 77.9%——证明纯特征预测能同时学好运动与外观。V-JEPA 为「非生成式世界模型」提供了最有力的实证,引用近 400 次,是 Meta 世界模型路线的基石。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "表征不可视化,难以直接用于内容生成;对语言的对齐需要额外阶段。V-JEPA 2 将数据扩到百万小时、加入动作条件后训练,直接用于真机零样本规划,把这条路线推进到控制领域。"
+  }
+ ],
+ "citations": {
+  "count": 386,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

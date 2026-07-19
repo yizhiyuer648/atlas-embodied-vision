@@ -1,0 +1,47 @@
+{
+ "id": "gato",
+ "name": "Gato",
+ "org": "DeepMind",
+ "country": "UK",
+ "year": 2022,
+ "paper_url": "https://arxiv.org/abs/2205.06175",
+ "github_url": "unknown",
+ "category": "vla",
+ "sub_category": "generalist-agent",
+ "one_liner_zh": "用单一 Transformer 处理文本、图像、游戏与机器人控制。",
+ "key_idea_zh": "把不同模态的观测和动作全部序列化为 token，由同一自回归模型执行多类任务。",
+ "tags": [
+  "通才智能体",
+  "多任务",
+  "自回归"
+ ],
+ "tier": "B",
+ "lineage_parent": "unknown",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "2022 年 GPT-3 已经证明「一个大模型 + 一个自回归目标」可以覆盖大量语言任务。DeepMind 想验证同样的思路能否越出文本：能不能用同一个网络、同一套权重，既玩 Atari、又给图片写说明、还能控制真实机械臂？Gato 因此被称为「通才智能体」（generalist agent），它是把机器人控制纳入大一统序列建模的最早尝试之一。"
+  },
+  {
+   "title": "方法详解",
+   "body": "Gato 的做法极其直接：把所有模态全部序列化成 token。文本用 SentencePiece 分词，图像切成 patch 后编码，连续观测（如关节角）与连续动作被离散化到固定区间，按统一顺序拼进一条序列，由一个约 12 亿参数的 decoder-only Transformer 自回归预测下一个 token。部署时把当前观测编码进上下文，模型生成的 token 再反序列化成对应设备的动作——是输出文字、按键还是关节力矩，完全由上下文决定。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "训练数据混合了 604 个任务：包括大量预训练 RL 智能体在 Atari、DeepMind Lab 等环境的经验轨迹、图文对数据以及真实 Sawyer 机械臂的堆叠方块示范。所有数据都被转成统一 token 流，以监督学习方式训练，不做在线强化学习。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "同一套权重在 450 多个任务上达到专家分数的一半以上，能在真机上完成方块堆叠，也能进行基本的对话和图片描述。Gato 的意义不在单项性能，而在于证明了「万物皆 token」的工程可行性——这个视角直接影响了 RT-1、RT-2 等把动作当 token 的 VLA 路线，论文引用超过 1100 次。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "Gato 的多数任务表现低于专门模型，跨任务之间也没有表现出明显的正迁移；1024 token 的上下文窗口限制了长时序任务。它更像一个方向宣言：后续 RoboCat 在其基础上加入自我改进闭环，而 VLA 社区则转向「先用互联网数据预训练 VLM，再接动作」的更高效路线。"
+  }
+ ],
+ "citations": {
+  "count": 1112,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

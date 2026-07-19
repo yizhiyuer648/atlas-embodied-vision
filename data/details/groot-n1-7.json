@@ -1,0 +1,38 @@
+{
+  "id": "groot-n1-7",
+  "name": "GR00T N1.7",
+  "org": "NVIDIA",
+  "country": "US",
+  "year": 2026,
+  "paper_url": "unknown",
+  "github_url": "https://github.com/NVIDIA/Isaac-GR00T",
+  "category": "vla",
+  "sub_category": "humanoid-foundation-model",
+  "one_liner_zh": "GR00T N1 当前公开 GA 版本，以 Cosmos-Reason2/Qwen3-VL 骨干和相对末端动作提升跨本体泛化。",
+  "key_idea_zh": "用相对 EEF 动作统一人类与机器人轨迹，结合 2 万小时人类视频预训练和 flow-matching 动作头。",
+  "tags": ["VLA", "人形机器人", "跨本体", "Cosmos-Reason2", "Hugging Face 权重", "GA"],
+  "tier": "B",
+  "lineage_parent": "groot-n1-6",
+  "sections": [
+    {
+      "title": "版本定位",
+      "body": "NVIDIA 官方仓库将 GR00T N1.7 标为 N1 系列当前公开的 General Availability 版本；官方说明 N1.7 直接建立在 N1.6 上，因此图鉴按 N1.5 → N1.6 → N1.7 展示。官方 Hugging Face 基础权重卡创建于 2026 年 2 月。"
+    },
+    {
+      "title": "方法更新",
+      "body": "N1.7 将 VLM 骨干换为 Cosmos-Reason2-2B（Qwen3-VL 架构），支持更灵活分辨率；采用相对末端执行器动作，将动作表示为当前位姿的增量，使人类视频与不同机器人本体更容易共享操作先验。动作头仍是 flow-matching DiT，但官方实现更新了层数、状态与动作维度以及动作预测长度。"
+    },
+    {
+      "title": "数据与工程",
+      "body": "官方说明 N1.7 在多种机器人数据之外加入 2 万小时 EgoScale 人类视频预训练，并支持多数据集混合权重、ONNX/TensorRT 导出和更完整的策略服务流程。基础权重与 LIBERO、DROID、SimplerEnv 等后训练检查点公开。"
+    },
+    {
+      "title": "版本证据",
+      "body": "N1.7 的版本变化主要来自官方仓库 README、发布代码和 Hugging Face 模型卡；N1 白皮书（arXiv:2503.14734）用于说明 N1.X 的总体双系统与动作架构，不能被误写成专门评测 N1.7 的独立论文，因此本版本的 paper_url 写为 unknown。"
+    },
+    {
+      "title": "局限与学习提醒",
+      "body": "跨本体并不等于零样本控制任意硬件，新的相机、关节定义和控制频率仍需数据映射与后训练。部分 VLM 骨干或检查点需要在 Hugging Face 申请访问，实际许可也要以下载时的模型卡为准。"
+    }
+  ]
+}

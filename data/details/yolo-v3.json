@@ -1,0 +1,48 @@
+{
+ "id": "yolo-v3",
+ "name": "YOLOv3",
+ "org": "University of Washington",
+ "country": "US",
+ "year": 2018,
+ "paper_url": "https://arxiv.org/abs/1804.02767",
+ "github_url": "https://github.com/pjreddie/darknet",
+ "category": "detection",
+ "sub_category": "one-stage",
+ "one_liner_zh": "用 Darknet-53 和三尺度预测显著改善小目标检测。",
+ "key_idea_zh": "在三个特征尺度上预测目标，并以独立逻辑分类器支持多标签类别。",
+ "tags": [
+  "YOLO",
+  "Darknet-53",
+  "FPN",
+  "多尺度"
+ ],
+ "tier": "B",
+ "lineage_parent": "yolo-v2",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "YOLOv2 之后,检测领域的新武器——残差网络与特征金字塔(FPN)——已经成熟。YOLOv3 是 Redmon 对这些进展的吸收整合,以一篇写得半开玩笑的技术报告发布,却成为此后数年工业界部署最广的检测器。"
+  },
+  {
+   "title": "方法详解",
+   "body": "三处关键升级:骨干换成 53 层带残差连接的 Darknet-53,精度对标 ResNet-101 而速度快 1.5 倍;检测头改为三尺度预测——在 1/32、1/16、1/8 三档特征图上分别铺 3 个聚类锚框,自顶向下融合特征,大幅改善小目标;分类从 softmax 换成独立的逻辑回归,支持一个框同时属于多个标签(如「人」和「女人」)。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "沿用维度聚类选锚框、多尺度训练等 v2 技巧,在 COCO 上训练评测。整个工程保持 Darknet 框架的 C 实现,单文件可部署。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "320 分辨率下 22ms 跑出 28.2 mAP,与 SSD 精度相当但快 3 倍;在 AP50 指标下与 RetinaNet 打平而快 3.8 倍。YOLOv3 成为「好用、能跑、易改」的代名词,是无数工业质检、安防、无人机项目的默认起点,引用超过 2.5 万次;它也是原作者 Redmon 参与的最后一版 YOLO。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "严格 IoU 指标(AP75)下定位精度落后于 RetinaNet 等;训练技巧还有大量红利未吃尽。此后 YOLO 进入「社区接力」时代:v4(Mosaic、CSP)、v5(工程化)、v6/v7/v8 各自把速度-精度曲线继续外推。"
+  }
+ ],
+ "citations": {
+  "count": 25582,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

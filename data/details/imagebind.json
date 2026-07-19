@@ -1,0 +1,48 @@
+{
+ "id": "imagebind",
+ "name": "ImageBind",
+ "org": "Meta AI",
+ "country": "US",
+ "year": 2023,
+ "paper_url": "https://arxiv.org/abs/2305.05665",
+ "github_url": "https://github.com/facebookresearch/ImageBind",
+ "category": "representation",
+ "sub_category": "multimodal",
+ "one_liner_zh": "以图像为枢纽把文本、音频、深度、热成像和 IMU 绑定到同一空间。",
+ "key_idea_zh": "无需所有模态同时配对，只要各模态分别与图像对齐，就能涌现跨非图像模态检索。",
+ "tags": [
+  "多模态",
+  "统一嵌入",
+  "音频",
+  "深度"
+ ],
+ "tier": "B",
+ "lineage_parent": "clip",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "人类的感官世界是统一的:听到狗叫会想起狗的样子。但机器的多模态对齐需要配对数据,而「音频-深度」「热成像-IMU」这类配对几乎不存在。Meta 的 ImageBind 提出了绕开组合爆炸的办法:图像是万物的枢纽——所有模态都天然与图像共现,只要各自对齐到图像,彼此就自动对齐了。"
+  },
+  {
+   "title": "方法详解",
+   "body": "ImageBind 为六种模态(图像/视频、文本、音频、深度、热成像、IMU)各配一个编码器,训练时只用「图像-X」的自然配对数据(视频带音频、RGB 带深度图等),用 InfoNCE 把每种模态拉向共享嵌入空间;文本-图像对齐直接继承冻结的 CLIP。涌现性质是关键:训练中从未见过「音频-文本」配对,但因为都锚定在图像上,零样本的音频检索文本、音频+图像的嵌入算术(海浪声 + 鸟图 = 海边的鸟)都自动成立。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "数据全部来自自然共现:Audioset(视频-音频)、SUN RGB-D(图像-深度)、LLVIP(图像-热成像)、Ego4D(视频-IMU),无需任何人工跨模态标注。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "ImageBind 在跨模态零样本识别与检索上超过许多专门监督模型,并解锁了跨模态生成的组合玩法。它证明「以一个模态为锚」是扩展模态数量的经济路线,为后续任意模态大模型(如 Meta 的多模态 Llama 路线、各类 any-to-any 模型)提供了概念模板,引用超过 1600 次。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "非图像模态间的对齐质量受「图像桥」中转损耗限制;模态编码器各自独立,缺乏深度融合推理能力。后续工作(LanguageBind、Meta-Transformer 等)尝试换锚点或统一骨干,继续这条「万物对齐」路线。"
+  }
+ ],
+ "citations": {
+  "count": 1648,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

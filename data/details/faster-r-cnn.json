@@ -1,0 +1,200 @@
+{
+ "id": "faster-r-cnn",
+ "name": "Faster R-CNN",
+ "org": "Microsoft Research",
+ "country": "US",
+ "year": 2015,
+ "paper_url": "https://arxiv.org/abs/1506.01497",
+ "github_url": "https://github.com/rbgirshick/py-faster-rcnn",
+ "category": "detection",
+ "sub_category": "two-stage",
+ "one_liner_zh": "用可学习的区域建议网络取代外部候选框算法，奠定现代两阶段检测器。",
+ "key_idea_zh": "RPN 与 Fast R-CNN 共享卷积特征，先产生候选框，再对 RoI 分类和精修。",
+ "tags": [
+  "R-CNN",
+  "RPN",
+  "RoI",
+  "两阶段"
+ ],
+ "tier": "A",
+ "lineage_parent": "fast-r-cnn",
+ "architecture": {
+  "description_zh": "本图对应 2015 原论文：VGG/ZF 卷积骨干产生共享特征，RPN 生成候选框，RoI Pooling 把候选区域变为定长特征，再由 Fast R-CNN 头完成分类与边界框回归。下方代码块另取自现代 torchvision 实现。",
+  "modules": [
+   {
+    "id": "input",
+    "label": "输入图像",
+    "type": "input"
+   },
+   {
+    "id": "backbone",
+    "label": "VGG/ZF 共享卷积骨干",
+    "type": "encoder"
+   },
+   {
+    "id": "rpn",
+    "label": "区域建议网络",
+    "type": "proposal"
+   },
+   {
+    "id": "roi",
+    "label": "RoI Pooling",
+    "type": "pooling"
+   },
+   {
+    "id": "boxhead",
+    "label": "分类与框回归头",
+    "type": "head"
+   },
+   {
+    "id": "output",
+    "label": "NMS 后检测结果",
+    "type": "output"
+   }
+  ],
+  "edges": [
+   {
+    "from": "input",
+    "to": "backbone",
+    "label": "像素"
+   },
+   {
+    "from": "backbone",
+    "to": "rpn",
+    "label": "共享特征"
+   },
+   {
+    "from": "rpn",
+    "to": "roi",
+    "label": "候选框"
+   },
+   {
+    "from": "backbone",
+    "to": "roi",
+    "label": "特征图"
+   },
+   {
+    "from": "roi",
+    "to": "boxhead",
+    "label": "定长 RoI 特征"
+   },
+   {
+    "from": "boxhead",
+    "to": "output",
+    "label": "类别与精修框"
+   }
+  ],
+  "flow_ms": 4600
+ },
+ "code": {
+  "language": "python",
+  "source_repo": "https://github.com/pytorch/vision",
+  "source_path": "torchvision/models/detection/faster_rcnn.py",
+  "simplified": true,
+  "lines": [
+   {
+    "code": "class FasterRCNN(GeneralizedRCNN):",
+    "comment_zh": "定义两阶段检测器；片段已简化自 torchvision。"
+   },
+   {
+    "code": "    def __init__(self, backbone, num_classes):",
+    "comment_zh": "接收可返回特征图的骨干与类别数。"
+   },
+   {
+    "code": "        out_channels = backbone.out_channels",
+    "comment_zh": "取得共享特征图的通道宽度。"
+   },
+   {
+    "code": "        anchor_generator = AnchorGenerator(",
+    "comment_zh": "为 RPN 创建多尺度锚框生成器。"
+   },
+   {
+    "code": "            sizes=((32, 64, 128, 256, 512),),",
+    "comment_zh": "设置覆盖小到大目标的锚框尺寸。"
+   },
+   {
+    "code": "            aspect_ratios=((0.5, 1.0, 2.0),)",
+    "comment_zh": "设置常见的宽高比。"
+   },
+   {
+    "code": "        )",
+    "comment_zh": "结束锚框生成器配置。"
+   },
+   {
+    "code": "        rpn_head = RPNHead(out_channels, anchor_generator.num_anchors_per_location()[0])",
+    "comment_zh": "RPN 为每个位置预测目标性和框偏移。"
+   },
+   {
+    "code": "        roi_pooler = MultiScaleRoIAlign(",
+    "comment_zh": "创建从 FPN 多层取样的 RoIAlign。"
+   },
+   {
+    "code": "            featmap_names=['0', '1', '2', '3'],",
+    "comment_zh": "指定参与池化的多尺度特征层。"
+   },
+   {
+    "code": "            output_size=7, sampling_ratio=2",
+    "comment_zh": "把每个候选区域变为 7×7 特征。"
+   },
+   {
+    "code": "        )",
+    "comment_zh": "结束 RoIAlign 配置。"
+   },
+   {
+    "code": "        representation_size = 1024",
+    "comment_zh": "设置框头隐藏表示维度。"
+   },
+   {
+    "code": "        box_head = TwoMLPHead(out_channels * 7 * 7, representation_size)",
+    "comment_zh": "用两层 MLP 编码每个候选区域。"
+   },
+   {
+    "code": "        box_predictor = FastRCNNPredictor(representation_size, num_classes)",
+    "comment_zh": "输出类别分数与类别相关框偏移。"
+   },
+   {
+    "code": "        transform = GeneralizedRCNNTransform(800, 1333, image_mean, image_std)",
+    "comment_zh": "统一缩放并标准化输入图像。"
+   },
+   {
+    "code": "        rpn = RegionProposalNetwork(anchor_generator, rpn_head, **rpn_cfg)",
+    "comment_zh": "组装候选框生成阶段。"
+   },
+   {
+    "code": "        roi_heads = RoIHeads(roi_pooler, box_head, box_predictor, **roi_cfg)",
+    "comment_zh": "组装候选框分类与精修阶段。"
+   },
+   {
+    "code": "        super().__init__(backbone, rpn, roi_heads, transform)",
+    "comment_zh": "把预处理、骨干、RPN 与 RoI 头连接成完整模型。"
+   }
+  ]
+ },
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "Fast R-CNN 之后,检测网络本身已接近实时,候选区域算法却还停留在手工时代:Selective Search 又慢又不可学习。Faster R-CNN 的核心问题是:能否让神经网络自己学会「往哪看」?答案是区域建议网络(RPN)——它让候选框生成的代价趋近于零,并把两阶段检测统一成一个网络。"
+  },
+  {
+   "title": "方法详解",
+   "body": "RPN 是一个全卷积网络,直接在共享特征图上滑动:每个位置放置 k 个不同尺度和长宽比的锚框(anchor,论文默认 9 个),同时预测每个锚框的前景得分与坐标修正。锚框机制优雅地解决了「一个位置预测多种形状」的问题,此后十年几乎所有检测器都沿用或对标它。RPN 产生的高质量候选(每图约 300 个)送入 Fast R-CNN 头做分类与二次精修;两部分共享同一个卷积主干,通过交替训练或联合训练耦合成单一网络。推理时「RPN 告诉网络往哪看,检测头决定看到了什么」。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "在 PASCAL VOC 与 COCO 上训练评测,骨干为 ZF/VGG-16。RPN 与检测头共享卷积,使候选框生成的额外开销只有约 10 毫秒。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "VGG-16 版本整系统 5fps,在 VOC 2007/2012 与 COCO 上均达到当时最优;它还是 ILSVRC 与 COCO 2015 多个冠军方案的底座。Faster R-CNN 从此成为「两阶段检测」的代名词和无数后续工作(FPN、Mask R-CNN、Cascade R-CNN)的宿主框架,引用超过 7 万次,至今仍是学术界最常用的基线之一。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "锚框的尺度、比例是手工超参数,对不同数据分布需要调优;两阶段结构在移动端仍显笨重;NMS 后处理也阻碍完全端到端。这些遗留问题分别催生了 anchor-free 路线(FCOS、CenterNet)、单阶段高效路线(YOLO、SSD)与集合预测路线(DETR)。"
+  }
+ ],
+ "citations": {
+  "count": 73957,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

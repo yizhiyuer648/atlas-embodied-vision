@@ -1,0 +1,48 @@
+{
+ "id": "fcos",
+ "name": "FCOS",
+ "org": "University of Adelaide",
+ "country": "AU",
+ "year": 2019,
+ "paper_url": "https://arxiv.org/abs/1904.01355",
+ "github_url": "https://github.com/tianzhi0549/FCOS",
+ "category": "detection",
+ "sub_category": "anchor-free",
+ "one_liner_zh": "把检测改为逐像素回归四边距离，移除锚框及其超参数。",
+ "key_idea_zh": "FPN 每个位置预测类别、到框四边的距离和 centerness，抑制偏离中心的低质量框。",
+ "tags": [
+  "anchor-free",
+  "FCOS",
+  "centerness",
+  "FPN"
+ ],
+ "tier": "B",
+ "lineage_parent": "retinanet",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "如果语义分割可以逐像素预测,检测为什么不行?阿德莱德大学的 FCOS(Fully Convolutional One-Stage)要把检测器里最后的手工组件——锚框——彻底清除:不再预设任何框,让特征图上每个位置直接回答「我在不在某个物体里?物体边界离我多远?」"
+  },
+  {
+   "title": "方法详解",
+   "body": "FCOS 在 FPN 每层特征图的每个位置预测三样东西:类别得分、该点到目标框上下左右四条边的距离(l,t,r,b),以及 centerness——衡量该点偏离物体中心的程度,推理时乘进得分里压制物体边缘产生的低质量框。不同大小的物体按回归距离范围分配到不同 FPN 层,自然解决重叠歧义。除了 NMS,整个检测器就是一个全卷积网络,锚框相关的 IoU 计算、超参调优全部消失。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "在 COCO 上训练,正样本定义为落入真值框(或其中心区域)的位置。结构与 RetinaNet 严格对齐以保证公平比较。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "FCOS 以更简洁的结构超过 RetinaNet、YOLOv3 与 Faster R-CNN,ResNeXt-101 版达到 44.7% AP,是 anchor-free 路线首次在 COCO 上全面击败 anchor-based。它与 ATSS 的后续分析一起,把社区共识从「锚框必不可少」扭转为「样本分配才是本质」;FCOS 头也被广泛复用于实例分割、跟踪与开放词汇检测。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "逐像素密集预测仍有冗余计算;centerness 是启发式补丁。ATSS 给出了更原则化的样本选择,DETR 则用集合预测把「密集预测 + NMS」整个范式取而代之。"
+  }
+ ],
+ "citations": {
+  "count": 6257,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

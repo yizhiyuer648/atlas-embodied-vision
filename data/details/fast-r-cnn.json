@@ -1,0 +1,48 @@
+{
+ "id": "fast-r-cnn",
+ "name": "Fast R-CNN",
+ "org": "Microsoft Research",
+ "country": "US",
+ "year": 2015,
+ "paper_url": "https://arxiv.org/abs/1504.08083",
+ "github_url": "https://github.com/rbgirshick/fast-rcnn",
+ "category": "detection",
+ "sub_category": "two-stage",
+ "one_liner_zh": "整图只做一次卷积，再用 RoI Pooling 共享特征并联合训练分类回归。",
+ "key_idea_zh": "将每个候选框映射到共享特征图，经 RoI Pooling 得到固定尺寸表示。",
+ "tags": [
+  "R-CNN",
+  "RoI Pooling",
+  "共享卷积",
+  "两阶段"
+ ],
+ "tier": "B",
+ "lineage_parent": "r-cnn",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "R-CNN 慢得离谱的根源是重复计算:2000 个候选区域大量重叠,却各自独立跑完整个 CNN。SPPnet 展示了共享卷积特征的可能,但它无法端到端微调卷积层。Girshick 在微软研究院的 Fast R-CNN 要一次解决速度与训练两大问题。"
+  },
+  {
+   "title": "方法详解",
+   "body": "Fast R-CNN 把顺序反过来:整张图只做一次卷积得到共享特征图,再把每个候选框投影到特征图上,用 RoI Pooling 把任意大小的区域池化成固定尺寸(如 7×7)的特征。之后接两个并联输出头:softmax 分类和逐类边界框回归,用多任务损失联合训练。由于梯度可以穿过 RoI Pooling 回传到卷积层,整个网络(除候选框生成外)第一次实现了端到端训练,也不再需要缓存特征。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "训练采用分层采样:每个 mini-batch 只取少数几张图、每张图采样多个 RoI,使共享卷积的计算被摊薄。候选框仍来自外部的 Selective Search。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "以 VGG16 为骨干,Fast R-CNN 训练比 R-CNN 快 9 倍、推理快 213 倍,VOC 2012 的 mAP 反而更高;比 SPPnet 训练快 3 倍。RoI Pooling 和多任务联合训练成为之后所有两阶段检测器的标准件,引用超过 2.8 万次。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "候选框生成(Selective Search,CPU 上约 2 秒/图)成为整个系统最后的瓶颈——检测网络本身只要 0.3 秒。几个月后,同团队的 Faster R-CNN 用可学习的 RPN 干掉了这最后一块短板。"
+  }
+ ],
+ "citations": {
+  "count": 28684,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

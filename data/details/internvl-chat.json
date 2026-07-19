@@ -1,0 +1,48 @@
+{
+ "id": "internvl-chat",
+ "name": "InternVL-Chat",
+ "org": "Shanghai AI Laboratory",
+ "country": "CN",
+ "year": 2023,
+ "paper_url": "https://arxiv.org/abs/2312.14238",
+ "github_url": "https://github.com/OpenGVLab/InternVL",
+ "category": "multimodal",
+ "sub_category": "general_vlm",
+ "one_liner_zh": "上海 AI 实验室推出的开源图文对话模型系列起点。",
+ "key_idea_zh": "先把大规模视觉编码器与语言侧表征对齐，再将视觉特征连接到语言模型完成对话。",
+ "tags": [
+  "开源",
+  "InternViT",
+  "图文对话",
+  "视觉语言对齐"
+ ],
+ "tier": "B",
+ "lineage_parent": "internvl",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "InternVL 证明了 60 亿参数的视觉塔值得拥有,InternVL-Chat 是把这座塔接上语言模型、面向真实对话场景的完整形态——上海 AI 实验室开源 MLLM 体系的起点,目标直指「开源阵营对标 GPT-4V」。"
+  },
+  {
+   "title": "方法详解",
+   "body": "初代 InternVL-Chat 沿用渐进对齐产物:InternViT-6B 提供视觉特征,经 QLLaMA 中间件或 MLP 投影接入开源 LLM,再用多模态指令数据微调出对话能力。真正让该系列起飞的是 1.5 版引入的动态高分辨率:按输入宽高比把大图切成至多 40 个 448×448 tile 并附加全局缩略图,配合像素重排(pixel shuffle)把每 tile 压到 256 个视觉 token——文档、图表、小字场景的理解力大幅跃升;同期还强化了高质量中英双语语料。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "网页级图文对做对齐预训练,再以覆盖文档/图表/OCR/数学的多模态指令集微调;全系列权重与代码开源。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "InternVL-Chat 系列在 MMMU、DocVQA、ChartQA 等基准上持续逼近并部分超越商用模型,是开源社区「GPT-4V 平替」的主力之一;其动态切图方案与开源节奏推动了整个中文 MLLM 生态的迭代,论文体系累计引用数千次。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "6B 视觉塔与多 tile 输入带来可观的推理开销;初代对视频与长上下文支持有限。后续 InternVL2/2.5/3 引入更大语言底座、视频输入与更精细的训练配方,持续保持开源第一梯队。"
+  }
+ ],
+ "citations": {
+  "count": 3127,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

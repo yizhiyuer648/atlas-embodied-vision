@@ -1,0 +1,48 @@
+{
+ "id": "eva-clip",
+ "name": "EVA-CLIP",
+ "org": "BAAI",
+ "country": "CN",
+ "year": 2023,
+ "paper_url": "https://arxiv.org/abs/2303.15389",
+ "github_url": "https://github.com/baaivision/EVA/tree/master/EVA-CLIP",
+ "category": "representation",
+ "sub_category": "vision-language",
+ "one_liner_zh": "以 EVA 视觉初始化和一系列稳定训练技巧扩大中文团队的 CLIP 模型。",
+ "key_idea_zh": "复用遮挡图像预训练视觉编码器，并优化初始化、增强和训练配方以提升图文对齐效率。",
+ "tags": [
+  "国产",
+  "CLIP",
+  "EVA",
+  "图文对齐"
+ ],
+ "tier": "B",
+ "lineage_parent": "eva",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "训练大 CLIP 极其烧钱且不稳定:从零开始的巨型对比训练常常发散,数据效率也低。智源 EVA-CLIP 的思路是站在 EVA 的肩膀上——用 MIM 预训练的视觉塔做初始化,再配一套系统的训练加速配方,把「大 CLIP」的门槛打下来并完全开源。"
+  },
+  {
+   "title": "方法详解",
+   "body": "配方的核心项:视觉塔用 EVA 权重初始化(MIM 学到的表征让对比训练起点极高、全程稳定);优化器改用 LAMB 并配合更大学习率;用 flip 增强等价扩充样本;应用 FLIP 式随机丢 patch 降低单步成本。这些组合让同等算力下的收敛速度和最终精度同时提升。系列覆盖从 B 到 5B(EVA-02-CLIP-E)的完整谱系。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "训练数据为公开可得的 LAION-2B 与 COYO-700M 混合;最大 5B 模型只看了 90 亿样本就达到最优——数据效率远超同侪。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "EVA-02-CLIP-E/14+ 以 82.0% 的 ImageNet 零样本精度登顶开源 CLIP;4.3 亿参数的 L/14+ 也有 80.4%。全系列开源使其成为学界替代 OpenAI CLIP 的首选之一,大量多模态大模型(包括众多国产 MLLM)的视觉塔直接采用 EVA-CLIP,引用超过 900 次。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "本质仍是 CLIP 范式,细粒度定位与密集预测短板未变;数据来自网络爬取,偏见问题随之继承。后续 EVA-CLIP-18B 继续放大,而 SigLIP 2 等则从目标函数侧另辟蹊径。"
+  }
+ ],
+ "citations": {
+  "count": 921,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

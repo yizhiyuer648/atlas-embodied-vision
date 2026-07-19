@@ -1,0 +1,47 @@
+{
+ "id": "vista-world-model",
+ "name": "Vista",
+ "org": "OpenDriveLab / Shanghai AI Laboratory",
+ "country": "CN",
+ "year": 2024,
+ "paper_url": "https://arxiv.org/abs/2405.17398",
+ "github_url": "https://github.com/OpenDriveLab/Vista",
+ "category": "world",
+ "sub_category": "generalizable-driving-world-model",
+ "one_liner_zh": "可接受多种动作条件并长时滚动的高保真驾驶世界模型。",
+ "key_idea_zh": "在大规模 OpenDV 视频上学习潜扩散动力学，并以转角、速度、轨迹、命令或目标点控制未来。",
+ "tags": [
+  "国产",
+  "自动驾驶",
+  "多种控制"
+ ],
+ "tier": "B",
+ "lineage_parent": "drivedreamer",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "已有驾驶世界模型三个痛点:换个城市就失效(泛化差)、关键细节糊掉(保真度低)、只支持单一动作接口(可控性窄)。OpenDriveLab 与上海 AI 实验室的 Vista 目标是造一个「通用驾驶世界模型」:高分辨率、长时滚动、能接受从高层意图到低层操作的全谱系动作条件。"
+  },
+  {
+   "title": "方法详解",
+   "body": "Vista 基于潜扩散视频模型,在系统性诊断既有方法后加入三组关键设计:两个新损失分别强化运动实例与结构信息的学习,让车辆、车道线等关键要素保持清晰;潜变量替换技巧把历史帧作为先验注入,支持连贯的长时程滚动预测;动作控制采用高效学习策略,统一接入命令、目标点、完整轨迹、转角与速度五种条件。此外 Vista 还能反过来当「评委」:用预测不确定性为真实动作打分,建立无需真值的通用奖励。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "在大规模公开驾驶视频集 OpenDV(YouTube 采集,约 1700+ 小时)与 nuScenes 上训练,分辨率与帧率显著高于此前驾驶世界模型。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "Vista 在 70% 以上的对比中胜过最强通用视频生成器,FID 较最优驾驶世界模型提升 55%、FVD 提升 27%,并首次展示了用世界模型自身容量构建可泛化的动作评估奖励。开源代码使其成为驾驶世界模型的标准基线之一,引用超过 330 次。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "扩散滚动的实时性仍不足以在线闭环;极端天气与罕见事件的生成质量有限。团队后续把 Vista 与端到端规划、强化学习评估结合,探索「世界模型即评测器」的落地。"
+  }
+ ],
+ "citations": {
+  "count": 338,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

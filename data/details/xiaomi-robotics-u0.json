@@ -1,0 +1,47 @@
+{
+  "id": "xiaomi-robotics-u0",
+  "name": "Xiaomi-Robotics-U0",
+  "org": "Xiaomi Robotics",
+  "country": "CN",
+  "year": 2026,
+  "paper_url": "https://arxiv.org/abs/2607.11643",
+  "github_url": "https://github.com/XiaomiRobotics/Xiaomi-Robotics-U0",
+  "category": "world",
+  "sub_category": "embodied-world-foundation-model",
+  "one_liner_zh": "把通用图像生成与机器人世界建模统一到一个 38B 自回归模型中，用多视角具身合成同时服务场景生成、迁移、视频与策略数据增强。",
+  "key_idea_zh": "从 Emu3.5 初始化，在共享离散视觉 token 空间中联合训练文生图、图像编辑、多视角具身场景、具身迁移和视频生成，并用 FlashAR 加速高分辨率自回归解码。",
+  "tags": [
+    "国产",
+    "具身世界模型",
+    "世界基础模型",
+    "自回归",
+    "多视角一致性",
+    "数据生成",
+    "FlashAR",
+    "开源"
+  ],
+  "tier": "B",
+  "lineage_parent": "emu3-5",
+  "sections": [
+    {
+      "title": "发布与定位",
+      "body": "Xiaomi Robotics 于 2026 年 7 月 13 日发布 Xiaomi-Robotics-U0 技术报告。官方项目页把它描述为 38B 自回归世界基础模型：目标不是直接输出机器人动作，而是生成带机器人本体约束、多视角一致性和交互动态的视觉世界，作为具身数据引擎与策略训练辅助。"
+    },
+    {
+      "title": "统一具身合成",
+      "body": "U0 从 Emu3.5 初始化，以共享离散视觉 tokenizer 和单一 next-token 目标统一五类任务：文生图、任意条件图像编辑、多视角具身场景生成、具身迁移以及具身视频生成。这样做保留通用图像生成中的视觉知识，同时用机器人数据补入相机视角、几何关系和本体约束。"
+    },
+    {
+      "title": "多视角与具身迁移",
+      "body": "模型可以围绕同一机器人任务生成多个相机视角，并在迁移时改变机器人本体、场景或外观条件，同时尽量保持视角间的一致性和交互动态。官方报告还把生成数据用于下游策略训练，展示世界模型不仅是演示生成器，也可以补充真实机器人数据。"
+    },
+    {
+      "title": "推理与开放状态",
+      "body": "官方 GitHub 已公开 Apache-2.0 许可的推理代码、配置、Gradio 入口、普通 AR 与 FlashAR 的 vLLM 补丁，并在 Hugging Face 和 ModelScope 发布 U0、U0-FlashAR 及视觉 tokenizer 相关权重。当前公开权重支持 Scene Gen、Transfer、T2I 和 X2I；官方仓库注明 U0-Video 检查点仍待发布，因此不能把视频演示等同于已完整开放的视频权重。"
+    },
+    {
+      "title": "结果与学习提醒",
+      "body": "论文报告 U0 在具身场景生成、迁移和视频生成评测上取得有竞争力的结果，并用生成数据改善了 pi0.5 在困难真实操作任务上的分布外成功率。阅读时要区分人类偏好评测、生成基准和真实机器人策略结果；生成画面看起来合理，也不自动证明几何、碰撞和长时物理完全正确。"
+    }
+  ]
+}

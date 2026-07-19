@@ -1,0 +1,38 @@
+{
+  "id": "qwen3-5-omni",
+  "name": "Qwen3.5-Omni",
+  "org": "Alibaba Cloud",
+  "country": "CN",
+  "year": 2026,
+  "paper_url": "https://arxiv.org/abs/2604.15804",
+  "github_url": "unknown",
+  "category": "multimodal",
+  "sub_category": "omni_mllm",
+  "one_liner_zh": "Qwen3.5 的全模态分支，统一长文本、视觉、音频理解与流式语音生成。",
+  "key_idea_zh": "让 Thinker 与 Talker 都采用混合注意力 MoE，并用 ARIA 动态对齐文本与语音单元，改善低延迟流式语音的稳定性和韵律。",
+  "tags": ["国产", "Omni", "音频视觉", "MoE", "Thinker-Talker", "ARIA", "流式语音", "长上下文"],
+  "tier": "B",
+  "lineage_parent": "qwen3-5",
+  "sections": [
+    {
+      "title": "正式发布证据",
+      "body": "Qwen Team 于 2026 年 4 月 17 日提交《Qwen3.5-Omni Technical Report》（arXiv:2604.15804），报告把它定义为 Qwen-Omni 家族的最新进展。该条目依据论文收录，不把名称相近的社区微调模型当成官方版本。"
+    },
+    {
+      "title": "全模态架构",
+      "body": "Qwen3.5-Omni 面向文字、图像、视频和音频的联合理解与生成。论文说明 Thinker 与 Talker 都采用 Hybrid Attention Mixture-of-Experts：Thinker 负责多模态理解与推理，Talker 负责语音输出；二者通过稀疏 MoE 控制超大模型的激活计算量。"
+    },
+    {
+      "title": "ARIA 与流式交互",
+      "body": "文本 tokenizer 与语音 tokenizer 的编码粒度不同，容易让流式语音出现节奏不稳或不自然。论文提出 ARIA，动态对齐文本与语音单元，在尽量少增加延迟的前提下改善稳定性、韵律与情感表达，并支持音频视觉内容的时间对齐描述。"
+    },
+    {
+      "title": "数据与能力范围",
+      "body": "论文报告使用异构图文数据和超过一亿小时音视频内容，支持 256K 上下文、长音频理解、视频理解以及多语言语音生成。这里记录的是论文声明的 Qwen3.5-Omni 家族能力；不同 API 档位或后续模型的可用输入长度仍应以当时官方服务文档为准。"
+    },
+    {
+      "title": "开放状态与提醒",
+      "body": "截至本次核验，未找到 Qwen3.5-Omni 的官方 GitHub 仓库或 Qwen 官方 Hugging Face 权重，因此 github_url 写为 unknown，标签中也不标注开源或开放权重。论文公开不等于模型权重、推理代码和训练数据公开；社区中带相似名称的仓库或模型不能替代官方来源。"
+    }
+  ]
+}

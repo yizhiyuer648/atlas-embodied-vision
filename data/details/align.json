@@ -1,0 +1,48 @@
+{
+ "id": "align",
+ "name": "ALIGN",
+ "org": "Google Research",
+ "country": "US",
+ "year": 2021,
+ "paper_url": "https://arxiv.org/abs/2102.05918",
+ "github_url": "unknown",
+ "category": "representation",
+ "sub_category": "vision-language",
+ "one_liner_zh": "以十亿级网页噪声图文对验证简单双编码器的规模效应。",
+ "key_idea_zh": "不做昂贵人工清洗，直接用 EfficientNet 与 BERT 双塔在大规模弱监督数据上对比训练。",
+ "tags": [
+  "图文对比学习",
+  "双编码器",
+  "弱监督",
+  "规模化"
+ ],
+ "tier": "B",
+ "lineage_parent": "clip",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "CLIP 用 4 亿「相对干净」的图文对证明了对比预训练的威力,但数据清洗本身仍是瓶颈。Google 的 ALIGN 提出更激进的规模化假设:如果数据够多,噪声根本不用洗——直接用 18 亿条未经清洗的网页 alt-text 图文对训练,规模能否淹没噪声?"
+  },
+  {
+   "title": "方法详解",
+   "body": "方法刻意保持「无聊」:EfficientNet-L2 做图像塔,BERT-Large 做文本塔,双塔输出经归一化后用双向对比损失(图到文、文到图)对齐,batch 内互为负样本。没有跨模态注意力、没有复杂融合——所有赌注都押在数据规模上。数据管线只做最基本的频率过滤,保留了大量拼写错误与无关描述。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "18 亿图文对,规模是 CLIP 的 4.5 倍;训练同样采用大 batch 分布式对比学习。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "结果验证了假设:ALIGN 在 Flickr30K 与 MSCOCO 图文检索上刷新纪录,甚至超过带跨模态注意力的复杂模型;ImageNet 零样本分类与 CLIP 相当。它与 CLIP 一起把「双塔 + 对比 + 规模」定为图文表征的标准范式,并直接启发了后续 BASIC、LiT 等更大规模的工作,引用超过 5700 次。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "数据集与模型均未开放,社区无法复现;噪声数据带来的偏见也未系统处理。开源侧由 LAION + OpenCLIP 接棒复现规模效应,SigLIP 则改进了损失的可扩展性。"
+  }
+ ],
+ "citations": {
+  "count": 5731,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

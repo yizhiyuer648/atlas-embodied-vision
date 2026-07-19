@@ -1,0 +1,49 @@
+{
+ "id": "minigpt-4",
+ "name": "MiniGPT-4",
+ "org": "King Abdullah University of Science and Technology",
+ "country": "SA",
+ "year": 2023,
+ "paper_url": "https://arxiv.org/abs/2304.10592",
+ "github_url": "https://github.com/Vision-CAIR/MiniGPT-4",
+ "category": "multimodal",
+ "sub_category": "general_vlm",
+ "one_liner_zh": "仅用轻量线性层把冻结视觉编码器接到冻结语言模型的早期开源 VLM。",
+ "key_idea_zh": "复用 BLIP-2 的视觉编码器与 Q-Former，再以线性投影连接 Vicuna，并用少量高质量图文对话数据校准。",
+ "tags": [
+  "开源",
+  "BLIP-2",
+  "Q-Former",
+  "参数高效",
+  "图文对话"
+ ],
+ "tier": "B",
+ "lineage_parent": "blip-2",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "GPT-4V 发布之初,一个悬而未决的问题是:它的多模态神迹到底来自什么?KAUST 的 MiniGPT-4 提出一个大胆假设——秘密不在视觉侧,而在语言模型足够强。验证方式也极简:把现成的视觉模块接到最强的开源 LLM 上,看能涌现出什么。"
+  },
+  {
+   "title": "方法详解",
+   "body": "MiniGPT-4 是「全冻结 + 一层线性」的极限组装:视觉侧原封不动复用 BLIP-2 的 EVA-CLIP 编码器与 Q-Former,语言侧用冻结的 Vicuna,中间只训练一个线性投影层——可训练参数仅约千万级。训练分两阶段:先在 500 万图文对上对齐投影层;再用自举生成、人工修订的 3500 条高质量详细描述做二阶段微调——论文发现这一步是从「输出破碎重复」到「自然流畅对话」的关键。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "一阶段 4 卡 A100 十小时;二阶段仅 400 步、单卡 7 分钟——多模态能力的解锁成本被压缩到了极致。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "MiniGPT-4 涌现出手绘草图生成网页、看图写诗、按菜品照片教做菜等 GPT-4V 式能力,有力支持了「LLM 是多模态能力的主引擎」这一判断。它与 LLaVA 同周发布、互相印证,共同点燃了 2023 年开源 MLLM 的爆发,引用超过 3200 次。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "感知精度受冻结 Q-Former 上限约束,细粒度识别、计数、定位弱;幻觉明显。MiniGPT-v2 转向 LLaVA 式直连并加入任务标识符;社区主流随后收敛到「MLP 投影 + 全量指令微调」路线。"
+  }
+ ],
+ "citations": {
+  "count": 3241,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

@@ -1,0 +1,19 @@
+在项目 {{PROJECT_ROOT}} 执行“Atlas 每日完整优化循环”。
+
+README.md 的“每日完整优化契约”是唯一可执行主契约。开始前完整读取 README、迁移说明、git status 与 `.codex/atlas-maintenance-state.json` schema v2；先续做仍真实存在的 `pending`，保留用户改动，不做破坏性 Git 操作，不自动提交或推送。
+
+产品边界固定：全站只有 10 个正式页面（index / explore / model / compare / radar / venues / lineage / timeline / trends / glossary），不得恢复 learn、Quiz、学习进度或答题功能；学术追踪必须保持 `journals / conferences / compare` 三个可分享 URL 视图。保持暖白杂志风、纯静态、零 CDN、零框架。
+
+每天各运行一次 `python scripts/update.py --days 30 --min-stars 50` 与 `python scripts/update_academic.py --days 30`，并分别观察多来源论文、SCI 期刊、学术会议、六类常用研究手法和公开社区术语。平台数量本身只扩大**发现覆盖**，绝不自动提高证据等级；记录查询词、时间窗、原始结果数、去重数、失败、缓存与来源链接，没有结果也如实写明。
+
+学术证据固定使用 E1–E5：E1 正式出版；E2 官方决定；E3 双独立书目元数据一致；E4 聚合线索；E5 预印本/作者/社区自述。当前权威学术数据应保持 8 个期刊、10 个会议和 10 条已核验发表事件；数量变化只能来自人工打开正式出版页或官方论文集后的审核更新。
+
+E1–E5 不是论文质量分。判断论文水平必须逐项核对主张与证据、验证广度、真实场景、可复现性、版本增量，只能写“证据充分 / 证据部分 / 暂不可判”；不得用 venue 名气、引用数、仓库 star 或宣传演示代替正文与实验核验，也不得汇总脱离任务条件的总分。
+
+跨平台论文身份顺序固定为：规范化 DOI → 去版本号 arXiv ID → 官方 proceedings / PMLR / DBLP / OpenReview / Anthology 等同一来源稳定 ID → 规范化标题 + 第一作者 + 首次公开年份。版本或标识冲突时不得自动合并；论文雷达保存论文正文身份，学术追踪保存 venue、版本/发表事件、来源覆盖、方法信号与编辑总结，不复制第二份摘要或导读库。
+
+`scripts/update.py` 只能写 `data/candidates.json`；`scripts/update_academic.py` 只能写 `data/academic_candidates.json`。后者不被前端加载，所有候选始终必须是 `status: needs_review`、`manual_review_required: true`。候选脚本永不直接写入或合并 `data/details/`、旧 `data/models.json`、`data/index.json` 或 `data/academic_tracker.json`；只有维护者逐条打开原始来源核验后才能手动落库。
+
+每天的学术输出固定为三段：`事实摘要` 附一手来源和日期；`Atlas 理解` 明确标成编辑判断；`待核验` 列证据缺口、失败来源和下一步位置。不得猜测 JCR 分区、影响因子、录用率或当期 SCI/SCIE 状态，无法确认就写 `unknown` 或“待核验”。
+
+每轮运行 README 规定的构建、数据、Python、两套候选回归、JavaScript、几何、10 页三档视口和学术三视图门禁。真实手机未测、公网未配置、网络/额度不足或任何门禁未做时，状态只能是 `partial`；把仍真实存在的事项写回小型 schema v2 `pending`，不要把整份历史报告塞入状态文件。只有全部门禁和真实设备验收确实通过才可写 `complete`。

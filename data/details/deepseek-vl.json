@@ -1,0 +1,49 @@
+{
+ "id": "deepseek-vl",
+ "name": "DeepSeek-VL",
+ "org": "DeepSeek-AI",
+ "country": "CN",
+ "year": 2024,
+ "paper_url": "https://arxiv.org/abs/2403.05525",
+ "github_url": "https://github.com/deepseek-ai/DeepSeek-VL",
+ "category": "multimodal",
+ "sub_category": "general_vlm",
+ "one_liner_zh": "兼顾真实场景视觉理解与语言能力的开源中英双语 VLM。",
+ "key_idea_zh": "混合使用 SigLIP 与 SAM-B 视觉编码器提取语义和细节特征，再经适配器接入 DeepSeek LLM。",
+ "tags": [
+  "开源",
+  "SigLIP",
+  "SAM-B",
+  "双视觉编码器",
+  "中英双语"
+ ],
+ "tier": "B",
+ "lineage_parent": "unknown",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "学术基准分数与真实用户体验之间存在著名的鸿沟:很多模型刷分很高,一遇到网页截图、PDF、发票就露馅。DeepSeek-VL 的设计哲学是「为真实世界而造」:数据按真实用例分类构建,架构为高分辨率细节而选型,并且死守一条底线——语言能力不能退化。"
+  },
+  {
+   "title": "方法详解",
+   "body": "视觉端采用混合双编码器:SigLIP-L 提取 384px 的全局语义,SAM-B(分割模型的编码器)以 1024px 提取高分辨率细节,两路特征融合后经适配器进入 DeepSeek LLM——语义与细节兼得而计算可控。训练策略上的关键发现:从预训练一开始就混入大比例纯文本数据、精心调度图文与文本的竞争,才能既学视觉又不伤语言;为此设计了三阶段(适配器预热 → 联合预训练 → 指令微调)流程。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "预训练语料覆盖网页截图、PDF、OCR、图表、知识类内容;指令数据依据真实用例分类法构建。发布 1.3B 与 7B 两档,全部开源。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "同规模下,DeepSeek-VL 在多模态基准达到最优或接近最优,语言基准几乎无损,真实对话体验尤其突出。它验证的「语言优先 + 混合视觉编码」经验被广泛引用,也为 DeepSeek 后续多模态布局(VL2、Janus)奠基,引用超过 800 次。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "双编码器结构推理路径较重;固定切图策略对极端宽高比欠佳。DeepSeek-VL2 改用动态切图 + MoE 语言骨干,把性价比进一步推高。"
+  }
+ ],
+ "citations": {
+  "count": 839,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

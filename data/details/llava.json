@@ -1,0 +1,201 @@
+{
+ "id": "llava",
+ "name": "LLaVA",
+ "org": "University of Wisconsin–Madison & Microsoft Research",
+ "country": "US",
+ "year": 2023,
+ "paper_url": "https://arxiv.org/abs/2304.08485",
+ "github_url": "https://github.com/haotian-liu/LLaVA",
+ "category": "multimodal",
+ "sub_category": "general_vlm",
+ "one_liner_zh": "用简单视觉投影器连接 CLIP 与大语言模型的代表性开源方案。",
+ "key_idea_zh": "将 CLIP 视觉特征线性投影到语言模型词向量空间，再用 GPT-4 生成的视觉指令数据进行两阶段训练。",
+ "tags": [
+  "开源",
+  "CLIP",
+  "视觉指令微调",
+  "线性投影器"
+ ],
+ "tier": "A",
+ "lineage_parent": "unknown",
+ "architecture": {
+  "description_zh": "CLIP ViT 提取图像 patch 特征，轻量投影器把视觉维度映射到语言模型隐藏维度；视觉 token 与用户文本 token 拼接后，由 Vicuna 类自回归语言模型生成回答。",
+  "modules": [
+   {
+    "id": "image",
+    "label": "图像",
+    "type": "input"
+   },
+   {
+    "id": "clip_vit",
+    "label": "CLIP ViT-L/14",
+    "type": "encoder"
+   },
+   {
+    "id": "mm_projector",
+    "label": "视觉投影器",
+    "type": "projector"
+   },
+   {
+    "id": "prompt",
+    "label": "用户文本",
+    "type": "input"
+   },
+   {
+    "id": "token_sequence",
+    "label": "图文 token 序列",
+    "type": "fusion"
+   },
+   {
+    "id": "vicuna",
+    "label": "Vicuna 语言模型",
+    "type": "decoder"
+   },
+   {
+    "id": "response",
+    "label": "文本回答",
+    "type": "output"
+   }
+  ],
+  "edges": [
+   {
+    "from": "image",
+    "to": "clip_vit",
+    "label": "视觉 patch"
+   },
+   {
+    "from": "clip_vit",
+    "to": "mm_projector",
+    "label": "图像特征"
+   },
+   {
+    "from": "mm_projector",
+    "to": "token_sequence",
+    "label": "视觉 token"
+   },
+   {
+    "from": "prompt",
+    "to": "token_sequence",
+    "label": "文本 token"
+   },
+   {
+    "from": "token_sequence",
+    "to": "vicuna",
+    "label": "统一序列"
+   },
+   {
+    "from": "vicuna",
+    "to": "response",
+    "label": "自回归生成"
+   }
+  ],
+  "flow_ms": 6600
+ },
+ "code": {
+  "language": "python",
+  "source_repo": "https://github.com/haotian-liu/LLaVA",
+  "source_path": "llava/model/llava_arch.py",
+  "simplified": true,
+  "lines": [
+   {
+    "code": "def encode_images(self, images):",
+    "comment_zh": "按官方实现简化：先定义独立的图像编码步骤。"
+   },
+   {
+    "code": "    image_features = self.get_model().get_vision_tower()(images)",
+    "comment_zh": "CLIP 视觉塔把像素转为 patch 特征。"
+   },
+   {
+    "code": "    image_features = self.get_model().mm_projector(image_features)",
+    "comment_zh": "投影器把视觉通道对齐到语言模型隐藏维度。"
+   },
+   {
+    "code": "    return image_features",
+    "comment_zh": "输出已经能与文本词向量拼接的视觉 token。"
+   },
+   {
+    "code": "def prepare_multimodal(self, input_ids, images):",
+    "comment_zh": "简化展示官方多模态输入准备逻辑。"
+   },
+   {
+    "code": "    vision_tower = self.get_vision_tower()",
+    "comment_zh": "取得视觉编码器，判断当前模型是否支持图像。"
+   },
+   {
+    "code": "    if vision_tower is None or images is None:",
+    "comment_zh": "没有视觉塔或图像时退化为纯文本路径。"
+   },
+   {
+    "code": "        return input_ids, None",
+    "comment_zh": "纯文本输入无需视觉特征。"
+   },
+   {
+    "code": "    if isinstance(images, list) or images.ndim == 5:",
+    "comment_zh": "多图或多分块输入需要先合并批次。"
+   },
+   {
+    "code": "        concat_images = torch.cat(images, dim=0)",
+    "comment_zh": "把不同图像块拼成一次视觉前向的批次。"
+   },
+   {
+    "code": "        image_features = self.encode_images(concat_images)",
+    "comment_zh": "统一经过 CLIP 与多模态投影器。"
+   },
+   {
+    "code": "        split_sizes = [image.shape[0] for image in images]",
+    "comment_zh": "记录每张图原本包含多少块。"
+   },
+   {
+    "code": "        image_features = torch.split(image_features, split_sizes, dim=0)",
+    "comment_zh": "编码后再按原图拆回。"
+   },
+   {
+    "code": "    else:",
+    "comment_zh": "普通单图批次可直接编码。"
+   },
+   {
+    "code": "        image_features = [self.encode_images(images)]",
+    "comment_zh": "得到单图视觉 token，并统一包装为列表供后续合并。"
+   },
+   {
+    "code": "    if self.config.mm_patch_merge_type == \"flat\":",
+    "comment_zh": "基础版本采用直接展平的 patch 合并方式。"
+   },
+   {
+    "code": "        image_features = [x.flatten(0, 1) for x in image_features]",
+    "comment_zh": "把图块维和 patch 维合成连续视觉序列。"
+   },
+   {
+    "code": "    return input_ids, image_features",
+    "comment_zh": "返回文本 ID 与视觉 token，随后替换图像占位符并送入 LLM。"
+   }
+  ]
+ },
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "GPT-4V 展示了多模态对话的魔力,但闭源。威斯康星麦迪逊与微软的 LLaVA 问了一个四两拨千斤的问题:指令微调让语言模型学会了「听话」,能不能把同样的配方搬到视觉上——用机器生成的「视觉指令数据」教开源模型看图对话?"
+  },
+  {
+   "title": "方法详解",
+   "body": "架构简单到近乎挑衅:CLIP ViT-L 视觉编码器 + 一层线性投影 + Vicuna 语言模型,投影层把视觉特征直接映射进词嵌入空间。真正的创新在数据:用纯文本 GPT-4,基于图像的描述与目标框信息,生成 15.8 万条多模态指令样本(对话、细节描述、复杂推理三类)。训练两阶段:先只训投影层做特征对齐,再联合微调投影层与 LLM 学会指令跟随。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "对齐阶段用 CC 系列图文对,指令阶段用 GPT-4 生成的 LLaVA-Instruct-158K;整个训练在 8 卡 A100 上一天级完成——成本低到任何实验室都能复现。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "LLaVA 在合成多模态指令集上达到 GPT-4 相对分数 85.1%,配合 GPT-4 集成在 ScienceQA 创下 92.53% 新纪录。它证明「好数据 + 简架构」就能解锁多模态对话,让 MLLM 研究瞬间平民化:LLaVA-1.5/NeXT 长期霸占开源基线位置,「视觉指令微调」成为标准术语,数据、代码、模型全开源,引用超过 1 万次。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "336px 固定低分辨率看不清小字,OCR 与文档场景吃力;单图输入限制应用面。LLaVA-NeXT 用 AnyRes 切图补高分辨率,LLaVA-OneVision 扩展到多图与视频;整个开源 MLLM 生态基本沿 LLaVA 范式演化。"
+  }
+ ],
+ "citations": {
+  "count": 10321,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

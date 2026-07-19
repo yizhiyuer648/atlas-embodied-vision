@@ -1,0 +1,47 @@
+{
+ "id": "groot-n1",
+ "name": "GR00T N1",
+ "org": "NVIDIA",
+ "country": "US",
+ "year": 2025,
+ "paper_url": "https://arxiv.org/abs/2503.14734",
+ "github_url": "https://github.com/NVIDIA/Isaac-GR00T",
+ "category": "vla",
+ "sub_category": "humanoid-foundation-model",
+ "one_liner_zh": "面向通用人形机器人的开放式双系统基础模型。",
+ "key_idea_zh": "将视觉语言语义推理系统与扩散式连续动作系统结合，并用真实与合成机器人数据共同训练。",
+ "tags": [
+  "人形机器人",
+  "双系统",
+  "扩散"
+ ],
+ "tier": "B",
+ "lineage_parent": "unknown",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "人形机器人硬件在 2024 年后迅速成熟,但缺一个「通用大脑」。NVIDIA 的 GR00T N1 定位为面向通才人形机器人的开放基础模型,希望像开源 LLM 那样,给整个人形生态提供一个可下载、可微调的起点。"
+  },
+  {
+   "title": "方法详解",
+   "body": "GR00T N1 采用双系统架构,类比人类认知的快慢系统:System 2 是视觉语言模块(基于 NVIDIA Eagle VLM),负责理解环境与指令、进行慢速推理;System 1 是扩散 Transformer 动作模块,以 System 2 的语义输出为条件,实时生成流畅的连续动作。两个系统紧耦合、端到端联合训练,而非松散的分层调用。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "训练数据是刻意构造的「数据金字塔」:底层是海量人类视频,中层是 Omniverse/Isaac 合成的仿真轨迹,顶层是真实机器人遥操作数据。这种真实+合成混合策略缓解了人形真机数据稀缺的问题。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "在多本体仿真基准上,GR00T N1 超过既有模仿学习基线;部署到傅利叶 GR-1 人形机器人上,以高数据效率完成语言条件的双臂操作。模型权重开放,配套的仿真、数据工具链(Isaac GR00T)一起发布,迅速成为人形方向被引用和复用最多的基础模型之一,引用超过 1000 次。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "现阶段能力集中在桌面与短程操作,全身移动操作与长时程自主仍在早期;合成数据与真实世界的差距也需要持续校准。NVIDIA 后续迭代 N1.5 等版本并扩充 GR00T 生态(世界模型 Dreams、蓝图工作流)。"
+  }
+ ],
+ "citations": {
+  "count": 1070,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

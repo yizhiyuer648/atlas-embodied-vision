@@ -1,0 +1,207 @@
+{
+ "id": "dreamer-v3",
+ "name": "DreamerV3",
+ "org": "Google DeepMind",
+ "country": "US",
+ "year": 2023,
+ "paper_url": "https://arxiv.org/abs/2301.04104",
+ "github_url": "https://github.com/danijar/dreamerv3",
+ "category": "world",
+ "sub_category": "general-world-model-rl",
+ "one_liner_zh": "用一套稳健超参数跨越 150 多个不同控制任务。",
+ "key_idea_zh": "延续 RSSM 潜在想象，引入 symlog 预测、分布式回归与 free bits 等稳定化设计，使模型可随规模提升。",
+ "tags": [
+  "RSSM",
+  "通用强化学习",
+  "潜在想象"
+ ],
+ "tier": "A",
+ "lineage_parent": "dreamer-v2",
+ "architecture": {
+  "description_zh": "DreamerV3 将真实观测编码进 RSSM，联合预测重建、奖励与继续概率；actor 和 critic 不在像素环境中试错，而是在 RSSM 展开的潜在想象轨迹上学习。",
+  "modules": [
+   {
+    "id": "dv3-obs",
+    "label": "观测 + 动作",
+    "type": "input"
+   },
+   {
+    "id": "dv3-encoder",
+    "label": "多模态编码器",
+    "type": "encoder"
+   },
+   {
+    "id": "dv3-rssm",
+    "label": "RSSM 潜在动力学",
+    "type": "world-model"
+   },
+   {
+    "id": "dv3-heads",
+    "label": "重建 / 奖励 / 继续头",
+    "type": "decoder"
+   },
+   {
+    "id": "dv3-imagine",
+    "label": "潜在想象展开",
+    "type": "simulator"
+   },
+   {
+    "id": "dv3-actor",
+    "label": "Actor",
+    "type": "policy"
+   },
+   {
+    "id": "dv3-critic",
+    "label": "Critic",
+    "type": "value"
+   },
+   {
+    "id": "dv3-action",
+    "label": "环境动作",
+    "type": "output"
+   }
+  ],
+  "edges": [
+   {
+    "from": "dv3-obs",
+    "to": "dv3-encoder",
+    "label": "真实经验"
+   },
+   {
+    "from": "dv3-encoder",
+    "to": "dv3-rssm",
+    "label": "观测嵌入"
+   },
+   {
+    "from": "dv3-rssm",
+    "to": "dv3-heads",
+    "label": "潜状态"
+   },
+   {
+    "from": "dv3-rssm",
+    "to": "dv3-imagine",
+    "label": "动力学"
+   },
+   {
+    "from": "dv3-actor",
+    "to": "dv3-imagine",
+    "label": "想象动作"
+   },
+   {
+    "from": "dv3-imagine",
+    "to": "dv3-critic",
+    "label": "回报轨迹"
+   },
+   {
+    "from": "dv3-critic",
+    "to": "dv3-actor",
+    "label": "价值梯度"
+   },
+   {
+    "from": "dv3-actor",
+    "to": "dv3-action",
+    "label": "策略输出"
+   }
+  ],
+  "flow_ms": 4300
+ },
+ "code": {
+  "language": "python",
+  "source_repo": "https://github.com/danijar/dreamerv3",
+  "source_path": "dreamerv3/agent.py",
+  "simplified": true,
+  "lines": [
+   {
+    "code": "def train(self, data, state=None):",
+    "comment_zh": "用一批真实经验更新世界模型和行为。"
+   },
+   {
+    "code": "    data = self.preprocess(data)",
+    "comment_zh": "规范化图像、动作和终止标记。"
+   },
+   {
+    "code": "    embed = self.encoder(data)",
+    "comment_zh": "把多模态观测编码成紧凑表示。"
+   },
+   {
+    "code": "    post, prior = self.rssm.observe(embed, data['action'], data['is_first'], state)",
+    "comment_zh": "由 RSSM 计算后验与先验潜状态序列。"
+   },
+   {
+    "code": "    feat = self.rssm.get_feat(post)",
+    "comment_zh": "组合确定性状态和随机状态。"
+   },
+   {
+    "code": "    recon = self.decoder(feat)",
+    "comment_zh": "从潜状态预测原始观测。"
+   },
+   {
+    "code": "    reward = self.reward_head(feat)",
+    "comment_zh": "预测每一步的奖励分布。"
+   },
+   {
+    "code": "    cont = self.continue_head(feat)",
+    "comment_zh": "预测轨迹是否会继续。"
+   },
+   {
+    "code": "    model_loss = self.world_model_loss(data, recon, reward, cont, post, prior)",
+    "comment_zh": "汇总重建、奖励、继续和 KL 损失。"
+   },
+   {
+    "code": "    start = jax.tree.map(lambda x: x[:, -1], post)",
+    "comment_zh": "从真实序列末端开始想象。"
+   },
+   {
+    "code": "    imagined = self.imagine(self.actor, start, self.config.imag_horizon)",
+    "comment_zh": "让 actor 在 RSSM 中展开未来轨迹。"
+   },
+   {
+    "code": "    returns = self.lambda_return(imagined)",
+    "comment_zh": "依据预测奖励与价值计算 λ 回报。"
+   },
+   {
+    "code": "    actor_loss = -returns.mean()",
+    "comment_zh": "提高想象轨迹的预期回报。"
+   },
+   {
+    "code": "    critic_loss = self.critic.loss(imagined['feat'], returns)",
+    "comment_zh": "训练 critic 拟合想象回报。"
+   },
+   {
+    "code": "    self.opt.update(model_loss + actor_loss + critic_loss)",
+    "comment_zh": "联合更新世界模型、actor 与 critic。"
+   },
+   {
+    "code": "    return post, self.metrics()",
+    "comment_zh": "返回新的循环状态和训练指标。"
+   }
+  ]
+ },
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "强化学习落地的最大隐性成本是调参:每换一个领域,奖励尺度、探索强度、损失权重都要专家重调。DreamerV3 的野心是造一个「开箱即用」的通用算法——固定一套超参数,从棋盘游戏到机器人控制全都能学,并以 Minecraft 挖钻石这一著名难题作为试金石。"
+  },
+  {
+   "title": "方法详解",
+   "body": "架构仍是 RSSM 世界模型 + 想象中的 actor-critic,真正的贡献是一组让训练跨域稳定的技术:symlog 变换把千差万别的奖励与价值压到统一量级,配合 two-hot 分布式回归学习价值;free bits 防止 KL 项在简单环境中塌缩;percentile 归一化的回报缩放让探索强度自适应;critic 用离散分布输出应对多峰回报。所有组件都为「不调参」服务,模型规模从 12M 到 400M 平滑扩展,性能随规模与重放比单调上升。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "用同一套配置在 150 多个任务上评测:Atari、ProcGen、DMLab、Control Suite、Crafter、Minecraft 等,覆盖连续/离散动作、稠密/稀疏奖励、2D/3D 视觉。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "DreamerV3 以单一配置超过各领域的专门算法,并成为第一个不用人类数据与课程、从零在 Minecraft 中挖到钻石的智能体——这一稀疏奖励长视野难题曾被视为通用智能的试金石。论文最终发表于 Nature,是世界模型路线迄今最有力的通用性证明,引用超过 1200 次,也被机器人(DayDreamer)与工业控制场景直接复用。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "预测仍在较低维潜空间,开放世界的丰富视觉细节无法完全建模;想象视野有限,超长程规划依旧困难。后续研究把 Dreamer 式潜在想象与大规模视频生成模型(Genie、Cosmos)融合,探索更通用的世界基础模型。"
+  }
+ ],
+ "citations": {
+  "count": 1253,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

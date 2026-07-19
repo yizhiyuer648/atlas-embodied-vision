@@ -1,0 +1,48 @@
+{
+ "id": "fcn",
+ "name": "Fully Convolutional Networks (FCN)",
+ "org": "UC Berkeley",
+ "country": "US",
+ "year": 2015,
+ "paper_url": "https://arxiv.org/abs/1411.4038",
+ "github_url": "https://github.com/shelhamer/fcn.berkeleyvision.org",
+ "category": "segmentation",
+ "sub_category": "semantic-segmentation",
+ "one_liner_zh": "把分类 CNN 改为全卷积网络，首次端到端输出任意尺寸像素标签图。",
+ "key_idea_zh": "用卷积替代全连接层，并通过反卷积上采样与浅层 skip connections 恢复空间细节。",
+ "tags": [
+  "语义分割",
+  "全卷积",
+  "skip connection",
+  "像素分类"
+ ],
+ "tier": "B",
+ "lineage_parent": "unknown",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "2014 年的语义分割还在用「滑窗分类」的笨办法:把每个像素周围裁一小块,送进分类网络逐个判断,慢且互相冗余。伯克利团队的 FCN(全卷积网络)完成了概念上的关键一跃:分割不是无数次分类,而是一次端到端的密集预测——整张图进,整张标签图出。"
+  },
+  {
+   "title": "方法详解",
+   "body": "改造分三步:把分类网络(AlexNet/VGG/GoogLeNet)末端的全连接层全部换成 1×1 卷积,网络从此可以接受任意尺寸输入并输出空间保持的粗糙得分图;用可学习的反卷积(转置卷积)把得分图上采样回原分辨率;引入跳跃连接(skip)——把深层粗糙但语义强的预测与浅层精细但语义弱的特征逐级融合(FCN-32s/16s/8s),同时获得「看得懂」与「画得准」。分类网络的预训练权重经此改造直接迁移,成为密集预测任务迁移学习的模板。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "在 PASCAL VOC、NYUDv2、SIFT Flow 上端到端微调,整图训练替代 patch 采样,推理一张典型图像仅需约三分之一秒。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "FCN 把 VOC 2012 的 mean IoU 相对提升 20% 至 62.2%,并获 CVPR 2015 最佳论文荣誉提名。它定义了此后所有分割网络的基本形态——「全卷积 + 上采样 + 跳跃融合」,U-Net、DeepLab、PSPNet 全部是它的直系后代,引用超过 4.2 万次。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "连续下采样丢失细节,边界粗糙;感受野与分辨率的矛盾没有根本解决。U-Net 用对称解码器精修边界,DeepLab 用空洞卷积保住分辨率,PSPNet 补全局上下文——分割领域随后五年的主线都是在修 FCN 的短板。"
+  }
+ ],
+ "citations": {
+  "count": 42335,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

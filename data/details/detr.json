@@ -1,0 +1,201 @@
+{
+ "id": "detr",
+ "name": "DETR",
+ "org": "Facebook AI Research",
+ "country": "US",
+ "year": 2020,
+ "paper_url": "https://arxiv.org/abs/2005.12872",
+ "github_url": "https://github.com/facebookresearch/detr",
+ "category": "detection",
+ "sub_category": "transformer",
+ "one_liner_zh": "把检测改写为集合预测，用 Transformer 端到端输出无重复目标。",
+ "key_idea_zh": "固定数量 object queries 经编码器解码器生成预测，再用匈牙利匹配进行一对一监督。",
+ "tags": [
+  "Transformer",
+  "集合预测",
+  "匈牙利匹配",
+  "端到端"
+ ],
+ "tier": "A",
+ "lineage_parent": "unknown",
+ "architecture": {
+  "description_zh": "CNN 提取二维特征并加入位置编码，Transformer 编码全局关系；固定数量的 object queries 经解码器形成对象槽，独立头输出类别与归一化边界框。",
+  "modules": [
+   {
+    "id": "input",
+    "label": "输入图像",
+    "type": "input"
+   },
+   {
+    "id": "backbone",
+    "label": "CNN 骨干",
+    "type": "encoder"
+   },
+   {
+    "id": "encoder",
+    "label": "Transformer Encoder",
+    "type": "attention"
+   },
+   {
+    "id": "queries",
+    "label": "Object Queries",
+    "type": "query"
+   },
+   {
+    "id": "decoder",
+    "label": "Transformer Decoder",
+    "type": "attention"
+   },
+   {
+    "id": "heads",
+    "label": "类别头 + 框 MLP",
+    "type": "head"
+   },
+   {
+    "id": "output",
+    "label": "集合预测",
+    "type": "output"
+   }
+  ],
+  "edges": [
+   {
+    "from": "input",
+    "to": "backbone",
+    "label": "像素"
+   },
+   {
+    "from": "backbone",
+    "to": "encoder",
+    "label": "特征 + 位置"
+   },
+   {
+    "from": "encoder",
+    "to": "decoder",
+    "label": "视觉记忆"
+   },
+   {
+    "from": "queries",
+    "to": "decoder",
+    "label": "对象查询"
+   },
+   {
+    "from": "decoder",
+    "to": "heads",
+    "label": "对象槽"
+   },
+   {
+    "from": "heads",
+    "to": "output",
+    "label": "类别与 cxcywh"
+   }
+  ],
+  "flow_ms": 5000
+ },
+ "code": {
+  "language": "python",
+  "source_repo": "https://github.com/facebookresearch/detr",
+  "source_path": "models/detr.py",
+  "simplified": true,
+  "lines": [
+   {
+    "code": "def forward(self, samples: NestedTensor):",
+    "comment_zh": "执行 DETR 前向传播；片段已简化。"
+   },
+   {
+    "code": "    if isinstance(samples, (list, torch.Tensor)):",
+    "comment_zh": "兼容图像列表或批量张量输入。"
+   },
+   {
+    "code": "        samples = nested_tensor_from_tensor_list(samples)",
+    "comment_zh": "把不同尺寸图像补齐并生成 padding mask。"
+   },
+   {
+    "code": "    features, pos = self.backbone(samples)",
+    "comment_zh": "CNN 骨干提取特征，同时生成位置编码。"
+   },
+   {
+    "code": "    src, mask = features[-1].decompose()",
+    "comment_zh": "取最后一层特征及其有效区域掩码。"
+   },
+   {
+    "code": "    assert mask is not None",
+    "comment_zh": "Transformer 需要 mask 忽略补齐像素。"
+   },
+   {
+    "code": "    hidden = self.transformer(",
+    "comment_zh": "进入编码器—解码器 Transformer。"
+   },
+   {
+    "code": "        self.input_proj(src),",
+    "comment_zh": "先把 CNN 通道投影到 Transformer 维度。"
+   },
+   {
+    "code": "        mask,",
+    "comment_zh": "传入补齐区域掩码。"
+   },
+   {
+    "code": "        self.query_embed.weight,",
+    "comment_zh": "传入固定数量的可学习 object queries。"
+   },
+   {
+    "code": "        pos[-1]",
+    "comment_zh": "传入二维位置编码。"
+   },
+   {
+    "code": "    )[0]",
+    "comment_zh": "取得各解码层的对象表示。"
+   },
+   {
+    "code": "    class_logits = self.class_embed(hidden)",
+    "comment_zh": "每个对象槽预测类别与 no-object。"
+   },
+   {
+    "code": "    boxes = self.bbox_embed(hidden).sigmoid()",
+    "comment_zh": "MLP 回归并归一化中心点与宽高。"
+   },
+   {
+    "code": "    output = {'pred_logits': class_logits[-1], 'pred_boxes': boxes[-1]}",
+    "comment_zh": "最后解码层形成推理结果集合。"
+   },
+   {
+    "code": "    if self.aux_loss:",
+    "comment_zh": "训练时可监督中间解码层以改善收敛。"
+   },
+   {
+    "code": "        output['aux_outputs'] = self._set_aux_loss(class_logits, boxes)",
+    "comment_zh": "打包辅助分类与回归输出。"
+   },
+   {
+    "code": "    return output",
+    "comment_zh": "返回供匈牙利匹配损失或推理使用的结果。"
+   }
+  ]
+ },
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "到 2020 年,目标检测流水线仍塞满手工组件:锚框编码先验、NMS 去除重复、启发式标签分配……每一件都在阻碍真正的端到端。FAIR 的 DETR(DEtection TRansformer)给出了一个概念上惊人干净的答案:把检测看作集合预测问题,直接让 Transformer 输出「一组互不重复的物体」。"
+  },
+  {
+   "title": "方法详解",
+   "body": "图像经 CNN 骨干提特征,展平后加位置编码送入 Transformer 编码器;解码器输入一组固定数量(如 100 个)可学习的 object queries,每个 query 通过交叉注意力在全图上「认领」一个物体,并行输出框与类别。训练的关键是匈牙利匹配:预测集合与真值集合先做一对一二分图匹配,再对匹配对计算损失——「一个目标只有一个预测负责」由损失函数直接保证,NMS 与锚框从此不再必要。全局注意力让每个预测都能看到整图上下文与其他预测,天然抑制重复框。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "在 COCO 上训练。原版收敛极慢(500 epoch),需要长时间训练与强数据增广;这成为后续大量改进工作的靶子。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "DETR 在 COCO 上与深度优化的 Faster R-CNN 打平,还能只加一个掩码头就扩展到全景分割。它的意义远超过数字:检测从此有了一条无锚框、无 NMS、真正端到端的新范式。Deformable DETR、DAB/DN-DETR、DINO、RT-DETR 沿这条线持续演进,最终在精度与速度上全面超越传统检测器;object query 的思想也扩散到跟踪、分割、3D 检测几乎所有感知任务。引用近 1.9 万次。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "三大痛点:收敛慢(全局注意力难聚焦)、小目标弱(单尺度特征)、计算贵。Deformable DETR 用稀疏可变形注意力同时缓解三者;DINO 用去噪训练加速收敛;RT-DETR 最终把 DETR 做进实时档位。"
+  }
+ ],
+ "citations": {
+  "count": 18983,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

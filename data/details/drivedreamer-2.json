@@ -1,0 +1,47 @@
+{
+ "id": "drivedreamer-2",
+ "name": "DriveDreamer-2",
+ "org": "Shanghai AI Laboratory",
+ "country": "CN",
+ "year": 2024,
+ "paper_url": "https://arxiv.org/abs/2403.06845",
+ "github_url": "https://github.com/f1yfisher/DriveDreamer2",
+ "category": "world",
+ "sub_category": "llm-driving-world-model",
+ "one_liner_zh": "用大语言模型把用户查询转成可控的多视角驾驶视频。",
+ "key_idea_zh": "LLM 生成 HD map 与 3D 框条件，多视角视频扩散模型据此合成几何一致的驾驶场景。",
+ "tags": [
+  "国产",
+  "自动驾驶",
+  "LLM 控制"
+ ],
+ "tier": "B",
+ "lineage_parent": "drivedreamer",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "第一代驾驶世界模型能按结构条件生成视频,但「定制」很难:想要一段「前车突然加塞」的罕见场景,得手工构造地图、轨迹等条件。DriveDreamer-2 的思路是把大语言模型接到世界模型前面,让用户一句话就能定制驾驶视频。"
+  },
+  {
+   "title": "方法详解",
+   "body": "管线分三段:LLM 接口把用户查询(如「生成一段雨天有车加塞的场景」)翻译成各交通参与者的轨迹;轨迹再被转换成符合交规的高精地图条件;最后统一多视角模型(UMVM)在这些条件下生成时空一致的多视角驾驶视频。相比前代,UMVM 统一建模视角间与帧间一致性,显著改善了多相机画面的连贯性。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "视频生成部分在 nuScenes 等真实驾驶数据上训练;LLM 接口通过构造的「查询-轨迹」样本微调,使其输出可直接被下游条件化模块消费。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "DriveDreamer-2 首次实现用户友好的定制化驾驶视频生成,能产出「突然加塞」等长尾场景;FID 11.2 / FVD 55.7,较此前最优相对提升约 30%/50%;生成数据可增强 3D 检测与跟踪训练。它示范了「LLM 做导演、扩散模型做摄像」的组合,引用超过 200 次。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "LLM 生成的轨迹仍可能违反物理或交规细节,需要约束校验;video 时长与分辨率有限。后续工作(Vista 等)在保真度、长时滚动与动作控制谱系上继续推进。"
+  }
+ ],
+ "citations": {
+  "count": 205,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

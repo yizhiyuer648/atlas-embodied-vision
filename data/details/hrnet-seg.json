@@ -1,0 +1,48 @@
+{
+ "id": "hrnet-seg",
+ "name": "HRNet Segmentation",
+ "org": "Microsoft Research Asia",
+ "country": "CN",
+ "year": 2019,
+ "paper_url": "https://arxiv.org/abs/1908.07919",
+ "github_url": "https://github.com/HRNet/HRNet-Semantic-Segmentation",
+ "category": "segmentation",
+ "sub_category": "semantic-segmentation",
+ "one_liner_zh": "全程保持高分辨率分支，并与并行低分辨率分支反复交换信息。",
+ "key_idea_zh": "不依赖先降采样再恢复，而是并行维护多尺度特征并多次融合，保留精确空间结构。",
+ "tags": [
+  "国产",
+  "语义分割",
+  "高分辨率",
+  "多尺度融合"
+ ],
+ "tier": "B",
+ "lineage_parent": "unknown",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "几乎所有骨干都遵循「先降采样编码、再上采样恢复」的串行范式,空间细节在低分辨率瓶颈处不可逆地丢失——这对姿态估计、分割这类位置敏感任务是先天伤害。微软亚洲研究院的 HRNet 提出彻底的反叛:全程不丢高分辨率。"
+  },
+  {
+   "title": "方法详解",
+   "body": "HRNet 从高分辨率分支起步,逐阶段并行添加低分辨率分支,形成 1/4、1/8、1/16、1/32 四条同时存在的流;关键是反复的跨分辨率融合——每个阶段末所有分支互相交换信息(高到低用步进卷积,低到高用上采样),使高分辨率流持续吸收深层语义、低分辨率流保持空间感知。输出时四路特征上采样拼接,语义与位置兼得。用于分割的 HRNetV2 即基于这一表征直接预测。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "在 Cityscapes、PASCAL-Context、LIP 等分割基准以及 COCO 姿态、检测上广泛验证,同一骨干跨任务通用。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "HRNet 在姿态估计上长期霸榜,分割与检测同样领先,证明「并行多分辨率 + 反复融合」优于「串行编解码」。它是 Transformer 时代前 CNN 骨干设计的巅峰之一,在工业界(人体分析、遥感、医疗)部署广泛,引用近 5000 次。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "多分支并行的显存与计算成本高,移动端不友好;融合模块的设计相对复杂。Lite-HRNet 做了轻量化,而 ViT 系(如 SegFormer 的层级注意力)以另一种方式回答了「分辨率与语义」的矛盾。"
+  }
+ ],
+ "citations": {
+  "count": 4845,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

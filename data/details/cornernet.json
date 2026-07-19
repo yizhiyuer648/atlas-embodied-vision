@@ -1,0 +1,48 @@
+{
+ "id": "cornernet",
+ "name": "CornerNet",
+ "org": "Princeton University",
+ "country": "US",
+ "year": 2018,
+ "paper_url": "https://arxiv.org/abs/1808.01244",
+ "github_url": "https://github.com/princeton-vl/CornerNet",
+ "category": "detection",
+ "sub_category": "anchor-free",
+ "one_liner_zh": "通过检测并配对左上角和右下角关键点实现无锚框检测。",
+ "key_idea_zh": "Corner Pooling 汇聚边界线索，嵌入向量把属于同一目标的两个角点配成框。",
+ "tags": [
+  "anchor-free",
+  "关键点",
+  "Corner Pooling",
+  "角点配对"
+ ],
+ "tier": "B",
+ "lineage_parent": "unknown",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "锚框机制虽好,却带来两个包袱:一是海量锚框中正样本比例极低,二是尺度、比例等超参数依赖手工调优。普林斯顿的 CornerNet 提出一次范式实验:能不能不用任何锚框,把检测当成关键点估计来做?"
+  },
+  {
+   "title": "方法详解",
+   "body": "CornerNet 用一个 Hourglass 网络输出两组热力图:所有物体的左上角与右下角。每个角点同时预测一个嵌入向量,同一物体的两个角嵌入相近、不同物体相远,配对由嵌入距离完成。由于角点往往落在物体外部、局部证据不足,论文设计了 Corner Pooling:沿水平/垂直方向做最大池化,把「物体边界在哪」的线索汇聚到角点位置。检测框由配对的角点直接给出,无需锚框。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "在 COCO 上训练,热力图用高斯软标签的 focal 变体监督,配合偏移分支补偿下采样的量化误差。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "CornerNet 在 COCO 上达到 42.2% AP,超过当时所有单阶段检测器,证明 anchor-free 路线完全可行。它开启了 2018–2019 年的关键点检测浪潮:CenterNet、ExtremeNet、FCOS 等相继出现,最终改变了主流检测器的形态。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "角点配对依赖嵌入匹配,场景拥挤时容易错配产生「幽灵框」;Hourglass 主干也偏慢。CenterNet 随后指出:直接检测物体中心一个点,连配对都可以省掉。"
+  }
+ ],
+ "citations": {
+  "count": 4137,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

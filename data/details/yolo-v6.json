@@ -1,0 +1,48 @@
+{
+ "id": "yolo-v6",
+ "name": "YOLOv6",
+ "org": "Meituan",
+ "country": "CN",
+ "year": 2022,
+ "paper_url": "https://arxiv.org/abs/2209.02976",
+ "github_url": "https://github.com/meituan/YOLOv6",
+ "category": "detection",
+ "sub_category": "one-stage",
+ "one_liner_zh": "美团面向工业部署打造的高效 YOLO，强调硬件友好与量化。",
+ "key_idea_zh": "采用重参数化 EfficientRep 骨干、Rep-PAN 颈部和解耦检测头，并配套蒸馏与量化。",
+ "tags": [
+  "YOLO",
+  "国产",
+  "重参数化",
+  "工业部署"
+ ],
+ "tier": "B",
+ "lineage_parent": "yolo-v5",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "美团的外卖、零售场景需要在 T4/边缘 GPU 上大规模跑检测,量化部署是刚需。YOLOv6 因此是一份彻底以「工业部署」为第一性原则的设计:所有结构选择都以真实硬件延迟与量化友好度为准绳,而非论文指标。"
+  },
+  {
+   "title": "方法详解",
+   "body": "骨干采用 EfficientRep:训练时是多分支 RepVGG 风格结构(易优化),推理时重参数化融合成 3×3 直连卷积(硬件极友好);颈部为 Rep-PAN;头部解耦且采用混合通道策略降低延迟。训练侧使用 TAL 分配、SIoU/GIoU 损失、自蒸馏(教师为自身 EMA)与检测专用的量化方案(RepOptimizer + QAT),保证 INT8 部署几乎无损。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "COCO 训练,发布 N/T/S/M/L 全家族,并给出 TensorRT 上严格测得的吞吐数据——论文用「同硬件同精度比吞吐」的方式对齐比较。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "YOLOv6-N 在 T4 上 1234 FPS 达 35.9% AP,量化版 YOLOv6-S 869 FPS 达 43.3% AP,同档速度精度全面领先 v5/X/PP-YOLOE。它把「重参数化 + 量化感知训练」的工业组合推成标配,引用超过 3000 次,在国内工业部署中占有率很高。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "重参数化结构训练显存偏高;设计强绑定 GPU,端侧 NPU 可能需要另行调整。v3 版本(2023)继续更新颈部与分配策略,与 v8、RTMDet 形成三足鼎立的工业选型。"
+  }
+ ],
+ "citations": {
+  "count": 3194,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

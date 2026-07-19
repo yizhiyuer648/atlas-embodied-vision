@@ -1,0 +1,47 @@
+{
+ "id": "emu3",
+ "name": "Emu3",
+ "org": "BAAI",
+ "country": "CN",
+ "year": 2024,
+ "paper_url": "https://arxiv.org/abs/2409.18869",
+ "github_url": "https://github.com/baaivision/Emu3",
+ "category": "world",
+ "sub_category": "autoregressive-multimodal-model",
+ "one_liner_zh": "用下一 token 预测统一图像、视频与文本生成和理解。",
+ "key_idea_zh": "把视觉离散 token 与文本 token 放进同一自回归序列，不依赖扩散模型或独立视觉编码器。",
+ "tags": [
+  "国产",
+  "自回归",
+  "视觉 tokenizer"
+ ],
+ "tier": "B",
+ "lineage_parent": "unknown",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "多模态领域长期是「拼装式」的:理解靠 CLIP+LLM,生成靠扩散模型,两套范式无法统一。智源研究院(BAAI)的 Emu3 要验证一个激进命题:只用「下一 token 预测」这一个目标,能否同时拿下图像、视频、文本的理解与生成?"
+  },
+  {
+   "title": "方法详解",
+   "body": "Emu3 的关键是把一切都变成离散 token:自研视觉 tokenizer(SBER-MoVQGAN 路线)把图像与视频压缩为离散码,与文本 token 混编成统一序列,从零训练一个 Transformer 做自回归预测。没有扩散、没有外挂视觉编码器、没有组合式管线——生成图像就是逐 token 生成视觉码再解码,理解图像就是把视觉 token 当上下文续写文本。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "在大规模图文、视频文本混合语料上从零训练,同一模型权重同时评测生成(对标 SDXL)与理解(对标 LLaVA-1.6)两个族谱的任务。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "Emu3 在生成与感知两侧都超过了各自领域的知名专门模型,还能自回归生成视频并预测视频续写。它为「纯自回归多模态」路线提供了最完整的开源证据,与后来的统一模型浪潮(Chameleon、Janus 等)相互印证,关键技术与模型开源,引用超过 700 次。对世界模型方向,它展示了视频 token 化 + next-token 预测作为世界模拟基础的可行性。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "自回归生成高分辨率图像/视频速度慢;视觉 tokenizer 的压缩损失限制细节质量。后续工作探索混合范式(自回归语义 + 扩散细节)与更高压缩率的视觉 tokenizer。"
+  }
+ ],
+ "citations": {
+  "count": 748,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

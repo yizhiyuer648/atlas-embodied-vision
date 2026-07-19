@@ -1,0 +1,47 @@
+{
+ "id": "robomamba",
+ "name": "RoboMamba",
+ "org": "Peking University / BAAI",
+ "country": "CN",
+ "year": 2024,
+ "paper_url": "https://arxiv.org/abs/2406.04339",
+ "github_url": "https://github.com/lmzpai/roboMamba",
+ "category": "vla",
+ "sub_category": "state-space-vla",
+ "one_liner_zh": "用 Mamba 状态空间模型降低机器人推理与操作成本。",
+ "key_idea_zh": "将视觉语言推理和动作回归放入高效状态空间主干，并采用两阶段训练兼顾语义与控制。",
+ "tags": [
+  "国产",
+  "Mamba",
+  "高效推理"
+ ],
+ "tier": "B",
+ "lineage_parent": "unknown",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "VLA 模型普遍以 Transformer 为主干,注意力的二次复杂度让长序列推理又慢又贵,难以部署在机器人本体的边缘算力上。北大与智源的 RoboMamba 尝试把线性复杂度的 Mamba 状态空间模型(SSM)引入机器人,验证「高效主干也能兼顾推理与控制」。"
+  },
+  {
+   "title": "方法详解",
+   "body": "RoboMamba 将视觉编码器与 Mamba 语言主干整合:视觉 token 经对齐层进入 Mamba,通过共训练获得视觉常识与机器人相关推理能力。控制侧的设计非常克制——只用一个简单的策略头做 SE(3) 位姿预测,并发现:一旦主干具备足够推理能力,只需微调约 0.1% 的参数就能获得操作技能。整个 pipeline 保持线性推理复杂度,长上下文场景优势明显。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "采用两阶段训练:先做视觉语言对齐与指令共训练,再用少量操作数据微调策略头。评测覆盖通用多模态基准、机器人推理基准以及仿真与真机的位姿预测任务。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "RoboMamba 在通用与机器人推理基准上表现出色,位姿预测达到同类水准,推理速度约为现有 VLA 的 3 倍。它为「非 Transformer 主干的 VLA」提供了首个有分量的样本,对边缘部署路线有直接参考价值。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "输出限于末端位姿,尚未覆盖连续轨迹与高频闭环控制;Mamba 生态的工具链和预训练资源也弱于 Transformer。后续工作在混合架构(SSM+注意力)和更完整的动作头上继续探索。"
+  }
+ ],
+ "citations": {
+  "count": 126,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

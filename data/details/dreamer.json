@@ -1,0 +1,47 @@
+{
+ "id": "dreamer",
+ "name": "Dreamer",
+ "org": "Google Research",
+ "country": "US",
+ "year": 2019,
+ "paper_url": "https://arxiv.org/abs/1912.01603",
+ "github_url": "https://github.com/danijar/dreamer",
+ "category": "world",
+ "sub_category": "latent-imagination-rl",
+ "one_liner_zh": "直接在学习到的潜在世界模型中反向传播来训练行为。",
+ "key_idea_zh": "RSSM 同时保持确定性与随机潜状态，actor 和 value 在想象轨迹上用解析梯度学习。",
+ "tags": [
+  "RSSM",
+  "强化学习",
+  "潜在想象"
+ ],
+ "tier": "B",
+ "lineage_parent": "world-models",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "World Models 分三段各自训练,控制器还要靠黑盒进化;PlaNet 证明潜空间规划可行但在线规划太慢。Google 与多伦多大学的 Dreamer 要打通最后一环:既然世界模型是可微的,能不能让策略梯度直接「穿过想象的未来」反传回来,端到端学出长视野行为?"
+  },
+  {
+   "title": "方法详解",
+   "body": "Dreamer 的世界模型是 RSSM(循环状态空间模型):每个时刻同时维护确定性隐状态(GRU 承载)与随机潜状态(高斯采样),兼顾长程记忆与不确定性表达,并配有奖励预测头。行为学习完全在潜空间进行:从真实经验的状态出发,用当前策略在模型中想象出 H 步轨迹,价值网络估计想象轨迹的 λ-回报,actor 通过对这些「解析梯度」直接求导来更新——不需要 REINFORCE 的高方差估计,也不需要与真实环境交互。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "在 DeepMind Control Suite 的 20 个视觉控制任务上评测,交替进行「采集少量真实数据 → 更新世界模型 → 在想象中更新策略」的循环。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "Dreamer 在数据效率、计算时间与最终性能上全面超过当时的无模型与有模型方法。它确立了「RSSM + 潜在想象 + 解析梯度」的标准配方,是此后所有 Dreamer 系(V2、V3、DayDreamer)的骨架,引用超过 2000 次。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "高斯潜变量在离散复杂环境(如 Atari)上建模能力不足;超参数跨域迁移性差。DreamerV2 改用分类离散潜变量攻克 Atari,DreamerV3 再以稳健化技巧实现「一套超参走天下」。"
+  }
+ ],
+ "citations": {
+  "count": 2079,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

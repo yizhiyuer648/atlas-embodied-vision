@@ -1,0 +1,48 @@
+{
+ "id": "blip",
+ "name": "BLIP",
+ "org": "Salesforce Research",
+ "country": "US",
+ "year": 2022,
+ "paper_url": "https://arxiv.org/abs/2201.12086",
+ "github_url": "https://github.com/salesforce/BLIP",
+ "category": "representation",
+ "sub_category": "vision-language",
+ "one_liner_zh": "统一图文理解与生成，并通过自动过滤噪声描述改善预训练数据。",
+ "key_idea_zh": "共享部分参数的编码器—解码器同时优化对比、匹配和语言生成，CapFilt 先生成再过滤描述。",
+ "tags": [
+  "视觉语言",
+  "图文生成",
+  "CapFilt",
+  "多任务"
+ ],
+ "tier": "B",
+ "lineage_parent": "clip",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "CLIP 式双塔擅长检索与分类,却不会「说话」(生成描述);生成式模型又往往不擅长对齐检索。同时,网页图文数据噪声严重,直接放大规模收益递减。Salesforce 的 BLIP 要一箭双雕:统一理解与生成,并且让模型自己净化训练数据。"
+  },
+  {
+   "title": "方法详解",
+   "body": "架构上,BLIP 提出多模态混合编码解码器(MED):同一套骨干通过共享参数支持三种工作模式——单模态编码(对比学习对齐图文)、图像条件编码(图文匹配判别)、图像条件解码(生成描述),三个目标联合预训练。数据上,CapFilt 引导机制让训练后的模型反哺数据:Captioner 给网页图片生成合成描述,Filter 剔除与图像不符的原始与合成文本,再用净化后的语料重新预训练——数据质量与模型能力螺旋上升。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "在 1.29 亿图文对(含 CapFilt 净化)上预训练,评测覆盖检索、描述生成、VQA 以及零样本视频语言任务。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "BLIP 在图文检索(+2.7% R@1)、描述生成(+2.8% CIDEr)、VQA(+1.6%)上全面刷新,并零样本迁移到视频任务。「理解生成统一 + 数据自举」两个思想都被证明极具生命力:前者演化为 BLIP-2 与各类 MLLM,后者(合成描述再过滤)成为 DALL·E 3、Sora 等模型数据管线的标准操作,引用约 7000 次。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "模型规模有限,推理与世界知识能力弱;端到端预训练成本随规模急剧上升。BLIP-2 转向「冻结大模型 + 轻量桥接」的高效路线,彻底改变了多模态模型的构建方式。"
+  }
+ ],
+ "citations": {
+  "count": 6997,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

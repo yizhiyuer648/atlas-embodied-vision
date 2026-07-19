@@ -1,0 +1,38 @@
+{
+  "id": "groot-n1-5",
+  "name": "GR00T N1.5",
+  "org": "NVIDIA",
+  "country": "US",
+  "year": 2025,
+  "paper_url": "unknown",
+  "github_url": "https://github.com/NVIDIA/Isaac-GR00T/tree/n1d5",
+  "category": "vla",
+  "sub_category": "humanoid-foundation-model",
+  "one_liner_zh": "NVIDIA 的 3B 级跨本体人形机器人 VLA 更新，联合 flow matching 动作学习与世界建模目标。",
+  "key_idea_zh": "视觉语言特征经改进连接器条件化 flow-matching Transformer，交替处理本体状态、动作与多视角语义。",
+  "tags": ["VLA", "人形机器人", "跨本体", "flow matching", "Hugging Face 权重"],
+  "tier": "B",
+  "lineage_parent": "groot-n1",
+  "sections": [
+    {
+      "title": "版本定位",
+      "body": "GR00T N1.5 是 NVIDIA 在 2025 年发布的 N1 系列迭代。N1 白皮书（arXiv:2503.14734）提供模型族的总体架构，N1.5 的具体变化以官方模型卡和 n1d5 分支为准；因此它不是一篇全新论文对应的独立方法，paper_url 按版本字段语义写为 unknown。"
+    },
+    {
+      "title": "方法详解",
+      "body": "模型用预训练视觉与语言编码器处理多视角图像和指令，将各视角 token 与语言 token 串接；flow-matching Transformer 通过自注意力建模本体状态和动作，再以交叉注意力读取视觉语言特征，从高斯噪声逐步还原连续动作块。N1.5 改进了视觉语言特征到动作 DiT 的 MLP 连接器，并联合 flow matching 与世界建模目标训练。"
+    },
+    {
+      "title": "开放权重",
+      "body": "官方 Hugging Face 模型卡 nvidia/GR00T-N1.5-3B 创建于 2025 年 5 月，提供权重、架构说明和安全子卡；参考代码保留在 Isaac-GR00T 的 n1d5 分支。"
+    },
+    {
+      "title": "适用场景",
+      "body": "N1.5 面向双臂、半人形和人形等多种本体的操作技能，可用真实或合成轨迹做后训练。它更像可微调的通用起点，而不是下载后无需适配即可控制任意机器人。"
+    },
+    {
+      "title": "局限与学习提醒",
+      "body": "官方 N1 白皮书不能替代 N1.5 模型卡中的版本事实；比较时应注明具体检查点。N1.5 模型卡还带有使用许可范围，部署前必须核对当前许可证与安全要求。"
+    }
+  ]
+}

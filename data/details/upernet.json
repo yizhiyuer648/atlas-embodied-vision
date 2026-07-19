@@ -1,0 +1,48 @@
+{
+ "id": "upernet",
+ "name": "UPerNet",
+ "org": "The Chinese University of Hong Kong",
+ "country": "HK",
+ "year": 2018,
+ "paper_url": "https://arxiv.org/abs/1807.10221",
+ "github_url": "https://github.com/CSAILVision/unifiedparsing",
+ "category": "segmentation",
+ "sub_category": "unified-perceptual-parsing",
+ "one_liner_zh": "用统一网络同时解析场景、对象、材质、纹理等多层视觉概念。",
+ "key_idea_zh": "金字塔池化处理顶层语义，FPN 融合多尺度特征，不同任务头共享统一视觉骨干。",
+ "tags": [
+  "统一解析",
+  "FPN",
+  "金字塔池化",
+  "多任务"
+ ],
+ "tier": "B",
+ "lineage_parent": "pspnet",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "人看一张图能同时说出场景(厨房)、物体(锅)、部件(锅盖)、材质(不锈钢)、纹理(拉丝)——机器视觉却把这些拆成孤立任务各训各的。港中文与 MIT 的 UPerNet 提出「统一感知解析」:一个网络,一次前向,尽可能解析所有层级的视觉概念。"
+  },
+  {
+   "title": "方法详解",
+   "body": "架构是务实的组合拳:FPN 提供多尺度融合特征,顶端接 PSPNet 的金字塔池化模块补全局上下文;不同概念挂不同的头——场景分类头用最顶层、物体/部件分割头用融合特征、材质头用高分辨率层、纹理头单独在纹理库上微调。训练面对「异构标注」难题(每个数据集只标一类概念),采用按数据源交替采样,只回传该源有标注的任务损失。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "在 Broden+ 统一标注集(ADE20K、Pascal-Context/Part、OpenSurfaces、DTD 汇集)上联合训练。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "UPerNet 在统一解析上表现优异,还能自动挖掘场景-物体-材质的组合知识。但它更大的遗产是工程性的:「骨干 + FPN + PPM」的解码头简洁高效,成为此后学界评测新骨干(Swin、ConvNeXt、BEiT、DINOv2 全都用 UPerNet 头刷 ADE20K)的事实标准,引用超过 2500 次。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "多任务头之间没有显式推理关联,概念解析是「并联」而非「理解」;异构标注的冲突也未根本解决。这一「统一解析」愿景最终由多模态大模型以另一种方式实现。"
+  }
+ ],
+ "citations": {
+  "count": 2540,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

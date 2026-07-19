@@ -1,0 +1,47 @@
+{
+ "id": "vima",
+ "name": "VIMA",
+ "org": "Stanford University",
+ "country": "US",
+ "year": 2022,
+ "paper_url": "https://arxiv.org/abs/2210.03094",
+ "github_url": "https://github.com/vimalabs/VIMA",
+ "category": "vla",
+ "sub_category": "multimodal-prompting",
+ "one_liner_zh": "用交错文本与图像的多模态提示驱动机器人操作。",
+ "key_idea_zh": "将提示中的文字、对象图像与历史观测统一编码，通过编码器—解码器 Transformer 预测动作。",
+ "tags": [
+  "多模态提示",
+  "操作",
+  "Transformer"
+ ],
+ "tier": "B",
+ "lineage_parent": "unknown",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "机器人任务的「说明书」形式五花八门：模仿一段单次示范、执行一句语言指令、把场景摆成目标图片……此前每种任务规范都要专门建模。VIMA 借鉴 NLP 中 prompt 的思想提出：能否把所有任务规范统一写成「文字和图片交错的多模态提示」，让一个模型看懂提示就能干活？"
+  },
+  {
+   "title": "方法详解",
+   "body": "VIMA 把提示中的文本 token、物体图像 token 与历史观测统一编码。物体不是整图输入，而是先用检测器提取出以物体为中心的裁剪图与包围盒，形成 object token，这让模型对「哪个物体」有显式表征。编码后的提示通过交叉注意力接入一个自回归 Transformer 解码器，逐步输出机械臂的抓放动作。这种 encoder-decoder 结构使提示可以任意混排文字与图片，例如「把 <图片:红色方块> 放进 <图片:托盘>」。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "团队同时发布了 VIMA-Bench 仿真基准：数千个程序化生成的桌面操作任务、60 万条专家轨迹和四级系统性泛化评测协议（新摆放、新组合、新物体、新任务）。模型在这些多模态提示轨迹上做模仿学习。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "在最难的零样本泛化档位上，VIMA 比替代设计的任务成功率高至多 2.9 倍；数据效率也突出——只用十分之一训练数据仍比最强基线好 2.7 倍。VIMA 确立了「多模态提示」作为机器人任务接口的研究方向，其 object token 思路影响了后续大量以物体为中心的操作模型。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "VIMA 依赖外部检测器提供物体裁剪，检测失败会直接拖垮策略；动作空间是简化的高层抓放原语，与连续低层控制还有距离；评测主要在仿真中完成。后续工作逐步把多模态提示与端到端连续控制结合，例如把提示思想吸收进 VLA 预训练。"
+  }
+ ],
+ "citations": {
+  "count": 574,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

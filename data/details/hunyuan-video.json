@@ -1,0 +1,213 @@
+{
+ "id": "hunyuan-video",
+ "name": "HunyuanVideo 混元视频",
+ "org": "Tencent",
+ "country": "CN",
+ "year": 2024,
+ "paper_url": "https://arxiv.org/abs/2412.03603",
+ "github_url": "https://github.com/Tencent-Hunyuan/HunyuanVideo",
+ "category": "world",
+ "sub_category": "open-video-foundation-model",
+ "one_liner_zh": "腾讯开源的大参数文本生成视频系统。",
+ "key_idea_zh": "以 3D VAE 压缩视频，双流与单流多模态 DiT 融合 MLLM 文本语义，并用 flow matching 生成。",
+ "tags": [
+  "国产",
+  "开源",
+  "多模态 DiT"
+ ],
+ "tier": "A",
+ "lineage_parent": "unknown",
+ "architecture": {
+  "description_zh": "HunyuanVideo 使用 3D VAE 表示视频潜变量，LLM 与 CLIP 提供文本条件；双流块先分别调制文本和视频并做联合注意力，单流块继续融合，flow-matching 调度器迭代后由 VAE 解码。",
+  "modules": [
+   {
+    "id": "hy-prompt",
+    "label": "文本提示",
+    "type": "input"
+   },
+   {
+    "id": "hy-text",
+    "label": "MLLM + CLIP 文本编码",
+    "type": "encoder"
+   },
+   {
+    "id": "hy-noise",
+    "label": "视频潜噪声",
+    "type": "latent"
+   },
+   {
+    "id": "hy-patch",
+    "label": "3D Patch Embedding",
+    "type": "tokenizer"
+   },
+   {
+    "id": "hy-double",
+    "label": "双流 MM-DiT Block",
+    "type": "transformer"
+   },
+   {
+    "id": "hy-single",
+    "label": "单流融合 Block",
+    "type": "transformer"
+   },
+   {
+    "id": "hy-flow",
+    "label": "Flow-Matching 采样",
+    "type": "sampler"
+   },
+   {
+    "id": "hy-vae",
+    "label": "3D VAE 解码",
+    "type": "decoder"
+   },
+   {
+    "id": "hy-video",
+    "label": "生成视频",
+    "type": "output"
+   }
+  ],
+  "edges": [
+   {
+    "from": "hy-prompt",
+    "to": "hy-text",
+    "label": "文本"
+   },
+   {
+    "from": "hy-text",
+    "to": "hy-double",
+    "label": "文本 token"
+   },
+   {
+    "from": "hy-noise",
+    "to": "hy-patch",
+    "label": "潜变量"
+   },
+   {
+    "from": "hy-patch",
+    "to": "hy-double",
+    "label": "视频 token"
+   },
+   {
+    "from": "hy-double",
+    "to": "hy-single",
+    "label": "联合序列"
+   },
+   {
+    "from": "hy-single",
+    "to": "hy-flow",
+    "label": "速度预测"
+   },
+   {
+    "from": "hy-flow",
+    "to": "hy-single",
+    "label": "下一时间步"
+   },
+   {
+    "from": "hy-flow",
+    "to": "hy-vae",
+    "label": "去噪潜变量"
+   },
+   {
+    "from": "hy-vae",
+    "to": "hy-video",
+    "label": "RGB 帧"
+   }
+  ],
+  "flow_ms": 4400
+ },
+ "code": {
+  "language": "python",
+  "source_repo": "https://github.com/Tencent-Hunyuan/HunyuanVideo",
+  "source_path": "hyvideo/modules/models.py",
+  "simplified": true,
+  "lines": [
+   {
+    "code": "def forward(self, x, t, text_states, text_mask, text_states_2=None):",
+    "comment_zh": "输入视频潜变量、时间步和双文本编码条件。"
+   },
+   {
+    "code": "    img = self.img_in(x)",
+    "comment_zh": "把 3D 视频潜变量切分并投影为视频 token。"
+   },
+   {
+    "code": "    vec = self.time_in(t)",
+    "comment_zh": "将 flow-matching 时间步编码为调制向量。"
+   },
+   {
+    "code": "    txt = self.txt_in(text_states, t, text_mask)",
+    "comment_zh": "投影并精炼主文本编码器的 token。"
+   },
+   {
+    "code": "    if text_states_2 is not None:",
+    "comment_zh": "检查是否提供第二个文本编码器的全局语义。"
+   },
+   {
+    "code": "        vec = vec + self.vector_in(text_states_2)",
+    "comment_zh": "把额外文本向量加入全局调制条件。"
+   },
+   {
+    "code": "    freqs_cis = self.pe_embedder(img)",
+    "comment_zh": "为视频 token 生成旋转位置编码。"
+   },
+   {
+    "code": "    for block in self.double_blocks:",
+    "comment_zh": "先经过文本流与视频流分开的多模态块。"
+   },
+   {
+    "code": "        img, txt = block(img=img, txt=txt, vec=vec, cu_seqlens_q=text_mask, freqs_cis=freqs_cis)",
+    "comment_zh": "独立调制两条流并在联合注意力中交换信息。"
+   },
+   {
+    "code": "    x = torch.cat((img, txt), dim=1)",
+    "comment_zh": "把视频与文本 token 合并成单流序列。"
+   },
+   {
+    "code": "    for block in self.single_blocks:",
+    "comment_zh": "继续通过单流融合 Transformer。"
+   },
+   {
+    "code": "        x = block(x, vec=vec, txt_len=txt.shape[1], freqs_cis=freqs_cis)",
+    "comment_zh": "以共享注意力和 MLP 深度融合两种模态。"
+   },
+   {
+    "code": "    img = x[:, :img.shape[1]]",
+    "comment_zh": "取回序列中的视频 token。"
+   },
+   {
+    "code": "    img = self.final_layer(img, vec)",
+    "comment_zh": "用时间条件调制并预测潜变量速度。"
+   },
+   {
+    "code": "    return self.unpatchify(img)",
+    "comment_zh": "重排为 3D 视频潜变量供采样器更新。"
+   }
+  ]
+ },
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "2024 年视频生成的最强模型(Sora、Gen-3、可灵)清一色闭源,开源社区与产业能力差距被迅速拉大。腾讯混元团队选择把一个 130 亿参数的完整视频生成系统开源——发布时是最大的开源视频生成模型,意在复刻 Llama 之于语言模型的生态效应。"
+  },
+  {
+   "title": "方法详解",
+   "body": "系统性框架包括:3D 因果 VAE 把视频在时空维压缩到潜空间;主干是「双流转单流」的多模态 DiT——前段图像与文本 token 各走独立 Transformer 流(便于各自模态充分建模),后段合并为单流深度融合;文本条件不用 CLIP/T5 而用 MLLM(多模态大语言模型)编码,语义对齐更强;生成目标为 flow matching。训练侧配套渐进式规模化课程(低清短片 → 高清长片)、精细的数据清洗管线与大规模基础设施优化。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "在多阶段筛选的大规模图像视频语料上训练,论文详细公开了数据分层、打标与训练调度——这些「工程秘方」的公开对社区价值不亚于权重本身。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "专业评测中,HunyuanVideo 在视觉质量、动态性、文视对齐上超过 Runway Gen-3、Luma 1.6 与多个国产头部闭源模型。开源后迅速成为社区视频生成的事实基座:LoRA 微调、ControlNet 扩展、图生视频(HunyuanVideo-I2V)等生态爆发,引用近 1500 次。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "13B 模型推理显存与时延门槛高;时长与音画同步能力有限。团队后续开源 HunyuanVideo 1.5(更高效的 8B 级)并扩展 3D/Avatar 方向;开源视频生态与 Wan 系列形成双雄格局。"
+  }
+ ],
+ "citations": {
+  "count": 1483,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

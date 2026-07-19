@@ -1,0 +1,48 @@
+{
+ "id": "eva",
+ "name": "EVA",
+ "org": "BAAI",
+ "country": "CN",
+ "year": 2022,
+ "paper_url": "https://arxiv.org/abs/2211.07636",
+ "github_url": "https://github.com/baaivision/EVA",
+ "category": "representation",
+ "sub_category": "masked-image-modeling",
+ "one_liner_zh": "智源用遮挡图像建模预训练十亿参数视觉 Transformer。",
+ "key_idea_zh": "遮挡图像 patch 后预测冻结 CLIP 教师的视觉特征，以语义目标扩展纯视觉预训练。",
+ "tags": [
+  "国产",
+  "ViT",
+  "遮挡建模",
+  "CLIP teacher"
+ ],
+ "tier": "B",
+ "lineage_parent": "mae",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "遮挡图像建模(MIM)有两条路:MAE 重建原始像素(目标简单但语义弱),BEiT 预测离线 tokenizer 的码(语义强但依赖额外模型)。智源 EVA 找到了第三个目标:直接回归 CLIP 视觉特征——让 MIM 的预测目标天生带着图文对齐的语义。这一混血配方能否把纯视觉 ViT 健康地放大到十亿参数?"
+  },
+  {
+   "title": "方法详解",
+   "body": "EVA 是一个朴素的 ViT-g(10 亿参数):随机遮掩图像 patch,以可见 patch 为条件,回归被遮位置上冻结 CLIP 视觉塔输出的特征。没有像素重建、没有对比学习、没有蒸馏温度调参——单一目标即可稳定放大。训练只用公开数据,強调可复现。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "在 ImageNet-21K、CC12M、COCO 等公开图像集(约 3000 万图)上预训练;下游覆盖分类、视频动作识别、检测、实例分割、语义分割全谱系。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "EVA 在 LVIS 千类实例分割上几乎追平 80 类 COCO 的水平——大词表长尾场景的历史性跃升;并在多项下游创纪录。更有生态意义的是反向发现:用 EVA 初始化 CLIP 的视觉塔,能让巨型 CLIP 训练更稳、收敛更快——这直接催生了 EVA-CLIP 系列,也为「视觉基础模型互相引导」提供了范式,引用超过 1000 次。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "目标依赖现成 CLIP,语义上限被教师锁定;纯视觉特征仍需对齐才能服务多模态任务。EVA-02 改进架构与配方,EVA-CLIP 把该路线推到 50 亿参数的开源 CLIP 王座。"
+  }
+ ],
+ "citations": {
+  "count": 1013,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

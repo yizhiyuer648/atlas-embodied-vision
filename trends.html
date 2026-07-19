@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#faf9f5">
+  <meta name="description" content="从发布节奏、六类模型构成与关键方法变化，理解视觉模型领域的演进。">
+  <title>趋势观察 · Atlas</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/main.css?v=20260719.7">
+</head>
+<body data-page="trends">
+  <div class="noise" aria-hidden="true"></div>
+  <header id="site-header"></header>
+  <main id="main-content" class="page-main" tabindex="-1">
+    <div class="container">
+      <nav id="breadcrumbs" class="breadcrumbs" aria-label="面包屑"></nav>
+
+      <section class="page-hero compact-hero">
+        <p class="eyebrow">READ THE FIELD</p>
+        <h1>趋势观察</h1>
+        <p>不追逐热度排名。用图鉴样本观察发布节奏、六类技术方向的构成，以及方法正在怎样变化。</p>
+      </section>
+
+      <section id="trend-metrics" class="stats-grid trend-metrics" aria-label="图鉴趋势概览"></section>
+
+      <section class="chart-grid reveal-section">
+        <article class="chart-card glass-panel">
+          <div class="chart-head">
+            <div>
+              <p class="eyebrow">RELEASE VELOCITY</p>
+              <h2>年发布量</h2>
+            </div>
+            <span>按公开年份统计</span>
+          </div>
+          <div class="canvas-wrap">
+            <canvas id="release-chart" aria-label="2012 至 2026 年图鉴模型发布量柱状图"></canvas>
+          </div>
+        </article>
+
+        <article class="chart-card glass-panel">
+          <div class="chart-head">
+            <div>
+              <p class="eyebrow">SIX DOMAINS</p>
+              <h2>六类构成与近三年新增</h2>
+            </div>
+            <span>全部条目 / 近三年</span>
+          </div>
+          <div class="canvas-wrap">
+            <canvas id="category-chart" aria-label="六类模型总量与近三年新增数量对比图"></canvas>
+          </div>
+          <div class="chart-key" aria-hidden="true">
+            <span><i class="chart-key-total"></i>全部条目</span>
+            <span><i class="chart-key-recent"></i>近三年新增</span>
+          </div>
+        </article>
+      </section>
+
+      <section class="essay-heading reveal-section">
+        <p class="eyebrow">FOLLOW THE IDEAS</p>
+        <h2>六条值得顺着读下去的技术主线</h2>
+        <p>每篇只回答一个问题：这条路线为什么出现、解决了什么，以及下一篇应该接着看什么。</p>
+      </section>
+      <section id="trend-essays" class="essay-list"></section>
+
+      <p class="data-note">说明：图表只统计当前图鉴样本，不代表行业全量论文；年份为 unknown 的条目不进入年度与近三年统计。文章为编者依据公开论文与本站条目整理的学习线索。</p>
+    </div>
+  </main>
+  <footer id="site-footer"></footer>
+  <script type="module" src="assets/js/app.js?v=20260719.7"></script>
+</body>
+</html>

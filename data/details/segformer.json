@@ -1,0 +1,266 @@
+{
+ "id": "segformer",
+ "name": "SegFormer",
+ "org": "NVIDIA Research",
+ "country": "US",
+ "year": 2021,
+ "paper_url": "https://arxiv.org/abs/2105.15203",
+ "github_url": "https://github.com/NVlabs/SegFormer",
+ "category": "segmentation",
+ "sub_category": "semantic-segmentation",
+ "one_liner_zh": "用无位置编码的层级 Transformer 骨干和轻量全 MLP 解码器实现高效语义分割。",
+ "key_idea_zh": "MiT 通过重叠 patch、空间缩减注意力和 Mix-FFN 生成多尺度特征，MLP 解码器直接融合各层。",
+ "tags": [
+  "语义分割",
+  "Transformer",
+  "MiT",
+  "轻量解码器"
+ ],
+ "tier": "A",
+ "lineage_parent": "unknown",
+ "architecture": {
+  "description_zh": "四阶段 Mix Transformer 逐步降低分辨率、提高通道；重叠 patch embedding 保留局部连续性，空间缩减注意力控制计算量，四级特征分别经 MLP 统一通道并上采样拼接预测语义图。",
+  "modules": [
+   {
+    "id": "image",
+    "label": "输入图像",
+    "type": "input"
+   },
+   {
+    "id": "stage1",
+    "label": "MiT Stage 1",
+    "type": "encoder"
+   },
+   {
+    "id": "stage2",
+    "label": "MiT Stage 2",
+    "type": "encoder"
+   },
+   {
+    "id": "stage3",
+    "label": "MiT Stage 3",
+    "type": "encoder"
+   },
+   {
+    "id": "stage4",
+    "label": "MiT Stage 4",
+    "type": "encoder"
+   },
+   {
+    "id": "mlp",
+    "label": "四路 MLP Projection",
+    "type": "projection"
+   },
+   {
+    "id": "fuse",
+    "label": "上采样 + 拼接融合",
+    "type": "fusion"
+   },
+   {
+    "id": "output",
+    "label": "语义分割图",
+    "type": "output"
+   }
+  ],
+  "edges": [
+   {
+    "from": "image",
+    "to": "stage1",
+    "label": "重叠 7×7 patch"
+   },
+   {
+    "from": "stage1",
+    "to": "stage2",
+    "label": "1/4 特征"
+   },
+   {
+    "from": "stage2",
+    "to": "stage3",
+    "label": "1/8 特征"
+   },
+   {
+    "from": "stage3",
+    "to": "stage4",
+    "label": "1/16 特征"
+   },
+   {
+    "from": "stage1",
+    "to": "mlp",
+    "label": "浅层细节"
+   },
+   {
+    "from": "stage2",
+    "to": "mlp",
+    "label": "多尺度特征"
+   },
+   {
+    "from": "stage3",
+    "to": "mlp",
+    "label": "多尺度特征"
+   },
+   {
+    "from": "stage4",
+    "to": "mlp",
+    "label": "深层语义"
+   },
+   {
+    "from": "mlp",
+    "to": "fuse",
+    "label": "统一通道特征"
+   },
+   {
+    "from": "fuse",
+    "to": "output",
+    "label": "像素分类 logits"
+   }
+  ],
+  "flow_ms": 5600
+ },
+ "code": {
+  "language": "python",
+  "source_repo": "https://github.com/NVlabs/SegFormer",
+  "source_path": "mmseg/models/backbones/mix_transformer.py",
+  "simplified": true,
+  "lines": [
+   {
+    "code": "def forward_features(self, x):",
+    "comment_zh": "提取 SegFormer 四尺度 MiT 特征；片段已简化。"
+   },
+   {
+    "code": "    outputs = []",
+    "comment_zh": "准备保存每个阶段的二维特征图。"
+   },
+   {
+    "code": "    batch = x.shape[0]",
+    "comment_zh": "记录批大小供 token 还原为空间网格。"
+   },
+   {
+    "code": "    x, height, width = self.patch_embed1(x)",
+    "comment_zh": "重叠 7×7 patch embedding 产生 1/4 尺度 token。"
+   },
+   {
+    "code": "    for block in self.block1:",
+    "comment_zh": "进入第一阶段空间缩减注意力块。"
+   },
+   {
+    "code": "        x = block(x, height, width)",
+    "comment_zh": "结合 Mix-FFN 编码浅层纹理。"
+   },
+   {
+    "code": "    x = self.norm1(x)",
+    "comment_zh": "归一化第一阶段 token。"
+   },
+   {
+    "code": "    x = x.reshape(batch, height, width, -1).permute(0, 3, 1, 2)",
+    "comment_zh": "还原为 B×C×H×W 特征图。"
+   },
+   {
+    "code": "    outputs.append(x)",
+    "comment_zh": "保存高分辨率浅层特征给解码器。"
+   },
+   {
+    "code": "    x, height, width = self.patch_embed2(x)",
+    "comment_zh": "第二次重叠 patch embedding 降至 1/8 尺度。"
+   },
+   {
+    "code": "    for block in self.block2:",
+    "comment_zh": "第二阶段继续聚合上下文。"
+   },
+   {
+    "code": "        x = block(x, height, width)",
+    "comment_zh": "注意力使用空间缩减后的键和值。"
+   },
+   {
+    "code": "    x = self.norm2(x)",
+    "comment_zh": "归一化第二阶段输出。"
+   },
+   {
+    "code": "    x = x.reshape(batch, height, width, -1).permute(0, 3, 1, 2)",
+    "comment_zh": "恢复 1/8 二维特征图。"
+   },
+   {
+    "code": "    outputs.append(x)",
+    "comment_zh": "保存第二尺度特征。"
+   },
+   {
+    "code": "    x, height, width = self.patch_embed3(x)",
+    "comment_zh": "第三次重叠 patch embedding 降至 1/16 尺度。"
+   },
+   {
+    "code": "    for block in self.block3:",
+    "comment_zh": "第三阶段在更强语义层继续建模。"
+   },
+   {
+    "code": "        x = block(x, height, width)",
+    "comment_zh": "运行该阶段的空间缩减注意力与 Mix-FFN。"
+   },
+   {
+    "code": "    x = self.norm3(x)",
+    "comment_zh": "归一化第三阶段 token。"
+   },
+   {
+    "code": "    x = x.reshape(batch, height, width, -1).permute(0, 3, 1, 2)",
+    "comment_zh": "恢复 1/16 二维特征图。"
+   },
+   {
+    "code": "    outputs.append(x)",
+    "comment_zh": "保存中高层语义特征。"
+   },
+   {
+    "code": "    x, height, width = self.patch_embed4(x)",
+    "comment_zh": "第四次嵌入降至 1/32 尺度。"
+   },
+   {
+    "code": "    for block in self.block4:",
+    "comment_zh": "第四阶段聚合最深层全局语义。"
+   },
+   {
+    "code": "        x = block(x, height, width)",
+    "comment_zh": "运行最终一组 MiT blocks。"
+   },
+   {
+    "code": "    x = self.norm4(x)",
+    "comment_zh": "归一化最终 token 序列。"
+   },
+   {
+    "code": "    x = x.reshape(batch, height, width, -1).permute(0, 3, 1, 2)",
+    "comment_zh": "恢复 1/32 二维特征图。"
+   },
+   {
+    "code": "    outputs.append(x)",
+    "comment_zh": "保存最强全局语义特征。"
+   },
+   {
+    "code": "    return outputs",
+    "comment_zh": "全 MLP 解码器随后投影、上采样并拼接四级特征。"
+   }
+  ]
+ },
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "2021 年 ViT 进军分割的第一批尝试(SETR)暴露两个问题:柱状单尺度结构不适合密集预测,位置编码在换分辨率测试时还要插值、精度下降。NVIDIA 的 SegFormer 要做一个「为分割而生」的 Transformer:层级化、无位置编码、解码器轻到近乎没有。"
+  },
+  {
+   "title": "方法详解",
+   "body": "编码器 MiT(Mix Transformer)有三处针对性设计:重叠 patch 合并产生 1/4 到 1/32 的四级层级特征(保留局部连续性);高效自注意力对 K/V 做空间缩减,把高分辨率注意力的复杂度打下来;Mix-FFN 在前馈层塞一个 3×3 深度卷积——卷积的零填充天然泄漏位置信息,从此不需要任何显式位置编码,任意分辨率即插即用。解码器则是刻意的极简:四级特征各过一层 MLP 统一维度、上采样拼接、再一层 MLP 出掩码——证明「编码器学得好,解码器可以很笨」。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "在 ImageNet 预训练 MiT 后,于 ADE20K、Cityscapes、COCO-Stuff 微调;B0 到 B5 六档覆盖实时到高精度。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "SegFormer-B4 以 64M 参数在 ADE20K 达 50.3 mIoU——比此前最优小 5 倍还高 2.2 点;B5 在 Cityscapes 验证集达 84.0,且对损坏扰动(Cityscapes-C)鲁棒性突出。它成为语义分割的新一代标准基线,MiT 编码器被 ControlNet 等下游工作广泛借用,引用超过 8700 次。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "纯语义分割框架,不做实例区分;全 MLP 解码器在超高分辨率下略显粗糙。Mask2Former 用查询式统一三种分割任务,接管了精度上限;SegFormer 则以效率优势长期占据实用市场。"
+  }
+ ],
+ "citations": {
+  "count": 8727,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

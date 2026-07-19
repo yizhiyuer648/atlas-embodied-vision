@@ -1,0 +1,47 @@
+{
+ "id": "rt-1",
+ "name": "RT-1",
+ "org": "Google Robotics",
+ "country": "US",
+ "year": 2022,
+ "paper_url": "https://arxiv.org/abs/2212.06817",
+ "github_url": "https://github.com/google-research/robotics_transformer",
+ "category": "vla",
+ "sub_category": "robotics-transformer",
+ "one_liner_zh": "把图像、语言指令与机器人动作统一到可规模化训练的 Transformer 策略中。",
+ "key_idea_zh": "将相机观测与自然语言编码成 token，由 TokenLearner 压缩视觉特征，再以 Transformer 直接预测离散动作 token。",
+ "tags": [
+  "Transformer",
+  "操作",
+  "闭环控制"
+ ],
+ "tier": "B",
+ "lineage_parent": "bc-z",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "CV 和 NLP 的经验表明，大容量模型 + 大规模、任务无关的数据往往能带来强泛化，但 2022 年的机器人学习仍停留在「一个任务一个模型」的阶段，真机数据的采集成本让规模化看起来遥不可及。RT-1（Robotics Transformer 1）是 Google 用 17 个月、13 台机器人采集 13 万条真实轨迹后交出的答案：验证机器人领域是否也存在「数据和模型一起放大、能力随之增长」的规模化规律。"
+  },
+  {
+   "title": "方法详解",
+   "body": "RT-1 把闭环控制建模为序列分类。相机图像经过 ImageNet 预训练的 EfficientNet-B3 提取特征，自然语言指令由 Universal Sentence Encoder 编码后通过 FiLM 层调制视觉特征，使视觉主干「带着任务意图」看图。随后 TokenLearner 把每帧几十个视觉 token 压缩到 8 个，大幅降低后续注意力的计算量。最近 6 帧的 token 拼接后送入 decoder-only Transformer，输出 11 个维度的离散动作 token（手臂 7 维、底盘 3 维、模式切换 1 维），每维离散成 256 档，控制频率约 3Hz。整个模型只有约 3500 万参数，为真机实时推理做了刻意取舍。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "数据集覆盖 700 多个任务指令、13 万条人类遥操作示范，采集自 13 台移动机械臂在办公室厨房等真实环境中的长期运行。论文系统研究了数据规模、多样性与模型容量的关系，结论是数据「宽度」（任务多样性）比单纯数量更关键。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "RT-1 在训练过的任务上达到 97% 成功率，对新任务、新物体和有干扰物场景也显著优于此前的模仿学习方法，还能吸收仿真数据和其他机器人的数据带来正迁移。它证明了「机器人 GPT 路线」的第一步是可行的，是 VLA 方向公认的起点之一，引用超过 2500 次。RT-2、RT-X 都直接构建在它的动作 token 化设计之上。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "RT-1 的视觉语言理解来自小模型，泛化主要停留在动作与物体组合层面，无法进行语义推理；3Hz 的控制频率也限制了精细操作。一年后的 RT-2 用 550 亿参数的 VLM 替换整个主干，把互联网知识直接迁移到控制，标志着 VLA 范式正式成型。"
+  }
+ ],
+ "citations": {
+  "count": 2521,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

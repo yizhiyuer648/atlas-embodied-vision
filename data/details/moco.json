@@ -1,0 +1,48 @@
+{
+ "id": "moco",
+ "name": "MoCo",
+ "org": "Facebook AI Research",
+ "country": "US",
+ "year": 2020,
+ "paper_url": "https://arxiv.org/abs/1911.05722",
+ "github_url": "https://github.com/facebookresearch/moco",
+ "category": "representation",
+ "sub_category": "self-supervised",
+ "one_liner_zh": "用动量编码器与队列维护大量一致的负样本表示。",
+ "key_idea_zh": "查询编码器反向更新，键编码器做动量更新；先进先出队列把负样本规模与批大小解耦。",
+ "tags": [
+  "自监督",
+  "对比学习",
+  "动量编码器",
+  "队列"
+ ],
+ "tier": "B",
+ "lineage_parent": "unknown",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "2019 年,视觉自监督学习被一个工程矛盾卡住:对比学习需要海量负样本才有效,而负样本要么受限于 batch 大小(端到端法),要么来自过期的记忆库(memory bank)导致表示不一致。何恺明团队的 MoCo(Momentum Contrast)把对比学习重新表述为「字典查询」问题,优雅地同时解决了字典的「大」与「一致」。"
+  },
+  {
+   "title": "方法详解",
+   "body": "MoCo 维护两个编码器:查询编码器正常反向传播更新;键编码器不接收梯度,而是以动量方式(如 0.999)缓慢跟随查询编码器——保证队列中不同批次的键在表示上足够一致。负样本存放在一个先进先出队列里:每个新批次的键入队、最老的批次出队,字典规模(如 65536)从此与 batch 大小完全解耦。训练目标是 InfoNCE:让查询与其正键(同图增强)相似,与队列中所有负键疏远。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "在 ImageNet-1K 无标签图像上预训练 ResNet-50,评测采用线性探针与下游检测/分割微调。MoCo v2 随后吸收 SimCLR 的投影头与强增强,进一步刷新结果。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "MoCo 的历史性意义在下游任务:在 PASCAL VOC、COCO 等 7 个检测/分割任务上,无监督预训练首次全面超过有监督 ImageNet 预训练——「标签不是必需品」从口号变成事实。动量编码器成为之后几乎所有自监督方法(BYOL、DINO、iBOT)的标配组件,论文引用超过 1.5 万次。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "对负样本的依赖使训练对增强策略和队列设置敏感;基于 CNN 的原始版本也未触及 ViT。后续 BYOL/DINO 证明负样本并非必需,MoCo v3 则把该框架迁移到 ViT 并分析了训练不稳定性。"
+  }
+ ],
+ "citations": {
+  "count": 15314,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

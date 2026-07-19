@@ -1,0 +1,47 @@
+{
+ "id": "genie-1",
+ "name": "Genie 1",
+ "org": "Google DeepMind",
+ "country": "UK",
+ "year": 2024,
+ "paper_url": "https://arxiv.org/abs/2402.15391",
+ "github_url": "unknown",
+ "category": "world",
+ "sub_category": "interactive-generative-environment",
+ "one_liner_zh": "从无动作标签互联网视频学习可交互二维环境。",
+ "key_idea_zh": "视频 tokenizer 压缩帧，潜动作模型发现可控因素，时空 Transformer 根据潜动作生成下一段环境。",
+ "tags": [
+  "可交互生成",
+  "潜动作",
+  "视频 Transformer"
+ ],
+ "tier": "B",
+ "lineage_parent": "unknown",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "训练可交互环境模型通常需要带动作标签的数据——昂贵且稀缺;而互联网上有无穷的游戏视频,没有任何动作标注。DeepMind 的 Genie 提出惊人的设想:纯粹从无标签视频中,无监督地学出一个「可以玩的」生成式环境。"
+  },
+  {
+   "title": "方法详解",
+   "body": "Genie(11B 参数)由三部分组成:时空视频 tokenizer 把帧序列压缩成离散 token;潜动作模型(LAM)从相邻帧的变化中无监督地归纳出一个小的离散潜动作词表(8 个动作),它就是「手柄按键」的涌现版;自回归动力学模型以历史帧 token 与潜动作为条件预测下一帧 token。推理时用户每一帧都可以输入潜动作,像玩游戏一样操控一张图片、一幅涂鸦生成的世界。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "在 20 万小时的公开互联网 2D 平台游戏视频上训练,全程无动作标签、无奖励、无环境接口——只有视频。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "Genie 定义了「生成式交互环境」(Generative Interactive Environments)这一新方向:任何图片都能变成可控世界;学到的潜动作空间还能用来从未见视频中模仿行为,为通才智能体提供无限训练场。论文获 ICML 2024 最佳论文,引用近 700 次,直接派生 Genie 2/3 与一批可玩世界模型(Oasis、Matrix 等)。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "1 FPS 级的生成速度远非实时,画面漂移随时间累积,局限于 2D 平台类风格。Genie 2 扩展到 3D 世界,Genie 3 宣称实现实时交互,同时保持记忆一致性。"
+  }
+ ],
+ "citations": {
+  "count": 692,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

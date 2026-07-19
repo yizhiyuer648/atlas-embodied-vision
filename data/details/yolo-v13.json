@@ -1,0 +1,38 @@
+{
+  "id": "yolo-v13",
+  "name": "YOLOv13",
+  "org": "Tsinghua University-led collaboration",
+  "country": "CN",
+  "year": 2025,
+  "paper_url": "https://arxiv.org/abs/2506.17733",
+  "github_url": "https://github.com/iMoonLab/yolov13",
+  "category": "detection",
+  "sub_category": "one-stage-hypergraph",
+  "one_liner_zh": "清华牵头的超图增强实时检测器，用高阶关系建模补足局部卷积与成对注意力。",
+  "key_idea_zh": "HyperACE 以自适应超图建模跨位置、跨尺度的多对多关系，FullPAD 再把增强特征分发到全流程。",
+  "tags": ["YOLO", "国产", "超图", "HyperACE", "端到端", "实时检测"],
+  "tier": "B",
+  "lineage_parent": "yolo-v12",
+  "sections": [
+    {
+      "title": "背景与版本身份",
+      "body": "YOLOv13 于 2025 年 6 月由清华大学牵头、多所中国高校合作公开。论文从 YOLO12 的区域注意力仍主要描述局部、成对关系这一限制出发继续推进，因此在本图鉴中接在 YOLO12 之后；它同样是独立学术团队的公开分支，不是 Ultralytics 官方版本。"
+    },
+    {
+      "title": "方法详解",
+      "body": "Hypergraph-based Adaptive Correlation Enhancement（HyperACE）把多尺度特征中的像素视为顶点，学习顶点参与各超边的程度，以线性复杂度消息传递表达多对多高阶关系；Full-Pipeline Aggregation-and-Distribution（FullPAD）将相关性增强后的特征送回主干、颈部和检测路径。模型还用深度可分离卷积替换部分大核普通卷积以控制参数量与计算量。"
+    },
+    {
+      "title": "训练与数据",
+      "body": "官方提供 N/S/L/X 四档，在 MS COCO 上训练 600 个 epoch，输入 640×640，并使用 Mosaic、MixUp 等与前代相近的数据增强。代码和权重由 iMoonLab 官方仓库公开。"
+    },
+    {
+      "title": "结果与影响",
+      "body": "论文报告 YOLOv13-N 相比其统一环境复现的 YOLO11-N 提升 3.0 mAP、相比 YOLOv12-N 提升 1.5 mAP，同时保持轻量。它让超图计算从分类或通用表征进一步进入实时检测主线。"
+    },
+    {
+      "title": "局限与学习提醒",
+      "body": "超图模块的理论复杂度与实际硬件效率并不等价，部署前仍要测量目标设备上的算子支持、显存和端到端延迟。YOLOv13 之后没有可核验的 YOLO14 至 YOLO25 官方连续版本，不能为了补编号而添加。"
+    }
+  ]
+}

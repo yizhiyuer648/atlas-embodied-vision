@@ -1,0 +1,195 @@
+{
+ "id": "yolo-v5",
+ "name": "YOLOv5",
+ "org": "Ultralytics",
+ "country": "US",
+ "year": 2020,
+ "paper_url": "unknown",
+ "github_url": "https://github.com/ultralytics/yolov5",
+ "category": "detection",
+ "sub_category": "one-stage",
+ "one_liner_zh": "工程化成熟的 PyTorch YOLO 系列，覆盖训练、导出和多尺寸部署。",
+ "key_idea_zh": "用 CSP 风格骨干、SPPF、PAN-FPN 与多尺度锚框检测头形成易部署流水线。",
+ "tags": [
+  "YOLO",
+  "PyTorch",
+  "CSP",
+  "部署"
+ ],
+ "tier": "A",
+ "lineage_parent": "yolo-v4",
+ "architecture": {
+  "description_zh": "输入经 CSP 风格骨干提取多尺度特征，SPPF 扩大感受野，PAN-FPN 双向融合后由三尺度锚框检测头输出类别、目标性与边界框。",
+  "modules": [
+   {
+    "id": "input",
+    "label": "输入与缩放填充",
+    "type": "input"
+   },
+   {
+    "id": "backbone",
+    "label": "CSPDarknet 骨干",
+    "type": "encoder"
+   },
+   {
+    "id": "sppf",
+    "label": "SPPF",
+    "type": "context"
+   },
+   {
+    "id": "neck",
+    "label": "PAN-FPN",
+    "type": "fusion"
+   },
+   {
+    "id": "head",
+    "label": "三尺度 Detect",
+    "type": "head"
+   },
+   {
+    "id": "output",
+    "label": "NMS 后检测框",
+    "type": "output"
+   }
+  ],
+  "edges": [
+   {
+    "from": "input",
+    "to": "backbone",
+    "label": "图像张量"
+   },
+   {
+    "from": "backbone",
+    "to": "sppf",
+    "label": "深层特征"
+   },
+   {
+    "from": "backbone",
+    "to": "neck",
+    "label": "多尺度旁路"
+   },
+   {
+    "from": "sppf",
+    "to": "neck",
+    "label": "上下文特征"
+   },
+   {
+    "from": "neck",
+    "to": "head",
+    "label": "P3/P4/P5"
+   },
+   {
+    "from": "head",
+    "to": "output",
+    "label": "框与分数"
+   }
+  ],
+  "flow_ms": 4200
+ },
+ "code": {
+  "language": "python",
+  "source_repo": "https://github.com/ultralytics/yolov5",
+  "source_path": "models/yolo.py",
+  "simplified": true,
+  "lines": [
+   {
+    "code": "class DetectionModel(BaseModel):",
+    "comment_zh": "定义 YOLOv5 检测模型；片段已简化。"
+   },
+   {
+    "code": "    def __init__(self, cfg, ch=3, nc=None, anchors=None):",
+    "comment_zh": "接收模型配置、输入通道、类别数和锚框。"
+   },
+   {
+    "code": "        self.yaml = cfg",
+    "comment_zh": "保存网络结构配置。"
+   },
+   {
+    "code": "        self.yaml['ch'] = ch",
+    "comment_zh": "记录图像输入通道数。"
+   },
+   {
+    "code": "        if nc is not None:",
+    "comment_zh": "允许调用方覆盖配置中的类别数。"
+   },
+   {
+    "code": "            self.yaml['nc'] = nc",
+    "comment_zh": "写入实际类别数。"
+   },
+   {
+    "code": "        if anchors is not None:",
+    "comment_zh": "允许调用方覆盖预设锚框。"
+   },
+   {
+    "code": "            self.yaml['anchors'] = anchors",
+    "comment_zh": "写入新的多尺度锚框。"
+   },
+   {
+    "code": "        self.model, self.save = parse_model(self.yaml, ch=[ch])",
+    "comment_zh": "按配置搭建骨干、颈部和检测头。"
+   },
+   {
+    "code": "        self.names = [str(i) for i in range(self.yaml['nc'])]",
+    "comment_zh": "建立默认类别名称。"
+   },
+   {
+    "code": "        head = self.model[-1]",
+    "comment_zh": "取出末端 Detect 检测头。"
+   },
+   {
+    "code": "        if isinstance(head, Detect):",
+    "comment_zh": "仅对检测头计算尺度与初始化锚框。"
+   },
+   {
+    "code": "            size = 256",
+    "comment_zh": "使用固定测试尺寸推导各输出步长。"
+   },
+   {
+    "code": "            outputs = self.forward(torch.zeros(1, ch, size, size))",
+    "comment_zh": "做一次空张量前向以获得特征图尺寸。"
+   },
+   {
+    "code": "            head.stride = torch.tensor([size / x.shape[-2] for x in outputs])",
+    "comment_zh": "由输入与输出空间尺寸计算 P3/P4/P5 步长。"
+   },
+   {
+    "code": "            self.stride = head.stride",
+    "comment_zh": "把步长暴露给预处理与解码逻辑。"
+   },
+   {
+    "code": "            check_anchor_order(head)",
+    "comment_zh": "检查锚框排列是否与尺度顺序一致。"
+   },
+   {
+    "code": "            self._initialize_biases()",
+    "comment_zh": "初始化目标性和类别预测偏置。"
+   },
+   {
+    "code": "        initialize_weights(self)",
+    "comment_zh": "完成其余层的权重初始化。"
+   }
+  ]
+ },
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "YOLOv5 由 Ultralytics 公司在 2020 年发布,没有伴随论文,却成为深度学习历史上部署最广的检测器之一。它回应的不是学术问题,而是工程痛点:研究代码到生产部署之间的鸿沟——环境配置、训练稳定性、导出格式、文档质量。YOLOv5 把「开箱即用」做到了极致。"
+  },
+  {
+   "title": "方法详解",
+   "body": "架构延续 YOLOv4 的思路并做 PyTorch 原生实现:CSP 风格骨干、SPPF(串行池化加速版 SPP)、PAN-FPN 颈部、三尺度 anchor-based 检测头;训练内置 Mosaic 与 MixUp 增广、自动锚框聚类(AutoAnchor)、超参数进化搜索、EMA 与混合精度。提供 n/s/m/l/x 五档尺寸,一行命令训练,一行命令导出 ONNX/TensorRT/CoreML/TFLite,配套完善的文档与社区支持。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "官方模型在 COCO 上训练;框架对自定义数据集极其友好——YAML 定义数据、自动下载权重、自动记录实验,大幅降低了非专业用户的门槛。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "YOLOv5 各档模型在速度-精度曲线上与同期方法竞争,但真正的统治力在生态:GitHub 星标数万、被无数工业项目直接采用,成为「目标检测」在工程界的默认词。它证明了框架体验本身就是核心竞争力,也塑造了 Ultralytics 后续 YOLOv8/YOLO11 的产品化路线。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "发布初期因「未发论文却叫 v5」引发争议;anchor-based 设计与手工分配后来落后于 YOLOX 等新范式。YOLOv8 转向 anchor-free 解耦头并统一多任务接口,完成对 v5 的换代。"
+  }
+ ]
+}

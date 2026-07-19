@@ -1,0 +1,188 @@
+{
+ "id": "openvla",
+ "name": "OpenVLA",
+ "org": "Stanford University / UC Berkeley / Toyota Research Institute",
+ "country": "US",
+ "year": 2024,
+ "paper_url": "https://arxiv.org/abs/2406.09246",
+ "github_url": "https://github.com/openvla/openvla",
+ "category": "vla",
+ "sub_category": "open-source-vla",
+ "one_liner_zh": "基于开源 VLM 构建的 7B 通用机器人动作模型。",
+ "key_idea_zh": "融合 DINOv2 与 SigLIP 视觉特征，经投影器送入 Llama 2，并把连续动作离散成语言模型可生成的 token。",
+ "tags": [
+  "开源",
+  "7B",
+  "动作分词"
+ ],
+ "tier": "A",
+ "lineage_parent": "rt-2",
+ "architecture": {
+  "description_zh": "OpenVLA 使用 Prismatic 双视觉骨干提取图像特征，将视觉 token 与指令 token 一同输入 Llama 2，生成离散动作 token 后再反归一化为连续控制量。",
+  "modules": [
+   {
+    "id": "ov-image",
+    "label": "机器人图像",
+    "type": "input"
+   },
+   {
+    "id": "ov-language",
+    "label": "语言指令",
+    "type": "input"
+   },
+   {
+    "id": "ov-vision",
+    "label": "DINOv2 + SigLIP",
+    "type": "encoder"
+   },
+   {
+    "id": "ov-projector",
+    "label": "视觉投影器",
+    "type": "fusion"
+   },
+   {
+    "id": "ov-llm",
+    "label": "Llama 2 7B",
+    "type": "transformer"
+   },
+   {
+    "id": "ov-tokenizer",
+    "label": "动作 Token 解码",
+    "type": "decoder"
+   },
+   {
+    "id": "ov-action",
+    "label": "连续机器人动作",
+    "type": "output"
+   }
+  ],
+  "edges": [
+   {
+    "from": "ov-image",
+    "to": "ov-vision",
+    "label": "像素"
+   },
+   {
+    "from": "ov-vision",
+    "to": "ov-projector",
+    "label": "视觉特征"
+   },
+   {
+    "from": "ov-projector",
+    "to": "ov-llm",
+    "label": "视觉 token"
+   },
+   {
+    "from": "ov-language",
+    "to": "ov-llm",
+    "label": "指令 token"
+   },
+   {
+    "from": "ov-llm",
+    "to": "ov-tokenizer",
+    "label": "动作 token"
+   },
+   {
+    "from": "ov-tokenizer",
+    "to": "ov-action",
+    "label": "反归一化"
+   }
+  ],
+  "flow_ms": 3600
+ },
+ "code": {
+  "language": "python",
+  "source_repo": "https://github.com/openvla/openvla",
+  "source_path": "prismatic/models/vlas/openvla.py",
+  "simplified": true,
+  "lines": [
+   {
+    "code": "@torch.inference_mode()",
+    "comment_zh": "推理时关闭梯度，减少显存占用。"
+   },
+   {
+    "code": "def predict_action(self, image, instruction, unnorm_key):",
+    "comment_zh": "接收图像、指令和动作统计量键。"
+   },
+   {
+    "code": "    prompt = f'In: What action should the robot take to {instruction}?'",
+    "comment_zh": "把任务指令组织成模型训练时使用的提示格式。"
+   },
+   {
+    "code": "    input_ids = self.tokenizer(prompt, truncation=True, return_tensors='pt').input_ids",
+    "comment_zh": "把自然语言提示编码为文本 token。"
+   },
+   {
+    "code": "    pixel_values = self.vision_backbone.image_transform(image)",
+    "comment_zh": "用配套图像变换准备视觉输入。"
+   },
+   {
+    "code": "    generated = self.generate(input_ids=input_ids, pixel_values=pixel_values, max_new_tokens=self.action_dim)",
+    "comment_zh": "让 VLM 自回归生成固定维度的动作 token。"
+   },
+   {
+    "code": "    action_token_ids = generated[0, -self.action_dim:]",
+    "comment_zh": "截取序列末尾属于动作的 token。"
+   },
+   {
+    "code": "    normalized = self.action_tokenizer.decode_token_ids_to_actions(action_token_ids.cpu().numpy())",
+    "comment_zh": "将离散 token 还原为归一化动作。"
+   },
+   {
+    "code": "    stats = self.get_action_stats(unnorm_key)",
+    "comment_zh": "读取目标数据集对应的动作分位数。"
+   },
+   {
+    "code": "    low = np.asarray(stats['q01'])",
+    "comment_zh": "取得 1% 分位作为动作下界。"
+   },
+   {
+    "code": "    high = np.asarray(stats['q99'])",
+    "comment_zh": "取得 99% 分位作为动作上界。"
+   },
+   {
+    "code": "    mask = np.asarray(stats.get('mask', np.ones_like(low, dtype=bool)))",
+    "comment_zh": "确定哪些动作维度需要反归一化。"
+   },
+   {
+    "code": "    continuous = 0.5 * (normalized + 1.0) * (high - low) + low",
+    "comment_zh": "把 [-1,1] 的输出映射回真实控制范围。"
+   },
+   {
+    "code": "    action = np.where(mask, continuous, normalized)",
+    "comment_zh": "只转换具有有效统计量的维度。"
+   },
+   {
+    "code": "    return action",
+    "comment_zh": "返回可发送给机器人控制器的连续动作。"
+   }
+  ]
+ },
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "RT-2 证明了 VLA 的威力，却是闭源的 55B 巨兽。学术界既拿不到权重，也没有对应算力。OpenVLA 的使命非常明确：用完全开源的组件和数据，训练一个任何人都能下载、微调、部署的 VLA，并且性能不输闭源前辈——让 VLA 研究从「少数大厂特权」变成「社区公共品」。"
+  },
+  {
+   "title": "方法详解",
+   "body": "OpenVLA 以 Prismatic VLM 为底座：视觉端并联 DINOv2 与 SigLIP 两个编码器——前者提供精细空间几何特征，后者提供语义对齐特征——拼接后经投影器映射进 Llama 2 7B 的嵌入空间。动作输出沿用 RT-2 的离散化方案：7 维末端动作各量化为 256 档，占用词表中最少使用的 256 个 token,由语言模型自回归生成。论文还系统研究了高效微调路径,证明 LoRA 加量化可在单张消费级显卡上完成新任务适配。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "在 Open X-Embodiment 精选的 97 万条真机示范上训练,覆盖多种机器人本体与场景。训练代码、权重、微调 notebook 全部公开,形成完整的开源工具链。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "在 29 个任务、多个本体的评测中,7B 的 OpenVLA 比 55B 的 RT-2-X 绝对成功率高 16.5%,参数量只有其七分之一;微调后也胜过 Diffusion Policy 等从头训练方法 20.4%。OpenVLA 发布后即成为 VLA 领域的事实基线:CogACT、SpatialVLA、UniVLA 等大量后续工作都以它为起点或对照,引用超过 2700 次。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "离散动作 token 一次一步、自回归生成,控制频率低,精细连续控制受限;推理延迟也偏高。官方后续 OpenVLA-OFT 用并行解码与连续动作头大幅提速,社区则涌现出以扩散/流匹配动作专家替换离散输出的改进(CogACT、π0 路线)。"
+  }
+ ],
+ "citations": {
+  "count": 2756,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

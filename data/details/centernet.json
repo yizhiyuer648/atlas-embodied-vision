@@ -1,0 +1,48 @@
+{
+ "id": "centernet",
+ "name": "CenterNet",
+ "org": "University of Texas at Austin",
+ "country": "US",
+ "year": 2019,
+ "paper_url": "https://arxiv.org/abs/1904.07850",
+ "github_url": "https://github.com/xingyizhou/CenterNet",
+ "category": "detection",
+ "sub_category": "anchor-free",
+ "one_liner_zh": "把目标表示为中心关键点，再从中心回归尺寸与偏移。",
+ "key_idea_zh": "用热力图定位对象中心，配合宽高和亚像素偏移即可解码边界框。",
+ "tags": [
+  "anchor-free",
+  "关键点",
+  "中心点",
+  "实时检测"
+ ],
+ "tier": "B",
+ "lineage_parent": "cornernet",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "CornerNet 证明了关键点检测的可行性,但两个角点还要配对,既慢又易错。UT Austin 的 Objects as Points 提出更彻底的简化:一个物体就是一个点——中心点。找到中心,其他一切(宽高、深度、朝向、姿态)都能从中心回归出来。"
+  },
+  {
+   "title": "方法详解",
+   "body": "CenterNet 用全卷积网络输出类别中心热力图,峰值即物体中心;每个中心位置再回归宽高与亚像素偏移,解码出边界框。整个流程没有锚框、没有配对、甚至没有 NMS——热力图上取 8 邻域峰值天然完成去重。同一框架几乎不加修改就能扩展:回归 3D 尺寸与朝向做单目 3D 检测,回归关节偏移做人体姿态估计,展示了「中心点表示」的通用性。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "在 COCO(2D 检测、姿态)与 KITTI(3D)上训练,骨干可选 ResNet-18 到 Hourglass-104,按速度-精度需求取舍。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "COCO 上 142 FPS 时 28.1 AP、1.4 FPS 多尺度时 45.1 AP,给出了当时最优的速度-精度权衡曲线。CenterNet 因结构极简、易于魔改,成为学术原型与工业落地(尤其自动驾驶感知)最受欢迎的底座之一;「中心点 + 回归」的思想也渗透进 3D 检测与跟踪(CenterPoint、CenterTrack)。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "中心重叠的物体会互相竞争同一个峰值;仅靠中心特征回归大物体边界精度有限。后续工作引入更强特征融合与两级精修,而 FCOS 则以逐像素回归提供了另一种 anchor-free 视角。"
+  }
+ ],
+ "citations": {
+  "count": 3759,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

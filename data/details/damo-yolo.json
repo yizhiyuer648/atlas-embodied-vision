@@ -1,0 +1,48 @@
+{
+ "id": "damo-yolo",
+ "name": "DAMO-YOLO",
+ "org": "Alibaba DAMO Academy",
+ "country": "CN",
+ "year": 2022,
+ "paper_url": "https://arxiv.org/abs/2211.15444",
+ "github_url": "https://github.com/tinyvision/DAMO-YOLO",
+ "category": "detection",
+ "sub_category": "one-stage",
+ "one_liner_zh": "阿里达摩院以神经架构搜索、高效特征融合和蒸馏打造实时检测器。",
+ "key_idea_zh": "MAE-NAS 搜索骨干，RepGFPN 融合特征，ZeroHead 与对齐蒸馏提升速度精度比。",
+ "tags": [
+  "国产",
+  "YOLO",
+  "NAS",
+  "RepGFPN"
+ ],
+ "tier": "B",
+ "lineage_parent": "yolox",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "YOLO 系列的骨干与颈部大多沿袭手工设计,阿里达摩院认为速度-精度前沿还能再推:用神经架构搜索定制骨干、重新思考颈部与头部的容量分配,再用蒸馏榨出最后一段性能。"
+  },
+  {
+   "title": "方法详解",
+   "body": "DAMO-YOLO 的四件套:MAE-NAS——以最大熵原则为引导,在低延迟约束下搜索出 ResNet/CSP 风格混合骨干;RepGFPN——广义特征金字塔的高效重参数化版本,遵循「大颈部、小头部」的容量分配结论;ZeroHead——头部只留一层任务投影,把计算预算让给颈部;AlignedOTA——校正分类与回归在分配中的错位问题。最后用蒸馏进一步提升各档模型。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "COCO 训练,发布 T/S/M/L 通用档与 Ns/Nm/Nl 端侧轻量档,后者针对 X86-CPU 延迟优化。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "DAMO-YOLO-S 在 T4 上 3.83ms 达到 47.7 mAP,整个家族在发布时刷新了 YOLO 系速度-精度曲线。它展示了 NAS 与蒸馏在实时检测上的实际价值,也是阿里在工业检测基建上的代表开源项目。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "NAS 搜索出的结构可解释性差、迁移到新硬件需重搜;社区活跃度不及 Ultralytics 生态。其「大颈小头」与对齐分配结论被后续实时检测器持续引用。"
+  }
+ ],
+ "citations": {
+  "count": 350,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

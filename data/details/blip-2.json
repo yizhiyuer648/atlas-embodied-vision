@@ -1,0 +1,213 @@
+{
+ "id": "blip-2",
+ "name": "BLIP-2",
+ "org": "Salesforce Research",
+ "country": "US",
+ "year": 2023,
+ "paper_url": "https://arxiv.org/abs/2301.12597",
+ "github_url": "https://github.com/salesforce/LAVIS",
+ "category": "representation",
+ "sub_category": "vision-language",
+ "one_liner_zh": "用轻量 Q-Former 桥接冻结视觉编码器与冻结大语言模型。",
+ "key_idea_zh": "可学习查询通过交叉注意力从图像中提取少量视觉 token，分两阶段完成视觉语言对齐与生成对齐。",
+ "tags": [
+  "视觉语言",
+  "Q-Former",
+  "冻结编码器",
+  "大语言模型"
+ ],
+ "tier": "A",
+ "lineage_parent": "blip",
+ "architecture": {
+  "description_zh": "冻结视觉编码器产生 patch 特征；Q-Former 的可学习 query 通过交叉注意力压缩视觉信息，先接受图文对比/匹配/生成训练，再把输出投影为冻结 LLM 可读取的软提示。",
+  "modules": [
+   {
+    "id": "image",
+    "label": "输入图像",
+    "type": "input"
+   },
+   {
+    "id": "vision",
+    "label": "冻结视觉编码器",
+    "type": "encoder"
+   },
+   {
+    "id": "queries",
+    "label": "可学习 Query Tokens",
+    "type": "query"
+   },
+   {
+    "id": "qformer",
+    "label": "Q-Former",
+    "type": "attention"
+   },
+   {
+    "id": "projector",
+    "label": "LLM 投影层",
+    "type": "projection"
+   },
+   {
+    "id": "llm",
+    "label": "冻结大语言模型",
+    "type": "decoder"
+   },
+   {
+    "id": "output",
+    "label": "文本理解与生成",
+    "type": "output"
+   }
+  ],
+  "edges": [
+   {
+    "from": "image",
+    "to": "vision",
+    "label": "像素"
+   },
+   {
+    "from": "vision",
+    "to": "qformer",
+    "label": "图像 patch 特征"
+   },
+   {
+    "from": "queries",
+    "to": "qformer",
+    "label": "固定数量查询"
+   },
+   {
+    "from": "qformer",
+    "to": "projector",
+    "label": "视觉查询表示"
+   },
+   {
+    "from": "projector",
+    "to": "llm",
+    "label": "软提示 tokens"
+   },
+   {
+    "from": "llm",
+    "to": "output",
+    "label": "语言输出"
+   }
+  ],
+  "flow_ms": 5200
+ },
+ "code": {
+  "language": "python",
+  "source_repo": "https://github.com/salesforce/LAVIS",
+  "source_path": "lavis/models/blip2_models/blip2_qformer.py",
+  "simplified": true,
+  "lines": [
+   {
+    "code": "def forward(self, samples):",
+    "comment_zh": "展示 BLIP-2 第一阶段图文对齐；片段已简化。"
+   },
+   {
+    "code": "    image = samples['image']",
+    "comment_zh": "读取预处理后的图像批次。"
+   },
+   {
+    "code": "    with self.maybe_autocast():",
+    "comment_zh": "视觉编码器可使用混合精度以节省显存。"
+   },
+   {
+    "code": "        image_embeds = self.ln_vision(self.visual_encoder(image))",
+    "comment_zh": "冻结视觉编码器输出 patch 特征并归一化。"
+   },
+   {
+    "code": "    image_atts = torch.ones(image_embeds.size()[:-1], dtype=torch.long)",
+    "comment_zh": "为全部有效图像 token 创建注意力掩码。"
+   },
+   {
+    "code": "    query_tokens = self.query_tokens.expand(image_embeds.shape[0], -1, -1)",
+    "comment_zh": "为批内每张图复制同一组可学习查询。"
+   },
+   {
+    "code": "    query_output = self.Qformer.bert(",
+    "comment_zh": "让查询通过 Q-Former 读取视觉特征。"
+   },
+   {
+    "code": "        query_embeds=query_tokens,",
+    "comment_zh": "查询作为 Q-Former 的输入 token。"
+   },
+   {
+    "code": "        encoder_hidden_states=image_embeds,",
+    "comment_zh": "冻结视觉特征作为交叉注意力的键和值。"
+   },
+   {
+    "code": "        encoder_attention_mask=image_atts,",
+    "comment_zh": "告知交叉注意力哪些视觉 token 有效。"
+   },
+   {
+    "code": "        use_cache=True, return_dict=True",
+    "comment_zh": "缓存查询状态并以字典形式返回。"
+   },
+   {
+    "code": "    )",
+    "comment_zh": "完成视觉查询过程。"
+   },
+   {
+    "code": "    image_feats = F.normalize(",
+    "comment_zh": "把查询输出投影到图文对比空间。"
+   },
+   {
+    "code": "        self.vision_proj(query_output.last_hidden_state), dim=-1",
+    "comment_zh": "每个 query 都得到一个归一化视觉向量。"
+   },
+   {
+    "code": "    )",
+    "comment_zh": "结束图像特征归一化。"
+   },
+   {
+    "code": "    text_tokens = self.tokenizer(samples['text_input'], return_tensors='pt', padding=True)",
+    "comment_zh": "对配对文本分词并补齐。"
+   },
+   {
+    "code": "    text_output = self.Qformer.bert(text_tokens.input_ids, attention_mask=text_tokens.attention_mask)",
+    "comment_zh": "Q-Former 的文本路径编码句子。"
+   },
+   {
+    "code": "    text_feat = F.normalize(self.text_proj(text_output.last_hidden_state[:, 0, :]), dim=-1)",
+    "comment_zh": "取文本 CLS 并投影到同一空间。"
+   },
+   {
+    "code": "    sim_q2t = torch.matmul(image_feats, text_feat.unsqueeze(-1)).squeeze(-1)",
+    "comment_zh": "计算每个视觉 query 与配对文本的相似度。"
+   },
+   {
+    "code": "    sim_i2t = sim_q2t.max(dim=-1).values / self.temp",
+    "comment_zh": "选择最匹配 query，并用温度缩放作为图到文分数。"
+   },
+   {
+    "code": "    return sim_i2t",
+    "comment_zh": "该分数参与图文对比目标。"
+   }
+  ]
+ },
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "到 2023 年,视觉语言预训练撞上成本墙:端到端训练数十亿参数的多模态模型,费用令绝大多数机构却步。而另一边,顶级的视觉编码器与大语言模型都已经存在且开源。Salesforce 的 BLIP-2 提出关键问题:能不能两头都冻结,只训练一个轻量的「翻译官」把它们接起来?"
+  },
+  {
+   "title": "方法详解",
+   "body": "翻译官就是 Q-Former(Querying Transformer):一组可学习的查询向量(32 个)通过交叉注意力从冻结图像编码器的特征里「采访」出最有用的信息,压缩成少量视觉 token。训练分两阶段:第一阶段与冻结视觉塔对齐——用图文对比、图文匹配、图像条件生成三个目标训练 Q-Former 学会提取语言相关的视觉信息;第二阶段与冻结 LLM 对齐——把 Q-Former 输出经线性映射接到 LLM 输入端,训练它输出 LLM 能读懂的「视觉前缀」。全程只有 Q-Former 与投影层在学习,可训练参数只有同类模型的几十分之一。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "复用 BLIP 的 1.29 亿图文数据;视觉塔用 CLIP ViT-L / EVA ViT-g,语言侧接 OPT 或 FlanT5,展示了对不同底座的即插即用。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "BLIP-2 用比 Flamingo-80B 少 54 倍的可训练参数,零样本 VQAv2 反超 8.7%,并涌现出遵循指令的图生文能力。「冻结底座 + 轻量桥接」从此成为多模态模型的主流构建方式:LLaVA 的线性投影、MiniGPT-4 直接复用 Q-Former、Qwen-VL 的重采样器都是这一思想的变体,引用超过 8600 次。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "Q-Former 把图像压成 32 个 token,细粒度信息(小字、密集场景)损失明显;冻结 LLM 也限制了深度模态融合。后续社区发现简单 MLP 投影 + 全量指令微调(LLaVA 路线)在数据充足时更强,Q-Former 逐渐让位,但其两阶段对齐思想仍被广泛沿用。"
+  }
+ ],
+ "citations": {
+  "count": 8606,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

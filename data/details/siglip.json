@@ -1,0 +1,48 @@
+{
+ "id": "siglip",
+ "name": "SigLIP",
+ "org": "Google Research",
+ "country": "US",
+ "year": 2023,
+ "paper_url": "https://arxiv.org/abs/2303.15343",
+ "github_url": "https://github.com/google-research/big_vision",
+ "category": "representation",
+ "sub_category": "vision-language",
+ "one_liner_zh": "以逐图文对 sigmoid 损失替代全局 softmax，对大规模分布式训练更友好。",
+ "key_idea_zh": "每个图文组合独立做二分类，不再要求把所有设备上的负样本汇总后归一化。",
+ "tags": [
+  "图文对比学习",
+  "sigmoid loss",
+  "零样本",
+  "ViT"
+ ],
+ "tier": "B",
+ "lineage_parent": "clip",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "CLIP 的 softmax 对比损失有个隐藏的工程枷锁:归一化需要「全局视野」——每个设备都要看到 batch 内所有图文对的相似度,分布式训练时通信开销巨大,batch 越大越痛。Google 的 SigLIP 问:如果每一对图文独立判断「是否匹配」,不做全局归一化,会损失什么?"
+  },
+  {
+   "title": "方法详解",
+   "body": "答案是几乎不损失,反而更好。Sigmoid 损失把对比学习改成海量二分类:每个图文组合独立计算 sigmoid 二元交叉熵(匹配为正、不匹配为负),外加一个可学习的温度与偏置来平衡极端的正负比例。没有跨设备 softmax,分布式实现只需环形交换特征块;batch 大小与损失彻底解耦,小 batch 时表现还优于 softmax。论文用百万级 batch 实验证明:32k 的 batch 已足够,更大收益递减。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "在 WebLI 数据上训练;配合锁定图像塔的 SigLiT 配方,4 块 TPUv4 两天即可训出 84.5% ImageNet 零样本精度——把「训练一个强 CLIP」的成本打到了小团队可及的范围。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "SigLIP 全系开源后迅速取代 CLIP 成为新一代默认图文编码器:PaliGemma、LLaVA 系列、OpenVLA、π0 等大量多模态与机器人模型的视觉塔都换成了 SigLIP,引用超过 3400 次。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "作为编码器它仍继承 CLIP 式弱点:定位与密集特征欠佳、多语言覆盖有限。SigLIP 2 在同一框架上加入自蒸馏、掩码预测与描述生成目标,针对性补齐这些短板。"
+  }
+ ],
+ "citations": {
+  "count": 3419,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

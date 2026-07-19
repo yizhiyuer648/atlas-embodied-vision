@@ -1,0 +1,47 @@
+{
+ "id": "occworld",
+ "name": "OccWorld",
+ "org": "Tsinghua University",
+ "country": "CN",
+ "year": 2023,
+ "paper_url": "https://arxiv.org/abs/2311.16038",
+ "github_url": "https://github.com/wzzheng/OccWorld",
+ "category": "world",
+ "sub_category": "occupancy-world-model",
+ "one_liner_zh": "联合预测三维占用场景演化与自车运动的驾驶世界模型。",
+ "key_idea_zh": "把 3D 语义占用序列 token 化，用时空生成模型同时预测未来场景 token 和 ego token。",
+ "tags": [
+  "国产",
+  "3D 占用",
+  "自动驾驶"
+ ],
+ "tier": "B",
+ "lineage_parent": "unknown",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "驾驶世界模型大多预测未来「图像」或「目标框」:前者纠缠外观细节,后者太粗。清华团队的 OccWorld 选了第三条路——在 3D 语义占用(occupancy)空间里建模世界演化:既有精细几何,又与传感器形态无关,还能同时服务感知与规划。"
+  },
+  {
+   "title": "方法详解",
+   "body": "OccWorld 分两步:先用基于重建的场景 tokenizer 把 3D 占用栅格压缩成离散场景 token(类似 VQ-VAE);再用 GPT 式时空生成 Transformer,以历史场景 token 与自车 token 为上下文,自回归地同时生成未来场景 token 与自车轨迹 token——「世界怎么变」与「我怎么动」在同一序列里联合预测,天然耦合。解码器把场景 token 还原为未来占用栅格。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "在 nuScenes 上训练评测,占用标注可来自视觉或激光雷达管线;规划评测不使用实例与地图监督。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "OccWorld 能有效预测场景演化,规划结果与依赖丰富监督的方法相当,验证了「占用空间世界模型」的可行性,代码开源后成为该子方向的奠基基线,衍生出 OccSora、RenderWorld 等一系列占用生成工作,引用超过 250 次。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "占用分辨率受显存限制,细小物体易丢失;自回归误差随时间累积。后续工作引入扩散式占用生成与更强 tokenizer,并与端到端规划器联合训练。"
+  }
+ ],
+ "citations": {
+  "count": 253,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

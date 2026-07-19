@@ -1,0 +1,54 @@
+{
+  "records": [
+    {
+      "source": "Crossref",
+      "source_id": "10.5555/atlas.fixture.1",
+      "source_url": "https://doi.org/10.5555/atlas.fixture.1",
+      "title": "Atlas Fixture: Vision-Language-Action Policies with Long Context",
+      "authors": ["Lin Example", "Ming Example"],
+      "published": "2026-07-08",
+      "venue_hint": "IEEE Transactions on Robotics",
+      "abstract": "A vision-language-action robot policy for long-horizon manipulation.",
+      "external_ids": {
+        "doi": "10.5555/atlas.fixture.1",
+        "arxiv": "2607.00001v2"
+      },
+      "links": {
+        "landing": "https://doi.org/10.5555/atlas.fixture.1"
+      },
+      "category_hint": "vla"
+    },
+    {
+      "source": "OpenAlex",
+      "source_id": "https://openalex.org/W1234567890",
+      "source_url": "https://openalex.org/W1234567890",
+      "title": "Atlas Fixture: Vision-Language-Action Policies with Long Context",
+      "authors": ["Lin Example", "Ming Example"],
+      "published": "2026-07-08",
+      "venue_hint": "IEEE Transactions on Robotics",
+      "abstract": "A vision-language-action robot policy for long-horizon manipulation.",
+      "external_ids": {
+        "doi": "https://doi.org/10.5555/atlas.fixture.1"
+      },
+      "links": {
+        "landing": "https://openalex.org/W1234567890"
+      },
+      "category_hint": "vla"
+    },
+    {
+      "source": "CVF Open Access",
+      "source_id": "/content/CVPR2026/html/Example_Atlas_Fixture_CVPR_2026_paper.html",
+      "source_url": "https://openaccess.thecvf.com/content/CVPR2026/html/Example_Atlas_Fixture_CVPR_2026_paper.html",
+      "title": "Atlas Fixture Open-Vocabulary Object Detection",
+      "authors": ["Ada Example", "Bo Example"],
+      "published": "2026",
+      "venue_hint": "CVPR",
+      "abstract": "An open-vocabulary object detection method.",
+      "links": {
+        "landing": "https://openaccess.thecvf.com/content/CVPR2026/html/Example_Atlas_Fixture_CVPR_2026_paper.html"
+      },
+      "explicit_venue_id": "cvpr",
+      "category_hint": "detection"
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+ "id": "cosmos",
+ "name": "Cosmos",
+ "org": "NVIDIA",
+ "country": "US",
+ "year": 2025,
+ "paper_url": "https://arxiv.org/abs/2501.03575",
+ "github_url": "https://github.com/NVIDIA/Cosmos",
+ "category": "world",
+ "sub_category": "physical-ai-foundation-model",
+ "one_liner_zh": "面向 Physical AI 的视频 tokenizer、生成模型与护栏平台。",
+ "key_idea_zh": "提供连续与离散视频 tokenizer、扩散和自回归世界基础模型，用物理视频预训练支持下游生成与理解。",
+ "tags": [
+  "Physical AI",
+  "视频基础模型",
+  "开源"
+ ],
+ "tier": "B",
+ "lineage_parent": "unknown",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "NVIDIA 的判断写在论文第一句:Physical AI(机器人、自动驾驶)必须先在数字世界里训练——它需要策略模型的数字孪生,也需要世界的数字孪生。但每家公司自建世界模型成本过高。Cosmos 因此被设计成「世界基础模型平台」:提供预训练的通用世界模型,让开发者微调出自己场景的定制世界模型。"
+  },
+  {
+   "title": "方法详解",
+   "body": "Cosmos 是一套完整的平台件:视频数据清洗管线(从 2000 万小时视频中筛选物理相关内容);两族视频 tokenizer——连续潜变量与离散 token,覆盖不同压缩率;两族世界基础模型——扩散式(连续潜空间去噪)与自回归式(GPT 式预测离散视频 token),参数从 4B 到 14B;外加后训练示例(接入相机控制、机器人动作条件)与内容安全护栏。所有模型开放权重、宽松许可。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "预训练语料是海量真实物理视频(驾驶、机器人、人类活动、自然动态),刻意偏向物理交互而非影视内容。平台配套 NeMo 训练框架支持下游微调。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "Cosmos 发布即成为 Physical AI 领域的公共基建:机器人团队用它做数据增广与策略评估,驾驶公司用它生成长尾场景。它把「世界模型」从研究命题变成了可下载、可微调的工程组件,引用超过 700 次,并与 GR00T、Isaac 生态形成 NVIDIA 的具身智能全栈。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "生成的物理一致性仍不完美(穿模、非物理运动仍会出现),视频世界模型也尚不能替代精确物理仿真器。NVIDIA 后续推出 Cosmos-Transfer(条件迁移)、Cosmos-Reason(具身推理)等扩展,持续把平台推向「可控、可信」的方向。"
+  }
+ ],
+ "citations": {
+  "count": 746,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

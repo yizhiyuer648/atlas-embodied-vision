@@ -1,0 +1,48 @@
+{
+ "id": "efficientdet",
+ "name": "EfficientDet",
+ "org": "Google Research",
+ "country": "US",
+ "year": 2020,
+ "paper_url": "https://arxiv.org/abs/1911.09070",
+ "github_url": "https://github.com/google/automl/tree/master/efficientdet",
+ "category": "detection",
+ "sub_category": "one-stage",
+ "one_liner_zh": "用 BiFPN 与复合缩放系统化扩展高效目标检测器。",
+ "key_idea_zh": "对多尺度特征进行可学习加权双向融合，并共同缩放输入、骨干、特征网络和检测头。",
+ "tags": [
+  "EfficientNet",
+  "BiFPN",
+  "复合缩放",
+  "高效"
+ ],
+ "tier": "B",
+ "lineage_parent": "retinanet",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "检测模型的规模化长期靠拍脑袋:想更准就换大骨干、堆高分辨率,资源受限就手工裁剪。Google Research 在 EfficientNet 复合缩放的成功后追问:检测器能否也有一套系统化的效率设计与缩放法则?"
+  },
+  {
+   "title": "方法详解",
+   "body": "EfficientDet 有两个核心组件。BiFPN(加权双向特征金字塔):在自顶向下之外增加自底向上路径,删掉贡献小的节点、给同层加跳连,并为每条融合边学习标量权重——让网络自己决定不同尺度特征的重要性,融合既快又好。复合缩放:用一个系数 φ 同时缩放骨干(EfficientNet B0-B6)、BiFPN 的宽度深度、检测头层数与输入分辨率,得到 D0 到 D7 一整族模型,覆盖从移动端到服务器的资源谱系。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "在 COCO 上训练,不依赖额外检测数据。所有模型共享同一套架构模板,只改缩放系数。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "EfficientDet-D7 以 77M 参数在 COCO test-dev 达到 55.1 AP,比此前最优检测器小 4–9 倍、FLOPs 少 13–42 倍。它把「效率优先的系统化设计」带进检测领域,BiFPN 成为通用组件,D 系列长期是资源受限场景的首选,引用超过 7000 次。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "EfficientNet 骨干的深度可分离卷积在 GPU 上并不总是快(FLOPs 低≠延迟低);后续 YOLO 系列与 RTMDet 更强调「真实延迟」导向的设计,复合缩放思想则被普遍继承。"
+  }
+ ],
+ "citations": {
+  "count": 7109,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

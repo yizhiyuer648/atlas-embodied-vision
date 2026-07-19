@@ -1,0 +1,47 @@
+{
+ "id": "octo",
+ "name": "Octo",
+ "org": "Octo Model Team",
+ "country": "US",
+ "year": 2024,
+ "paper_url": "https://arxiv.org/abs/2405.12213",
+ "github_url": "https://github.com/octo-models/octo",
+ "category": "vla",
+ "sub_category": "open-generalist-policy",
+ "one_liner_zh": "基于 Open X-Embodiment 数据训练的可微调开源通用策略。",
+ "key_idea_zh": "使用 Transformer 主干、任务 token 和读出 token 统一不同机器人数据，并通过轻量适配迁移到新本体。",
+ "tags": [
+  "开源",
+  "跨本体",
+  "微调"
+ ],
+ "tier": "B",
+ "lineage_parent": "rt-x",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "Open X-Embodiment 数据集发布后，社区需要一个真正开源、好微调的通用策略底座——RT-X 模型并未完全开放，且难以适配新传感器与新动作空间。Octo 项目（伯克利、斯坦福等联合）的目标就是做「机器人界的开源预训练模型」：任何人下载权重，在消费级 GPU 上几小时内适配自己的机器人。"
+  },
+  {
+   "title": "方法详解",
+   "body": "Octo 是一个 Transformer 策略,输入序列由任务 token（语言指令或目标图像）、观测 token（多路相机、本体感觉）和可学习的读出 token（readout token）组成。读出 token 汇聚上下文信息后接一个扩散动作头，生成连续动作分块。关键设计在于「模块化的 token 接口」：新增一路相机、换一种动作空间，只需增删对应的 token 化器和动作头，主干无需重训，这让 Octo 的微调异常灵活。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "在 Open X-Embodiment 的 80 万条轨迹上预训练——当时最大的操作数据集。发布 27M 和 93M 两档参数的模型，权重、代码与微调脚本全部开源。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "在 9 个机器人平台的评测中，Octo 作为策略初始化能有效迁移到新观测与新动作空间，几小时微调即可投入使用；详尽的消融实验也为社区提供了架构设计指南。Octo 迅速成为学术界最常用的开源基线之一，引用超过 1500 次。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "模型规模较小，语义理解能力弱于 VLM 底座的 VLA，遇到需要世界知识的指令时表现有限。同年 OpenVLA 用 7B VLM 补上语义短板，两者共同构成开源生态的两级：轻量可改装的 Octo,重语义的 OpenVLA。"
+  }
+ ],
+ "citations": {
+  "count": 1553,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

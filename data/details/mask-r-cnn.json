@@ -1,0 +1,238 @@
+{
+ "id": "mask-r-cnn",
+ "name": "Mask R-CNN",
+ "org": "Facebook AI Research",
+ "country": "US",
+ "year": 2017,
+ "paper_url": "https://arxiv.org/abs/1703.06870",
+ "github_url": "https://github.com/facebookresearch/Detectron",
+ "category": "segmentation",
+ "sub_category": "instance-segmentation",
+ "one_liner_zh": "在 Faster R-CNN 上增加并行像素掩码分支，成为实例分割经典基线。",
+ "key_idea_zh": "RoIAlign 避免量化造成的空间错位，分类、边界框与每类二值掩码分支共同训练。",
+ "tags": [
+  "实例分割",
+  "R-CNN",
+  "RoIAlign",
+  "两阶段"
+ ],
+ "tier": "A",
+ "lineage_parent": "faster-r-cnn",
+ "architecture": {
+  "description_zh": "CNN/FPN 共享特征供 RPN 产生候选框；一个 RoIAlign 分支完成分类与框精修，另一个更高分辨率 RoIAlign 分支经卷积和反卷积为每个类别预测二值掩码。",
+  "modules": [
+   {
+    "id": "image",
+    "label": "输入图像",
+    "type": "input"
+   },
+   {
+    "id": "backbone",
+    "label": "CNN + FPN",
+    "type": "encoder"
+   },
+   {
+    "id": "rpn",
+    "label": "RPN",
+    "type": "proposal"
+   },
+   {
+    "id": "boxroi",
+    "label": "Box RoIAlign",
+    "type": "pooling"
+   },
+   {
+    "id": "boxhead",
+    "label": "类别与框头",
+    "type": "head"
+   },
+   {
+    "id": "maskroi",
+    "label": "Mask RoIAlign",
+    "type": "pooling"
+   },
+   {
+    "id": "maskhead",
+    "label": "全卷积 Mask Head",
+    "type": "head"
+   },
+   {
+    "id": "output",
+    "label": "实例框、类别与掩码",
+    "type": "output"
+   }
+  ],
+  "edges": [
+   {
+    "from": "image",
+    "to": "backbone",
+    "label": "像素"
+   },
+   {
+    "from": "backbone",
+    "to": "rpn",
+    "label": "多尺度特征"
+   },
+   {
+    "from": "rpn",
+    "to": "boxroi",
+    "label": "候选框"
+   },
+   {
+    "from": "backbone",
+    "to": "boxroi",
+    "label": "FPN 特征"
+   },
+   {
+    "from": "boxroi",
+    "to": "boxhead",
+    "label": "7×7 RoI 特征"
+   },
+   {
+    "from": "rpn",
+    "to": "maskroi",
+    "label": "候选框 / 正样本"
+   },
+   {
+    "from": "backbone",
+    "to": "maskroi",
+    "label": "FPN 特征"
+   },
+   {
+    "from": "maskroi",
+    "to": "maskhead",
+    "label": "14×14 RoI 特征"
+   },
+   {
+    "from": "boxhead",
+    "to": "output",
+    "label": "框与类别"
+   },
+   {
+    "from": "maskhead",
+    "to": "output",
+    "label": "类别专属掩码"
+   }
+  ],
+  "flow_ms": 5600
+ },
+ "code": {
+  "language": "python",
+  "source_repo": "https://github.com/pytorch/vision",
+  "source_path": "torchvision/models/detection/mask_rcnn.py",
+  "simplified": true,
+  "lines": [
+   {
+    "code": "class MaskRCNN(FasterRCNN):",
+    "comment_zh": "在 Faster R-CNN 上扩展掩码分支；片段已简化。"
+   },
+   {
+    "code": "    def __init__(self, backbone, num_classes):",
+    "comment_zh": "接收共享骨干和含背景的类别数。"
+   },
+   {
+    "code": "        out_channels = backbone.out_channels",
+    "comment_zh": "读取 FPN 输出通道数。"
+   },
+   {
+    "code": "        mask_roi_pool = MultiScaleRoIAlign(",
+    "comment_zh": "创建实例掩码专用的多尺度 RoIAlign。"
+   },
+   {
+    "code": "            featmap_names=['0', '1', '2', '3'],",
+    "comment_zh": "从四层 FPN 特征按候选框尺度取样。"
+   },
+   {
+    "code": "            output_size=14,",
+    "comment_zh": "保留比框分支更高的 14×14 空间细节。"
+   },
+   {
+    "code": "            sampling_ratio=2",
+    "comment_zh": "每个池化位置做规则双线性采样。"
+   },
+   {
+    "code": "        )",
+    "comment_zh": "结束掩码 RoI 池化配置。"
+   },
+   {
+    "code": "        mask_layers = (256, 256, 256, 256)",
+    "comment_zh": "设置四个卷积块的输出通道。"
+   },
+   {
+    "code": "        mask_dilation = 1",
+    "comment_zh": "使用普通 3×3 卷积感受野。"
+   },
+   {
+    "code": "        mask_head = MaskRCNNHeads(",
+    "comment_zh": "建立保持空间布局的全卷积掩码头。"
+   },
+   {
+    "code": "            out_channels, mask_layers, mask_dilation",
+    "comment_zh": "输入共享通道并逐层变换。"
+   },
+   {
+    "code": "        )",
+    "comment_zh": "完成掩码特征头。"
+   },
+   {
+    "code": "        mask_predictor = MaskRCNNPredictor(",
+    "comment_zh": "建立上采样与类别掩码输出层。"
+   },
+   {
+    "code": "            mask_layers[-1], 256, num_classes",
+    "comment_zh": "每个类别独立输出一个二值 mask logit。"
+   },
+   {
+    "code": "        )",
+    "comment_zh": "完成掩码预测器。"
+   },
+   {
+    "code": "        super().__init__(",
+    "comment_zh": "先由父类搭建变换、骨干、RPN 和框分支。"
+   },
+   {
+    "code": "            backbone, num_classes,",
+    "comment_zh": "复用同一骨干与类别定义。"
+   },
+   {
+    "code": "            box_roi_pool=None, box_head=None, box_predictor=None,",
+    "comment_zh": "让父类创建默认 Faster R-CNN 框组件。"
+   },
+   {
+    "code": "            mask_roi_pool=mask_roi_pool, mask_head=mask_head, mask_predictor=mask_predictor",
+    "comment_zh": "把三个实例掩码组件注入 RoIHeads。"
+   },
+   {
+    "code": "        )",
+    "comment_zh": "得到共享特征、并行框与掩码预测的完整网络。"
+   }
+  ]
+ },
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "语义分割分不清「两只并排的羊」,目标检测又只给框不给形状——实例分割要求同时数清个体、描出轮廓。2017 年之前的方案大多是多阶段拼接,复杂且慢。何恺明团队的 Mask R-CNN 用一个惊人简洁的思路统一了它:在 Faster R-CNN 上并联加一个掩码分支,就够了。"
+  },
+  {
+   "title": "方法详解",
+   "body": "架构上,每个 RoI 除了分类与框回归外,新增一个小型 FCN 分支输出 K 个类别的二值掩码,三个任务并行训练。看似平凡,魔鬼在两个细节:一是 RoIAlign——原 RoI Pooling 的两次坐标取整会造成最多十几个像素的特征错位,对框无所谓、对掩码是灾难;RoIAlign 用双线性插值取消一切量化,掩码精度立涨。二是「分类与掩码解耦」——掩码分支对每个类独立输出二值掩码,不做类间竞争,由分类分支决定选哪张,避免了逐像素 softmax 的类间干扰。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "在 COCO 上以 ResNet-FPN 骨干训练;同一框架只换头部即可做人体关键点估计,展示了极强的通用性。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "Mask R-CNN 横扫 COCO 2017 实例分割、检测、关键点三项任务,获 ICCV 2017 最佳论文(Marr 奖)。它此后五年都是实例分割的默认基线与工业标准实现(Detectron/Detectron2 核心),RoIAlign 成为一切基于区域方法的必备件,引用超过 3.2 万次。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "两阶段流程限制实时性;掩码分辨率(28×28)对大物体边界偏粗。后续 SOLO、CondInst 探索单阶段实例分割,Mask2Former 用查询式统一架构接管精度上限,SAM 则把分割带入提示式基础模型时代。"
+  }
+ ],
+ "citations": {
+  "count": 32421,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

@@ -1,0 +1,48 @@
+{
+ "id": "atss",
+ "name": "ATSS",
+ "org": "Huawei Noah's Ark Lab",
+ "country": "CN",
+ "year": 2020,
+ "paper_url": "https://arxiv.org/abs/1912.02424",
+ "github_url": "https://github.com/sfzhang15/ATSS",
+ "category": "detection",
+ "sub_category": "label-assignment",
+ "one_liner_zh": "用样本统计自适应选择正负样本，解释并缩小有锚与无锚检测差距。",
+ "key_idea_zh": "每个目标在各金字塔层选中心最近候选，以 IoU 均值加标准差作为动态正样本阈值。",
+ "tags": [
+  "国产",
+  "标签分配",
+  "anchor",
+  "FPN"
+ ],
+ "tier": "B",
+ "lineage_parent": "retinanet",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "anchor-based 与 anchor-free 检测器孰优孰劣,2019 年吵得不可开交。华为诺亚方舟实验室的这篇论文先做了一个漂亮的对照实验:把 RetinaNet(有锚)与 FCOS(无锚)的训练细节完全对齐后发现——真正造成性能差距的既不是锚框也不是回归方式,而是正负样本的定义方法。"
+  },
+  {
+   "title": "方法详解",
+   "body": "基于这一诊断,论文提出自适应训练样本选择(ATSS):对每个真值目标,先在每个金字塔层选取中心距离最近的 k 个候选;计算这些候选与真值的 IoU 的均值 μ 与标准差 σ,以 μ+σ 作为该目标专属的动态正样本阈值——统计特性好的目标阈值自动升高,难目标阈值自动降低;最后要求正样本中心必须落在真值框内。整个过程只有 k 一个超参数,且对取值不敏感。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "在 COCO 上验证,ATSS 可以无缝套用在 RetinaNet、FCOS 等各种检测器上,不增加任何推理开销。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "ATSS 把当时最强检测器直接推到 50.7% AP(无额外代价),并让有锚与无锚检测器在同一样本定义下性能几乎重合。这篇论文终结了「锚框之争」,把社区的注意力转向标签分配这一更本质的问题,催生了 PAA、OTA、SimOTA 等一系列动态分配方法,引用超过 2100 次。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "统计阈值仍是启发式,对极端长宽比或密集遮挡场景不一定最优。后续 OTA 把标签分配形式化为最优传输问题,YOLOX 的 SimOTA 则把动态分配带进了工业级 YOLO。"
+  }
+ ],
+ "citations": {
+  "count": 2133,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

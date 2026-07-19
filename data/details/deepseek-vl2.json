@@ -1,0 +1,49 @@
+{
+ "id": "deepseek-vl2",
+ "name": "DeepSeek-VL2",
+ "org": "DeepSeek-AI",
+ "country": "CN",
+ "year": 2024,
+ "paper_url": "https://arxiv.org/abs/2412.10302",
+ "github_url": "https://github.com/deepseek-ai/DeepSeek-VL2",
+ "category": "multimodal",
+ "sub_category": "moe_vlm",
+ "one_liner_zh": "采用专家混合语言骨干和动态切图策略的 DeepSeek-VL 后继模型。",
+ "key_idea_zh": "动态平铺高分辨率图像，视觉 token 经投影后交给 DeepSeekMoE；每个 token 只激活部分专家以控制计算量。",
+ "tags": [
+  "开源",
+  "MoE",
+  "动态切图",
+  "高分辨率",
+  "视觉定位"
+ ],
+ "tier": "B",
+ "lineage_parent": "deepseek-vl",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "稠密大模型的推理成本随能力线性上涨,而 DeepSeek 在语言侧已用 MoE(专家混合)证明「大容量、小激活」的可行性。DeepSeek-VL2 把这套经济学带进多模态:视觉理解要更强,单次推理激活的参数却要更少。"
+  },
+  {
+   "title": "方法详解",
+   "body": "两大升级:视觉侧的动态切图——按图像宽高比自适应地把高分辨率图切成 384×384 的 tile 网格(外加全局缩略图),避免固定分辨率的形变与浪费,视觉 token 经 2×2 像素重排压缩后由 MLP 投影进语言模型;语言侧换用 DeepSeekMoE 骨干,并配多头潜注意力(MLA)把 KV 缓存压缩成潜向量——每个 token 只激活少数专家,推理吞吐大幅提升。系列含 Tiny/Small/标准三档,激活参数仅 1.0B/2.8B/4.5B。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "在升级后的视觉语言语料(强化 OCR、文档、图表、grounding)上按对齐-预训练-微调三段式训练;全系开源。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "以 4.5B 激活参数达到或超过同期更大稠密模型的水平,VQA、OCR、文档图表理解、视觉定位全面领先同激活量级对手。它是「MoE + 多模态」路线的代表性开源实现,验证了稀疏化在 VLM 上同样成立,引用超过 600 次。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "MoE 的显存占用(总参数仍大)与部署复杂度高于稠密小模型;视频能力欠缺。DeepSeek 后续以 Janus 系列探索理解-生成统一,MoE 多模态路线也被更多厂商跟进。"
+  }
+ ],
+ "citations": {
+  "count": 630,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

@@ -1,0 +1,48 @@
+{
+ "id": "grounding-dino",
+ "name": "Grounding DINO",
+ "org": "IDEA Research",
+ "country": "CN",
+ "year": 2023,
+ "paper_url": "https://arxiv.org/abs/2303.05499",
+ "github_url": "https://github.com/IDEA-Research/GroundingDINO",
+ "category": "detection",
+ "sub_category": "open-vocabulary",
+ "one_liner_zh": "把 DINO 检测器与语言特征融合，实现文本提示的开放词汇定位。",
+ "key_idea_zh": "在特征增强器、语言引导查询选择和跨模态解码器中逐步融合图像与文本。",
+ "tags": [
+  "国产",
+  "开放词汇",
+  "视觉语言",
+  "grounding"
+ ],
+ "tier": "B",
+ "lineage_parent": "dino-detr",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "闭集检测器只认识训练类别表里的名词,而现实需求是「用一句话找任何东西」。IDEA 研究院的 Grounding DINO 要把最强的闭集检测器 DINO 与视觉语言预训练「联姻」:输入任意类别名或指代表达,输出对应目标框——open-set 检测的里程碑。"
+  },
+  {
+   "title": "方法详解",
+   "body": "论文把检测器概念性地拆成三个阶段,并在每一阶段做紧密的图文融合:特征增强器中图像与文本特征经跨模态注意力互相强化;语言引导的查询选择依据文本相关性从图像特征中挑选初始化 query;跨模态解码器在逐层精修时同时注入视觉与文本线索。文本侧用子句级表示避免不同类别词互相干扰。训练目标结合对比对齐与检测损失,把「检测」与「短语定位」统一为同一任务。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "在 O365、GoldG、Cap4M 等检测/grounding/图文数据上联合预训练,评测涵盖 COCO 零样本迁移、LVIS、ODinW(野外 35 个数据集)与 RefCOCO 指代理解。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "不用任何 COCO 训练数据,零样本即达 52.5 AP;ODinW 零样本 26.1 mean AP 创纪录。Grounding DINO 迅速成为开放词汇检测的事实标准,与 SAM 组合(Grounded-SAM)构成「文本→框→掩码」的万能分割流水线,引用超过 4400 次,在自动标注、机器人感知中被大规模使用。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "对否定、计数、复杂关系等语言理解仍薄弱;长尾罕见词依赖预训练语料覆盖。后续 Grounding DINO 1.5/T-Rex 等强化端侧速度与交互提示,MM-Grounding-DINO 提供全开源复现。"
+  }
+ ],
+ "citations": {
+  "count": 4497,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

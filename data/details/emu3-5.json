@@ -1,0 +1,47 @@
+{
+  "id": "emu3-5",
+  "name": "Emu3.5",
+  "org": "BAAI",
+  "country": "CN",
+  "year": 2025,
+  "paper_url": "https://arxiv.org/abs/2510.26583",
+  "github_url": "https://github.com/baaivision/Emu3.5",
+  "category": "world",
+  "sub_category": "native-multimodal-world-model",
+  "one_liner_zh": "以统一的下一 token 预测原生处理并生成交错图文，把多模态模型推进到可学习视觉与语言状态变化的世界模型。",
+  "key_idea_zh": "在超过 10 万亿个视频帧与文本交错 token 上端到端预训练，再用大规模强化学习增强推理和生成，并以 DiDA 把顺序视觉解码改为双向并行预测。",
+  "tags": [
+    "国产",
+    "世界模型",
+    "原生多模态",
+    "自回归",
+    "交错图文",
+    "强化学习",
+    "DiDA",
+    "开源"
+  ],
+  "tier": "B",
+  "lineage_parent": "emu3",
+  "sections": [
+    {
+      "title": "发布与定位",
+      "body": "BAAI 的 Emu3.5 技术报告于 2025 年 10 月 30 日提交到 arXiv，官方仓库将它定义为“Native Multimodal Models are World Learners”。它延续 Emu3 的纯 next-token 路线，但不只统一图像、文本的理解与生成，而是把连续视觉状态和语言状态一起视为可预测的世界序列。"
+    },
+    {
+      "title": "统一世界建模",
+      "body": "模型直接接收并生成交错的图像与文本序列，不依赖模态适配器或任务专用输出头。官方资料称预训练语料超过 10 万亿个多模态 token，主要来自互联网视频的连续帧与转录文本；统一的下一 token 目标因此同时学习物体、场景、时间变化和语言描述之间的关系。"
+    },
+    {
+      "title": "后训练与加速",
+      "body": "Emu3.5 使用大规模强化学习提升多模态推理、组合性与生成质量。论文同时提出 Discrete Diffusion Adaptation（DiDA），把逐 token 的顺序视觉解码改造成双向并行预测；官方报告给出约 20 倍推理加速，但仓库当前公开的 Emu3.5 与 Emu3.5-Image 权重仍是纯自回归版本，DiDA 加速权重需按官方发布状态另行确认。"
+    },
+    {
+      "title": "能力与开放状态",
+      "body": "官方仓库公开 Emu3.5、偏图像生成的 Emu3.5-Image 和 Emu3.5-VisionTokenizer 权重，并提供 Transformers、vLLM 与 Gradio 推理入口。能力覆盖交错图文续写、文生图、参考图编辑、长序列视觉语言生成和开放世界具身操作示例；这些能力应分别按对应模型、权重和评测协议理解。"
+    },
+    {
+      "title": "学习提醒",
+      "body": "“世界学习器”并不等同于精确物理仿真器：离散视觉 tokenizer 会损失细节，自回归高分辨率生成仍昂贵，视频中的长期物理一致性也需要单独评测。学习时可先看 Emu3 如何统一视觉与文本 token，再看 Emu3.5 如何加入大规模时序语料、强化学习和并行解码。"
+    }
+  ]
+}

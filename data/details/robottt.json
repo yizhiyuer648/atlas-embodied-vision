@@ -1,0 +1,45 @@
+{
+  "id": "robottt",
+  "name": "RoboTTT",
+  "org": "NVIDIA / Stanford University / UT Austin",
+  "country": "US",
+  "year": 2026,
+  "paper_url": "https://arxiv.org/abs/2607.15275",
+  "github_url": "unknown",
+  "category": "vla",
+  "sub_category": "long-context-test-time-training-policy",
+  "one_liner_zh": "在 GR00T N1.7 上加入测试时训练层，把机器人策略的视觉动作上下文扩展到 8K 时间步。",
+  "key_idea_zh": "让可在线梯度更新的 fast weights 充当循环记忆，把长历史压进参数空间，并以截断反向传播和 sequence action forcing 训练。",
+  "tags": [
+    "GR00T N1.7",
+    "VLA",
+    "长上下文",
+    "Test-Time Training",
+    "fast weights",
+    "真实机器人"
+  ],
+  "tier": "B",
+  "lineage_parent": "groot-n1-7",
+  "sections": [
+    {
+      "title": "模型定位与来源",
+      "body": "RoboTTT 由 NVIDIA、斯坦福大学和得州大学奥斯汀分校团队在 2026 年公开。论文把它定义为机器人模型与训练配方，而不是把 GR00T N1.7 换一个名字；NVIDIA GEAR 官方项目页与 arXiv 原文在标题、作者、机构和实验描述上相互一致。"
+    },
+    {
+      "title": "直接上游与结构",
+      "body": "论文明确说明本次实例化建立在 GR00T N1.7 上：原有视觉语言骨干和 Diffusion Transformer 动作头继续负责理解与动作块生成，RoboTTT 在 DiT 的自注意力、交叉注意力之后加入测试时训练层。因此谱系直接连接 GR00T N1.7，而不是仅凭发布时间接到其他 VLA。"
+    },
+    {
+      "title": "Fast weights 如何保存长历史",
+      "body": "普通策略把历史放在固定长度 token 窗口中，时间越长，显存和注意力代价越大。RoboTTT 让一组 fast weights 在训练和推理时都通过梯度下降更新：更新步骤把当前上下文编码进参数空间，随后再用更新后的参数读取信息。配合 sequence action forcing 与截断反向传播，论文把视觉动作上下文扩展到 8K 时间步，同时避免让每一步推理延迟随完整历史线性增长。"
+    },
+    {
+      "title": "结果该怎样理解",
+      "body": "论文在真实机器人多阶段任务中报告，相对单步上下文基线的总体表现提高 87%，并完成了基线从未完整完成的五分钟十阶段装配任务；8K 上下文模型也优于同架构的 1K 上下文版本。这里的数字属于论文指定任务、数据和控制栈，不能直接推广成所有机器人或所有部署环境中的固定收益。"
+    },
+    {
+      "title": "开放状态与学习提醒",
+      "body": "截至 2026 年 7 月 19 日，NVIDIA 官方项目页公开论文与演示视频，但没有给出 RoboTTT 的官方代码、权重或 GitHub 仓库，因此 github_url 保守写为 unknown，不把论文引用的底层依赖仓库误当成模型开源。阅读时可先掌握 GR00T N1.7 的 VLM+DiT 动作头，再理解测试时训练如何把长期经验写入 fast weights。"
+    }
+  ]
+}

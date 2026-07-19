@@ -1,0 +1,38 @@
+{
+  "id": "smolvla",
+  "name": "SmolVLA",
+  "org": "Hugging Face",
+  "country": "US",
+  "year": 2025,
+  "paper_url": "https://arxiv.org/abs/2506.01844",
+  "github_url": "https://github.com/huggingface/lerobot",
+  "category": "vla",
+  "sub_category": "efficient-community-vla",
+  "one_liner_zh": "Hugging Face 面向低成本机器人推出的小型 VLA，可在单张 GPU 训练并在消费级设备部署。",
+  "key_idea_zh": "以紧凑视觉语言骨干和 flow matching 动作头生成动作块，再用异步推理解耦预测与执行。",
+  "tags": ["VLA", "Hugging Face", "LeRobot", "flow matching", "低成本机器人", "开放权重"],
+  "tier": "B",
+  "lineage_parent": "unknown",
+  "sections": [
+    {
+      "title": "背景与动机",
+      "body": "多数 VLA 参数量大、训练成本高，也常依赖实验室或企业内部机器人数据。Hugging Face 团队在 2025 年发布 SmolVLA，希望把 VLA 变成普通实验室和个人也能训练、微调的基线，并直接接入 LeRobot 的社区数据与硬件生态。"
+    },
+    {
+      "title": "方法详解",
+      "body": "模型接收多视角图像、机器人本体状态和可选语言指令，输出连续动作。动作学习采用 flow matching；为了避免一次预测动作块时阻塞机器人执行，官方同时设计异步推理栈，将感知与动作预测线程和动作执行解耦，从而提高实际控制频率。"
+    },
+    {
+      "title": "开放数据与权重",
+      "body": "论文、LeRobot 参考实现、预训练权重和训练数据均公开。官方 Hugging Face 模型卡 lerobot/smolvla_base 创建于 2025 年 6 月，标注 robotics 与 vision-language-action，并提供 safetensors 权重和可运行示例。"
+    },
+    {
+      "title": "结果与价值",
+      "body": "论文在仿真与真实机器人任务上报告其性能可接近体量大约十倍的 VLA，同时可在单张 GPU 训练并部署到消费级 GPU、甚至 CPU。对初学者而言，它比只给论文或云端 API 的模型更适合作为第一套可复现实验。"
+    },
+    {
+      "title": "局限与学习提醒",
+      "body": "小模型降低成本但不消除数据分布问题；换机器人本体、相机布局或动作空间仍需微调。异步执行也会引入时延和旧动作问题，需要正确设置动作块长度、执行步数与安全停机。"
+    }
+  ]
+}

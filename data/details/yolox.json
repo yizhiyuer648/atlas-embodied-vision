@@ -1,0 +1,48 @@
+{
+ "id": "yolox",
+ "name": "YOLOX",
+ "org": "Megvii",
+ "country": "CN",
+ "year": 2021,
+ "paper_url": "https://arxiv.org/abs/2107.08430",
+ "github_url": "https://github.com/Megvii-BaseDetection/YOLOX",
+ "category": "detection",
+ "sub_category": "one-stage",
+ "one_liner_zh": "旷视将 YOLO 改造成无锚、解耦头并采用动态标签分配的工程模型。",
+ "key_idea_zh": "anchor-free 解耦分类与回归分支，使用 SimOTA 为每个目标动态选择正样本。",
+ "tags": [
+  "国产",
+  "YOLO",
+  "anchor-free",
+  "SimOTA"
+ ],
+ "tier": "B",
+ "lineage_parent": "yolo-v3",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "2021 年,学术界的 anchor-free、动态标签分配已被证明有效,但工业主力 YOLOv5 还停留在 anchor-based 老范式。旷视的 YOLOX 要做的就是把这两个世界接通:给 YOLO 装上最新的学术组件,并用严格实验证明收益。"
+  },
+  {
+   "title": "方法详解",
+   "body": "YOLOX 以 YOLOv3-SPP 为起点做三步改造:第一,检测头解耦——分类与回归分支分开,收敛更快精度更高;第二,anchor-free 化——每个位置直接预测框,删除锚框聚类与相关超参;第三,SimOTA 动态标签分配——把分配建模为简化的最优传输,每个真值按 cost 自动选取 top-k 正样本,数量随目标难度动态变化。再叠加强增广(Mosaic + MixUp),形成完整配方。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "COCO 上从头训练,发布 Nano 到 X 的全尺寸家族,并提供 ONNX/TensorRT/NCNN/OpenVINO 部署支持。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "YOLOX-L 以与 YOLOv5-L 相当的参数量达到 50.0% AP(V100 68.9 FPS),超出 1.8 AP;团队还用单模型拿下 CVPR 2021 流式感知挑战赛冠军。YOLOX 把 anchor-free 与动态分配正式带入工业 YOLO 谱系,SimOTA 被后续 RTMDet、YOLOv8 等广泛借鉴,引用近 6000 次。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "强增广需要较长训练日程;SimOTA 训练开销略高。后续版本(YOLOv6/v7/v8)在重参数化、任务对齐分配上继续演进,但解耦头与动态分配自此成为默认设计。"
+  }
+ ],
+ "citations": {
+  "count": 5962,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

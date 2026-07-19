@@ -1,0 +1,48 @@
+{
+ "id": "pspnet",
+ "name": "PSPNet",
+ "org": "The Chinese University of Hong Kong",
+ "country": "HK",
+ "year": 2017,
+ "paper_url": "https://arxiv.org/abs/1612.01105",
+ "github_url": "https://github.com/hszhao/PSPNet",
+ "category": "segmentation",
+ "sub_category": "semantic-segmentation",
+ "one_liner_zh": "以金字塔池化聚合从局部区域到全局场景的上下文。",
+ "key_idea_zh": "在多个网格尺度做池化、投影和上采样，再与原特征拼接以消除局部歧义。",
+ "tags": [
+  "语义分割",
+  "金字塔池化",
+  "上下文",
+  "场景解析"
+ ],
+ "tier": "B",
+ "lineage_parent": "fcn",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "FCN 式网络看局部很准,却常犯「语境错误」:把河上的船分成汽车、把枕头分成床单——因为它不知道「这是一条河的场景」。港中文的 PSPNet 认为问题出在全局上下文缺失,而修复它不需要更深的网络,只需要一个聪明的池化模块。"
+  },
+  {
+   "title": "方法详解",
+   "body": "金字塔池化模块(PPM)把骨干输出的特征图按 1×1、2×2、3×3、6×6 四种网格做平均池化:1×1 分支就是整图的全局摘要,其余分支是不同粒度的区域摘要;各分支经 1×1 卷积降维、上采样回原尺寸后与原特征拼接——每个像素从此同时携带「自己是什么」与「场景是什么」两级信息。骨干采用带空洞卷积的 ResNet,辅以深监督辅助损失稳定训练。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "在 ADE20K(2016 场景解析冠军)、PASCAL VOC 2012、Cityscapes 上训练评测。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "PSPNet 拿下 ImageNet 2016 场景解析挑战冠军,VOC 2012 达 85.4 mIoU、Cityscapes 80.2,均创当时纪录。PPM 与 ASPP 并列成为「上下文聚合」的两大标准件,被 UPerNet 等无数后续框架内嵌,引用超过 1.4 万次。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "固定网格池化的上下文粒度是手工设定的,不够自适应;对细小结构帮助有限。后续 OCRNet、DANet 用注意力做自适应上下文,Transformer 骨干则让全局交互成为默认能力。"
+  }
+ ],
+ "citations": {
+  "count": 14354,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

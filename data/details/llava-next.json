@@ -1,0 +1,44 @@
+{
+ "id": "llava-next",
+ "name": "LLaVA-NeXT",
+ "org": "University of Wisconsin–Madison & Microsoft Research",
+ "country": "US",
+ "year": 2024,
+ "paper_url": "unknown",
+ "github_url": "https://github.com/LLaVA-VL/LLaVA-NeXT",
+ "category": "multimodal",
+ "sub_category": "general_vlm",
+ "one_liner_zh": "支持更高分辨率、更多宽高比和更强 OCR 的 LLaVA 后继系列。",
+ "key_idea_zh": "AnyRes 将图像切成多块并保留全局视图，以较低训练成本提升高分辨率细节理解。",
+ "tags": [
+  "开源",
+  "AnyRes",
+  "OCR",
+  "高分辨率",
+  "多图"
+ ],
+ "tier": "B",
+ "lineage_parent": "llava",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "LLaVA-1.5 的最大短板是分辨率:336×336 的固定输入让它读不了文档小字、看不清密集细节,OCR 类任务与商用模型差距悬殊。LLaVA-NeXT(2024 年 1 月,又称 LLaVA-1.6)要在几乎不增加训练成本的前提下补上这一课。"
+  },
+  {
+   "title": "方法详解",
+   "body": "核心是 AnyRes 动态分辨率:从预设网格(如 2×2、1×3)中为输入图像选择最合适的切分,把大图分成多个 336px 局部块分别过 CLIP 编码,再拼上一张全局缩略图特征——分辨率最高提升 4 倍以上,而视觉编码器无需重训。同时升级指令数据(强化 OCR、图表、推理)并扩展语言底座选择(Vicuna、Mistral、Yi-34B 等)。训练依旧保持 LLaVA 式的极简两阶段,34B 版本也只需约一天级训练。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "沿用 LLaVA-1.5 数据并追加高质量用户场景指令(文档/表格/OCR 为主),总数据量不足百万级——以数据效率著称。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "LLaVA-NeXT 在 OCR、文档与推理基准上大幅超越 1.5,34B 版在多项评测追近 Gemini Pro。AnyRes 成为开源社区处理高分辨率的通用模板(被 InternVL、DeepSeek-VL2 等以变体采用);该系列后续演化为支持多图/视频的 LLaVA-OneVision,是 LLaVA 生态长盛的关键一跃。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "切图带来视觉 token 数暴涨,长上下文与推理延迟压力大;局部块之间缺乏编码期交互。后续工作转向原生动态分辨率 ViT(Qwen2-VL 路线)与 token 压缩技术来解决这对矛盾。"
+  }
+ ]
+}

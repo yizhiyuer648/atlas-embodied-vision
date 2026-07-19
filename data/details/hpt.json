@@ -1,0 +1,47 @@
+{
+ "id": "hpt",
+ "name": "HPT",
+ "org": "MIT CSAIL / Meta AI",
+ "country": "US",
+ "year": 2024,
+ "paper_url": "https://arxiv.org/abs/2409.20537",
+ "github_url": "https://github.com/liruiw/HPT",
+ "category": "vla",
+ "sub_category": "heterogeneous-pretraining",
+ "one_liner_zh": "用异构预训练 Transformer 汇聚不同机器人和传感器数据。",
+ "key_idea_zh": "先通过本体相关 stem 对齐不同视觉与本体感觉输入，再由共享 Transformer 学习可迁移表示。",
+ "tags": [
+  "异构数据",
+  "本体感觉",
+  "预训练"
+ ],
+ "tier": "B",
+ "lineage_parent": "unknown",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "机器人数据的最大难题不是「少」而是「杂」：不同本体的相机数量、本体感觉维度、动作空间都不一样，直接混训会互相打架。MIT 与 Meta 的 HPT（Heterogeneous Pre-trained Transformers）借鉴多语言模型的思路：给每种本体配一个小「翻译器」，让所有数据在同一个大脑里流通。"
+  },
+  {
+   "title": "方法详解",
+   "body": "HPT 采用「stem–trunk–head」三段式：每种本体有自己的 stem，负责把该本体特有的视觉与本体感觉输入对齐成固定长度的短 token 序列；中间的大型共享 trunk（Transformer）在所有本体数据上联合预训练，学习与任务和本体无关的通用策略表示；下游再为具体机器人接上轻量 head 输出动作。新本体只需训练 stem 和 head,主干直接复用。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "预训练覆盖 52 个数据集，规模化实验横跨真实机器人多本体数据、仿真数据、已部署机器人与人类视频，系统研究了训练目标与数据规模的 scaling 规律。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "在多个仿真基准和真实场景中，HPT 让下游微调策略的成功率提升 20% 以上，且性能随异构数据规模持续增长。它给出了「异构数据不是负担而是资产」的实证，为跨本体预训练提供了清晰的架构模板。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "每个新本体仍需人工定义 stem 的输入映射；共享 trunk 的表示是否隐含本体偏置也有待深入分析。后续 UniVLA 等改用「潜动作空间」实现更彻底的本体无关表示，两条路线互为补充。"
+  }
+ ],
+ "citations": {
+  "count": 167,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

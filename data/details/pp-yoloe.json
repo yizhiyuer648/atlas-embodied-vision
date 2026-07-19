@@ -1,0 +1,48 @@
+{
+ "id": "pp-yoloe",
+ "name": "PP-YOLOE",
+ "org": "Baidu",
+ "country": "CN",
+ "year": 2022,
+ "paper_url": "https://arxiv.org/abs/2203.16250",
+ "github_url": "https://github.com/PaddlePaddle/PaddleDetection",
+ "category": "detection",
+ "sub_category": "one-stage",
+ "one_liner_zh": "百度推出的无锚工业检测器，以任务对齐与高效头提升部署表现。",
+ "key_idea_zh": "采用 anchor-free 结构、ET-head 与 Task Alignment Learning 统一分类和定位质量。",
+ "tags": [
+  "国产",
+  "PaddlePaddle",
+  "anchor-free",
+  "任务对齐"
+ ],
+ "tier": "B",
+ "lineage_parent": "pp-yolo",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "PP-YOLO 系列前两代还是 anchor-based,而 2021 年后 anchor-free 与动态标签分配已被 YOLOX 等证明是更优范式。百度的 PP-YOLOE(evolved)是一次架构换代:在保持工业部署友好的前提下,把 PaddleDetection 的旗舰检测器全面升级到新范式。"
+  },
+  {
+   "title": "方法详解",
+   "body": "PP-YOLOE 的四个要点:anchor-free 化,每个位置单一预测,消除锚框超参;骨干与颈部采用 CSPRepResStage(结合重参数化的 CSP 残差结构),推理时融合为直连卷积;ET-head(Efficient Task-aligned head)在解耦头基础上用极小代价对齐分类与定位;训练用 TAL(Task Alignment Learning)动态分配——按分类得分与 IoU 的加权组合选择正样本,使「分类高分」与「定位准确」趋于一致。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "COCO 训练,提供 s/m/l/x 四档,原生支持 PaddlePaddle 生态与 TensorRT FP16 部署。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "PP-YOLOE-l 在 V100 上 78.1 FPS 达到 51.4 mAP,较 PP-YOLOv2 提升 1.9 AP 且提速 13%,TensorRT FP16 下达 149 FPS。它是国内产业界(尤其 Paddle 技术栈)使用率最高的检测器之一,后续 PP-YOLOE+ 继续以 Objects365 预训练强化。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "深度绑定 Paddle 生态,PyTorch 用户迁移成本高;整体设计偏工程整合,创新点分散。任务对齐思想(TAL)被 YOLOv8 等后续模型直接采纳。"
+  }
+ ],
+ "citations": {
+  "count": 443,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

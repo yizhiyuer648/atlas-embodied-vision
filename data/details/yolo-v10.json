@@ -1,0 +1,48 @@
+{
+ "id": "yolo-v10",
+ "name": "YOLOv10",
+ "org": "Tsinghua University",
+ "country": "CN",
+ "year": 2024,
+ "paper_url": "https://arxiv.org/abs/2405.14458",
+ "github_url": "https://github.com/THU-MIG/yolov10",
+ "category": "detection",
+ "sub_category": "one-stage",
+ "one_liner_zh": "清华提出的端到端实时 YOLO，通过一致双分配去除 NMS。",
+ "key_idea_zh": "训练时联合一对多与一对一标签分配，推理时直接使用一对一分支输出。",
+ "tags": [
+  "YOLO",
+  "国产",
+  "端到端",
+  "NMS-free"
+ ],
+ "tier": "B",
+ "lineage_parent": "yolo-v8",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "YOLO 出到第九代,推理端仍拖着一条 NMS 尾巴:延迟不可控、阈值要手调,端到端部署始终差一口气。清华大学的 YOLOv10 直指这一「最后的后处理」:能否让 YOLO 原生输出不重复的框,同时把架构里的冗余计算彻底清点一遍?"
+  },
+  {
+   "title": "方法详解",
+   "body": "核心是一致双分配(consistent dual assignments):训练时并行两个头——一对多头提供丰富监督信号,一对一头学习端到端输出;两头共享一致的匹配度量,使一对一头能对齐一对多头选出的最优正样本。推理时只保留一对一头,天然无 NMS。架构侧做「整体效率-精度设计」:轻量分类头、空间-通道解耦下采样、按秩引导的模块分配(rank-guided block design),再配大核卷积与部分自注意力(PSA)提精度。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "COCO 训练,发布 N/S/M/B/L/X 六档。所有对比均报告含后处理的真实端到端延迟,而非只测网络前向。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "YOLOv10-S 比 RT-DETR-R18 快 1.8 倍(同精度),参数与计算量少约 2.8 倍;YOLOv10-B 比 v9-C 延迟低 46%。它把「无 NMS 的 YOLO」变成现实,发布一年内引用近 5000 次,一致双分配被后续实时检测器广泛效仿。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "一对一头的精度上限仍略低于带 NMS 的一对多输出,小目标场景差距更明显;PSA 在部分端侧硬件上支持有限。Ultralytics 的 YOLO11 与社区后续版本在效率与多任务上继续竞争。"
+  }
+ ],
+ "citations": {
+  "count": 4950,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

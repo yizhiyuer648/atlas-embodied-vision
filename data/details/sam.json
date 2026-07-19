@@ -1,0 +1,213 @@
+{
+ "id": "sam",
+ "name": "Segment Anything (SAM)",
+ "org": "Meta AI",
+ "country": "US",
+ "year": 2023,
+ "paper_url": "https://arxiv.org/abs/2304.02643",
+ "github_url": "https://github.com/facebookresearch/segment-anything",
+ "category": "segmentation",
+ "sub_category": "promptable",
+ "one_liner_zh": "以点、框或粗掩码为提示，对陌生图像中的任意对象进行零样本分割。",
+ "key_idea_zh": "重型 ViT 图像编码器只运行一次，轻量提示编码器与双向 Transformer 解码器快速生成多个候选掩码。",
+ "tags": [
+  "基础模型",
+  "提示分割",
+  "零样本",
+  "ViT"
+ ],
+ "tier": "A",
+ "lineage_parent": "unknown",
+ "architecture": {
+  "description_zh": "ViT 图像编码器生成稠密图像嵌入；点和框变为稀疏提示 token，掩码变为稠密提示；双向 Transformer mask decoder 融合两类信息并输出候选掩码与预测 IoU。",
+  "modules": [
+   {
+    "id": "image",
+    "label": "输入图像",
+    "type": "input"
+   },
+   {
+    "id": "imageenc",
+    "label": "ViT Image Encoder",
+    "type": "encoder"
+   },
+   {
+    "id": "prompt",
+    "label": "点 / 框 / 掩码提示",
+    "type": "input"
+   },
+   {
+    "id": "promptenc",
+    "label": "Prompt Encoder",
+    "type": "encoder"
+   },
+   {
+    "id": "decoder",
+    "label": "Two-Way Mask Decoder",
+    "type": "attention"
+   },
+   {
+    "id": "iou",
+    "label": "Mask + IoU Heads",
+    "type": "head"
+   },
+   {
+    "id": "output",
+    "label": "候选对象掩码",
+    "type": "output"
+   }
+  ],
+  "edges": [
+   {
+    "from": "image",
+    "to": "imageenc",
+    "label": "像素"
+   },
+   {
+    "from": "prompt",
+    "to": "promptenc",
+    "label": "点 / 框 / 掩码"
+   },
+   {
+    "from": "imageenc",
+    "to": "decoder",
+    "label": "稠密图像嵌入"
+   },
+   {
+    "from": "promptenc",
+    "to": "decoder",
+    "label": "稀疏与稠密提示"
+   },
+   {
+    "from": "decoder",
+    "to": "iou",
+    "label": "mask tokens"
+   },
+   {
+    "from": "iou",
+    "to": "output",
+    "label": "掩码与质量分数"
+   }
+  ],
+  "flow_ms": 5000
+ },
+ "code": {
+  "language": "python",
+  "source_repo": "https://github.com/facebookresearch/segment-anything",
+  "source_path": "segment_anything/modeling/sam.py",
+  "simplified": true,
+  "lines": [
+   {
+    "code": "def forward(self, batched_input, multimask_output):",
+    "comment_zh": "执行 SAM 提示分割；片段已简化自官方实现。"
+   },
+   {
+    "code": "    input_images = torch.stack([self.preprocess(x['image']) for x in batched_input])",
+    "comment_zh": "标准化并补齐批内输入图像。"
+   },
+   {
+    "code": "    image_embeddings = self.image_encoder(input_images)",
+    "comment_zh": "重型 ViT 一次性生成稠密图像嵌入。"
+   },
+   {
+    "code": "    outputs = []",
+    "comment_zh": "准备收集每张图的分割结果。"
+   },
+   {
+    "code": "    for record, image_embedding in zip(batched_input, image_embeddings):",
+    "comment_zh": "逐图处理尺寸不同的提示集合。"
+   },
+   {
+    "code": "        points = (record['point_coords'], record['point_labels']) if 'point_coords' in record else None",
+    "comment_zh": "组合正负点坐标与标签。"
+   },
+   {
+    "code": "        sparse, dense = self.prompt_encoder(",
+    "comment_zh": "把提示编码为稀疏 token 和稠密特征。"
+   },
+   {
+    "code": "            points=points,",
+    "comment_zh": "传入可选点击提示。"
+   },
+   {
+    "code": "            boxes=record.get('boxes', None),",
+    "comment_zh": "传入可选边界框提示。"
+   },
+   {
+    "code": "            masks=record.get('mask_inputs', None)",
+    "comment_zh": "传入可选上轮低分辨率掩码。"
+   },
+   {
+    "code": "        )",
+    "comment_zh": "完成提示编码。"
+   },
+   {
+    "code": "        low_res_masks, iou_predictions = self.mask_decoder(",
+    "comment_zh": "双向 Transformer 融合图像与提示。"
+   },
+   {
+    "code": "            image_embeddings=image_embedding.unsqueeze(0),",
+    "comment_zh": "为当前图像恢复批次维。"
+   },
+   {
+    "code": "            image_pe=self.prompt_encoder.get_dense_pe(),",
+    "comment_zh": "加入图像网格位置编码。"
+   },
+   {
+    "code": "            sparse_prompt_embeddings=sparse,",
+    "comment_zh": "传入点和框的稀疏提示 token。"
+   },
+   {
+    "code": "            dense_prompt_embeddings=dense,",
+    "comment_zh": "传入掩码提示或默认稠密嵌入。"
+   },
+   {
+    "code": "            multimask_output=multimask_output",
+    "comment_zh": "歧义提示时可输出三个候选掩码。"
+   },
+   {
+    "code": "        )",
+    "comment_zh": "得到低分辨率 mask logits 与质量分数。"
+   },
+   {
+    "code": "        masks = self.postprocess_masks(low_res_masks, record['input_size'], record['original_size'])",
+    "comment_zh": "裁掉 padding 并上采样回原图尺寸。"
+   },
+   {
+    "code": "        outputs.append({'masks': masks > self.mask_threshold, 'iou_predictions': iou_predictions, 'low_res_logits': low_res_masks})",
+    "comment_zh": "阈值化掩码并保留可迭代提示的 logits。"
+   },
+   {
+    "code": "    return outputs",
+    "comment_zh": "返回每张图的候选掩码与质量预测。"
+   }
+  ]
+ },
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "NLP 的基础模型靠「提示」实现零样本泛化,分割能不能也这样?Meta 的 Segment Anything 项目是一次教科书式的基础模型工程:定义一个可提示的新任务(给任何提示,返回有效掩码)、造一个支撑它的模型(SAM)、再用模型与人协同滚出史上最大分割数据集(SA-1B)。目标只有一个:对从未见过的图像与任务,零样本切出任何东西。"
+  },
+  {
+   "title": "方法详解",
+   "body": "SAM 的三段式架构为交互而生:重型 ViT-H 图像编码器对每张图只跑一次,得到通用图像嵌入;轻量提示编码器把点、框、粗掩码(以及探索性的文本)编码成提示 token;轻量双向 Transformer 掩码解码器让提示与图像嵌入互相注意,50 毫秒内输出掩码——同一张图换提示不必重算图像特征,交互体验流畅。面对「一个点可能指整只手表也可能指表盘」的歧义,SAM 一次输出三个层级候选掩码并各自打分。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "数据引擎三阶段滚雪球:人工辅助标注 → 半自动补全 → 全自动生成,最终产出 1100 万张授权图像上的 11 亿个掩码(SA-1B),规模超过既有数据集数百倍,并随模型一起开放。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "SAM 零样本分割能力在数十个任务上媲美甚至超过全监督模型,发布即引爆:与 Grounding DINO 组合成文本驱动分割、与追踪器组合成视频抠像、在医疗遥感领域大量微调变体;「可提示 + 数据引擎」的方法论更是被各领域效仿。引用超过 1.4 万次,是视觉基础模型时代的标志性事件。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "ViT-H 编码器太重,边缘设备跑不动(催生 MobileSAM/FastSAM);细结构边界质量有限(SAM-HQ);不理解语义类别,只切不认。SAM 2 把能力扩展到视频并提速 6 倍,补上了时间维度。"
+  }
+ ],
+ "citations": {
+  "count": 14488,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

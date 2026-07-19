@@ -1,0 +1,38 @@
+{
+  "id": "yolo-v12",
+  "name": "YOLO12",
+  "org": "University at Buffalo / UCAS",
+  "country": "US/CN",
+  "year": 2025,
+  "paper_url": "https://arxiv.org/abs/2502.12524",
+  "github_url": "https://github.com/sunsmarterjie/yolov12",
+  "category": "detection",
+  "sub_category": "one-stage-attention",
+  "one_liner_zh": "以区域注意力为中心的实时检测器，在 YOLO11 基线上把注意力引入主干而保持低延迟。",
+  "key_idea_zh": "用 Area Attention 降低全局注意力成本，并以 R-ELAN 改善大模型中的优化与特征聚合。",
+  "tags": ["YOLO", "Area Attention", "R-ELAN", "实时检测", "社区分支"],
+  "tier": "B",
+  "lineage_parent": "yolo-v11",
+  "sections": [
+    {
+      "title": "背景与版本身份",
+      "body": "YOLO12 于 2025 年 2 月公开论文与代码。它由 University at Buffalo 与中国科学院大学研究者提出，是有论文、有开源仓库的社区研究版本，并不是 Ultralytics 官方从 YOLO11 发布的下一代产品。论文明确选择 YOLO11 为基线，继承其前两级主干、C3k2 模块和缩放策略，因此谱系连接到 YOLO11。"
+    },
+    {
+      "title": "方法详解",
+      "body": "核心 Area Attention 把特征图划分为区域，在区域内执行注意力，以较低开销获得比纯卷积更强的上下文建模；R-ELAN 在 ELAN 聚合路径上加入块级残差、缩放与新的聚合设计，缓解注意力主干尤其是大尺寸模型的训练不稳定。论文还围绕 FlashAttention 友好的算子组织和深度可分离卷积优化真实延迟。"
+    },
+    {
+      "title": "训练与数据",
+      "body": "论文在 MS COCO 2017 上训练 N/S/M/L/X 五档模型，沿用 YOLO11 的数据设置与模型缩放，并训练 600 个 epoch。这里的数字来自论文统一实验环境，不应与不同硬件、不同导出后端的榜单直接混比。"
+    },
+    {
+      "title": "结果与影响",
+      "body": "论文报告 YOLO12-N 达到 40.6% COCO mAP、T4 延迟 1.64 ms；相近速度下高于论文复现的 YOLOv10-N 与 YOLO11-N。它的重要性在于证明注意力并非必然与实时检测冲突，也直接成为 YOLOv13 继续研究高阶全局关系的出发点。"
+    },
+    {
+      "title": "局限与学习提醒",
+      "body": "“编号更大”不代表同一官方团队的连续产品。YOLO12 的正确读法是 YOLO 生态中的学术分支；复现实验还需注意仓库版本、注意力算子和 GPU 内核对延迟的影响。"
+    }
+  ]
+}

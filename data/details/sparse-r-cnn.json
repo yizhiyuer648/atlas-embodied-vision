@@ -1,0 +1,48 @@
+{
+ "id": "sparse-r-cnn",
+ "name": "Sparse R-CNN",
+ "org": "The University of Hong Kong",
+ "country": "HK",
+ "year": 2021,
+ "paper_url": "https://arxiv.org/abs/2011.12450",
+ "github_url": "https://github.com/PeizeSun/SparseR-CNN",
+ "category": "detection",
+ "sub_category": "set-prediction",
+ "one_liner_zh": "用少量可学习候选框和候选特征取代密集锚框与 RPN。",
+ "key_idea_zh": "固定数量 proposal boxes 与 proposal features 经过动态实例交互头多轮迭代精修。",
+ "tags": [
+  "稀疏检测",
+  "可学习候选框",
+  "动态头",
+  "集合预测"
+ ],
+ "tier": "B",
+ "lineage_parent": "faster-r-cnn",
+ "sections": [
+  {
+   "title": "背景与动机",
+   "body": "传统检测器的「密集先验」根深蒂固:特征图每个位置都铺满锚框或直接逐点预测,再靠 NMS 收拾残局。DETR 展示了稀疏预测的可能,但仍依赖全局注意力交互。港大等机构的 Sparse R-CNN 提出更纯粹的问题:如果从头到尾只用 100 个可学习的候选框,检测还能工作吗?"
+  },
+  {
+   "title": "方法详解",
+   "body": "Sparse R-CNN 维护两组可学习参数:N 个 proposal boxes(4 维坐标,提供粗定位)与 N 个 proposal features(高维向量,编码「这个候选倾向找什么」)。每轮迭代中,proposal box 通过 RoIAlign 取出区域特征,与对应的 proposal feature 做动态卷积式的实例交互(dynamic head),输出精修后的框与特征,进入下一轮。六轮迭代逐步收敛到目标,训练用匈牙利匹配一对一监督,推理无需 NMS。"
+  },
+  {
+   "title": "训练与数据",
+   "body": "在 COCO 上以标准 3× 日程训练,骨干 ResNet-50 FPN,不需要 DETR 式的超长训练。"
+  },
+  {
+   "title": "结果与影响",
+   "body": "以 100 个候选实现 45.0 AP、22 FPS,收敛速度与精度对齐成熟基线。Sparse R-CNN 证明「密集候选」并非必需,其 proposal feature + 动态交互的设计影响了后续查询式检测与实例分割(如 QueryInst),推动社区重新审视检测的先验设计。"
+  },
+  {
+   "title": "局限与后续",
+   "body": "固定数量候选在极端密集场景可能不够;迭代精修带来串行延迟。后续工作把它与 DETR 系的去噪训练、混合分配等结合,两条查询式路线逐渐合流。"
+  }
+ ],
+ "citations": {
+  "count": 1495,
+  "as_of": "2026-07",
+  "source": "Semantic Scholar"
+ }
+}

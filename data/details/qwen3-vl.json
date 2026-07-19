@@ -1,0 +1,38 @@
+{
+  "id": "qwen3-vl",
+  "name": "Qwen3-VL",
+  "org": "Alibaba Cloud",
+  "country": "CN",
+  "year": 2025,
+  "paper_url": "https://arxiv.org/abs/2511.21631",
+  "github_url": "https://github.com/QwenLM/Qwen3-VL",
+  "category": "multimodal",
+  "sub_category": "general_vlm",
+  "one_liner_zh": "Qwen2.5-VL 的正式后继，以多层视觉特征注入、交错多模态位置编码和文本时间戳强化长视频与视觉推理。",
+  "key_idea_zh": "用 DeepStack 把多层 ViT 特征注入语言模型，以 Interleaved-MRoPE 均衡时空频率，并用显式文本时间戳对齐视频帧组。",
+  "tags": ["国产", "开源", "VLM", "DeepStack", "Interleaved-MRoPE", "视频理解", "视觉智能体", "MoE"],
+  "tier": "B",
+  "lineage_parent": "qwen2-5-vl",
+  "sections": [
+    {
+      "title": "版本与来源证据",
+      "body": "Qwen 官方仓库在 2025 年 9 月 23 日首先公布 Qwen3-VL-235B-A22B，随后在 10 月补齐 30B-A3B、2B、4B、8B 与 32B 等版本，并在 11 月 27 日发布技术报告。arXiv:2511.21631 的首版提交时间为 2025 年 11 月 26 日，因此图鉴年份记为 2025。官方 GitHub 组织和仓库说明均把该系列归于 Alibaba Cloud 的 Qwen 团队。"
+    },
+    {
+      "title": "架构升级",
+      "body": "Qwen3-VL 延续视觉编码器、MLP 视觉语言合并器和自回归语言模型三段式结构。视觉编码器由 SigLIP-2 持续训练而来；DeepStack 不只使用最后一层视觉特征，而是把多个视觉层的 token 注入对应语言模型层，以保留细粒度信息。Interleaved-MRoPE 将时间、高度和宽度位置分量交错分配到不同频率，显式文本时间戳则替代仅靠位置编码表达绝对视频时间的做法。"
+    },
+    {
+      "title": "模型家族与开放状态",
+      "body": "技术报告覆盖 2B、4B、8B、32B 等稠密模型，以及 30B-A3B 和 235B-A22B MoE 模型，并提供 Instruct 与 Thinking 版本。官方 GitHub 代码仓库采用 Apache-2.0；抽查官方 Hugging Face 的 2B、8B、32B、30B-A3B 和 235B-A22B 主模型卡，均为公开、非 gated 且标注 Apache-2.0。不同量化或社区转换版本仍应单独检查其模型卡。"
+    },
+    {
+      "title": "能力边界",
+      "body": "官方报告给出的原生上下文长度为 256K，覆盖图像、多图、视频和交错图文输入。该系列重点增强视觉定位、文档与 OCR、长视频时间定位、界面操作和多模态推理；仓库还提供视觉智能体、文档解析和视频理解示例。它仍是视觉语言模型，不直接输出机器人连续控制动作。"
+    },
+    {
+      "title": "学习与使用提醒",
+      "body": "Qwen3-VL 是一个包含多种尺寸、稠密/MoE 和 Instruct/Thinking 变体的家族，不能把某个尺寸的显存、速度或评测结果代表整个系列。超长上下文会显著增加视觉 token 和 KV cache 成本；GUI、视频与空间推理能力也不等同于已具备现实机器人闭环控制能力。"
+    }
+  ]
+}
