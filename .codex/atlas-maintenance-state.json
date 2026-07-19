@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "updated_at": "2026-07-19T23:46:57Z",
+  "updated_at": "2026-07-19T23:55:08Z",
   "status": "partial",
   "baseline": {
     "formal_pages": 11,
@@ -139,11 +139,33 @@
     "a_tier_architecture_geometry": "24/24"
   },
   "release": {
-    "publication_readiness": "ready_for_wrapper_independent_validation",
-    "github_sync": "pending_wrapper",
-    "cloudflare_pages": "pending_wrapper",
-    "public_pdf_proxy_probe": "pending_wrapper",
-    "outlook_report": "pending_wrapper"
+    "publication_readiness": "released_with_non_blocking_research_coverage_pending",
+    "content_commit": "4f29e47295866af554e295e643b593b7e8ef8c33",
+    "github_sync": "verified_origin_main",
+    "cloudflare_pages": {
+      "status": "verified_production_main",
+      "deployment_id": "6d885600-f723-45aa-8941-dffc44a86862",
+      "deployment_url": "https://6d885600.atlas-embodied-vision.pages.dev",
+      "canonical_url": "https://atlas-embodied-vision.pages.dev/",
+      "canonical_data_hashes_match": true,
+      "public_routes": "19/19"
+    },
+    "public_pdf_proxy_probe": {
+      "status": "passed",
+      "formal_open_sources": "10/10",
+      "arxiv_range": 206,
+      "off_whitelist": 403,
+      "unsafe_ranges": 416,
+      "pdf_signature_verified": true,
+      "production_reader": "Springer desktop/mobile and CVF desktop rendered"
+    },
+    "outlook_report": {
+      "status": "sent",
+      "account_profile_matched": true,
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "xhigh",
+      "sent_at": "2026-07-19T23:55:08Z"
+    }
   },
   "evidence": {
     "scan_window": "2026-06-19 through 2026-07-19",
