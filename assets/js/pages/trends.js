@@ -1,4 +1,4 @@
-import { CATEGORIES, loadModels, observeNumber, initReveals, escapeHTML } from '../core.js?v=20260719.9';
+import { CATEGORIES, loadModels, observeNumber, initReveals, escapeHTML } from '../core.js?v=20260719.10';
 
 const ESSAYS = [
   {

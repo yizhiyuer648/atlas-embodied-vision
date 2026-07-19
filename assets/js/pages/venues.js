@@ -1,4 +1,4 @@
-import { CATEGORIES, escapeHTML, initReveals, loadJSON } from '../core.js?v=20260719.9';
+import { CATEGORIES, escapeHTML, initReveals, loadJSON } from '../core.js?v=20260719.10';
 
 const DATA_URL = 'data/academic_tracker.json';
 const VIEWS = {

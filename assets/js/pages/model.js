@@ -2,7 +2,7 @@ import {
   loadModels, loadModelDetail, categoryMeta, displayValue, isKnown, isOpenSource, escapeHTML, setupBreadcrumbs,
   isFavorite, toggleFavorite, initCardInteractions, initReveals, modelCard, cachedFetchJSON,
   repoFromURL, formatCompact, formatDate, toast
-} from '../core.js?v=20260719.9';
+} from '../core.js?v=20260719.10';
 
 export async function init() {
   const models = await loadModels();
@@ -54,6 +54,7 @@ export async function init() {
     </section>
 
     ${sectionsArticle(model)}
+    ${evidenceSection(model)}
     ${model.tier === 'A' && model.architecture ? architectureSection(model) : ''}
     ${model.tier === 'A' && model.code ? codeSection(model) : ''}
 
@@ -103,6 +104,41 @@ function sectionsArticle(model) {
 
 function paragraphs(text) {
   return String(text).split(/\n+/).map(part => part.trim()).filter(Boolean).map(part => `<p>${escapeHTML(part)}</p>`).join('');
+}
+
+function evidenceSection(model) {
+  const claims = Array.isArray(model.evidence_claims) ? model.evidence_claims.filter(item => item?.claim) : [];
+  if (!claims.length) return `<section class="detail-section evidence-section reveal-section">
+    <div class="detail-section-head"><h2>证据账本</h2><p>本条目的断言级页码与评测条件仍待补齐。现有论文和代码链接只证明来源存在，不代表页面中的每项判断都已逐句核验。</p></div>
+    <div class="evidence-empty"><span>CLAIM-LEVEL EVIDENCE · PENDING</span><p>后续维护会优先为定量结果、版本差异和行业影响判断补充来源定位。</p></div>
+  </section>`;
+  return `<section class="detail-section evidence-section reveal-section">
+    <div class="detail-section-head"><h2>证据账本</h2><p>把论文报告、Atlas 解读和待核验判断分开。页码、表格与评测条件以所列版本为准，跨论文数字不能直接视为公平比较。</p></div>
+    <div class="evidence-ledger">
+      ${claims.map((item, index) => evidenceClaim(item, index)).join('')}
+    </div>
+  </section>`;
+}
+
+function evidenceClaim(item, index) {
+  const type = item.type || 'paper_report';
+  const types = {
+    paper_report: ['论文报告', 'reported'], atlas_interpretation: ['Atlas 解读', 'interpretation'],
+    independent_replication: ['独立复现', 'replicated'], pending: ['尚未核验', 'pending']
+  };
+  const [label, className] = types[type] || types.pending;
+  const sourceURL = isKnown(item.source_url) ? item.source_url : '';
+  return `<article class="evidence-claim" style="--claim-index:${index}">
+    <div class="evidence-claim-head"><span class="evidence-kind ${className}">${label}</span><span class="evidence-id">E-${String(index + 1).padStart(2, '0')}</span></div>
+    <h3>${escapeHTML(item.claim)}</h3>
+    ${item.scope ? `<p class="evidence-scope">适用范围：${escapeHTML(item.scope)}</p>` : ''}
+    <dl>
+      ${item.locator ? `<div><dt>原文定位</dt><dd>${escapeHTML(item.locator)}</dd></div>` : ''}
+      ${item.conditions ? `<div><dt>评测条件</dt><dd>${escapeHTML(item.conditions)}</dd></div>` : ''}
+      ${item.checked_at ? `<div><dt>核验日期</dt><dd>${escapeHTML(item.checked_at)}</dd></div>` : ''}
+    </dl>
+    ${sourceURL ? `<a href="${escapeHTML(sourceURL)}" target="_blank" rel="noopener noreferrer">${escapeHTML(item.source_label || '打开原始来源')} <span aria-hidden="true">↗</span></a>` : '<span class="evidence-source-pending">来源定位待补充</span>'}
+  </article>`;
 }
 
 function setupTocSpy(root) {

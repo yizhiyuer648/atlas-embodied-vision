@@ -50,12 +50,6 @@
       "next": "在可确认浏览器状态的桌面环境完成拖拽、缩放和分类切换复测。"
     },
     {
-      "id": "email_reporting_auth",
-      "status": "pending",
-      "reason": "Outlook 的 Microsoft Graph OAuth 发送通道尚未完成授权；收发地址仅保存在 Git 忽略的本地配置中。",
-      "next": "配置支持个人微软账号且具有 Mail.Send 委托权限的应用客户端 ID，再完成一次设备登录授权。"
-    },
-    {
       "id": "r2_fulltext_storage",
       "status": "pending",
       "reason": "Cloudflare 账号尚未首次启用 R2，创建私有全文桶返回 API 10042。",

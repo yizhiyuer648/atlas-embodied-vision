@@ -184,5 +184,47 @@
   "count": 2756,
   "as_of": "2026-07",
   "source": "Semantic Scholar"
- }
+ },
+ "evidence_claims": [
+  {
+   "type": "paper_report",
+   "claim": "OpenVLA 使用约 970k 条机器人轨迹训练，并在 29 个任务上进行真实机器人评测。",
+   "scope": "仅描述 OpenVLA 论文采用的数据混合和真实机器人评测设置，不代表覆盖开放世界任务。",
+   "source_label": "OpenVLA 论文",
+   "source_url": "https://arxiv.org/abs/2406.09246",
+   "locator": "arXiv:2406.09246，Abstract、§3.2 与 §4",
+   "conditions": "多机器人数据混合；29 个任务；以论文定义的成功率为主要指标",
+   "checked_at": "2026-07-19"
+  },
+  {
+   "type": "paper_report",
+   "claim": "论文报告 OpenVLA 相对 RT-2-X 的平均成功率绝对提高 16.5 个百分点。",
+   "scope": "该比较只在论文选定的任务、基线实现和评测协议内成立；不是跨平台通用性能结论。",
+   "source_label": "OpenVLA 论文",
+   "source_url": "https://arxiv.org/abs/2406.09246",
+   "locator": "arXiv:2406.09246，Abstract 与实验结果表",
+   "conditions": "真实机器人任务；使用作者报告的平均成功率；absolute improvement",
+   "checked_at": "2026-07-19"
+  },
+  {
+   "type": "atlas_interpretation",
+   "claim": "OpenVLA 是后续开源 VLA 工作的重要公开基线之一。",
+   "scope": "这是 Atlas 根据公开代码、权重和后续论文对照关系作出的编辑判断，不是论文自身的实验结论。",
+   "source_label": "OpenVLA 官方仓库",
+   "source_url": "https://github.com/openvla/openvla",
+   "locator": "仓库发布内容与 Atlas 谱系记录",
+   "conditions": "不以 GitHub star 或引用数单独替代学术影响判断",
+   "checked_at": "2026-07-19"
+  },
+  {
+   "type": "pending",
+   "claim": "引用次数与下游采用范围仍需按预印本和正式版本去重。",
+   "scope": "当前引用数是时间快照，只能说明传播范围，不能用作论文质量评分。",
+   "source_label": "Semantic Scholar 论文页",
+   "source_url": "https://www.semanticscholar.org/paper/2406.09246",
+   "locator": "引用快照，尚未完成版本合并审计",
+   "conditions": "查询结果会随时间和索引合并规则变化",
+   "checked_at": "2026-07-19"
+  }
+ ]
 }

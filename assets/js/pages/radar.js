@@ -1,4 +1,4 @@
-import { CATEGORIES, loadJSON, escapeHTML, formatDate, formatCompact, initReveals, setQuery, categoryMeta } from '../core.js?v=20260719.9';
+import { CATEGORIES, loadJSON, escapeHTML, formatDate, formatCompact, initReveals, setQuery, categoryMeta } from '../core.js?v=20260719.10';
 
 const PAGE_SIZE = 30;
 const CACHE_TTL = 60 * 60 * 1000;
